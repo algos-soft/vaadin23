@@ -1,29 +1,24 @@
-package com.example.application.views.checkoutform;
+package it.algos.simple.ui.views.carrelloform;
 
-import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.checkbox.*;
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.component.select.*;
+import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.router.*;
+import it.algos.vaad23.ui.views.*;
 
-@PageTitle("Checkout Form")
-@Route(value = "checkout-form", layout = MainLayout.class)
-public class CheckoutFormView extends Div {
+import java.util.*;
+
+@PageTitle("Carrello Form")
+@Route(value = "carrello-form", layout = MainLayout.class)
+public class CarrelloFormView extends Div {
 
     private static final Set<String> states = new LinkedHashSet<>();
+
     private static final Set<String> countries = new LinkedHashSet<>();
 
     static {
@@ -72,12 +67,13 @@ public class CheckoutFormView extends Div {
                 "Zimbabwe"));
     }
 
-    public CheckoutFormView() {
+    public CarrelloFormView() {
         addClassNames("checkout-form-view", "flex", "flex-col", "h-full");
 
         Main content = new Main();
         content.addClassNames("grid", "gap-xl", "items-start", "justify-center", "max-w-screen-md", "mx-auto", "pb-l",
-                "px-l");
+                "px-l"
+        );
 
         content.add(createCheckoutForm());
         content.add(createAside());

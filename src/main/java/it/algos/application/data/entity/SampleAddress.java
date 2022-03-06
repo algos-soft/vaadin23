@@ -1,7 +1,8 @@
-package com.example.application.data.entity;
+package it.algos.application.data.entity;
 
-import com.example.application.data.AbstractEntity;
-import javax.persistence.Entity;
+import it.algos.application.data.*;
+
+import javax.persistence.*;
 
 @Entity
 public class SampleAddress extends AbstractEntity {

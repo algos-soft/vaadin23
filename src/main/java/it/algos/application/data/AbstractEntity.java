@@ -1,9 +1,7 @@
-package com.example.application.data;
+package it.algos.application.data;
 
-import java.util.UUID;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
+import java.util.*;
 
 @MappedSuperclass
 public abstract class AbstractEntity {

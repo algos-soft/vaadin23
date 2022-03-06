@@ -1,21 +1,18 @@
-package com.example.application.views.addressform;
+package it.algos.application.views.addressform;
 
-import com.example.application.data.entity.SampleAddress;
-import com.example.application.data.service.SampleAddressService;
-import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.formlayout.*;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.notification.*;
+import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.data.binder.*;
+import com.vaadin.flow.router.*;
+import it.algos.application.data.entity.*;
+import it.algos.application.data.service.*;
+import it.algos.vaad23.ui.views.*;
 
 @PageTitle("Address Form")
 @Route(value = "address-form", layout = MainLayout.class)

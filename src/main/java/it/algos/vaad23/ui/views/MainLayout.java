@@ -1,25 +1,20 @@
-package com.example.application.views;
+package it.algos.vaad23.ui.views;
 
 
-import com.example.application.views.about.AboutView;
-import com.example.application.views.addressform.AddressFormView;
-import com.example.application.views.checkoutform.CheckoutFormView;
-import com.example.application.views.helloworld.HelloWorldView;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.html.Nav;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.html.UnorderedList;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.applayout.*;
+import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.dependency.*;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.router.*;
+import it.algos.application.views.addressform.*;
+import it.algos.application.views.helloworld.*;
+import it.algos.simple.ui.views.about.*;
+import it.algos.simple.ui.views.carrelloform.*;
+import it.algos.vaad23.ui.service.*;
+import org.springframework.beans.factory.annotation.*;
+
+import javax.annotation.*;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -27,13 +22,22 @@ import com.vaadin.flow.router.RouterLink;
 public class MainLayout extends AppLayout {
 
     /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    private LayoutService layoutService;
+
+
+    /**
      * A simple navigation item component, based on ListItem element.
      */
-    public static class MenuItemInfo extends ListItem {
+    public static class MenuItemInfoOld extends ListItem {
 
         private final Class<? extends Component> view;
 
-        public MenuItemInfo(String menuTitle, String iconClass, Class<? extends Component> view) {
+        public MenuItemInfoOld(String menuTitle, String iconClass, Class<? extends Component> view) {
             this.view = view;
             RouterLink link = new RouterLink();
             // Use Lumo classnames for various styling
@@ -65,17 +69,33 @@ public class MainLayout extends AppLayout {
                     addClassNames(lineawesomeClassnames);
                 }
             }
+
         }
 
     }
 
+
     private H1 viewTitle;
 
     public MainLayout() {
+    }
+
+    /**
+     * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
+     * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
+     * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
+     * <p>
+     * Ci possono essere diversi metodi con @PostConstruct e firme diverse e funzionano tutti, ma l'ordine con cui vengono chiamati (nella stessa classe) NON è garantito <br>
+     * Se viene implementata una sottoclasse, passa di qui per ogni sottoclasse oltre che per questa istanza <br>
+     * Se esistono delle sottoclassi, passa di qui per ognuna di esse (oltre a questa classe madre) <br>
+     */
+    @PostConstruct
+    private void postConstruct() {
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         addToDrawer(createDrawerContent());
     }
+
 
     private Component createHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
@@ -111,23 +131,23 @@ public class MainLayout extends AppLayout {
         UnorderedList list = new UnorderedList();
         list.addClassNames("list-none", "m-0", "p-0");
         nav.add(list);
-
-        for (MenuItemInfo menuItem : createMenuItems()) {
+        Object alfa = layoutService;
+        for (MenuItemInfo2 menuItem : createMenuItems()) {
             list.add(menuItem);
 
         }
         return nav;
     }
 
-    private MenuItemInfo[] createMenuItems() {
-        return new MenuItemInfo[]{ //
-                new MenuItemInfo("Hello World", "la la-globe", HelloWorldView.class), //
+    private MenuItemInfo2[] createMenuItems() {
+        return new MenuItemInfo2[]{ //
+                new MenuItemInfo2("Hello World", "la la-globe", HelloWorldView.class), //
 
-                new MenuItemInfo("About", "la la-file", AboutView.class), //
+                new MenuItemInfo2("About", "la la-file", AboutView.class), //
 
-                new MenuItemInfo("Address Form", "la la-map-marker", AddressFormView.class), //
+                new MenuItemInfo2("Address Form", "la la-map-marker", AddressFormView.class), //
 
-                new MenuItemInfo("Checkout Form", "la la-credit-card", CheckoutFormView.class), //
+                new MenuItemInfo2("Carrello Form", "la la-credit-card", CarrelloFormView.class), //
 
         };
     }

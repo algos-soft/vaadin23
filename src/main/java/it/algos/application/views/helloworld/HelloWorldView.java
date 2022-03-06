@@ -1,13 +1,11 @@
-package com.example.application.views.helloworld;
+package it.algos.application.views.helloworld;
 
-import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.notification.*;
+import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.router.*;
+import it.algos.vaad23.ui.views.*;
 
 @PageTitle("Hello World")
 @Route(value = "hello", layout = MainLayout.class)

@@ -1,12 +1,11 @@
-package com.example.application.data.service;
+package it.algos.application.data.service;
 
-import com.example.application.data.entity.SampleAddress;
-import java.util.Optional;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import it.algos.application.data.entity.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.*;
+
+import java.util.*;
 
 @Service
 public class SampleAddressService {
