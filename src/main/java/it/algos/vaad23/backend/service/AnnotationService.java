@@ -1,0 +1,268 @@
+package it.algos.vaad23.backend.service;
+
+import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.annotation.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
+import org.springframework.beans.factory.config.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.*;
+
+/**
+ * Project vaadin23
+ * Created by Algos
+ * User: gac
+ * Date: dom, 06-mar-2022
+ * Time: 18:18
+ * <p>
+ * Gestisce le @Annotation/Interfacce specifiche di Algos contenute nella directory vaad23.backend.annotation <br>
+ * Classe di libreria; NON deve essere astratta, altrimenti SpringBoot non la costruisce <br>
+ * Estende la classe astratta AbstractService che mantiene i riferimenti agli altri services <br>
+ * L'istanza può essere richiamata con: <br>
+ * 1) StaticContextAccessor.getBean(AAnnotationService.class); <br>
+ * 3) @Autowired public AnnotationService annotation; <br>
+ * <p>
+ * Annotated with @Service (obbligatorio, se si usa la catena @Autowired di SpringBoot) <br>
+ * NOT annotated with @SpringComponent (inutile, esiste già @Service) <br>
+ * Annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (obbligatorio) <br>
+ */
+@Service
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+public class AnnotationService extends AbstractService {
+
+    //==========================================================================
+    // Costanti
+    //==========================================================================
+
+    //==========================================================================
+    // Interfaces Spring/Vaadin
+    //==========================================================================
+
+    /**
+     * Get the annotation Route. <br>
+     * 1) Controlla che il parametro in ingresso non sia nullo <br>
+     * 2) Controlla che esista l' annotation specifica <br>
+     *
+     * @param genericClazz of all types
+     *
+     * @return the specific Annotation
+     */
+    public Route getRoute(final Class<?> genericClazz) {
+        return genericClazz != null ? genericClazz.getAnnotation(Route.class) : null;
+    }
+
+    //==========================================================================
+    // Interfaces Algos
+    //==========================================================================
+
+    /**
+     * Get the annotation Algos AIView. <br>
+     *
+     * @param entityViewClazz the class of type AEntity or AView
+     *
+     * @return the specific annotation
+     */
+    public AIView getAIView(final Class<?> entityViewClazz) {
+
+        //--controllo congruità
+        if (entityViewClazz == null) {
+            //@todo lanciare un errore nei log/logger
+        }
+
+        // controlla che il parametro in ingresso sia di una delle due classi previste
+        //        if (entityViewClazz != null && AEntity.class.isAssignableFrom(entityViewClazz)) {
+        //            annotation = getAIViewEntity((Class<? extends AEntity>) entityViewClazz);
+        //            return annotation;
+        //        }
+
+        // controlla che il parametro in ingresso sia di una delle due classi previste
+        //        if (entityViewClazz != null && VerticalLayout.class.isAssignableFrom(entityViewClazz)) {
+        //            annotation = getAIViewView((Class<? extends AView>) entityViewClazz);
+        //            return annotation;
+        //        }
+
+        return entityViewClazz.getAnnotation(AIView.class);
+    }
+
+    /**
+     * Get the annotation PageTitle. <br>
+     *
+     * @param genericClazz of all types
+     *
+     * @return the specific Annotation
+     */
+    public PageTitle getPageTitle(final Class<?> genericClazz) {
+        return genericClazz != null ? genericClazz.getAnnotation(PageTitle.class) : null;
+    }
+
+    //==========================================================================
+    // @Route
+    //==========================================================================
+
+    /**
+     * Check if the view has a @Route annotation. <br>
+     * 1) Controlla che il parametro in ingresso non sia nullo <br>
+     * 2) Controlla che esista l'annotation specifica <br>
+     *
+     * @param genericClazz of all types
+     *
+     * @return true if the class as a @Route
+     */
+    public boolean isRouteView(final Class<?> genericClazz) {
+        return getRoute(genericClazz) != null;
+    }
+
+    /**
+     * Get the title of the page. <br>
+     *
+     * @param clazz of all types
+     *
+     * @return the name of the vaadin-view @route
+     */
+    public String getRoutePageTitle(final Class<?> clazz) {
+        PageTitle annotation = clazz != null ? this.getPageTitle(clazz) : null;
+        return annotation != null ? annotation.value() : VUOTA;
+    }
+
+
+    /**
+     * Get the name of the route. <br>
+     *
+     * @param clazz of all types
+     *
+     * @return the name of the vaadin-view @route
+     */
+    public String getRouteMenuName(final Class<?> clazz) {
+        Route annotation = clazz != null ? this.getRoute(clazz) : null;
+        return annotation != null ? annotation.value() : VUOTA;
+    }
+
+    //==========================================================================
+    // @AIView
+    //==========================================================================
+
+    /**
+     * Restituisce il nome del menu. <br>
+     * 1) Controlla che il parametro in ingresso non sia nullo <br>
+     * 2) Se la classe è una @Route, recupera @PageTitle e il value di @Route <br>
+     * 3) Se manca @PageTitle o se la classe non è una @Route, recupera la Entity corrispondente e il menuName di @AIView <br>
+     * 4) Nell'ordine usa: <br>
+     * * @AIView -> menuName
+     * * @PageTitle -> value
+     * * @Route -> value
+     * * @AIView della Entity.class associata -> menuName
+     * * clazz.getSimpleName()
+     *
+     * @param clazz of all types
+     *
+     * @return the name of the spring-view
+     */
+    public String getMenuName(final Class<?> clazz) {
+        String menuName = VUOTA;
+        String viewName = VUOTA;
+        Class entityClazz = null;
+        AIView annotationView;
+        PageTitle annotationTitle;
+        Route annotationRoute;
+        String pageMenu = VUOTA;
+        String routeMenu = VUOTA;
+
+        // Se manca la classe non può esserci nessuna annotation
+        if (clazz == null) {
+            // @todo gestire errore
+            //            throw AlgosException.stack("Manca la entityViewClazz in ingresso", getClass(), "getMenuName");
+        }
+
+        // @AIView -> menuName è la prima opzione (deve esserci l'annotation @AIView)
+        annotationView = this.getAIView(clazz);
+        if (annotationView != null) {
+            if (textService.isValid(annotationView.menuName())) {
+                return textService.primaMaiuscola(annotationView.menuName());
+            }
+        }
+
+        // PageTitle -> value è la seconda opzione (la classe deve essere una @Route)
+        annotationTitle = this.getPageTitle(clazz);
+        if (annotationTitle != null) {
+            if (textService.isValid(annotationTitle.value())) {
+                return textService.primaMaiuscola(annotationTitle.value());
+            }
+        }
+
+        // @Route -> value è la terza opzione (la classe deve essere una @Route)
+        annotationRoute = this.getRoute(clazz);
+        if (annotationRoute != null) {
+            if (textService.isValid(annotationRoute.value())) {
+                return textService.primaMaiuscola(annotationRoute.value());
+            }
+        }
+
+        // @AIView della Entity.class associata -> menuName è la quarta opzione (deve esistere una Entity associata)
+        //        try {
+        //            entityClazz = classService.getEntityClazzFromClazz(entityViewClazz);
+        //        } catch (AlgosException unErrore) {
+        //            if (!isRouteView(entityViewClazz)) {
+        //                throw AlgosException.stack(unErrore, this.getClass(), "getMenuName");
+        //            }
+        //        }
+
+        // Se la classe è una Entity
+        // Cerca in @AIView della classe la property 'menuName'
+        //        if (entityClazz != null) {
+        //            annotationView = this.getAIView(entityClazz);
+        //            if (annotationView != null) {
+        //                viewName = annotationView.menuName();
+        //            }
+        //        }
+
+        // clazz.getSimpleName() è la quinta (ultima) opzione
+
+        return textService.primaMaiuscola(menuName);
+    }
+
+
+    /**
+     * Valore della VaadinIcon di una view <br>
+     * 1) Controlla che il parametro in ingresso non sia nullo <br>
+     * 2) Controlla che esista l'annotation specifica <br>
+     *
+     * @param clazz of all types
+     *
+     * @return the menu vaadin icon
+     */
+    public VaadinIcon getMenuVaadinIcon(final Class<?> clazz) {
+        AIView annotation = this.getAIView(clazz);
+        return annotation != null ? annotation.menuIcon() : DEFAULT_ICON;
+    }
+
+
+    /**
+     * Valore della Icon di una view <br>
+     * 1) Controlla che il parametro in ingresso non sia nullo <br>
+     * 2) Controlla che esista l'annotation specifica <br>
+     *
+     * @param clazz of all types
+     *
+     * @return the menu icon
+     */
+    public Icon getMenuIcon(final Class<?> clazz) {
+        return getMenuVaadinIcon(clazz) != null ? getMenuVaadinIcon(clazz).create() : null;
+    }
+
+
+    /**
+     * Nome della Icon di una view <br>
+     * 1) Controlla che il parametro in ingresso non sia nullo <br>
+     * 2) Controlla che esista l'annotation specifica <br>
+     *
+     * @param clazz of all types
+     *
+     * @return the menu icon name
+     */
+    public String getLineawesomeClassnames(final Class<?> clazz) {
+        AIView annotation = this.getAIView(clazz);
+        return annotation != null ? annotation.lineawesomeClassnames() : DEFAULT_ICON_NAME;
+    }
+
+
+}

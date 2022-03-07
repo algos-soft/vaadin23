@@ -12,10 +12,12 @@ import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.router.*;
 import it.algos.application.data.entity.*;
 import it.algos.application.data.service.*;
+import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.ui.views.*;
 
 @PageTitle("Address Form")
 @Route(value = "address-form", layout = MainLayout.class)
+@AIView(menuName = "indirizzo")
 public class AddressFormView extends Div {
 
     private TextField street = new TextField("Street address");

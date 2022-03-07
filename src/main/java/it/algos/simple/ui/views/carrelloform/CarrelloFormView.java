@@ -9,12 +9,14 @@ import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.select.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.ui.views.*;
 
 import java.util.*;
 
 @PageTitle("Carrello Form")
 @Route(value = "carrello-form", layout = MainLayout.class)
+@AIView(menuName = "carrello")
 public class CarrelloFormView extends Div {
 
     private static final Set<String> states = new LinkedHashSet<>();

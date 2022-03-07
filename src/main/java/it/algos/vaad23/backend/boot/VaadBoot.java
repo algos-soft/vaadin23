@@ -5,14 +5,13 @@ import it.algos.application.views.addressform.*;
 import it.algos.application.views.helloworld.*;
 import it.algos.simple.ui.views.about.*;
 import it.algos.simple.ui.views.carrelloform.*;
-import it.algos.vaad23.ui.service.*;
-import it.algos.vaad23.ui.views.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.EventListener;
 import org.springframework.context.event.*;
 
 import javax.servlet.*;
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -41,13 +40,6 @@ import javax.servlet.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadBoot implements ServletContextListener {
 
-    /**
-     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    private LayoutService layoutService;
 
     /**
      * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
@@ -73,7 +65,26 @@ public class VaadBoot implements ServletContextListener {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void inizia() {
-        //        this.createMenuItems();
+        //        this.fixDBMongo();
+        this.fixVariabili();
+        //        this.fixPreferenze();
+        //        this.fixData();
+        this.fixMenuRoutes();
+    }
+
+    /**
+     * Regola le variabili generali dell' applicazione con il loro valore iniziale di default <br>
+     * Le variabili (static) sono uniche per tutta l' applicazione <br>
+     * Il loro valore può essere modificato SOLO in questa classe o in una sua sottoclasse <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixVariabili() {
+        /**
+         * Lista dei moduli di menu da inserire nel Drawer del MainLayout per le gestione delle @Routes. <br>
+         * Regolata dall'applicazione durante l'esecuzione del 'container startup' (non-UI logic) <br>
+         * Usata da ALayoutService per conto di MainLayout allo start della UI-logic <br>
+         */
+        VaadVar.menuRouteList = new ArrayList<>();
     }
 
     /**
@@ -88,18 +99,11 @@ public class VaadBoot implements ServletContextListener {
      * Verranno lette da MainLayout la prima volta che il browser 'chiama' una view <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    protected MenuItemInfo2[] createMenuItems() {
-        return new MenuItemInfo2[]{ //
-                new MenuItemInfo2("Hello World", "la la-globe", HelloWorldView.class), //
-
-                new MenuItemInfo2("About", "la la-file", AboutView.class), //
-
-                new MenuItemInfo2("Address Form", "la la-map-marker", AddressFormView.class), //
-
-                new MenuItemInfo2("Carrello Form", "la la-credit-card", CarrelloFormView.class), //
-
-        };
-
+    protected void fixMenuRoutes() {
+        VaadVar.menuRouteList.add(HelloWorldView.class);
+        VaadVar.menuRouteList.add(AboutView.class);
+        VaadVar.menuRouteList.add(AddressFormView.class);
+        VaadVar.menuRouteList.add(CarrelloFormView.class);
     }
 
 }

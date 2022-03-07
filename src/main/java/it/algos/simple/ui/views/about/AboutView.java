@@ -1,12 +1,15 @@
 package it.algos.simple.ui.views.about;
 
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.ui.views.*;
 
 @PageTitle("About")
 @Route(value = "about", layout = MainLayout.class)
+@AIView(menuName = "about", menuIcon = VaadinIcon.GLOBE, lineawesomeClassnames = "globe")
 public class AboutView extends VerticalLayout {
 
     public AboutView() {

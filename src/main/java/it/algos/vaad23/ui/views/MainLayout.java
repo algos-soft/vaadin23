@@ -4,17 +4,13 @@ package it.algos.vaad23.ui.views;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.*;
 import com.vaadin.flow.component.button.*;
-import com.vaadin.flow.component.dependency.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.router.*;
-import it.algos.application.views.addressform.*;
-import it.algos.application.views.helloworld.*;
-import it.algos.simple.ui.views.about.*;
-import it.algos.simple.ui.views.carrelloform.*;
 import it.algos.vaad23.ui.service.*;
 import org.springframework.beans.factory.annotation.*;
 
 import javax.annotation.*;
+import java.util.*;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -29,56 +25,12 @@ public class MainLayout extends AppLayout {
     @Autowired
     private LayoutService layoutService;
 
-
-    /**
-     * A simple navigation item component, based on ListItem element.
-     */
-    public static class MenuItemInfoOld extends ListItem {
-
-        private final Class<? extends Component> view;
-
-        public MenuItemInfoOld(String menuTitle, String iconClass, Class<? extends Component> view) {
-            this.view = view;
-            RouterLink link = new RouterLink();
-            // Use Lumo classnames for various styling
-            link.addClassNames("flex", "mx-s", "p-s", "relative", "text-secondary");
-            link.setRoute(view);
-
-            Span text = new Span(menuTitle);
-            // Use Lumo classnames for various styling
-            text.addClassNames("font-medium", "text-s");
-
-            link.add(new LineAwesomeIcon(iconClass), text);
-            add(link);
-        }
-
-        public Class<?> getView() {
-            return view;
-        }
-
-        /**
-         * Simple wrapper to create icons using LineAwesome iconset. See
-         * https://icons8.com/line-awesome
-         */
-        @NpmPackage(value = "line-awesome", version = "1.3.0")
-        public static class LineAwesomeIcon extends Span {
-            public LineAwesomeIcon(String lineawesomeClassnames) {
-                // Use Lumo classnames for suitable font size and margin
-                addClassNames("me-s", "text-l");
-                if (!lineawesomeClassnames.isEmpty()) {
-                    addClassNames(lineawesomeClassnames);
-                }
-            }
-
-        }
-
-    }
-
-
     private H1 viewTitle;
 
-    public MainLayout() {
-    }
+    //Costruttore non necessario
+    //    public MainLayout() {
+    //    }
+
 
     /**
      * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
@@ -108,7 +60,8 @@ public class MainLayout extends AppLayout {
 
         Header header = new Header(toggle, viewTitle);
         header.addClassNames("bg-base", "border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-center",
-                "w-full");
+                "w-full"
+        );
         return header;
     }
 
@@ -117,7 +70,8 @@ public class MainLayout extends AppLayout {
         appName.addClassNames("flex", "items-center", "h-xl", "m-0", "px-m", "text-m");
 
         com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
-                createNavigation(), createFooter());
+                createNavigation(), createFooter()
+        );
         section.addClassNames("flex", "flex-col", "items-stretch", "max-h-full", "min-h-full");
         return section;
     }
@@ -131,25 +85,16 @@ public class MainLayout extends AppLayout {
         UnorderedList list = new UnorderedList();
         list.addClassNames("list-none", "m-0", "p-0");
         nav.add(list);
-        Object alfa = layoutService;
-        for (MenuItemInfo2 menuItem : createMenuItems()) {
-            list.add(menuItem);
 
+        for (ListItem menuItem : createMenuItems()) {
+            list.add(menuItem);
         }
+
         return nav;
     }
 
-    private MenuItemInfo2[] createMenuItems() {
-        return new MenuItemInfo2[]{ //
-                new MenuItemInfo2("Hello World", "la la-globe", HelloWorldView.class), //
-
-                new MenuItemInfo2("About", "la la-file", AboutView.class), //
-
-                new MenuItemInfo2("Address Form", "la la-map-marker", AddressFormView.class), //
-
-                new MenuItemInfo2("Carrello Form", "la la-credit-card", CarrelloFormView.class), //
-
-        };
+    private List<ListItem> createMenuItems() {
+        return layoutService.getAllItem();
     }
 
     private Footer createFooter() {
@@ -169,4 +114,5 @@ public class MainLayout extends AppLayout {
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();
     }
+
 }
