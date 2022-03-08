@@ -112,18 +112,6 @@ public class AnnotationService extends AbstractService {
         return getRoute(genericClazz) != null;
     }
 
-    /**
-     * Get the title of the page. <br>
-     *
-     * @param clazz of all types
-     *
-     * @return the name of the vaadin-view @route
-     */
-    public String getRoutePageTitle(final Class<?> clazz) {
-        PageTitle annotation = clazz != null ? this.getPageTitle(clazz) : null;
-        return annotation != null ? annotation.value() : VUOTA;
-    }
-
 
     /**
      * Get the name of the route. <br>
@@ -134,6 +122,7 @@ public class AnnotationService extends AbstractService {
      */
     public String getRouteMenuName(final Class<?> clazz) {
         Route annotation = clazz != null ? this.getRoute(clazz) : null;
+
         return annotation != null ? annotation.value() : VUOTA;
     }
 

@@ -40,6 +40,18 @@
 
 
     /**
+     * Constructor not @Autowired. <br>
+     * Non utilizzato e non necessario <br>
+     * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
+     * Se c'è un SOLO costruttore questo diventa automaticamente @Autowired e IntelliJ Idea 'segna' in rosso i
+     * parametri <br>
+     * Per evitare il bug (solo visivo), aggiungo un costruttore senza parametri <br>
+     */
+    public WrapLogCompany() {
+    }// end of second constructor not @Autowired
+
+
+    /**
      * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
      * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>
@@ -52,8 +64,16 @@
     private void postConstruct() {
     }
 
+    * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
 
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    public final static String XXX = "";
 
-     public final static String XXX = "";
+
+
+    // Fields order
+    @Annotation public protected private static final transient volatile
+
+    // Methods order
+    @Annotation public protected private abstract static final synchronized native strictfp
+

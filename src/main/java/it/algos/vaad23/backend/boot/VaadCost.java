@@ -16,10 +16,42 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadCost {
 
-    public final static String VUOTA = "";
+    public static final String VUOTA = "";
 
-    public final static VaadinIcon DEFAULT_ICON = VaadinIcon.ASTERISK;
+    public static final String PIENA = "Piena";
 
-    public final static String DEFAULT_ICON_NAME = "asterisk";
+    public static final VaadinIcon DEFAULT_ICON = VaadinIcon.ASTERISK;
+
+    public static final String DEFAULT_ICON_NAME = "asterisk";
+
+    public static final String FORWARD = " -> ";
+
+    public static final String SEP = " - ";
+
+    public static final String PUNTO = ".";
+
+    public static final String VIRGOLA = ",";
+
+    public static final String PUNTO_VIRGOLA = ";";
+
+    public static final String PUNTO_INTERROGATIVO = "?";
+
+    public static final String DUE_PUNTI = ":";
+
+    public static final String SPAZIO = " ";
+
+    public static final String DOPPIO_SPAZIO = SPAZIO + SPAZIO;
+
+    public static final String QUADRA_INI = "[";
+
+    public static final String QUADRA_INI_REGEX = "\\[";
+
+    public static final String DOPPIE_QUADRE_INI = QUADRA_INI + QUADRA_INI;
+
+    public static final String QUADRA_END = "]";
+
+    public static final String QUADRA_END_REGEX = "\\]";
+
+    public static final String DOPPIE_QUADRE_END = QUADRA_END + QUADRA_END;
 
 }
