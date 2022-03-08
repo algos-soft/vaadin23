@@ -1,7 +1,6 @@
 package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.exception.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.mail.javamail.*;
@@ -58,7 +57,7 @@ public class MailService extends AbstractService {
      * @param title soggetto
      * @param body  testo della mail
      */
-    public boolean send(String title, String body) throws AlgosException {
+    public boolean send(String title, String body) {
         return send("gac@algos.it", title, body);
     }
 
@@ -69,7 +68,7 @@ public class MailService extends AbstractService {
      * @param title soggetto
      * @param body  testo della mail
      */
-    public boolean send(String to, String title, String body) throws AlgosException {
+    public boolean send(String to, String title, String body) {
         return send(VUOTA, to, title, body);
     }
 
@@ -81,8 +80,8 @@ public class MailService extends AbstractService {
      * @param title soggetto
      * @param body  testo della mail
      */
-    public boolean send(String from, String to, String title, String body) throws AlgosException {
-        boolean status;
+    public boolean send(String from, String to, String title, String body) {
+        boolean status = false;
         MimeMessage message = this.mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message);
         try {
@@ -97,8 +96,8 @@ public class MailService extends AbstractService {
         } catch (MessagingException messageException) {
             // You could also 'throw' this exception. I am not a fan of checked exceptions.
             // If you want to go that route, then just update this method and the interface.
-            //            throw new RuntimeException(messageException);
-            throw AlgosException.stack(messageException, "Pippoz", getClass(), "send");
+            throw new RuntimeException(messageException);
+            //            throw AlgosException.stack(messageException, "Pippoz", getClass(), "send");
         }
         return status;
     }

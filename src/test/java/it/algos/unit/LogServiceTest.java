@@ -30,7 +30,7 @@ import java.util.stream.*;
  */
 @SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllValido")
+@Tag("testAllIntegration")
 @DisplayName("Log service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LogServiceTest extends ATest {
@@ -46,48 +46,6 @@ public class LogServiceTest extends ATest {
      */
     private LogService service;
 
-    //--tag
-    //--esiste nella enumeration
-    protected static Stream<Arguments> TYPES() {
-        return Stream.of(
-                Arguments.of(null, false),
-                Arguments.of(VUOTA, false),
-                Arguments.of("system", true),
-                Arguments.of("setup", true),
-                Arguments.of("login", true),
-                Arguments.of("startup", true),
-                Arguments.of("checkMenu", true),
-                Arguments.of("checkData", true),
-                Arguments.of("preferenze", true),
-                Arguments.of("newEntity", true),
-                Arguments.of("edit", true),
-                Arguments.of("newEntity", true),
-                Arguments.of("modifica", true),
-                Arguments.of("delete", true),
-                Arguments.of("deleteAll", true),
-                Arguments.of("mongoDB", true),
-                Arguments.of("debug", true),
-                Arguments.of("info", true),
-                Arguments.of("warn", true),
-                Arguments.of("error", true),
-                Arguments.of("info", true),
-                Arguments.of("wizard", true),
-                Arguments.of("wizarddoc", false),
-                Arguments.of("wizardDoc", true),
-                Arguments.of("info", true),
-                Arguments.of("import", true),
-                Arguments.of("export", true),
-                Arguments.of("download", true),
-                Arguments.of("update", true),
-                Arguments.of("Update", false),
-                Arguments.of("info", true),
-                Arguments.of("elabora", true),
-                Arguments.of("reset", true),
-                Arguments.of("utente", true),
-                Arguments.of("password", true),
-                Arguments.of("cicloBio", true)
-        );
-    }
 
 
     //--companySigla
@@ -122,7 +80,7 @@ public class LogServiceTest extends ATest {
         //--reindirizzo l'istanza della superclasse
         service = logService;
         service.slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
-        service.textService = textService;
+        //        service.textService = textService;
     }
 
     /**

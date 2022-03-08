@@ -3,10 +3,13 @@ package it.algos.test;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
@@ -61,7 +64,58 @@ public abstract class ATest {
     protected TextService textService;
 
     @InjectMocks
+    protected DateService dateService;
+
+
+    @InjectMocks
     protected LogService logService;
+
+    @InjectMocks
+    protected MailService mailService;
+
+
+    //--tag
+    //--esiste nella enumeration
+    protected static Stream<Arguments> TYPES() {
+        return Stream.of(
+                Arguments.of(null, false),
+                Arguments.of(VUOTA, false),
+                Arguments.of("system", true),
+                Arguments.of("setup", true),
+                Arguments.of("login", true),
+                Arguments.of("startup", true),
+                Arguments.of("checkMenu", true),
+                Arguments.of("checkData", true),
+                Arguments.of("preferenze", true),
+                Arguments.of("newEntity", true),
+                Arguments.of("edit", true),
+                Arguments.of("newEntity", true),
+                Arguments.of("modifica", true),
+                Arguments.of("delete", true),
+                Arguments.of("deleteAll", true),
+                Arguments.of("mongoDB", true),
+                Arguments.of("debug", true),
+                Arguments.of("info", true),
+                Arguments.of("warn", true),
+                Arguments.of("error", true),
+                Arguments.of("info", true),
+                Arguments.of("wizard", true),
+                Arguments.of("wizarddoc", false),
+                Arguments.of("wizardDoc", true),
+                Arguments.of("info", true),
+                Arguments.of("import", true),
+                Arguments.of("export", true),
+                Arguments.of("download", true),
+                Arguments.of("update", true),
+                Arguments.of("Update", false),
+                Arguments.of("info", true),
+                Arguments.of("elabora", true),
+                Arguments.of("reset", true),
+                Arguments.of("utente", true),
+                Arguments.of("password", true),
+                Arguments.of("cicloBio", true)
+        );
+    }
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -70,6 +124,7 @@ public abstract class ATest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     protected void setUpAll() {
+        MockitoAnnotations.openMocks(this);
         initMocks();
         fixRiferimentiIncrociati();
     }
@@ -80,9 +135,10 @@ public abstract class ATest {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void initMocks() {
-        //        MockitoAnnotations.initMocks(textService);
-        //        assertNotNull(textService);
-        //        assertNotNull(logService);
+        assertNotNull(textService);
+        assertNotNull(logService);
+        assertNotNull(mailService);
+        assertNotNull(dateService);
     }
 
 
@@ -93,6 +149,8 @@ public abstract class ATest {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixRiferimentiIncrociati() {
+        mailService.textService = textService;
+        dateService.textService = textService;
     }
 
     /**
@@ -119,9 +177,9 @@ public abstract class ATest {
         if (unErrore.getClazz() != null) {
             System.out.println(String.format("Clazz %s %s", FORWARD, unErrore.getClazz().getSimpleName()));
         }
-        if (textService.isValid(unErrore.getMethod())) {
-            System.out.println(String.format("Method %s %s()", FORWARD, unErrore.getMethod()));
-        }
+        //        if (textService.isValid(unErrore.getMethod())) {
+        //            System.out.println(String.format("Method %s %s()", FORWARD, unErrore.getMethod()));
+        //        }
     }
 
     protected void printError(final Exception unErrore) {

@@ -1,12 +1,14 @@
 package it.algos.unit;
 
+import it.algos.*;
+import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import static org.junit.Assert.*;
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
-import org.mockito.*;
+import org.springframework.boot.test.context.*;
 
 import java.util.*;
 
@@ -21,11 +23,12 @@ import java.util.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi classi singleton di service <br>
  */
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("testAllValido")
 @DisplayName("Enumeration AETypeLog")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AETypeLogTest {
+public class AETypeLogTest extends ATest {
 
     private AETypeLog type;
 
@@ -42,8 +45,8 @@ public class AETypeLogTest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     @BeforeAll
-    void setUpIniziale() {
-        MockitoAnnotations.initMocks(this);
+    protected void setUpAll() {
+        super.setUpAll();
     }
 
 
@@ -53,7 +56,9 @@ public class AETypeLogTest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     @BeforeEach
-    void setUpEach() {
+    protected void setUpEach() {
+        super.setUpEach();
+
         type = null;
         listaType = null;
         listaTag = null;
@@ -62,8 +67,8 @@ public class AETypeLogTest {
 
     @Test
     @Order(1)
-    @DisplayName("matrice dei valori")
-    void matrice() {
+    @DisplayName("1 - matrice dei valori")
+    public void matrice() {
         matrice = AETypeLog.values();
         assertNotNull(matrice);
 
@@ -78,7 +83,7 @@ public class AETypeLogTest {
 
     @Test
     @Order(2)
-    @DisplayName("lista dei valori")
+    @DisplayName("2 - lista dei valori")
     void lista() {
         listaType = AETypeLog.getAll();
         assertNotNull(listaType);
@@ -93,7 +98,7 @@ public class AETypeLogTest {
 
     @Test
     @Order(3)
-    @DisplayName("getAllTag")
+    @DisplayName("3 - getAllTag")
     void getAllTag() {
         listaTag = AETypeLog.getAllTag();
         assertNotNull(listaTag);
@@ -108,7 +113,7 @@ public class AETypeLogTest {
     @ParameterizedTest
     @MethodSource(value = "TYPES")
     @Order(4)
-    @DisplayName("getSingleType")
+    @DisplayName("4 - getSingleType")
         //--tag
         //--esiste nella enumeration
     void getSingleType(final String tag, final boolean esiste) {

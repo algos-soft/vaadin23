@@ -4,8 +4,8 @@ import it.algos.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
-import static org.junit.Assert.*;
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.springframework.boot.test.context.*;
@@ -72,7 +72,7 @@ public class TextServiceTest extends ATest {
         super.setUpAll();
 
         //--reindirizzo l'istanza della superclasse
-        service = textService;
+        //        service = textService;
     }
 
 

@@ -2,10 +2,8 @@ package it.algos.unit;
 
 import it.algos.*;
 import it.algos.test.*;
-import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 
 import java.time.*;
@@ -24,19 +22,17 @@ import java.time.*;
  */
 @SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllValido")
+@Tag("testAllIntegration")
 @DisplayName("Mail service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MailServiceTest extends ATest {
 
 
-    //    /**
-    //     * Classe principale di riferimento <br>
-    //     * Gia 'costruita' nella superclasse <br>
-    //     */
-    //    private MailService service;
-    @Autowired
-    protected MailService service;
+    /**
+     * Classe principale di riferimento <br>
+     * Gia 'costruita' nella superclasse <br>
+     */
+    private MailService service;
 
     /**
      * Execute only once before running all tests <br>
@@ -49,7 +45,7 @@ public class MailServiceTest extends ATest {
         super.setUpAll();
 
         //--reindirizzo l'istanza della superclasse
-        //        service = mailService;
+        service = mailService;
     }
 
 
@@ -72,17 +68,9 @@ public class MailServiceTest extends ATest {
     @DisplayName("Primo test")
     public void send() {
         sorgente = "Prova";
-        sorgente2 = String.format(
-                "Spedizione standard senza mittente e senza destinatario effettuato alle %s",
-                LocalDateTime.now()
-        );
+        sorgente2 = String.format("Spedizione standard senza mittente e senza destinatario effettuato alle %s", LocalDateTime.now());
 
-        try {
-            ottenutoBooleano = service.send(sorgente, sorgente2);
-        } catch (AlgosException unErrore) {
-            printError(unErrore);
-            return;
-        }
+        service.send(sorgente, sorgente2);
     }
 
 
@@ -93,40 +81,23 @@ public class MailServiceTest extends ATest {
     @Order(2)
     @DisplayName("Secondo test")
     public void send2() {
-        ottenutoBooleano = false;
         sorgente = "Prova2";
-        sorgente2 = String.format(
-                "Spedizione standard col destinatario effettuato alle %s",
-                LocalDateTime.now()
-        );
+        sorgente2 = String.format("Spedizione standard col destinatario effettuato alle %s", LocalDateTime.now());
 
-        try {
-            ottenutoBooleano = service.send("pippoz", sorgente, sorgente2);
-        } catch (AlgosException unErrore) {
-            printError(unErrore);
-            return;
-        }
+        service.send("pippoz@algos.it", sorgente, sorgente2);
     }
 
     /**
      * Spedizione standard senza mittente e con destinatario
      */
-    //    @Test
+    @Test
     @Order(3)
     @DisplayName("Terzo test")
     public void send3() {
-        sorgente = "Prova2";
-        sorgente2 = String.format(
-                "Spedizione standard col destinatario effettuato alle %s",
-                LocalDateTime.now()
-        );
+        sorgente = "Prova3";
+        sorgente2 = String.format("Spedizione standard col destinatario effettuato alle %s", LocalDateTime.now());
 
-        try {
-            ottenutoBooleano = service.send(sorgente, sorgente2);
-        } catch (AlgosException unErrore) {
-            printError(unErrore);
-            return;
-        }
+        service.send(sorgente, sorgente2);
     }
 
     /**

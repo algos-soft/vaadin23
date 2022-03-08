@@ -1,10 +1,9 @@
 package it.algos.unit;
 
+import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.service.*;
-import static org.junit.Assert.*;
 import org.junit.jupiter.api.*;
-import org.mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.text.*;
 import java.time.*;
@@ -30,13 +29,8 @@ import java.util.stream.*;
 @Tag("testAllValido")
 @DisplayName("Java - Nuove funzioni Java 17")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class JavaTest {
+public class JavaTest extends ATest {
 
-    @InjectMocks
-    protected DateService dateService;
-
-    @InjectMocks
-    protected TextService textService;
 
     private String ottenuto;
 
@@ -50,16 +44,8 @@ public class JavaTest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     @BeforeAll
-    void setUpAll() {
-        MockitoAnnotations.initMocks(this);
-
-        MockitoAnnotations.initMocks(dateService);
-        Assertions.assertNotNull(dateService);
-
-        MockitoAnnotations.initMocks(textService);
-        Assertions.assertNotNull(textService);
-
-        dateService.textService = textService;
+    protected void setUpAll() {
+        super.setUpAll();
     }
 
     /**
@@ -68,8 +54,8 @@ public class JavaTest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     @BeforeEach
-    void setUpEach() {
-        //        super.setUp();
+    protected void setUpEach() {
+        super.setUpEach();
     }
 
     @Test
@@ -80,7 +66,7 @@ public class JavaTest {
         Long resultLambda = adder.apply((long) 8);
         System.out.println("resultLambda = " + resultLambda);
 
-        Function<String, String> upper = value -> value.toUpperCase();
+        Function<String, String> upper = String::toUpperCase;
         ottenuto = upper.apply("sopra");
         System.out.println("resultLambda = " + ottenuto);
     }
@@ -90,10 +76,10 @@ public class JavaTest {
     @DisplayName("2 - Lambda (from 8)")
     void lambda() {
         List<Integer> numbers = Arrays.asList(5, 9, 8, 1);
-        numbers.forEach(n -> System.out.println(n));
+        numbers.forEach(System.out::println);
 
         List<String> lista = Arrays.asList("alfa", "beta", "gamma", "delta");
-        lista.forEach(n -> System.out.println(n));
+        lista.forEach(System.out::println);
 
         Runnable funzione = () -> System.out.println("Funziona");
         funzione.run();
@@ -104,7 +90,7 @@ public class JavaTest {
     @DisplayName("3 - Supplier (from 8)")
     void supplier() {
         // This function returns a random value.
-        Supplier<Double> randomValue = () -> Math.random();
+        Supplier<Double> randomValue = Math::random;
 
         // Print the random value using get()
         System.out.println(randomValue.get());
@@ -117,7 +103,7 @@ public class JavaTest {
     void supplier4() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        Supplier<LocalDateTime> s = () -> LocalDateTime.now();
+        Supplier<LocalDateTime> s = LocalDateTime::now;
         LocalDateTime time = s.get();
 
         System.out.println("Non formattato: " + time);

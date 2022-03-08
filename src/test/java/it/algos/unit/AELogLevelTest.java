@@ -1,12 +1,14 @@
 package it.algos.unit;
 
+import it.algos.*;
+import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import static org.junit.Assert.*;
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
-import org.mockito.*;
+import org.springframework.boot.test.context.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -22,11 +24,12 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("testAllValido")
 @DisplayName("Enumeration AELogLevel")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AELogLevelTest {
+public class AELogLevelTest extends ATest {
 
     private AELogLevel type;
 
@@ -35,6 +38,7 @@ public class AELogLevelTest {
     private List<String> listaTag;
 
     private AELogLevel[] matrice;
+
 
     //--log level
     protected static Stream<Arguments> LIVELLI() {
@@ -52,8 +56,8 @@ public class AELogLevelTest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     @BeforeAll
-    void setUpIniziale() {
-        MockitoAnnotations.initMocks(this);
+    protected void setUpAll() {
+        super.setUpAll();
     }
 
 
@@ -63,7 +67,8 @@ public class AELogLevelTest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     @BeforeEach
-    void setUpEach() {
+    protected void setUpEach() {
+        super.setUpEach();
     }
 
     @Test

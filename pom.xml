@@ -152,10 +152,19 @@
         </dependency>
 
         <!-- Jupiter API for writing tests -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.junit.jupiter</groupId>-->
+        <!--            <artifactId>junit-jupiter-engine</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- mokito -->
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.mockito</groupId>-->
+        <!--            <artifactId>mockito-core</artifactId>-->
+        <!--            <version>4.3.1</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
 
         <!-- Spring mail-->
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail -->
@@ -165,7 +174,7 @@
             <version>2.6.4</version>
         </dependency>
 
-        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework/spring-context-support &ndash;&gt;-->
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
         <!--        <dependency>-->
         <!--            <groupId>org.springframework</groupId>-->
         <!--            <artifactId>spring-context-support</artifactId>-->
