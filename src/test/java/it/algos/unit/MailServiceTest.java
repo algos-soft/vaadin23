@@ -1,10 +1,8 @@
 package it.algos.unit;
 
-import it.algos.*;
 import it.algos.test.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.context.*;
 
 import java.time.*;
 
@@ -15,14 +13,13 @@ import java.time.*;
  * Date: mar, 08-mar-2022
  * Time: 11:33
  * <p>
- * Unit test di una classe di servizio <br>
+ * Unit test di una classe di servizio (di norma) <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
-@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllIntegration")
+@Tag("testAllValido")
 @DisplayName("Mail service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MailServiceTest extends ATest {

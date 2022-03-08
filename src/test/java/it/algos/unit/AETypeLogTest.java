@@ -1,6 +1,5 @@
 package it.algos.unit;
 
-import it.algos.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
-import org.springframework.boot.test.context.*;
 
 import java.util.*;
 
@@ -18,12 +16,11 @@ import java.util.*;
  * User: gac
  * Date: lun, 07-mar-2022
  * Time: 15:20
- * Unit test di una classe di servizio <br>
+ * Unit test di una enumeration <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
- * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi classi singleton di service <br>
+ * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
-@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("testAllValido")
 @DisplayName("Enumeration AETypeLog")

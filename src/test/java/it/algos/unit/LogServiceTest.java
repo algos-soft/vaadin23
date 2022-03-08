@@ -7,12 +7,9 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
-import org.springframework.context.*;
 
 import java.util.stream.*;
 
@@ -23,7 +20,7 @@ import java.util.stream.*;
  * Date: lun, 07-mar-2022
  * Time: 22:50
  * <p>
- * Unit test di una classe di servizio <br>
+ * Unit test di una classe di servizio (di norma) <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
@@ -35,8 +32,6 @@ import java.util.stream.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LogServiceTest extends ATest {
 
-    @Autowired
-    protected ApplicationContext appContext;
 
     private WrapLogCompany wrap;
 
@@ -45,7 +40,6 @@ public class LogServiceTest extends ATest {
      * Gia 'costruita' nella superclasse <br>
      */
     private LogService service;
-
 
 
     //--companySigla
@@ -79,8 +73,8 @@ public class LogServiceTest extends ATest {
 
         //--reindirizzo l'istanza della superclasse
         service = logService;
+
         service.slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
-        //        service.textService = textService;
     }
 
     /**
@@ -89,8 +83,8 @@ public class LogServiceTest extends ATest {
      * Nelle sottoclassi devono essere regolati i riferimenti dei service specifici <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    //    @Override
-    protected void fixRiferimentiIncrociati2() {
+    @Override
+    protected void fixRiferimentiIncrociati() {
         super.fixRiferimentiIncrociati();
     }
 
@@ -184,8 +178,7 @@ public class LogServiceTest extends ATest {
         System.out.println("9 - Invio di una mail");
         sorgente = "L'utente Rossi Carlo si è loggato con una password errata";
         wrap = appContext.getBean(WrapLogCompany.class, "crpt", "Rossi C.", "2001:B07:AD4:2177:9B56:DB51:33E0:A151");
-        ottenutoBooleano = service.mail(AETypeLog.login, wrap, sorgente);
-        assertTrue(ottenutoBooleano);
+        service.mail(AETypeLog.login, wrap, sorgente);
     }
 
     void printWrap(Arguments arg) {

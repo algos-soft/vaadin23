@@ -1,6 +1,5 @@
 package it.algos.unit;
 
-import it.algos.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
-import org.springframework.boot.test.context.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -19,12 +17,11 @@ import java.util.stream.*;
  * User: gac
  * Date: lun, 07-mar-2022
  * Time: 16:50
- * Unit test di una classe di servizio <br>
+ * Unit test di una enumeration <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
-@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("testAllValido")
 @DisplayName("Enumeration AELogLevel")
@@ -33,7 +30,7 @@ public class AELogLevelTest extends ATest {
 
     private AELogLevel type;
 
-    private List<AELogLevel> listaType;
+    private List<AELogLevel> listaLivel;
 
     private List<String> listaTag;
 
@@ -69,6 +66,11 @@ public class AELogLevelTest extends ATest {
     @BeforeEach
     protected void setUpEach() {
         super.setUpEach();
+
+        type = null;
+        listaLivel = null;
+        listaTag = null;
+        matrice = null;
     }
 
     @Test
@@ -91,14 +93,14 @@ public class AELogLevelTest extends ATest {
     @Order(2)
     @DisplayName("lista dei valori")
     void lista() {
-        listaType = AELogLevel.getAll();
-        assertNotNull(listaType);
+        listaLivel = AELogLevel.getAll();
+        assertNotNull(listaLivel);
 
         System.out.println("Tutti i valori della enumeration come ArrayList()");
         System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaType.size()));
+        System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaLivel.size()));
         System.out.println(VUOTA);
-        listaType.forEach(System.out::println);
+        listaLivel.forEach(System.out::println);
         System.out.println(VUOTA);
     }
 

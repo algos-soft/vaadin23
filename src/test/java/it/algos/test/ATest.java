@@ -6,6 +6,8 @@ import it.algos.vaad23.backend.service.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -60,12 +62,14 @@ public abstract class ATest {
     protected List<String> ottenutoArray;
 
 
+    @Autowired
+    protected ApplicationContext appContext;
+
     @InjectMocks
     protected TextService textService;
 
     @InjectMocks
     protected DateService dateService;
-
 
     @InjectMocks
     protected LogService logService;

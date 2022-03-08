@@ -58,6 +58,7 @@ public class JavaTest extends ATest {
         super.setUpEach();
     }
 
+
     @Test
     @Order(1)
     @DisplayName("1 - Function (from 8)")
