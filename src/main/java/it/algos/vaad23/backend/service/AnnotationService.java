@@ -4,9 +4,18 @@ import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.exception.*;
+import org.hibernate.validator.constraints.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.mongodb.core.mapping.*;
 import org.springframework.stereotype.*;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
+import java.lang.reflect.Field;
 
 /**
  * Project vaadin23
@@ -43,12 +52,131 @@ public class AnnotationService extends AbstractService {
      * 1) Controlla che il parametro in ingresso non sia nullo <br>
      * 2) Controlla che esista l' annotation specifica <br>
      *
-     * @param genericClazz of all types
+     * @param clazz of all types
      *
      * @return the specific Annotation
      */
-    public Route getRoute(final Class<?> genericClazz) {
-        return genericClazz != null ? genericClazz.getAnnotation(Route.class) : null;
+    public Route getRoute(final Class<?> clazz) {
+        return clazz != null ? clazz.getAnnotation(Route.class) : null;
+    }
+
+    /**
+     * Get the annotation Qualifier. <br>
+     *
+     * @param clazz of all types
+     *
+     * @return the specific Annotation
+     */
+    public Qualifier getQualifier(final Class<?> clazz) {
+        return clazz != null ? clazz.getAnnotation(Qualifier.class) : null;
+    }
+
+
+    /**
+     * Get the annotation Document. <br>
+     *
+     * @param entityClazz the class of type AEntity
+     *
+     * @return the specific Annotation
+     */
+    public Document getDocument(final Class<? extends AEntity> entityClazz) {
+        return (entityClazz != null && AEntity.class.isAssignableFrom(entityClazz)) ? entityClazz.getAnnotation(Document.class) : null;
+    }
+
+    /**
+     * Get the annotation PageTitle. <br>
+     *
+     * @param clazz of all types
+     *
+     * @return the specific Annotation
+     */
+    public PageTitle getPageTitle(final Class<?> clazz) {
+        return clazz != null ? clazz.getAnnotation(PageTitle.class) : null;
+    }
+
+
+    /**
+     * Get the annotation NotNull. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre l'annotation
+     *
+     * @return the Annotation for the specific field
+     */
+    public NotNull getNotNull(final Field reflectionJavaField) {
+        return reflectionJavaField != null ? reflectionJavaField.getAnnotation(NotNull.class) : null;
+    }
+
+
+    /**
+     * Get the annotation NotBlank. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre l'annotation
+     *
+     * @return the Annotation for the specific field
+     */
+    public NotBlank getNotBlank(final Field reflectionJavaField) {
+        return reflectionJavaField != null ? reflectionJavaField.getAnnotation(NotBlank.class) : null;
+    }
+
+
+    /**
+     * Get the annotation Indexed. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre l'annotation
+     *
+     * @return the Annotation for the specific field
+     */
+    public Indexed getIndexed(final Field reflectionJavaField) {
+        return reflectionJavaField != null ? reflectionJavaField.getAnnotation(Indexed.class) : null;
+    }
+
+
+    /**
+     * Get the annotation Size. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre l'annotation
+     *
+     * @return the Annotation for the specific field
+     */
+    public Size getSize(final Field reflectionJavaField) {
+        return reflectionJavaField != null ? reflectionJavaField.getAnnotation(Size.class) : null;
+    }
+
+
+    /**
+     * Get the annotation Range. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre l'annotation
+     *
+     * @return the Annotation for the specific field
+     */
+    public Range getRange(final Field reflectionJavaField) {
+        return reflectionJavaField != null ? reflectionJavaField.getAnnotation(Range.class) : null;
+    }
+
+
+    /**
+     * Get the annotation DBRef. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre l'annotation
+     *
+     * @return the Annotation for the specific field
+     */
+    public DBRef getDBRef(final Field reflectionJavaField) {
+        return reflectionJavaField != null ? reflectionJavaField.getAnnotation(DBRef.class) : null;
+    }
+
+    /**
+     * Check if the field is DBRef type. <br>
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return true if field is of type DBRef
+     */
+    public boolean isDBRef(final Class<? extends AEntity> entityClazz, final String publicFieldName) throws AlgosException {
+        Field reflectionJavaField = reflectionService.getField(entityClazz, publicFieldName);
+        return reflectionJavaField != null && reflectionJavaField.getAnnotation(DBRef.class) != null;
     }
 
     //==========================================================================
@@ -84,16 +212,6 @@ public class AnnotationService extends AbstractService {
         return entityViewClazz.getAnnotation(AIView.class);
     }
 
-    /**
-     * Get the annotation PageTitle. <br>
-     *
-     * @param genericClazz of all types
-     *
-     * @return the specific Annotation
-     */
-    public PageTitle getPageTitle(final Class<?> genericClazz) {
-        return genericClazz != null ? genericClazz.getAnnotation(PageTitle.class) : null;
-    }
 
     //==========================================================================
     // @Route
@@ -104,12 +222,12 @@ public class AnnotationService extends AbstractService {
      * 1) Controlla che il parametro in ingresso non sia nullo <br>
      * 2) Controlla che esista l'annotation specifica <br>
      *
-     * @param genericClazz of all types
+     * @param clazz of all types
      *
      * @return true if the class as a @Route
      */
-    public boolean isRouteView(final Class<?> genericClazz) {
-        return getRoute(genericClazz) != null;
+    public boolean isRouteView(final Class<?> clazz) {
+        return getRoute(clazz) != null;
     }
 
 

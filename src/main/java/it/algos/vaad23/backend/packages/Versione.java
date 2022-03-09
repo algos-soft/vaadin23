@@ -24,9 +24,8 @@ import javax.validation.constraints.*;
  */
 @SpringComponent
 @QueryEntity
-@Document(collection = "versione") //@todo Modificare con iniziale minuscola
-@TypeAlias("versione") //@todo Modificare con iniziale minuscola
-@Data
+@Document("versione")
+@TypeAlias("versione")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(builderMethodName = "builderVersione")
@@ -79,7 +78,7 @@ public class Versione extends AEntity {
      */
     @Override
     public String toString() {
-        return getCode();
+        return "";
     }
 
 }// end of Bean

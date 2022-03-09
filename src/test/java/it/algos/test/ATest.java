@@ -66,6 +66,8 @@ public abstract class ATest {
 
     protected double ottenutoDouble = 0;
 
+    protected Class clazz;
+
     protected Class sorgenteClasse;
 
     protected Class previstoClasse;
@@ -97,6 +99,9 @@ public abstract class ATest {
 
     @InjectMocks
     protected MailService mailService;
+
+    @InjectMocks
+    protected AnnotationService annotationService;
 
 
     //--tag
@@ -164,6 +169,7 @@ public abstract class ATest {
         assertNotNull(logService);
         assertNotNull(mailService);
         assertNotNull(dateService);
+        assertNotNull(annotationService);
     }
 
 
@@ -201,6 +207,7 @@ public abstract class ATest {
         sorgenteDouble = 0;
         previstoDouble = 0;
         ottenutoDouble = 0;
+        clazz = null;
         sorgenteClasse = null;
         previstoClasse = null;
         ottenutoClasse = null;

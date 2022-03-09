@@ -203,7 +203,7 @@ public class DateServiceTest extends ATest {
         ottenuto = service.deltaText(sorgenteLong);
         System.out.println(String.format("Sono trascorsi %s", ottenuto));
 
-        TimeUnit.SECONDS.sleep(17);
+        TimeUnit.SECONDS.sleep(7);
         ottenuto = service.deltaText(sorgenteLong);
         System.out.println(String.format("Sono trascorsi %s", ottenuto));
     }
