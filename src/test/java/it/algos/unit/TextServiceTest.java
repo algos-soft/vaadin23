@@ -95,6 +95,23 @@ public class TextServiceTest extends ATest {
         );
     }
 
+    //--sorgente
+    //--larghezza
+    //--previsto
+    protected static Stream<Arguments> SIZE() {
+        return Stream.of(
+                Arguments.of(null, 0, VUOTA),
+                Arguments.of(VUOTA, 0, VUOTA),
+                Arguments.of("antonio", 10, "antonio   "),
+                Arguments.of("antonio", 7, "antonio"),
+                Arguments.of("antonio", 5, "anton"),
+                Arguments.of("          antonio", 15, "antonio        "),
+                Arguments.of("   mario", 15, "mario          "),
+                Arguments.of(" mario", 7, "mario  "),
+                Arguments.of(" mario ", 4, "mari")
+        );
+    }
+
     /**
      * Execute only once before running all tests <br>
      * Esegue una volta sola, chiamato dalle sottoclassi <br>
@@ -609,7 +626,10 @@ public class TextServiceTest extends ATest {
     @Order(17)
     @DisplayName("17 - Allunga un testo alla lunghezza desiderata")
     public void rightPad() {
-        System.out.println("16 - Allunga un testo alla lunghezza desiderata");
+        System.out.println("17 - Allunga un testo alla lunghezza desiderata");
+        System.out.println("Se è più corto, aggiunge spazi vuoti");
+        System.out.println("Se è più lungo, rimane inalterato");
+
         System.out.println(VUOTA);
 
         //--sorgente
@@ -621,13 +641,43 @@ public class TextServiceTest extends ATest {
     void printRightPad(Arguments arg) {
         Object[] mat = arg.get();
         sorgente = (String) mat[0];
-        sorgenteIntero = (int) mat[1];
+        previstoIntero = (int) mat[1];
         previsto = (String) mat[2];
-        ottenuto = service.rightPad(sorgente, sorgenteIntero);
+        ottenuto = service.rightPad(sorgente, previstoIntero);
         ottenutoIntero = ottenuto.length();
-        previstoIntero = Math.max(sorgenteIntero, ottenutoIntero);
+        previstoIntero = Math.max(previstoIntero, ottenutoIntero);
         assertEquals(previsto, ottenuto);
         assertEquals(previstoIntero, ottenutoIntero);
+        sorgente = String.format("%s%s%d%s", sorgente, " (", sorgenteIntero, PARENTESI_TONDA_END);
+        ottenuto = String.format("%s%d%s%s%s%s", PARENTESI_TONDA_INI, ottenutoIntero, ") ", QUADRA_INI, ottenuto, QUADRA_END);
+        print(sorgente, ottenuto);
+    }
+
+    @Test
+    @Order(18)
+    @DisplayName("18 - Forza un testo alla lunghezza desiderata")
+    public void fixSize() {
+        System.out.println("18 - Forza un testo alla lunghezza desiderata");
+        System.out.println("Se è più corto, aggiunge spazi vuoti");
+        System.out.println("Se è più lungo, lo tronca");
+        System.out.println(VUOTA);
+
+        //--sorgente
+        //--larghezza
+        //--previsto
+        SIZE().forEach(this::printFixSize);
+    }
+
+    void printFixSize(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
+        previsto = (String) mat[2];
+        ottenuto = service.fixSize(sorgente, previstoIntero);
+        ottenutoIntero = ottenuto.length();
+        assertEquals(previsto, ottenuto);
+        assertEquals(previstoIntero, ottenutoIntero);
+        sorgenteIntero = sorgente != null ? sorgente.length() : 0;
         sorgente = String.format("%s%s%d%s", sorgente, " (", sorgenteIntero, PARENTESI_TONDA_END);
         ottenuto = String.format("%s%d%s%s%s%s", PARENTESI_TONDA_INI, ottenutoIntero, ") ", QUADRA_INI, ottenuto, QUADRA_END);
         print(sorgente, ottenuto);
