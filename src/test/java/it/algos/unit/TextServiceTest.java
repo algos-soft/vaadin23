@@ -117,6 +117,7 @@ public class TextServiceTest extends ATest {
 
         System.out.println("2 - Controlla validità di una stringa");
         System.out.println("Fatto");
+        System.out.println(VUOTA);
 
         ottenutoBooleano = service.isValid((List) null);
         assertFalse(ottenutoBooleano);
@@ -163,12 +164,14 @@ public class TextServiceTest extends ATest {
     @DisplayName("5 - Restituisce un array di stringhe")
     void getArray() {
         System.out.println("5 - Restituisce un array da una stringa di valori multipli separati da virgole");
+        System.out.println(VUOTA);
+
         ottenutoArray = service.getArray(null);
         assertNull(ottenutoArray);
 
-        sorgente = VUOTA;
         ottenutoArray = service.getArray(sorgente);
         assertNull(ottenutoArray);
+        printLista(ottenutoArray);
 
         sorgente = "codedescrizioneordine";
         String[] stringArray2 = {"codedescrizioneordine"};
@@ -176,6 +179,7 @@ public class TextServiceTest extends ATest {
         ottenutoArray = service.getArray(sorgente);
         assertNotNull(ottenutoArray);
         assertEquals(ottenutoArray, previstoArray);
+        printLista(ottenutoArray);
 
         sorgente = "code,descrizione,ordine";
         String[] stringArray3 = {"code", "descrizione", "ordine"};
@@ -183,13 +187,176 @@ public class TextServiceTest extends ATest {
         ottenutoArray = service.getArray(sorgente);
         assertNotNull(ottenutoArray);
         assertEquals(ottenutoArray, previstoArray);
+        printLista(ottenutoArray);
 
-        sorgente = "code, descrizione , ordine ";
+        sorgente = " code, descrizione , ordine ";
         String[] stringArray4 = {"code", "descrizione", "ordine"};
         previstoArray = new ArrayList(Arrays.asList(stringArray4));
         ottenutoArray = service.getArray(sorgente);
         assertNotNull(ottenutoArray);
         assertEquals(ottenutoArray, previstoArray);
+        printLista(ottenutoArray);
+    }
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Sostituisce una parte di testo")
+    public void sostituisce() {
+        System.out.println("6 - Sostituisce una parte di testo");
+
+        sorgente = "{{Simbolo|Italian Province (Crown).svg|24}} {{IT-SU}}";
+        sorgente2 = "Province";
+        sorgente3 = "Regioni";
+        previsto = "{{Simbolo|Italian Regioni (Crown).svg|24}} {{IT-SU}}";
+
+        ottenuto = service.sostituisce(sorgente, sorgente2, sorgente3);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Da levare %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Da mettere %s%s", FORWARD, sorgente3));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - Elimina un tag da un testo")
+    public void levaTesto() {
+        System.out.println("7 - Elimina un tag da un testo");
+
+        sorgente = "{{Simbolo|Italian Province (Crown).svg|24}} {{IT-SU}}";
+        sorgente2 = "i";
+        previsto = "{{Smbolo|Italan Provnce (Crown).svg|24}} {{IT-SU}}";
+
+        ottenuto = service.levaTesto(sorgente, sorgente2);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Da levare %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - Elimina le virgole dal testo")
+    public void levaVirgole() {
+        System.out.println("8 - Elimina le virgole dal testo");
+
+        sorgente = "{{Sim,bolo, Italian, Prov,ince, (Crown).svg|24}}, {{IT,SU}}";
+        previsto = "{{Simbolo Italian Province (Crown).svg|24}} {{ITSU}}";
+
+        ottenuto = service.levaVirgole(sorgente);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+
+        sorgente = "125,837,655";
+        previsto = "125837655";
+
+        ottenuto = service.levaVirgole(sorgente);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("9 - Elimina i punti dal testo")
+    public void levaPunti() {
+        System.out.println("9 - Elimina i punti dal testo");
+
+        sorgente = "/Users.gac.Documents.IdeaProjects.operativi.vaadflow14.src.main.java.it.algos.vaadflow14.wizard";
+        previsto = "/UsersgacDocumentsIdeaProjectsoperativivaadflow14srcmainjavaitalgosvaadflow14wizard";
+
+        ottenuto = service.levaPunti(sorgente);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+
+        sorgente = "125.837.655";
+        previsto = "125837655";
+
+        ottenuto = service.levaPunti(sorgente);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+    }
+
+
+    @Test
+    @Order(10)
+    @DisplayName("10 - Sostituisce gli slash con punti")
+    public void slashToPoint() {
+        System.out.println("10 - Sostituisce gli slash con punti");
+
+        sorgente = " Users/gac/Documents/IdeaProjects/operativi/vaadflow14/src/main/java/it/algos/vaadflow14/wizard ";
+        previsto = "Users.gac.Documents.IdeaProjects.operativi.vaadflow14.src.main.java.it.algos.vaadflow14.wizard";
+
+        ottenuto = service.slashToPoint(sorgente);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+
+        sorgente = " /Users/gac/Documents/IdeaProjects/operativi/vaadflow14/src/main/java/it/algos/vaadflow14/wizard";
+        previsto = "/Users.gac.Documents.IdeaProjects.operativi.vaadflow14.src.main.java.it.algos.vaadflow14.wizard";
+
+        ottenuto = service.slashToPoint(sorgente);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+    }
+
+
+    @Test
+    @Order(11)
+    @DisplayName("11 - Sostituisce i punti con slash")
+    public void pointToSlash() {
+        System.out.println("11 - Sostituisce i punti con slash");
+
+        sorgente = " Users.gac.Documents.IdeaProjects.operativi.vaadflow14.src.main.java.it.algos.vaadflow14.wizard ";
+        previsto = "Users/gac/Documents/IdeaProjects/operativi/vaadflow14/src/main/java/it/algos/vaadflow14/wizard";
+
+        ottenuto = service.pointToSlash(sorgente);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+
+        sorgente = " /Users.gac.Documents.IdeaProjects.operativi.vaadflow14.src.main.java.it.algos.vaadflow14.wizard ";
+        previsto = "/Users/gac/Documents/IdeaProjects/operativi/vaadflow14/src/main/java/it/algos/vaadflow14/wizard";
+
+        ottenuto = service.pointToSlash(sorgente);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
+        System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
     }
 
     /**

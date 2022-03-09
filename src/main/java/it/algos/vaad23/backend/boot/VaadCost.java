@@ -54,4 +54,14 @@ public class VaadCost {
 
     public static final String DOPPIE_QUADRE_END = QUADRA_END + QUADRA_END;
 
+    public static final String PARENTESI_TONDA_INI = "(";
+
+    public static final String PARENTESI_TONDA_END = ")";
+
+    public static final String SLASH = "/";
+
+    public static final String PIPE = "|";
+
+    public static final String REGEX_PIPE = "\\|";
+
 }

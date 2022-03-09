@@ -25,6 +25,8 @@ import java.util.stream.*;
  */
 public abstract class ATest {
 
+    public static final String SEP_RIGA = "====================";
+
     protected boolean previstoBooleano;
 
     protected boolean ottenutoBooleano;
@@ -47,13 +49,13 @@ public abstract class ATest {
 
     protected Class sorgenteClasse;
 
-    protected Field sorgenteField;
-
-    protected Field ottenutoField;
-
     protected Class previstoClasse;
 
     protected Class ottenutoClasse;
+
+    protected Field sorgenteField;
+
+    protected Field ottenutoField;
 
     protected List<String> sorgenteArray;
 
@@ -163,6 +165,22 @@ public abstract class ATest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     protected void setUpEach() {
+        sorgente = VUOTA;
+        sorgente2 = VUOTA;
+        sorgente3 = VUOTA;
+        previsto = VUOTA;
+        previsto2 = VUOTA;
+        previsto3 = VUOTA;
+        ottenuto = VUOTA;
+        ottenuto2 = VUOTA;
+        sorgenteClasse = null;
+        previstoClasse = null;
+        ottenutoClasse = null;
+        sorgenteField = null;
+        ottenutoField = null;
+        sorgenteArray = null;
+        previstoArray = null;
+        ottenutoArray = null;
     }
 
 
@@ -203,6 +221,36 @@ public abstract class ATest {
             System.out.println(String.format("Message %s %s", FORWARD, unErrore.getMessage()));
             System.out.println(String.format("Cause %s %s", FORWARD, unErrore.getCause()));
         }
+    }
+
+    protected void print(String sorgente, String ottenuto) {
+        System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+    }
+
+    protected void printLista(final List lista) {
+        int cont = 0;
+        System.out.println(VUOTA);
+
+        if (lista != null) {
+            if (lista.size() > 0) {
+                System.out.println(String.format("La lista contiene %d elementi", lista.size()));
+                for (Object obj : lista) {
+                    cont++;
+                    System.out.print(cont);
+                    System.out.print(PARENTESI_TONDA_END);
+                    System.out.print(SPAZIO);
+                    System.out.println(obj);
+                }
+            }
+            else {
+                System.out.println("Non ci sono elementi nella lista");
+            }
+        }
+        else {
+            System.out.println("Manca la lista");
+        }
+
+
     }
 
 }

@@ -35,12 +35,12 @@ public class TextService extends AbstractService {
     /**
      * Null-safe, short-circuit evaluation. <br>
      *
-     * @param stringa in ingresso da controllare
+     * @param testoIn in ingresso da controllare
      *
      * @return vero se la stringa è vuota o nulla
      */
-    public boolean isEmpty(final String stringa) {
-        return Strings.isNullOrEmpty(stringa);
+    public boolean isEmpty(final String testoIn) {
+        return Strings.isNullOrEmpty(testoIn);
     }
 
 
@@ -68,7 +68,7 @@ public class TextService extends AbstractService {
      * Se la stringa è vuota, ritorna una stringa vuota <br>
      * Elimina spazi vuoti iniziali e finali <br>
      *
-     * @param testoIn ingresso
+     * @param testoIn stringa in ingresso
      *
      * @return testo formattato in uscita
      */
@@ -92,7 +92,7 @@ public class TextService extends AbstractService {
      * Se la stringa è vuota, ritorna una stringa vuota
      * Elimina spazi vuoti iniziali e finali
      *
-     * @param testoIn ingresso
+     * @param testoIn stringa in ingresso
      *
      * @return testo formattato in uscita
      */
@@ -153,7 +153,7 @@ public class TextService extends AbstractService {
      * @param oldTag  da sostituire
      * @param newTag  da inserire
      *
-     * @return testo modificato
+     * @return testo convertito
      */
     public String sostituisce(final String testoIn, final String oldTag, final String newTag) {
         String testoOut = testoIn;
@@ -191,12 +191,12 @@ public class TextService extends AbstractService {
      * Elimina tutti i caratteri contenuti nella stringa. <br>
      * Esegue solo se il testo è valido <br>
      *
-     * @param testoIn    in ingresso
+     * @param testoIn    stringa in ingresso
      * @param subStringa da eliminare
      *
      * @return testoOut stringa convertita
      */
-    public String levaTesto(String testoIn, String subStringa) {
+    public String levaTesto(final String testoIn, final String subStringa) {
         String testoOut = testoIn;
 
         if (testoIn != null && subStringa != null) {
@@ -214,12 +214,12 @@ public class TextService extends AbstractService {
      * Esegue solo se la stringa è valida <br>
      * Se arriva un oggetto non stringa, restituisce l'oggetto <br>
      *
-     * @param entrata stringa in ingresso
+     * @param testoIn stringa in ingresso
      *
-     * @return uscita stringa convertita
+     * @return testo convertito
      */
-    public String levaVirgole(String entrata) {
-        return levaTesto(entrata, VIRGOLA);
+    public String levaVirgole(final String testoIn) {
+        return levaTesto(testoIn, VIRGOLA);
     }
 
 
@@ -228,12 +228,46 @@ public class TextService extends AbstractService {
      * Esegue solo se la stringa è valida <br>
      * Se arriva un oggetto non stringa, restituisce l'oggetto <br>
      *
-     * @param entrata stringa in ingresso
+     * @param testoIn stringa in ingresso
      *
-     * @return uscita stringa convertita
+     * @return testo convertito
      */
-    public String levaPunti(String entrata) {
-        return levaTesto(entrata, PUNTO);
+    public String levaPunti(final String testoIn) {
+        return levaTesto(testoIn, PUNTO);
+    }
+
+    /**
+     * Sostituisce gli slash con punti. <br>
+     * NON sostituisce lo slash iniziale (se esiste) <br>
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param testoIn stringa in ingresso
+     *
+     * @return testo convertito
+     */
+    public String slashToPoint(final String testoIn) {
+        String testoOut = testoIn.trim();
+
+        if (testoOut.startsWith(SLASH)) {
+            testoOut = testoOut.substring(SLASH.length());
+            return SLASH + sostituisce(testoOut, SLASH, PUNTO);
+        }
+        else {
+            return sostituisce(testoOut, SLASH, PUNTO);
+        }
+    }
+
+
+    /**
+     * Sostituisce i punti con slash. <br>
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param testoIn stringa in ingresso
+     *
+     * @return testo convertito
+     */
+    public String pointToSlash(final String testoIn) {
+        return sostituisce(testoIn, PUNTO, SLASH);
     }
 
     /**
@@ -247,9 +281,9 @@ public class TextService extends AbstractService {
      *
      * @param numObj da formattare (stringa, intero, long o double)
      *
-     * @return stringa formattata
+     * @return testo formattata
      */
-    public String format(Object numObj) {
+    public String format(final Object numObj) {
         String formattato = VUOTA;
         String numText = VUOTA;
         String sep = PUNTO;
@@ -332,10 +366,10 @@ public class TextService extends AbstractService {
      * Se tagFinale è vuoto, restituisce il testo <br>
      * Elimina spazi vuoti iniziali e finali <br>
      *
-     * @param testoIn   ingresso
+     * @param testoIn   stringa in ingresso
      * @param tagFinale da eliminare
      *
-     * @return testo ridotto in uscita
+     * @return testo convertito
      */
     public String levaCoda(final String testoIn, final String tagFinale) {
         String testoOut = testoIn.trim();
@@ -359,15 +393,15 @@ public class TextService extends AbstractService {
      * Esegue anche se le quadre in testa ed in coda alla stringa sono presenti in numero diverso <br>
      * Esegue anche se le quadre in testa ed in coda alla stringa sono singole o doppie o triple o quadruple <br>
      *
-     * @param stringaIn in ingresso
+     * @param testoIn stringa in ingresso
      *
      * @return stringa con quadre iniziali e finali eliminate
      */
-    public String setNoQuadre(String stringaIn) {
-        String stringaOut = stringaIn;
+    public String setNoQuadre(final String testoIn) {
+        String stringaOut = testoIn;
 
-        if (isValid(stringaIn)) {
-            stringaOut = stringaIn.trim();
+        if (isValid(testoIn)) {
+            stringaOut = testoIn.trim();
 
             while (stringaOut.startsWith(QUADRA_INI) && stringaOut.endsWith(QUADRA_END)) {
                 stringaOut = stringaOut.substring(1);
@@ -386,7 +420,7 @@ public class TextService extends AbstractService {
      * La stringa in ingresso viene 'giustificata' a sinistra <br>
      * Vengono eliminati gli spazi vuoti che precedono la stringa <br>
      *
-     * @param testoIn ingresso
+     * @param testoIn stringa in ingresso
      *
      * @return testo della 'lunghezza' richiesta
      */
@@ -404,14 +438,13 @@ public class TextService extends AbstractService {
      * La stringa in ingresso viene 'giustificata' a sinistra <br>
      * Vengono eliminati gli spazi vuoti che precedono la stringa <br>
      *
-     * @param testoIn ingresso
+     * @param testoIn stringa in ingresso
      *
      * @return testo della 'lunghezza' richiesta
      */
 
     public String fixSize(final String testoIn, int size) {
-        String testoOut = testoIn.trim();
-        testoOut = rightPad(testoIn, size);
+        String testoOut = rightPad(testoIn, size);
 
         if (testoOut.length() > size) {
             testoOut = testoOut.substring(0, size);
@@ -424,12 +457,12 @@ public class TextService extends AbstractService {
      * Forza un testo alla lunghezza desiderata e aggiunge parentesi quadre in testa e coda. <br>
      * Se arriva una stringa vuota, restituisce una stringa vuota con parentesi quadre aggiunte <br>
      *
-     * @param stringaIn in ingresso
+     * @param testoIn stringa in ingresso
      *
      * @return stringa con lunghezza prefissata e parentesi quadre aggiunte
      */
-    public String fixSizeQuadre(final String stringaIn, final int size) {
-        String stringaOut = this.setNoQuadre(stringaIn);
+    public String fixSizeQuadre(final String testoIn, final int size) {
+        String stringaOut = this.setNoQuadre(testoIn);
         stringaOut = rightPad(stringaOut, size);
         stringaOut = fixSize(stringaOut, size);
         if (this.isValid(stringaOut)) {
@@ -439,7 +472,6 @@ public class TextService extends AbstractService {
             if (!stringaOut.endsWith(QUADRA_END)) {
                 stringaOut = stringaOut + QUADRA_END;
             }
-            //            }
         }
 
         return stringaOut.trim();
