@@ -62,7 +62,7 @@ public class DateService extends AbstractService {
      *
      * @return tempo esatto in millisecondi in forma leggibile
      */
-    public String deltaTextEsatto(long inizio) {
+    public String deltaTextEsatto(final long inizio) {
         long fine = System.currentTimeMillis();
         return textService.format(fine - inizio) + MILLI_SECONDI;
     }
@@ -73,7 +73,7 @@ public class DateService extends AbstractService {
      *
      * @return tempo arrotondato in forma leggibile
      */
-    public String deltaText(long inizio) {
+    public String deltaText(final long inizio) {
         long fine = System.currentTimeMillis();
         return toText(fine - inizio);
     }
@@ -91,7 +91,7 @@ public class DateService extends AbstractService {
      *
      * @return durata (arrotondata e semplificata) in forma leggibile
      */
-    public String toText(long durata) {
+    public String toText(final long durata) {
         String tempo = "null";
         long div;
         long mod;
@@ -170,6 +170,14 @@ public class DateService extends AbstractService {
         }
 
         return tempo;
+    }
+
+    public String toTextSecondi(final long durata) {
+        return durata < 1 ? INFERIORE_SECONDO : toText(durata * 1000);
+    }
+
+    public String toTextMinuti(final long durata) {
+        return durata < 1 ? INFERIORE_MINUTO : toTextSecondi(durata * 60);
     }
 
 }

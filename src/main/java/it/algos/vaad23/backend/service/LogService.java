@@ -4,6 +4,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -46,6 +47,13 @@ public class LogService extends AbstractService {
 
     public static final int PAD_TYPE = 18;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MailService mailService;
 
     /**
      * Riferimento al logger usato <br>
@@ -74,7 +82,7 @@ public class LogService extends AbstractService {
     /**
      * Gestisce un log di debug <br>
      *
-     * @param message di log
+     * @param message testo del log
      */
     public void debug(final String message) {
         this.logBase(AELogLevel.debug, message);
@@ -83,7 +91,7 @@ public class LogService extends AbstractService {
     /**
      * Gestisce un log di info <br>
      *
-     * @param message di log
+     * @param message testo del log
      */
     public void info(final String message) {
         this.info(null, message);
@@ -92,7 +100,7 @@ public class LogService extends AbstractService {
     /**
      * Gestisce un log di info <br>
      *
-     * @param message di log
+     * @param message testo del log
      */
     public void info(final AETypeLog type, final String message) {
         this.info(type, null, message);
@@ -101,7 +109,7 @@ public class LogService extends AbstractService {
     /**
      * Gestisce un log di info <br>
      *
-     * @param message di log
+     * @param message testo del log
      */
     public void info(final AETypeLog type, final WrapLogCompany wrap, final String message) {
         this.logBase(AELogLevel.info, type, wrap, message);
@@ -111,7 +119,7 @@ public class LogService extends AbstractService {
     /**
      * Gestisce un log di warning <br>
      *
-     * @param message di log
+     * @param message testo del log
      */
     public void warn(final String message) {
         this.logBase(AELogLevel.warn, message);
@@ -120,7 +128,7 @@ public class LogService extends AbstractService {
     /**
      * Gestisce un log di errore <br>
      *
-     * @param message di log
+     * @param message testo del log
      */
     public void error(final String message) {
         this.logBase(AELogLevel.error, message);
@@ -131,11 +139,12 @@ public class LogService extends AbstractService {
      *
      * @param type      merceologico di specificazione
      * @param wrap      di informazioni su company, userName e address
-     * @param messageIn di log
+     * @param messageIn testo del log
      */
     public boolean mail(final AETypeLog type, final WrapLogCompany wrap, final String messageIn) {
         String message = fixMessageMail(type, wrap, messageIn);
 
+        mailService.send("gac@algos.it", "Mercoledi", message);
         return false;
     }
 
@@ -143,7 +152,7 @@ public class LogService extends AbstractService {
      * Gestisce un log generico <br>
      *
      * @param level     di log: debug/info/warning/error
-     * @param messageIn di log
+     * @param messageIn testo del log
      */
     public void logBase(final AELogLevel level, final String messageIn) {
         String message = messageIn.trim();
@@ -162,7 +171,7 @@ public class LogService extends AbstractService {
      * @param level     di log: debug/info/warning/error
      * @param type      merceologico di specificazione
      * @param wrap      di informazioni su company, userName e address
-     * @param messageIn di log
+     * @param messageIn testo del log
      */
     public void logBase(final AELogLevel level, final AETypeLog type, final WrapLogCompany wrap, final String messageIn) {
         String message = fixMessageLog(type, wrap, messageIn);
@@ -190,7 +199,7 @@ public class LogService extends AbstractService {
         String message = messageIn;
 
         if (wrap != null) {
-            message = wrap.getLog() + SEP + message;
+            message = wrap.getMail(message);
 
         }
 

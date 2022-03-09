@@ -135,6 +135,20 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring MongoDB -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-sql-codegen -->
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-sql-codegen</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+        <!-- MongoDB -->
+
         <!-- Logback requires the Janino library for conditional logging -->
         <!-- https://mvnrepository.com/artifact/org.codehaus.janino/janino -->
         <dependency>
@@ -150,6 +164,16 @@
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
         </dependency>
+
+        <!-- lombok -->
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- lombok -->
 
         <!-- Jupiter API for writing tests -->
         <!--        <dependency>-->

@@ -53,6 +53,15 @@ public abstract class ATest {
 
     protected int ottenutoIntero;
 
+    protected long sorgenteLong = 0;
+
+    protected long previstoLong = 0;
+
+    protected long ottenutoLong = 0;
+
+
+    protected double sorgenteDouble = 0;
+
     protected double previstoDouble = 0;
 
     protected double ottenutoDouble = 0;
@@ -186,6 +195,10 @@ public abstract class ATest {
         sorgenteIntero = 0;
         previstoIntero = 0;
         ottenutoIntero = 0;
+        sorgenteLong = 0;
+        previstoLong = 0;
+        ottenutoLong = 0;
+        sorgenteDouble = 0;
         previstoDouble = 0;
         ottenutoDouble = 0;
         sorgenteClasse = null;
@@ -240,6 +253,10 @@ public abstract class ATest {
 
     protected void print(String sorgente, String ottenuto) {
         System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+    }
+
+    protected void print(long sorgenteLong, String ottenuto) {
+        System.out.println(String.format("%d%s%s", sorgenteLong, FORWARD, ottenuto));
     }
 
     protected void printLista(final List lista) {

@@ -64,4 +64,10 @@ public class VaadCost {
 
     public static final String REGEX_PIPE = "\\|";
 
+    public static final String RETURN = "\n";
+
+    public static final String SORT_SPRING_ASC = "ASC";
+
+    public static final String SORT_SPRING_DESC = "DESC";
+
 }

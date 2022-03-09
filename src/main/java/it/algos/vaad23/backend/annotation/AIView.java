@@ -58,5 +58,29 @@ public @interface AIView {
      */
     String lineawesomeClassnames() default "asterisk";
 
+
+    /**
+     * (Mandatory) Property per la ricerca tramite il searchField
+     *
+     * @return the string
+     */
+    String searchProperty() default VUOTA;
+
+
+    /**
+     * (Mandatory) Property per l'ordinamento della lista
+     *
+     * @return the string
+     */
+    String sortProperty() default VUOTA;
+
+
+    /**
+     * (Optional) Direzione per l'ordinamento
+     *
+     * @return the string
+     */
+    String sortDirection() default SORT_SPRING_ASC;
+
 }// end of interface
 

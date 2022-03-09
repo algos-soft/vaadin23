@@ -98,6 +98,7 @@ public class LogServiceTest extends ATest {
         super.setUpEach();
 
         wrap = null;
+        service.mailService = mailService;
     }
 
 
@@ -178,7 +179,7 @@ public class LogServiceTest extends ATest {
         System.out.println("9 - Invio di una mail");
         sorgente = "L'utente Rossi Carlo si è loggato con una password errata";
         wrap = appContext.getBean(WrapLogCompany.class, "crpt", "Rossi C.", "2001:B07:AD4:2177:9B56:DB51:33E0:A151");
-        service.mail(AETypeLog.login, wrap, sorgente);
+        //        service.mail(AETypeLog.login, wrap, sorgente);
     }
 
     void printWrap(Arguments arg) {

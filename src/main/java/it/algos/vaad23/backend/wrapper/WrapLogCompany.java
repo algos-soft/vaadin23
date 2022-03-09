@@ -58,6 +58,7 @@ public class WrapLogCompany {
         this.addressIP = addressIP;
     }// end of constructor not @Autowired
 
+
     public static WrapLogCompany crea(final String companySigla, final String userName, final String addressIP) {
         return new WrapLogCompany(companySigla, userName, addressIP);
     }
@@ -72,6 +73,27 @@ public class WrapLogCompany {
         addressText = textService.fixSizeQuadre(addressText, PAD_ADDRESS_IP);
 
         return companyText + DOPPIO_SPAZIO + userText + DOPPIO_SPAZIO + addressText;
+    }
+
+    public String getMail(final String messageIn) {
+        String messageOut = VUOTA;
+
+        messageOut += "Messaggio spedito per prova";
+        messageOut += RETURN;
+        messageOut += RETURN;
+        messageOut += String.format("Company: %s", companySigla);
+        messageOut += RETURN;
+        messageOut += String.format("User: %s", userName);
+        messageOut += RETURN;
+        messageOut += String.format("IP: %s", addressIP);
+
+        messageOut += RETURN;
+        messageOut += RETURN;
+        messageOut += messageIn;
+
+        //        messageOut= companyText + DOPPIO_SPAZIO + userText + DOPPIO_SPAZIO + addressText;
+
+        return messageOut;
     }
 
 }
