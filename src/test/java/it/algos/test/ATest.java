@@ -47,6 +47,16 @@ public abstract class ATest {
 
     protected String ottenuto2;
 
+    protected int sorgenteIntero;
+
+    protected int previstoIntero;
+
+    protected int ottenutoIntero;
+
+    protected double previstoDouble = 0;
+
+    protected double ottenutoDouble = 0;
+
     protected Class sorgenteClasse;
 
     protected Class previstoClasse;
@@ -173,6 +183,11 @@ public abstract class ATest {
         previsto3 = VUOTA;
         ottenuto = VUOTA;
         ottenuto2 = VUOTA;
+        sorgenteIntero = 0;
+        previstoIntero = 0;
+        ottenutoIntero = 0;
+        previstoDouble = 0;
+        ottenutoDouble = 0;
         sorgenteClasse = null;
         previstoClasse = null;
         ottenutoClasse = null;

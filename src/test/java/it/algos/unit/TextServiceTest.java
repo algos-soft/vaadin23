@@ -58,6 +58,43 @@ public class TextServiceTest extends ATest {
         );
     }
 
+
+    //--sorgente
+    //--previsto
+    protected static Stream<Arguments> QUADRE() {
+        return Stream.of(
+                Arguments.of(null, VUOTA),
+                Arguments.of(VUOTA, VUOTA),
+                Arguments.of("antonio ", "antonio"),
+                Arguments.of("[antonio", "antonio"),
+                Arguments.of(" antonio]]", "antonio"),
+                Arguments.of("[antonio]", "antonio"),
+                Arguments.of(" [[antonio]]", "antonio"),
+                Arguments.of("[[[antonio] ", "antonio"),
+                Arguments.of("antonio]]] ", "antonio"),
+                Arguments.of("an[[ton]]ella ", "an[[ton]]ella"),
+                Arguments.of("[[[antonio]]]", "antonio")
+        );
+    }
+
+
+    //--sorgente
+    //--larghezza
+    //--previsto
+    protected static Stream<Arguments> PAD() {
+        return Stream.of(
+                Arguments.of(null, 0, VUOTA),
+                Arguments.of(VUOTA, 0, VUOTA),
+                Arguments.of("antonio", 10, "antonio   "),
+                Arguments.of("antonio", 7, "antonio"),
+                Arguments.of("antonio", 5, "antonio"),
+                Arguments.of("          antonio", 15, "antonio        "),
+                Arguments.of("   mario", 15, "mario          "),
+                Arguments.of(" mario", 7, "mario  "),
+                Arguments.of(" mario ", 5, "mario")
+        );
+    }
+
     /**
      * Execute only once before running all tests <br>
      * Esegue una volta sola, chiamato dalle sottoclassi <br>
@@ -357,6 +394,247 @@ public class TextServiceTest extends ATest {
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s%s", FORWARD, sorgente));
         System.out.println(String.format("Testo ottenuto %s%s", FORWARD, previsto));
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - Formattazione di un numero")
+    public void format() {
+        System.out.println("12 - Formattazione di un numero intero");
+
+        sorgenteIntero = 4;
+        ottenuto = service.format(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        sorgenteIntero = 857;
+        ottenuto = service.format(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        sorgenteIntero = 1534;
+        ottenuto = service.format(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        sorgenteIntero = 1974350;
+        ottenuto = service.format(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        System.out.println(VUOTA);
+        System.out.println(VUOTA);
+        System.out.println("12 - Formattazione di un numero partendo da una stringa di testo");
+
+        sorgente = "4";
+        ottenuto = service.format(sorgente);
+        System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+
+        sorgente = "857";
+        ottenuto = service.format(sorgente);
+        System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+
+        sorgente = "1534";
+        ottenuto = service.format(sorgente);
+        System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+
+        sorgente = "1974350";
+        ottenuto = service.format(sorgente);
+        System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+    }
+
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - Numero giustificato a 2/3 cifre")
+    public void format2() {
+        System.out.println("13 - Formattazione di un numero giustificato a 2 cifre");
+
+        sorgenteIntero = 4;
+        ottenuto = service.format2(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        sorgenteIntero = 35;
+        ottenuto = service.format2(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        sorgenteIntero = 820;
+        ottenuto = service.format2(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        System.out.println(VUOTA);
+        System.out.println(VUOTA);
+        System.out.println("13 - Formattazione di un numero giustificato a 3 cifre");
+
+        sorgenteIntero = 4;
+        ottenuto = service.format3(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        sorgenteIntero = 35;
+        ottenuto = service.format3(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+
+        sorgenteIntero = 820;
+        ottenuto = service.format3(sorgenteIntero);
+        System.out.println(String.format("%s%s%s", sorgenteIntero, FORWARD, ottenuto));
+    }
+
+    @Test
+    @Order(14)
+    @DisplayName("14 - Elimina dal testo il tagFinale")
+    public void levaCoda() {
+        System.out.println("14 - Elimina dal testo il tagFinale");
+        System.out.println("Rimangono eventuali spazi vuoti in testa alla stringa originaria");
+        System.out.println("Vengono rimossi eventuali spazi vuoti in coda alla stringa elaborata");
+
+        sorgente = "Non Levare questa fine ";
+        sorgente2 = VUOTA;
+        previsto = "Non Levare questa fine ";
+        ottenuto = service.levaCoda(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("Da levare %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+
+        sorgente = " Levare questa fine Non ";
+        sorgente2 = "Non";
+        previsto = " Levare questa fine";
+        ottenuto = service.levaCoda(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("Da levare %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+
+        sorgente = " Non Levare questa fine ";
+        sorgente2 = " fine ";
+        previsto = " Non Levare questa";
+        ottenuto = service.levaCoda(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("Da levare %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+
+        sorgente = " Levare questa fine Non ";
+        sorgente2 = "NonEsisteQuestoTag";
+        previsto = " Levare questa fine Non ";
+        ottenuto = service.levaCoda(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("Da levare %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+    }
+
+    @Test
+    @Order(15)
+    @DisplayName("15 - Elimina il testo dopo tagInterrompi")
+    public void levaCodaDa() {
+        System.out.println("15 - Elimina il testo dopo tagInterrompi");
+        System.out.println("Rimangono eventuali spazi vuoti in testa alla stringa originaria");
+        System.out.println("Vengono rimossi eventuali spazi vuoti in coda alla stringa elaborata");
+
+        sorgente = " Levare questa fine Non ";
+        sorgente2 = VUOTA;
+        previsto = " Levare questa fine Non ";
+        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("TagInterrompi %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+
+        sorgente = " Levare questa fine Non ancora altro testo ";
+        sorgente2 = "Non";
+        previsto = " Levare questa fine";
+        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("TagInterrompi %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+
+        sorgente = " Levare questa fine Non ancora altro testo ";
+        sorgente2 = "non";
+        previsto = " Levare questa fine Non ancora altro testo ";
+        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("TagInterrompi %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+
+        sorgente = " Levare <re>questa<ref> fine Non ancora altro testo</ref>";
+        sorgente2 = "<ref";
+        previsto = " Levare <re>questa";
+        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("TagInterrompi %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+
+        sorgente = " Levare questa<ref> fine Non ancora altro testo</ref>";
+        sorgente2 = "<ref ";
+        previsto = " Levare questa<ref> fine Non ancora altro testo</ref>";
+        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
+        System.out.println(String.format("TagInterrompi %s%s", FORWARD, sorgente2));
+        System.out.println(String.format("Testo ottenuto %s[%s]", FORWARD, ottenuto));
+    }
+
+    @Test
+    @Order(16)
+    @DisplayName("16 - Elimina parentesi quadre")
+    public void setNoQuadre() {
+        System.out.println("16 - Elimina (eventuali) parentesi quadre singole in testa e coda della stringa");
+        System.out.println("Funziona per TUTTE le quadre che sono esattamente in TESTA o in CODA alla stringa");
+        System.out.println(VUOTA);
+
+        //--sorgente
+        //--previsto
+        QUADRE().forEach(this::printNoQuadre);
+    }
+
+    void printNoQuadre(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previsto = (String) mat[1];
+        ottenuto = service.setNoQuadre(sorgente);
+        assertEquals(previsto, ottenuto);
+        print(sorgente, ottenuto);
+    }
+
+    @Test
+    @Order(17)
+    @DisplayName("17 - Allunga un testo alla lunghezza desiderata")
+    public void rightPad() {
+        System.out.println("16 - Allunga un testo alla lunghezza desiderata");
+        System.out.println(VUOTA);
+
+        //--sorgente
+        //--larghezza
+        //--previsto
+        PAD().forEach(this::printRightPad);
+    }
+
+    void printRightPad(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        sorgenteIntero = (int) mat[1];
+        previsto = (String) mat[2];
+        ottenuto = service.rightPad(sorgente, sorgenteIntero);
+        ottenutoIntero = ottenuto.length();
+        previstoIntero = Math.max(sorgenteIntero, ottenutoIntero);
+        assertEquals(previsto, ottenuto);
+        assertEquals(previstoIntero, ottenutoIntero);
+        sorgente = String.format("%s%s%d%s", sorgente, " (", sorgenteIntero, PARENTESI_TONDA_END);
+        ottenuto = String.format("%s%d%s%s%s%s", PARENTESI_TONDA_INI, ottenutoIntero, ") ", QUADRA_INI, ottenuto, QUADRA_END);
+        print(sorgente, ottenuto);
+    }
+
+    protected void print(final String sorgente, final String ottenuto) {
+        System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
     }
 
     /**

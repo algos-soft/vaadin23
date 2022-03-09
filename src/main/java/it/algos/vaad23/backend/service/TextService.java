@@ -281,13 +281,12 @@ public class TextService extends AbstractService {
      *
      * @param numObj da formattare (stringa, intero, long o double)
      *
-     * @return testo formattata
+     * @return testo formattato
      */
     public String format(final Object numObj) {
-        String formattato = VUOTA;
+        String formattato;
         String numText = VUOTA;
         String sep = PUNTO;
-        int numTmp = 0;
         int len;
         String num3;
         String num6;
@@ -300,7 +299,7 @@ public class TextService extends AbstractService {
                 numText = levaVirgole(numText);
                 numText = levaPunti(numText);
                 try {
-                    numTmp = Integer.decode(numText);
+                    Integer.decode(numText);
                 } catch (Exception unErrore) {
                     return (String) numObj;
                 }
@@ -358,13 +357,132 @@ public class TextService extends AbstractService {
         return formattato;
     }
 
+    /**
+     * Formattazione di un numero giustificato a due cifre. <br>
+     * <p>
+     * Il numero può arrivare come stringa, intero o double <br>
+     * Se la stringa contiene punti e virgole, viene pulita <br>
+     * Se la stringa non è convertibile in numero, viene restituita uguale <br>
+     * Se arriva un oggetto non previsto, restituisce null <br>
+     *
+     * @param numObj da formattare (stringa, intero, long o double)
+     *
+     * @return testo formattato
+     */
+    public String format2(Object numObj) {
+        String numText = VUOTA;
+        String sep = PUNTO;
+        int num = 0;
+        int len;
+        String num3;
+        String num6;
+        String num9;
+        String num12;
+
+        if (numObj instanceof String || numObj instanceof Integer || numObj instanceof Long || numObj instanceof Double) {
+            if (numObj instanceof String) {
+                numText = (String) numObj;
+                numText = levaVirgole(numText);
+                numText = levaPunti(numText);
+                try {
+                    num = Integer.decode(numText);
+                } catch (Exception unErrore) {
+                    return (String) numObj;
+                }
+            }
+            else {
+                if (numObj instanceof Integer) {
+                    num = (int) numObj;
+                }
+                if (numObj instanceof Long) {
+                    num = ((Long) numObj).intValue();
+                }
+                if (numObj instanceof Double) {
+                    num = ((Double) numObj).intValue();
+                }
+            }
+        }
+        else {
+            return null;
+        }
+
+        numText = "" + num;
+        if (num < 10) {
+            return numText = "0" + numText;
+        }
+
+        return numText;
+    }
+
+
+    /**
+     * Formattazione di un numero giustificato a tre cifre.
+     * <p>
+     * Il numero può arrivare come stringa, intero o double
+     * Se la stringa contiene punti e virgole, viene pulita
+     * Se la stringa non è convertibile in numero, viene restituita uguale
+     * Se arriva un oggetto non previsto, restituisce null
+     *
+     * @param numObj da formattare (stringa, intero, long o double)
+     *
+     * @return testo formattato
+     */
+    public String format3(Object numObj) {
+        String numText = VUOTA;
+        String sep = PUNTO;
+        int num = 0;
+        int len;
+        String num3;
+        String num6;
+        String num9;
+        String num12;
+
+        if (numObj instanceof String || numObj instanceof Integer || numObj instanceof Long || numObj instanceof Double) {
+            if (numObj instanceof String) {
+                numText = (String) numObj;
+                numText = levaVirgole(numText);
+                numText = levaPunti(numText);
+                try { // prova ad eseguire il codice
+                    num = Integer.decode(numText);
+                } catch (Exception unErrore) { // intercetta l'errore
+                    return (String) numObj;
+                }
+            }
+            else {
+                if (numObj instanceof Integer) {
+                    num = (int) numObj;
+                }
+                if (numObj instanceof Long) {
+                    num = ((Long) numObj).intValue();
+                }
+                if (numObj instanceof Double) {
+                    num = ((Double) numObj).intValue();
+                }
+            }
+        }
+        else {
+            return null;
+        }
+
+        numText = "" + num;
+        if (num < 100) {
+            if (num < 10) {
+                return numText = "00" + numText;
+            }
+            else {
+                return numText = "0" + numText;
+            }
+        }
+
+        return numText;
+    }
 
     /**
      * Elimina dal testo il tagFinale, se esiste. <br>
      * <p>
      * Esegue solo se il testo è valido <br>
-     * Se tagFinale è vuoto, restituisce il testo <br>
-     * Elimina spazi vuoti iniziali e finali <br>
+     * Se tagFinale è vuoto o non contenuto nella stringa, restituisce il testo originale intatto <br>
+     * Elimina solo spazi vuoti finali e NON eventuali spazi vuoti iniziali <br>
      *
      * @param testoIn   stringa in ingresso
      * @param tagFinale da eliminare
@@ -372,44 +490,86 @@ public class TextService extends AbstractService {
      * @return testo convertito
      */
     public String levaCoda(final String testoIn, final String tagFinale) {
-        String testoOut = testoIn.trim();
-        String tag = VUOTA;
+        String testoOut = testoIn;
+        String tag;
 
         if (this.isValid(testoOut) && this.isValid(tagFinale)) {
+            testoOut = StringUtils.stripEnd(testoIn, SPAZIO);
             tag = tagFinale.trim();
             if (testoOut.endsWith(tag)) {
                 testoOut = testoOut.substring(0, testoOut.length() - tag.length());
+                testoOut = StringUtils.stripEnd(testoOut, SPAZIO);
+            }
+            else {
+                testoOut = testoIn;
             }
         }
 
-        return testoOut.trim();
+        return testoOut;
+    }
+
+
+    /**
+     * Elimina il testo da tagInterrompi in poi <br>
+     * <p>
+     * Esegue solo se il testo è valido <br>
+     * Se tagInterrompi è vuoto o non contenuto nella stringa, restituisce il testo originale intatto <br>
+     * Elimina solo spazi vuoti finali e NON eventuali spazi vuoti iniziali <br>
+     *
+     * @param testoIn       stringa in ingresso
+     * @param tagInterrompi da dove inizia il testo da eliminare
+     *
+     * @return test ridotto in uscita
+     */
+    public String levaCodaDa(final String testoIn, final String tagInterrompi) {
+        String testoOut = testoIn;
+        String tag;
+
+        if (this.isValid(testoOut) && this.isValid(tagInterrompi)) {
+            testoOut = StringUtils.stripEnd(testoIn, SPAZIO);
+            tag = tagInterrompi.trim();
+            if (testoOut.contains(tagInterrompi)) {
+                testoOut = testoOut.substring(0, testoOut.lastIndexOf(tag));
+                testoOut = StringUtils.stripEnd(testoOut, SPAZIO);
+            }
+            else {
+                testoOut = testoIn;
+            }
+        }
+
+        return testoOut;
     }
 
     /**
-     * Elimina (eventuali) parentesi quadre singole in testa e coda della stringa. <br>
-     * Funziona solo se le quadre sono esattamente in TESTA ed in CODA alla stringa <br>
+     * Elimina (eventuali) parentesi quadre in testa e coda della stringa. <br>
+     * Funziona solo se le quadre sono esattamente in TESTA e in CODA alla stringa <br>
      * Se arriva una stringa vuota, restituisce una stringa vuota <br>
      * Elimina spazi vuoti iniziali e finali <br>
-     * Esegue anche se le quadre in testa ed in coda alla stringa sono presenti in numero diverso <br>
-     * Esegue anche se le quadre in testa ed in coda alla stringa sono singole o doppie o triple o quadruple <br>
+     * Esegue anche se le quadre sono presenti in numero diverso tra la testa e la coda della stringa <br>
+     * Esegue anche se le quadre in testa o in coda alla stringa sono singole o doppie o triple o quadruple <br>
      *
      * @param testoIn stringa in ingresso
      *
      * @return stringa con quadre iniziali e finali eliminate
      */
     public String setNoQuadre(final String testoIn) {
-        String stringaOut = testoIn;
+        String testoOut = VUOTA;
 
         if (isValid(testoIn)) {
-            stringaOut = testoIn.trim();
+            testoOut = testoIn.trim();
 
-            while (stringaOut.startsWith(QUADRA_INI) && stringaOut.endsWith(QUADRA_END)) {
-                stringaOut = stringaOut.substring(1);
-                stringaOut = stringaOut.substring(0, stringaOut.length() - 1);
+            while (testoOut.startsWith(QUADRA_INI)) {
+                testoOut = testoOut.substring(1);
             }
-        }
 
-        return stringaOut.trim();
+            while (testoOut.endsWith(QUADRA_END)) {
+                testoOut = testoOut.substring(0, testoOut.length() - 1);
+            }
+            return testoOut;
+        }
+        else {
+            return testoOut;
+        }
     }
 
 
@@ -426,9 +586,16 @@ public class TextService extends AbstractService {
      */
 
     public String rightPad(final String testoIn, int size) {
-        String testoOut = testoIn.trim();
-        testoOut = StringUtils.rightPad(testoOut, size);
-        return testoOut;
+        String testoOut = VUOTA;
+
+        if (isValid(testoIn)) {
+            testoOut = testoIn.trim();
+            testoOut = StringUtils.rightPad(testoOut, size);
+            return testoOut;
+        }
+        else {
+            return testoOut;
+        }
     }
 
     /**
