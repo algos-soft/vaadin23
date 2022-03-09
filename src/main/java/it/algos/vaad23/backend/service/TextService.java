@@ -621,12 +621,12 @@ public class TextService extends AbstractService {
     }
 
     /**
-     * Forza un testo alla lunghezza desiderata e aggiunge parentesi quadre in testa e coda. <br>
-     * Se arriva una stringa vuota, restituisce una stringa vuota con parentesi quadre aggiunte <br>
+     * Forza un testo alla lunghezza desiderata e aggiunge singole parentesi quadre in testa e coda. <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota con singole parentesi quadre aggiunte <br>
      *
      * @param testoIn stringa in ingresso
      *
-     * @return stringa con lunghezza prefissata e parentesi quadre aggiunte
+     * @return stringa con lunghezza prefissata e singole parentesi quadre aggiunte
      */
     public String fixSizeQuadre(final String testoIn, final int size) {
         String stringaOut = this.setNoQuadre(testoIn);

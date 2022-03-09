@@ -112,6 +112,23 @@ public class TextServiceTest extends ATest {
         );
     }
 
+    //--sorgente
+    //--larghezza
+    //--previsto
+    protected static Stream<Arguments> SIZE_QUADRE() {
+        return Stream.of(
+                Arguments.of(null, 0, VUOTA),
+                Arguments.of(VUOTA, 0, VUOTA),
+                Arguments.of("antonio", 10, "[antonio   ]"),
+                Arguments.of("antonio", 7, "[antonio]"),
+                Arguments.of("antonio", 5, "[anton]"),
+                Arguments.of("          antonio", 15, "[antonio        ]"),
+                Arguments.of("   mario", 15, "[mario          ]"),
+                Arguments.of(" mario", 7, "[mario  ]"),
+                Arguments.of(" mario ", 4, "[mari]")
+        );
+    }
+
     /**
      * Execute only once before running all tests <br>
      * Esegue una volta sola, chiamato dalle sottoclassi <br>
@@ -680,6 +697,36 @@ public class TextServiceTest extends ATest {
         sorgenteIntero = sorgente != null ? sorgente.length() : 0;
         sorgente = String.format("%s%s%d%s", sorgente, " (", sorgenteIntero, PARENTESI_TONDA_END);
         ottenuto = String.format("%s%d%s%s%s%s", PARENTESI_TONDA_INI, ottenutoIntero, ") ", QUADRA_INI, ottenuto, QUADRA_END);
+        print(sorgente, ottenuto);
+    }
+
+    @Test
+    @Order(19)
+    @DisplayName("19 - Forza la lunghezza più le quadre")
+    public void fixSizeQuadre() {
+        System.out.println("19 - Forza un testo alla lunghezza desiderata e aggiunge singole parentesi quadre in testa e coda");
+        System.out.println("Se arriva una testo vuota, restituisce un testo vuota con singole parentesi quadre aggiunte");
+        System.out.println(VUOTA);
+
+        //--sorgente
+        //--larghezza
+        //--previsto
+        SIZE_QUADRE().forEach(this::printSizeQuadre);
+    }
+
+    void printSizeQuadre(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoIntero = (int) mat[1];
+        previsto = (String) mat[2];
+        ottenuto = service.fixSizeQuadre(sorgente, previstoIntero);
+        ottenutoIntero = ottenuto.length();
+        previstoIntero = previstoIntero > 0 ? previstoIntero + 2 : 0;
+        assertEquals(previsto, ottenuto);
+        assertEquals(previstoIntero, ottenutoIntero);
+        sorgenteIntero = sorgente != null ? sorgente.length() : 0;
+        sorgente = String.format("%s%s%d%s", sorgente, " (", sorgenteIntero, PARENTESI_TONDA_END);
+        ottenuto = String.format("%s%d%s%s", PARENTESI_TONDA_INI, ottenutoIntero, ") ", ottenuto);
         print(sorgente, ottenuto);
     }
 
