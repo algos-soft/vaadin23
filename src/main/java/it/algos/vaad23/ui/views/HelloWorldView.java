@@ -6,12 +6,16 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 
+import javax.annotation.security.*;
+
+@PermitAll
 @PageTitle("Hello World")
 @Route(value = "hello", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 public class HelloWorldView extends HorizontalLayout {
 
     private TextField name;
+
     private Button sayHello;
 
     public HelloWorldView() {

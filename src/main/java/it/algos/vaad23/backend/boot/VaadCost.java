@@ -70,4 +70,57 @@ public class VaadCost {
 
     public static final String SORT_SPRING_DESC = "DESC";
 
+
+    public static final String KEY_NULL = "null";
+
+    public static final String KEY_ROUTE_TYPE = "type";
+
+    public static final String KEY_BEAN_CLASS = "beanClass";
+
+    public static final String KEY_FORM_TYPE = "formType";
+
+    public static final String KEY_BEAN_ENTITY = "beanID";
+
+    public static final String KEY_BEAN_PREV_ID = "beanPrevID";
+
+    public static final String KEY_BEAN_NEXT_ID = "beanNextID";
+
+    public static final String KEY_SERVICE_CLASS = "serviceClass";
+
+    public static final String KEY_SECURITY_CONTEXT = "SPRING_SECURITY_CONTEXT";
+
+    public static final String KEY_SESSION_LOGIN = "SESSION_LOGIN";
+
+    public static final String KEY_SESSION_MOBILE = "sessionMobile";
+
+    public static final String KEY_MAPPA_PARSE = "parse";
+
+    public static final String KEY_MAPPA_PAGEID = "pageid";
+
+    public static final String KEY_MAPPA_TITLE = "title";
+
+    public static final String KEY_MAPPA_TEXT = "wikitext";
+
+    public static final String KEY_MAPPA_DOMAIN = "domain";
+
+    public static final String KEY_MAPPA_LAST_MODIFICA = "lastModifica";
+
+
+    /**
+     * The constant ROUTE_NAME.
+     */
+    public static final String ROUTE_NAME_LOGIN = "Login";
+
+    public static final String ROUTE_NAME_LOGIN_ERROR = ROUTE_NAME_LOGIN + "?error";
+
+    public static final String ROUTE_NAME_ABOUT = "About";
+
+    public static final String ROUTE_NAME_HOME = "Home";
+
+    public static final String ROUTE_NAME_GENERIC_VIEW = "vista";
+
+    public static final String ROUTE_NAME_GENERIC_LIST = "list";
+
+    public static final String ROUTE_NAME_GENERIC_FORM = "form";
+
 }

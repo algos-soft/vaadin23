@@ -1,6 +1,7 @@
 package it.algos.test;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +27,24 @@ import java.util.stream.*;
 public abstract class ATest {
 
     public static final String SEP_RIGA = "====================";
+
+    protected static final String CONTENUTO = "contenuto";
+
+    protected static final String CONTENUTO_DUE = "mariolino";
+
+    /**
+     * The constant ARRAY_STRING.
+     */
+    protected static final String[] ARRAY_SHORT_STRING = {CONTENUTO};
+
+    /**
+     * The constant LIST_STRING.
+     */
+    protected static final List<String> LIST_SHORT_STRING = new ArrayList(Arrays.asList(ARRAY_SHORT_STRING));
+
+    protected static final String[] ARRAY_SHORT_STRING_DUE = {CONTENUTO_DUE};
+
+    protected static final List<String> LIST_SHORT_STRING_DUE = new ArrayList(Arrays.asList(ARRAY_SHORT_STRING_DUE));
 
     protected boolean previstoBooleano;
 
@@ -59,7 +78,6 @@ public abstract class ATest {
 
     protected long ottenutoLong = 0;
 
-
     protected double sorgenteDouble = 0;
 
     protected double previstoDouble = 0;
@@ -78,12 +96,29 @@ public abstract class ATest {
 
     protected Field ottenutoField;
 
+    protected String[] sorgenteMatrice;
+
+    protected String[] previstoMatrice;
+
+    protected String[] ottenutoMatrice;
+
     protected List<String> sorgenteArray;
 
     protected List<String> previstoArray;
 
     protected List<String> ottenutoArray;
 
+    protected Map<String, String> mappaSorgente;
+
+    protected Map<String, String> mappaPrevista;
+
+    protected Map<String, String> mappaOttenuta;
+
+    protected List<Field> listaFields;
+
+    protected List<String> listaStr;
+
+    protected List<AEntity> listaBean;
 
     @Autowired
     protected ApplicationContext appContext;
@@ -102,6 +137,15 @@ public abstract class ATest {
 
     @InjectMocks
     protected AnnotationService annotationService;
+
+    @InjectMocks
+    protected ArrayService arrayService;
+
+    @InjectMocks
+    protected ClassService classService;
+
+    @InjectMocks
+    protected ReflectionService reflectionService;
 
 
     //--tag
@@ -170,6 +214,9 @@ public abstract class ATest {
         assertNotNull(mailService);
         assertNotNull(dateService);
         assertNotNull(annotationService);
+        assertNotNull(arrayService);
+        assertNotNull(classService);
+        assertNotNull(reflectionService);
     }
 
 
@@ -182,6 +229,7 @@ public abstract class ATest {
     protected void fixRiferimentiIncrociati() {
         mailService.textService = textService;
         dateService.textService = textService;
+        arrayService.textService = textService;
     }
 
     /**
@@ -213,9 +261,18 @@ public abstract class ATest {
         ottenutoClasse = null;
         sorgenteField = null;
         ottenutoField = null;
+        sorgenteMatrice = null;
+        previstoMatrice = null;
+        ottenutoMatrice = null;
         sorgenteArray = null;
         previstoArray = null;
         ottenutoArray = null;
+        mappaSorgente = null;
+        mappaPrevista = null;
+        mappaOttenuta = null;
+        listaFields = null;
+        listaStr = null;
+        listaBean = null;
     }
 
 

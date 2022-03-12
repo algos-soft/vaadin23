@@ -1,11 +1,12 @@
 package it.algos.vaad23.ui.views;
 
 
-import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.applayout.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.security.*;
 import it.algos.vaad23.ui.service.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -17,6 +18,8 @@ import java.util.*;
  */
 public class MainLayout extends AppLayout {
 
+    private final SecurityService securityService;
+
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
@@ -27,10 +30,11 @@ public class MainLayout extends AppLayout {
 
     private H1 viewTitle;
 
-    //Costruttore non necessario
-    //    public MainLayout() {
-    //    }
-
+    public MainLayout(SecurityService securityService) {
+        this.securityService = securityService;
+        //        createHeader();
+        //        createDrawer();
+    }
 
     /**
      * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
@@ -44,12 +48,13 @@ public class MainLayout extends AppLayout {
     @PostConstruct
     private void postConstruct() {
         setPrimarySection(Section.DRAWER);
-        addToNavbar(true, createHeaderContent());
-        addToDrawer(createDrawerContent());
+
+        createHeader();
+        createDrawer();
     }
 
 
-    private Component createHeaderContent() {
+    private void createHeader() {
         DrawerToggle toggle = new DrawerToggle();
         toggle.addClassName("text-secondary");
         toggle.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
@@ -58,14 +63,17 @@ public class MainLayout extends AppLayout {
         viewTitle = new H1();
         viewTitle.addClassNames("m-0", "text-l");
 
-        Header header = new Header(toggle, viewTitle);
-        header.addClassNames("bg-base", "border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-center",
-                "w-full"
-        );
-        return header;
+        Button logout = new Button("Log out", e -> securityService.logout());
+
+        HorizontalLayout header = new HorizontalLayout(toggle, viewTitle, logout);
+        header.addClassNames("bg-base", "border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-center", "w-full");
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        header.expand(viewTitle);
+
+        addToNavbar(true, header);
     }
 
-    private Component createDrawerContent() {
+    private void createDrawer() {
         H2 appName = new H2("vaadin23");
         appName.addClassNames("flex", "items-center", "h-xl", "m-0", "px-m", "text-m");
 
@@ -73,7 +81,8 @@ public class MainLayout extends AppLayout {
                 createNavigation(), createFooter()
         );
         section.addClassNames("flex", "flex-col", "items-stretch", "max-h-full", "min-h-full");
-        return section;
+
+        addToDrawer(section);
     }
 
     private Nav createNavigation() {

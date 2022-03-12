@@ -12,14 +12,6 @@ import org.springframework.beans.factory.annotation.*;
  * Superclasse astratta delle librerie xxxService. <br>
  * Serve per 'dichiarare' in un posto solo i riferimenti ad altre classi ed usarli nelle sottoclassi concrete <br>
  * I riferimenti sono 'public' (e non protected) per poterli usare con TestUnit <br>
- * <p>
- * L'istanza può essere richiamata con: <br>
- * 1) StaticContextAccessor.getBean(AxxxService.class); <br>
- * 3) @Autowired public AxxxService annotation; <br>
- * <p>
- * La sottoclasse è annotated with @Service (obbligatorio, se si usa la catena @Autowired di SpringBoot) <br>
- * La sottoclasse NON è annotated with @SpringComponent (inutile, esiste già @Service) <br>
- * La sottoclasse è annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (obbligatorio) <br>
  */
 public abstract class AbstractService {
 
@@ -29,7 +21,8 @@ public abstract class AbstractService {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    public TextService textService;
+    public AnnotationService annotationService;
+
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -37,7 +30,26 @@ public abstract class AbstractService {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    public AnnotationService annotationService;
+    public DateService dateService;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public LogService logger;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MailService mailService;
+
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -46,5 +58,32 @@ public abstract class AbstractService {
      */
     @Autowired
     public ReflectionService reflectionService;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public TextService textService;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ArrayService arrayService;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata dal framework SpringBoot/Vaadin usando il metodo setter() <br>
+     * al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ClassService classService;
 
 }

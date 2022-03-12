@@ -78,6 +78,17 @@ public class LogService extends AbstractService {
         slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
     }
 
+    /**
+     * Gestisce un log di warning <br>
+     *
+     * @param message    da registrare
+     * @param clazz      di provenienza della richiesta
+     * @param methodName di provenienza della richiesta
+     */
+    public void warn(String message, Class clazz, String methodName) {
+        esegue(AETypeLog.warn, message, clazz, methodName);
+    }
+
 
     /**
      * Gestisce un log di debug <br>
@@ -184,12 +195,60 @@ public class LogService extends AbstractService {
         }
     }
 
+
+    /**
+     * Gestisce un log di warning <br>
+     *
+     * @param type       livello di log
+     * @param message    da registrare
+     * @param clazz      di provenienza della richiesta
+     * @param methodName di provenienza della richiesta
+     */
+    private void esegue(AETypeLog type, String message, Class clazz, String methodName) {
+        String clazzTxt;
+        String sep = " --- ";
+        String end = "()";
+        String typeTxt = type.getTag();
+        typeTxt = textService.fixSizeQuadre(typeTxt, 10);
+        message = typeTxt + DOPPIO_SPAZIO + message;
+
+        if (slf4jLogger == null) {
+            return;
+        }
+
+        if (clazz != null) {
+            clazzTxt = clazz.getSimpleName();
+            message += sep + clazzTxt;
+        }
+
+        if (textService.isValid(methodName)) {
+            message += PUNTO + methodName + end;
+        }
+
+        if (type != null) {
+            switch (type) {
+                case info:
+                case modifica:
+                    slf4jLogger.info(message.trim());
+                    break;
+                case warn:
+                    slf4jLogger.warn(message.trim());
+                    break;
+                case error:
+                    slf4jLogger.error(message.trim());
+                    break;
+                default:
+                    this.warn("Switch - caso non definito", this.getClass(), "esegue");
+                    break;
+            }
+        }
+    }
+
     public String fixMessageLog(final AETypeLog type, final WrapLogCompany wrap, final String messageIn) {
         String message = messageIn;
 
         if (wrap != null) {
             message = wrap.getLog() + SEP + message;
-
         }
 
         return message.trim();

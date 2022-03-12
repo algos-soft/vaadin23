@@ -244,6 +244,18 @@ public class AnnotationService extends AbstractService {
         return annotation != null ? annotation.value() : VUOTA;
     }
 
+    /**
+     * Get the title of the page.
+     *
+     * @param genericClazz of all types
+     *
+     * @return the name of the vaadin-view @route
+     */
+    public String getPageMenu(final Class<?> genericClazz) {
+        PageTitle annotation = genericClazz != null ? this.getPageTitle(genericClazz) : null;
+        return annotation != null ? annotation.value() : VUOTA;
+    }
+
     //==========================================================================
     // @AIView
     //==========================================================================

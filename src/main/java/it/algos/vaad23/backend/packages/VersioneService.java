@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages;
 
+import it.algos.vaad23.backend.logic.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -15,12 +16,13 @@ import org.springframework.stereotype.*;
  * Service di una entityClazz specifica e di un package <br>
  * Garantisce i metodi di collegamento per accedere al database <br>
  * Non mantiene lo stato di una istanza entityBean <br>
+ * Mantiene lo stato della entityClazz <br>
  */
 @Service
 @Qualifier("VersioneService")
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 //@AIScript(sovraScrivibile = true)
-public class VersioneService {
+public class VersioneService extends EntityService {
 
 
     /**
@@ -34,7 +36,7 @@ public class VersioneService {
      * Regola la entityClazz (final) associata a questo service <br>
      */
     public VersioneService() {
-        //        super(VersioneEntity.class);
+        super(Versione.class);
     }
 
 

@@ -2,6 +2,7 @@ package it.algos.unit;
 
 import com.vaadin.flow.router.*;
 import it.algos.test.*;
+import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.*;
 import it.algos.vaad23.backend.service.*;
@@ -44,6 +45,8 @@ public class AnnotationServiceTest extends ATest {
 
     private Document document;
 
+    private PageTitle pageTitle;
+
     private NotNull notNull;
 
     /**
@@ -69,6 +72,11 @@ public class AnnotationServiceTest extends ATest {
     @BeforeEach
     protected void setUpEach() {
         super.setUpEach();
+
+        route = null;
+        qualifier = null;
+        document = null;
+        pageTitle = null;
     }
 
 
@@ -119,6 +127,21 @@ public class AnnotationServiceTest extends ATest {
         document = service.getDocument(sorgenteClasse);
         assertNotNull(document);
         System.out.println(String.format("Il @Document per la classe %s è '%s'", sorgenteClasse.getSimpleName(), document.value()));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("getPageTitle")
+    void getPageTitle() {
+        sorgenteClasse = VaadCost.class;
+        pageTitle = service.getPageTitle(sorgenteClasse);
+        assertNull(pageTitle);
+        System.out.println(String.format("Non esiste un @PageTitle per la classe %s", sorgenteClasse.getSimpleName()));
+
+        sorgenteClasse = HelloWorldView.class;
+        pageTitle = service.getPageTitle(sorgenteClasse);
+        assertNotNull(pageTitle);
+        System.out.println(String.format("Il @PageTitle per la classe %s è '%s'", sorgenteClasse.getSimpleName(), pageTitle.value()));
     }
 
 
