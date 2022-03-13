@@ -630,6 +630,7 @@ public class TextServiceTest extends ATest {
         QUADRE().forEach(this::printNoQuadre);
     }
 
+
     void printNoQuadre(Arguments arg) {
         Object[] mat = arg.get();
         sorgente = (String) mat[0];
@@ -728,6 +729,47 @@ public class TextServiceTest extends ATest {
         sorgente = String.format("%s%s%d%s", sorgente, " (", sorgenteIntero, PARENTESI_TONDA_END);
         ottenuto = String.format("%s%d%s%s", PARENTESI_TONDA_INI, ottenutoIntero, ") ", ottenuto);
         print(sorgente, ottenuto);
+    }
+
+
+    @Test
+    @Order(20)
+    @DisplayName("20 - Leva un testo iniziale")
+    void levaTesta() {
+        sorgente = "Non Levare questo inizio ";
+        sorgente2 = "Non";
+        previsto = "Levare questo inizio";
+        ottenuto = service.levaTesta(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+
+        sorgente = "Non Levare questo inizio ";
+        sorgente2 = "";
+        previsto = "Non Levare questo inizio";
+        ottenuto = service.levaTesta(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+
+        sorgente = "Non Levare questo inizio ";
+        sorgente2 = "NonEsisteQuestoTag";
+        previsto = "Non Levare questo inizio";
+        ottenuto = service.levaTesta(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+    }
+
+    @Test
+    @Order(21)
+    @DisplayName("21 - levaTestoPrimaDi")
+    public void levaTestoPrimaDi() {
+        sorgente = "/Users/gac/Documents/IdeaProjects/operativi/vaadflow14";
+        sorgente2 = "IdeaProjects";
+        previsto = "/operativi/vaadflow14";
+
+        ottenuto = service.levaTestoPrimaDi(sorgente, sorgente2);
+        assertNotNull(ottenuto);
+        assertEquals(previsto, ottenuto);
+
+        //        ottenuto = text.levaTesto(sorgente, sorgente2);
+        //        assertNotNull(ottenuto);
+        //        assertEquals(previsto, ottenuto);
     }
 
     protected void print(final String sorgente, final String ottenuto) {

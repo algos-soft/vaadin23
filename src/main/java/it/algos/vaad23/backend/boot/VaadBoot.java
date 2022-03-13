@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.*;
 import it.algos.application.views.addressform.*;
 import it.algos.simple.ui.views.about.*;
 import it.algos.simple.ui.views.carrelloform.*;
+import it.algos.vaad23.backend.packages.versione.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -104,6 +105,7 @@ public class VaadBoot implements ServletContextListener {
         VaadVar.menuRouteList.add(AboutView.class);
         VaadVar.menuRouteList.add(AddressFormView.class);
         VaadVar.menuRouteList.add(CarrelloFormView.class);
+        VaadVar.menuRouteList.add(VersioneView.class);
     }
 
 }

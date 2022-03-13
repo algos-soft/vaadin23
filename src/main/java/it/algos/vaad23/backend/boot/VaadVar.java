@@ -32,4 +32,29 @@ public class VaadVar {
      */
     public static List<Class<? extends Component>> menuRouteList;
 
+
+    /**
+     * Nome identificativo minuscolo dell' applicazione nella directory dei projects Idea <br>
+     * Usato come base per costruire i path delle varie directory <br>
+     * Spesso coincide (non obbligatoriamente) con projectNameModulo <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static String projectNameDirectoryIdea;
+
+    /**
+     * Nome identificativo minuscolo del modulo dell' applicazione <br>
+     * Usato come parte del path delle varie directory <br>
+     * Spesso coincide (non obbligatoriamente) con projectNameIdea <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static String projectNameModulo;
+
+    /**
+     * Nome identificativo maiuscolo dell' applicazione <br>
+     * Usato (eventualmente) nella barra di menu in testa pagina <br>
+     * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static String projectNameUpper;
+
 }

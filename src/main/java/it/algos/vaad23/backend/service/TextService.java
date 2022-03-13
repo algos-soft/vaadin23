@@ -644,4 +644,74 @@ public class TextService extends AbstractService {
         return stringaOut.trim();
     }
 
+
+    /**
+     * Elimina dal testo il tagIniziale, se esiste <br>
+     * <p>
+     * Esegue solo se il testo è valido <br>
+     * Se tagIniziale è vuoto, restituisce il testo <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     *
+     * @param testoIn     ingresso
+     * @param tagIniziale da eliminare
+     *
+     * @return testo ridotto in uscita
+     */
+    public String levaTesta(final String testoIn, final String tagIniziale) {
+        String testoOut = testoIn.trim();
+        String tag;
+
+        if (this.isValid(testoOut) && this.isValid(tagIniziale)) {
+            tag = tagIniziale.trim();
+            if (testoOut.startsWith(tag)) {
+                testoOut = testoOut.substring(tag.length());
+            }
+        }
+
+        return testoOut.trim();
+    }
+
+    /**
+     * Elimina il testo prima di tagIniziale. <br>
+     * <p>
+     * Esegue solo se il testo è valido <br>
+     * Se tagIniziale è vuoto, restituisce il testo <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     *
+     * @param testoIn     ingresso
+     * @param tagIniziale da dove inizia il testo da tenere
+     *
+     * @return testo ridotto in uscita
+     */
+    public String levaTestoPrimaDi(final String testoIn, final String tagIniziale) {
+        String testoOut = testoIn.trim();
+        String tag;
+
+        if (this.isValid(testoOut) && this.isValid(tagIniziale)) {
+            tag = tagIniziale.trim();
+            if (testoOut.contains(tag)) {
+                testoOut = testoOut.substring(testoOut.indexOf(tag) + tag.length());
+            }
+        }
+
+        return testoOut.trim();
+    }
+
+
+    public String estrae(String valueIn, String tagIni, String tagEnd) {
+        String valueOut = valueIn;
+        int length = 0;
+        int posIni = 0;
+        int posEnd = 0;
+
+        if (isValid(valueIn) && valueIn.contains(tagIni) && valueIn.contains(tagEnd)) {
+            length = tagIni.length();
+            posIni = valueIn.indexOf(tagIni);
+            posEnd = valueIn.indexOf(tagEnd, posIni + length);
+            valueOut = valueIn.substring(posIni + length, posEnd);
+        }
+
+        return valueOut.trim();
+    }
+
 }

@@ -2,6 +2,9 @@ package it.algos.vaad23.backend.logic;
 
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.service.*;
+import org.springframework.data.mongodb.repository.*;
+
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -16,13 +19,14 @@ import it.algos.vaad23.backend.service.*;
  * Se la sottoclasse xxxService non esiste (non è indispensabile), usa la classe generica GenericService; i metodi esistono ma occorre un
  * cast in uscita <br>
  */
-public abstract class EntityService extends AbstractService {
+public abstract class EntityBackend extends AbstractService {
 
     /**
      * The Entity Class  (obbligatoria sempre e final)
      */
     protected final Class<? extends AEntity> entityClazz;
 
+    protected MongoRepository repository;
 
     /**
      * Constructor @Autowired. <br>
@@ -31,7 +35,8 @@ public abstract class EntityService extends AbstractService {
      * Se ci sono DUE o più costruttori, va in errore <br>
      * Se ci sono DUE costruttori, di cui uno senza parametri, inietta quello senza parametri <br>
      */
-    public EntityService(final Class<? extends AEntity> entityClazz) {
+    public EntityBackend(final MongoRepository repository, final Class<? extends AEntity> entityClazz) {
+        this.repository = repository;
         this.entityClazz = entityClazz;
     }// end of constructor with @Autowired
 
@@ -53,6 +58,22 @@ public abstract class EntityService extends AbstractService {
         }
 
         return newEntityBean;
+    }
+
+    public List findAll() {
+        return repository.findAll();
+    }
+
+    public AEntity add(Object versione) {
+        return (AEntity) repository.insert(versione);
+    }
+
+    public AEntity update(Object versione) {
+        return (AEntity) repository.save(versione);
+    }
+
+    public void delete(Object versione) {
+        repository.delete(versione);
     }
 
 }

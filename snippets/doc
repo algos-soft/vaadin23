@@ -52,6 +52,17 @@
 
 
     /**
+     * Costruttore <br>
+     * Si usa un @Qualifier(), per specificare la classe che incrementa l'interfaccia repository <br>
+     * Si usa una costante statica, per essere sicuri di scriverla uguale a quella di xxxRepository <br>
+     * Regola la classe di persistenza dei dati specifica e la passa al costruttore della superclasse <br>
+     *
+     * @param repository per la persistenza dei dati
+     */
+    public ComuneService(@Qualifier(TAG_COMUNE) MongoRepository repository) {
+
+
+    /**
      * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
      * La injection viene fatta da SpringBoot SOLO DOPO il metodo init() del costruttore <br>
      * Si usa quindi un metodo @PostConstruct per avere disponibili tutte le istanze @Autowired <br>

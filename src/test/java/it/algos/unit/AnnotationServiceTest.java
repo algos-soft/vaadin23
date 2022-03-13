@@ -4,7 +4,7 @@ import com.vaadin.flow.router.*;
 import it.algos.test.*;
 import it.algos.vaad23.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.packages.*;
+import it.algos.vaad23.backend.packages.versione.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.ui.views.*;
 import org.junit.jupiter.api.*;
@@ -106,7 +106,7 @@ public class AnnotationServiceTest extends ATest {
         System.out.println(String.format("Non esiste un @Qualifier per la classe %s", sorgenteClasse.getSimpleName()));
 
         System.out.println(VUOTA);
-        sorgenteClasse = VersioneService.class;
+        sorgenteClasse = VersioneBackend.class;
         qualifier = service.getQualifier(sorgenteClasse);
         assertNotNull(qualifier);
         System.out.println(String.format("Il @Qualifier per la classe %s è '%s'", sorgenteClasse.getSimpleName(), qualifier.value()));

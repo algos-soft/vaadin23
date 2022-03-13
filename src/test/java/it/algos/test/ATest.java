@@ -1,5 +1,6 @@
 package it.algos.test;
 
+import com.vaadin.flow.server.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
@@ -120,6 +121,12 @@ public abstract class ATest {
 
     protected List<AEntity> listaBean;
 
+    protected Map<String, List<String>> mappa;
+
+    protected byte[] bytes;
+
+    protected StreamResource streamResource;
+
     @Autowired
     protected ApplicationContext appContext;
 
@@ -146,6 +153,12 @@ public abstract class ATest {
 
     @InjectMocks
     protected ReflectionService reflectionService;
+
+    @InjectMocks
+    protected FileService fileService;
+
+    @InjectMocks
+    protected ResourceService resourceService;
 
 
     //--tag
@@ -217,6 +230,8 @@ public abstract class ATest {
         assertNotNull(arrayService);
         assertNotNull(classService);
         assertNotNull(reflectionService);
+        assertNotNull(fileService);
+        assertNotNull(resourceService);
     }
 
 
@@ -230,6 +245,9 @@ public abstract class ATest {
         mailService.textService = textService;
         dateService.textService = textService;
         arrayService.textService = textService;
+        resourceService.textService = textService;
+        resourceService.fileService = fileService;
+        fileService.logger = logService;
     }
 
     /**
@@ -273,6 +291,9 @@ public abstract class ATest {
         listaFields = null;
         listaStr = null;
         listaBean = null;
+        mappa = null;
+        bytes = null;
+        streamResource = null;
     }
 
 
@@ -345,8 +366,40 @@ public abstract class ATest {
         else {
             System.out.println("Manca la lista");
         }
+    }
+
+    protected void printVuota(List<String> lista) {
+        System.out.println(VUOTA);
+        print(lista);
+    }
+
+    protected void print(List<String> lista) {
+        if (lista != null && lista.size() > 0) {
+            System.out.println(String.format("Ci sono %d elementi nella lista", lista.size()));
+        }
+        else {
+            System.out.println("La lista è vuota");
+        }
+        System.out.println(VUOTA);
+        if (arrayService.isAllValid(lista)) {
+            for (String stringa : lista) {
+                System.out.println(stringa);
+            }
+        }
+    }
 
 
+    protected void printMappa(Map<String, List<String>> mappa) {
+        List<String> lista;
+        if (arrayService.isAllValid(mappa)) {
+            for (String key : mappa.keySet()) {
+                lista = mappa.get(key);
+                System.out.println(VUOTA);
+                if (arrayService.isAllValid(lista)) {
+                    printVuota(lista);
+                }
+            }
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
@@ -274,5 +275,62 @@ public class LogService extends AbstractService {
     //        message = typeTxt + DOPPIO_SPAZIO + message;
     //        adminLogger.info(message.trim());
     //    }
+
+    /**
+     * Gestisce un log di error <br>
+     *
+     * @param unErrore   da gestire
+     * @param clazz      di provenienza della richiesta
+     * @param methodName di provenienza della richiesta
+     */
+    public void error(Exception unErrore, Class clazz, String methodName) {
+        //        error(unErrore.toString(), clazz, methodName);@todo sistemare
+    }
+
+    /**
+     * Gestisce un log di info <br>
+     *
+     * @param message    della informazione da gestire
+     * @param clazz      di provenienza della richiesta
+     * @param methodName di provenienza della richiesta
+     */
+    public void info(String message, Class clazz, String methodName) {
+        //@todo Funzionalità ancora da implementare
+        //        sendTerminale(AELogLivello.info, descrizione, clazz, methodName);
+        //@todo Funzionalità ancora da implementare
+        esegue(AETypeLog.info, message, clazz, methodName);
+    }
+
+    /**
+     * Gestisce un log di error <br>
+     *
+     * @param message    da registrare
+     * @param clazz      di provenienza della richiesta
+     * @param methodName di provenienza della richiesta
+     */
+    public void error(String message, Class clazz, String methodName) {
+        //        esegue(AETypeLog.error, message, clazz, methodName);@todo sistemare
+    }
+
+    /**
+     * Gestisce un log di error <br>
+     *
+     * @param unErrore   da gestire
+     * @param clazz      di provenienza della richiesta
+     * @param methodName di provenienza della richiesta
+     */
+    public void warn(Exception unErrore, Class clazz, String methodName) {
+        //        warn(unErrore.toString(), clazz, methodName); @todo sistemare
+    }
+
+    /**
+     * Gestisce un log generico <br>
+     * Di default usa il livello 'info' <br>
+     *
+     * @param message da registrare
+     */
+    public void log(AITypeLog type, String message) {
+        //        info(type, message); @todo sistemare
+    }
 
 }
