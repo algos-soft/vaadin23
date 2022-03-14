@@ -18,6 +18,8 @@ public class VaadCost {
 
     public static final String PATH_RISORSE = "src/main/resources/META-INF/resources/";
 
+    public static final String PATH_ALGOS = "it.algos";
+
     public static final String VUOTA = "";
 
     public static final String CAPO = "\n";
@@ -214,5 +216,9 @@ public class VaadCost {
     public static final String TAG_VERSIONE = "versione";
 
     public static final String TAG_CONTINENTE = "continente";
+
+    public static final String TAG_FLOW_DATA = "flowdata";
+
+    public static final String TAG_FLOW_VERSION = "flowversion";
 
 }

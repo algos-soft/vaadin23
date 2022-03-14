@@ -57,4 +57,20 @@ public class VaadVar {
      */
     public static String projectNameUpper;
 
+
+    /**
+     * Classe da usare per lo startup del programma <br>
+     * Di default FlowData oppure possibile sottoclasse del progetto <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static Class dataClazz;
+
+
+    /**
+     * Classe da usare per gestire le versioni <br>
+     * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static Class versionClazz;
+
 }

@@ -33,4 +33,4 @@ public interface VersioneRepository extends MongoRepository<Versione, String> {
 
     void delete(Versione entity);
 
-}// end of class
+}// end of crud repository class

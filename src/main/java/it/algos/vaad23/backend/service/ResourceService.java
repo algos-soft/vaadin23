@@ -73,7 +73,7 @@ public class ResourceService extends AbstractService {
     public List<String> leggeListaConfig(String simpleNameFileToBeRead, boolean compresiTitoli) {
         List<String> listaRighe = null;
         String rawText = leggeConfig(simpleNameFileToBeRead);
-        String[] righe = null;
+        String[] righe;
 
         if (textService.isValid(rawText)) {
             listaRighe = new ArrayList<>();
@@ -104,14 +104,14 @@ public class ResourceService extends AbstractService {
      *
      * @param simpleNameFileToBeRead nome del file senza path e senza directory
      *
-     * @return lista di righe grezze
+     * @return lista di titoli più le righe grezze
      */
-    public Map<String, List<String>> leggeMappaConfig(String simpleNameFileToBeRead) {
+    public Map<String, List<String>> leggeMappaConfigConTitoli(String simpleNameFileToBeRead) {
         Map<String, List<String>> mappa = null;
-        List<String> listaParti = null;
+        List<String> listaParti;
         String rawText = leggeConfig(simpleNameFileToBeRead);
-        String[] righe = null;
-        String[] parti = null;
+        String[] righe;
+        String[] parti;
 
         if (textService.isValid(rawText)) {
             righe = rawText.split(CAPO);
@@ -134,6 +134,21 @@ public class ResourceService extends AbstractService {
         return mappa;
     }
 
+    /**
+     * Legge una mappa di risorse da {project directory}/config/ <br>
+     * La mappa NON contiene i titoli
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return lista delle sole righe grezze
+     */
+    public Map<String, List<String>> leggeMappaConfigSenzaTitoli(String simpleNameFileToBeRead) {
+        Map<String, List<String>> mappa = leggeMappaConfigConTitoli(simpleNameFileToBeRead);
+
+        String firstKey = String.valueOf(mappa.keySet().toArray()[0]);
+        mappa.remove(firstKey);
+        return mappa;
+    }
 
     /**
      * Legge un file di risorse da {project directory}/frontend/ <br>

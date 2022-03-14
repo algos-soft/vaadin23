@@ -2,7 +2,6 @@ package it.algos.vaad23.backend.packages.geografia.continente;
 
 import it.algos.vaad23.backend.entity.*;
 
-import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
@@ -14,17 +13,24 @@ import javax.validation.constraints.*;
  */
 public class Continente extends AEntity {
 
+    //    @NotNull
+    //    @Id
+    //    @GeneratedValue
+    //    private Long id;
+
+    private int ordine;
+
     @NotNull
-    @Id
-    @GeneratedValue
-    private Long id;
+    private String nome;
 
-    public int ordine;
+    private boolean abitato;
 
-    @NotNull
-    public String nome;
-
-    public boolean abitato;
+    public Continente(String id, int ordine, String nome, boolean abitato) {
+        this.id = id;
+        this.ordine = ordine;
+        this.nome = nome;
+        this.abitato = abitato;
+    }
 
     public int getOrdine() {
         return ordine;

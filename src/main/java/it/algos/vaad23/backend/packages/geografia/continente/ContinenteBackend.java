@@ -1,17 +1,20 @@
-package it.algos.vaad23.backend.packages.versione;
+package it.algos.vaad23.backend.packages.geografia.continente;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+import java.util.*;
+
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: mer, 09-mar-2022
- * Time: 21:31
+ * Date: dom, 13-mar-2022
+ * Time: 20:20
  * <p>
  * Service di una entityClazz specifica e di un package <br>
  * Garantisce i metodi di collegamento per accedere al database <br>
@@ -21,9 +24,9 @@ import org.springframework.stereotype.*;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, esiste già @Service) <br>
  */
 @Service
-@Qualifier(TAG_VERSIONE)
+@Qualifier(TAG_CONTINENTE)
 //@AIScript(sovraScrivibile = true)
-public class VersioneBackend extends EntityBackend {
+public class ContinenteBackend extends EntityBackend {
 
 
     /**
@@ -36,9 +39,41 @@ public class VersioneBackend extends EntityBackend {
      *
      * @param repository per la persistenza dei dati
      */
-    public VersioneBackend(@Autowired @Qualifier(TAG_VERSIONE) final MongoRepository repository) {
-        super(repository, Versione.class);
+    public ContinenteBackend(@Autowired @Qualifier(TAG_CONTINENTE) final MongoRepository repository) {
+        super(repository, Continente.class);
     }
 
+    public void reset() {
+        repository.deleteAll();
 
-}// end of crud backend class
+        //  si può scegliere
+        if (false) {
+            resetEnumeration();
+        }
+        else {
+            resetCSV();
+        }
+    }
+
+    public void resetEnumeration() {
+        Continente entity;
+
+        for (AEContinente cont : AEContinente.values()) {
+            entity = new Continente(cont.getNome().toLowerCase(), cont.getOrd(), cont.getNome(), cont.isAbitato());
+            repository.save(entity);
+        }
+    }
+
+    public void resetCSV() {
+        Continente entity;
+        Map<String, List<String>> mappa = resourceService.leggeMappaConfigSenzaTitoli("continenti");
+        List<String> value;
+
+        for (String key : mappa.keySet()) {
+            value = mappa.get(key);
+            entity = new Continente(key, Integer.decode(value.get(0)), value.get(1), Boolean.valueOf(value.get(2)));
+            repository.save(entity);
+        }
+    }
+
+}// end of Backend class

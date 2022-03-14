@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.logic;
 
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.service.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 
 import java.util.*;
@@ -20,6 +21,22 @@ import java.util.*;
  * cast in uscita <br>
  */
 public abstract class EntityBackend extends AbstractService {
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ResourceService resourceService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public TextService textService;
 
     /**
      * The Entity Class  (obbligatoria sempre e final)
@@ -64,16 +81,19 @@ public abstract class EntityBackend extends AbstractService {
         return repository.findAll();
     }
 
-    public AEntity add(Object versione) {
-        return (AEntity) repository.insert(versione);
+    public AEntity add(Object entity) {
+        return (AEntity) repository.insert(entity);
     }
 
-    public AEntity update(Object versione) {
-        return (AEntity) repository.save(versione);
+    public AEntity update(Object entity) {
+        return (AEntity) repository.save(entity);
     }
 
-    public void delete(Object versione) {
-        repository.delete(versione);
+    public void delete(Object entity) {
+        repository.delete(entity);
+    }
+
+    public void reset() {
     }
 
 }

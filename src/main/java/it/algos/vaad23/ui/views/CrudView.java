@@ -13,14 +13,18 @@ import org.vaadin.crudui.crud.impl.*;
  */
 public abstract class CrudView extends VerticalLayout {
 
-    //    private EntityBackend backend;
+    protected EntityBackend backend;
+
+    protected GridCrud crud;
 
     //    public CrudView() {
     //    }
 
     public CrudView(final EntityBackend backend, final Class entityClazz) {
+        this.backend = backend;
         // crud instance
-        GridCrud crud = new GridCrud<>(entityClazz);
+        crud = new GridCrud<>(entityClazz);
+        //         crud = new GridCrud<>(entityClazz, new HorizontalSplitCrudLayout());
 
         // grid configuration
         crud.getCrudFormFactory().setUseBeanValidation(true);

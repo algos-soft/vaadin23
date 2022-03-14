@@ -218,13 +218,26 @@ public class ResourceServiceTest extends ATest {
 
     @Test
     @Order(7)
-    @DisplayName("7 - Legge una mappa dalla directory 'config'")
+    @DisplayName("7 - Legge una mappa dalla directory 'config' con titoli")
     void leggeMappaConfig() {
         sorgente = "regioni";
         ottenuto = service.leggeConfig(sorgente);
         assertTrue(textService.isValid(ottenuto));
 
-        mappa = service.leggeMappaConfig(sorgente);
+        mappa = service.leggeMappaConfigConTitoli(sorgente);
+        assertNotNull(mappa);
+        printMappa(mappa);
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - Legge una mappa dalla directory 'config' senza titoli")
+    void leggeMappaConfig2() {
+        sorgente = "regioni";
+        ottenuto = service.leggeConfig(sorgente);
+        assertTrue(textService.isValid(ottenuto));
+
+        mappa = service.leggeMappaConfigSenzaTitoli(sorgente);
         assertNotNull(mappa);
         printMappa(mappa);
     }

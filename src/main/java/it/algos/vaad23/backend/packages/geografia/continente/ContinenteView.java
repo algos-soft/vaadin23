@@ -1,5 +1,6 @@
-package it.algos.vaad23.backend.packages.versione;
+package it.algos.vaad23.backend.packages.geografia.continente;
 
+import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.ui.views.*;
@@ -9,12 +10,13 @@ import org.springframework.beans.factory.annotation.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: sab, 12-mar-2022
- * Time: 18:24
+ * Date: dom, 13-mar-2022
+ * Time: 20:30
+ * <p>
  */
-@PageTitle(TAG_VERSIONE)
-@Route(value = TAG_VERSIONE, layout = MainLayout.class)
-public class VersioneView extends CrudView {
+@PageTitle(TAG_CONTINENTE)
+@Route(value = TAG_CONTINENTE, layout = MainLayout.class)
+public class ContinenteView extends CrudView {
 
 
     /**
@@ -27,9 +29,19 @@ public class VersioneView extends CrudView {
      *
      * @param backend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
-    public VersioneView(@Autowired final VersioneBackend backend) {
-        super(backend, Versione.class);
-        crud.getGrid().setColumns("type", "release", "titolo", "giorno", "descrizione", "usaBase", "usaCompany");
+    public ContinenteView(@Autowired final ContinenteBackend backend) {
+        super(backend, Continente.class);
+        crud.getGrid().setColumns("ordine", "nome", "abitato");
+
+        // additional components
+        Button reset = new Button("Reset");
+        crud.getCrudLayout().addFilterComponent(reset);
+        reset.addClickListener(e -> reset());
+    }
+
+    public void reset() {
+        backend.reset();
+        crud.refreshGrid();
     }
 
 }// end of crud @Route view class

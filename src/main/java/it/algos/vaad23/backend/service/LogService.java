@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
 import javax.annotation.*;
+import java.util.*;
+import java.util.function.*;
 
 
 /**
@@ -45,8 +47,19 @@ import javax.annotation.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class LogService extends AbstractService {
 
+    public static final int PAD_COMPANY = 5;
+
+    public static final int PAD_UTENTE = 15;
+
+    public static final int PAD_ADDRESS_IP = 37;
 
     public static final int PAD_TYPE = 18;
+
+    public static final int PAD_CLASS = 20;
+
+    public static final int PAD_METHOD = 20;
+
+    public static final int PAD_LINE = 3;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -64,6 +77,10 @@ public class LogService extends AbstractService {
      */
     public Logger slf4jLogger;
 
+    /**
+     * Controlla che la classe abbia usaBoot=true <br>
+     */
+    protected Predicate<StackTraceElement> checkStartAlgos = stack -> stack.getClassName().startsWith(PATH_ALGOS);
 
     /**
      * Performing the initialization in a constructor is not suggested as the state of the UI is not properly set up when the constructor is invoked. <br>
@@ -89,7 +106,6 @@ public class LogService extends AbstractService {
     public void warn(String message, Class clazz, String methodName) {
         esegue(AETypeLog.warn, message, clazz, methodName);
     }
-
 
     /**
      * Gestisce un log di debug <br>
@@ -127,7 +143,6 @@ public class LogService extends AbstractService {
         this.logBase(AELogLevel.info, type, wrap, message);
     }
 
-
     /**
      * Gestisce un log di warning <br>
      *
@@ -135,6 +150,58 @@ public class LogService extends AbstractService {
      */
     public void warn(final String message) {
         this.logBase(AELogLevel.warn, message);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     *
+     * @param message testo del log
+     */
+    public void error(final Exception unErrore) {
+        boolean usaTagIniziale = true;
+        String tagClasse = "class=";
+        String tagMetodo = "method=";
+        String tagRiga = "line=";
+        String message;
+        StackTraceElement stack = null;
+        String classe = VUOTA;
+        String metodo = VUOTA;
+        int line = 0;
+        String riga = VUOTA;
+        int padClass = PAD_CLASS;
+        int padMethod = PAD_METHOD;
+        int padLine = PAD_LINE;
+
+        StackTraceElement[] matrice = unErrore.getStackTrace();
+        Optional stackPossibile = Arrays.stream(matrice)
+                .filter(algos -> algos.getClassName().startsWith(PATH_ALGOS))
+                .findFirst();
+
+        if (stackPossibile != null) {
+            stack = (StackTraceElement) stackPossibile.get();
+            classe = stack.getClassName();
+            classe = fileService.estraeClasseFinale(classe);
+            metodo = stack.getMethodName();
+            line = stack.getLineNumber();
+            riga = line + VUOTA;
+        }
+
+        if (usaTagIniziale) {
+            classe = tagClasse + classe;
+            metodo = tagMetodo + metodo;
+            riga = tagRiga + riga;
+            padClass += tagClasse.length();
+            padMethod += tagMetodo.length();
+            padLine += tagRiga.length();
+        }
+
+        classe = textService.fixSizeQuadre(classe, padClass);
+        metodo = textService.fixSizeQuadre(metodo, padMethod);
+        riga = textService.fixSizeQuadre(riga + VUOTA, padLine);
+
+        message = String.format("%s%s%s%s%s%s%s", classe, DOPPIO_SPAZIO, metodo, DOPPIO_SPAZIO, riga, SEP, unErrore.getCause().getMessage());
+
+        this.logBase(AELogLevel.error, message);
     }
 
     /**
@@ -284,7 +351,7 @@ public class LogService extends AbstractService {
      * @param methodName di provenienza della richiesta
      */
     public void error(Exception unErrore, Class clazz, String methodName) {
-        //        error(unErrore.toString(), clazz, methodName);@todo sistemare
+        logBase(AELogLevel.error, AETypeLog.error, null, unErrore.toString());
     }
 
     /**

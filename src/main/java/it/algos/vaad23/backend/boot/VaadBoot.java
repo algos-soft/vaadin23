@@ -4,8 +4,12 @@ import com.vaadin.flow.spring.annotation.*;
 import it.algos.application.views.addressform.*;
 import it.algos.simple.ui.views.about.*;
 import it.algos.simple.ui.views.carrelloform.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.interfaces.*;
+import it.algos.vaad23.backend.packages.geografia.continente.*;
 import it.algos.vaad23.backend.packages.versione.*;
 import it.algos.vaad23.ui.views.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.EventListener;
@@ -43,6 +47,36 @@ public class VaadBoot implements ServletContextListener {
 
 
     /**
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    public AIData dataInstance;
+
+    /**
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    public AIVers versInstance;
+
+
+    /**
+     * Constructor with @Autowired on setter. Usato quando ci sono sottoclassi. <br>
+     * Per evitare di avere nel costruttore tutte le property che devono essere iniettate e per poterle aumentare <br>
+     * senza dover modificare i costruttori delle sottoclassi, l'iniezione tramite @Autowired <br>
+     * viene delegata ad alcuni metodi setter() che vengono qui invocati con valore (ancora) nullo. <br>
+     * Al termine del ciclo init() del costruttore il framework SpringBoot/Vaadin, inietterà la relativa istanza <br>
+     */
+    public VaadBoot() {
+        //        this.setEnvironment(environment);
+        //        this.setMongo(mongo);
+        //        this.setLogger(logger);
+        this.setDataInstance(dataInstance);
+        this.setVersInstance(versInstance);
+    }// end of constructor with @Autowired on setter
+
+    /**
      * The ContextRefreshedEvent happens after both Vaadin and Spring are fully initialized. At the time of this
      * event, the application is ready to service Vaadin requests <br>
      */
@@ -71,6 +105,7 @@ public class VaadBoot implements ServletContextListener {
         //        this.fixPreferenze();
         //        this.fixData();
         this.fixMenuRoutes();
+        this.fixVersioni();
     }
 
     /**
@@ -86,6 +121,20 @@ public class VaadBoot implements ServletContextListener {
          * Usata da ALayoutService per conto di MainLayout allo start della UI-logic <br>
          */
         VaadVar.menuRouteList = new ArrayList<>();
+
+        /**
+         * Classe da usare per lo startup del programma <br>
+         * Di default FlowData oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() <br>
+         */
+        //        VaadVar.dataClazz = FlowData.class;
+
+        /**
+         * Classe da usare per gestire le versioni <br>
+         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.versionClazz = VaadVers.class;
     }
 
     /**
@@ -106,6 +155,40 @@ public class VaadBoot implements ServletContextListener {
         VaadVar.menuRouteList.add(AddressFormView.class);
         VaadVar.menuRouteList.add(CarrelloFormView.class);
         VaadVar.menuRouteList.add(VersioneView.class);
+        VaadVar.menuRouteList.add(ContinenteView.class);
+    }
+
+    /**
+     * Inizializzazione delle versioni standard di vaadinFlow <br>
+     * Inizializzazione delle versioni del programma specifico <br>
+     */
+    protected void fixVersioni() {
+        this.versInstance.inizia();
+    }
+
+
+    /**
+     * Set con @Autowired di una property chiamata dal costruttore <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Chiamata dal costruttore di questa classe con valore nullo <br>
+     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    @Qualifier(TAG_FLOW_DATA)
+    public void setDataInstance(final AIData dataInstance) {
+        this.dataInstance = dataInstance;
+    }
+
+    /**
+     * Set con @Autowired di una property chiamata dal costruttore <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Chiamata dal costruttore di questa classe con valore nullo <br>
+     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    @Qualifier(TAG_FLOW_VERSION)
+    public void setVersInstance(final AIVers versInstance) {
+        this.versInstance = versInstance;
     }
 
 }

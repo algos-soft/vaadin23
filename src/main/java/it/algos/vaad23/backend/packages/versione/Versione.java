@@ -1,9 +1,9 @@
 package it.algos.vaad23.backend.packages.versione;
 
 import it.algos.vaad23.backend.entity.*;
-import org.springframework.data.mongodb.core.index.*;
+import it.algos.vaad23.backend.enumeration.*;
 
-import javax.validation.constraints.*;
+import java.time.*;
 
 
 /**
@@ -17,34 +17,80 @@ import javax.validation.constraints.*;
  */
 public class Versione extends AEntity {
 
-    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    public int ordine;
+    //    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
+    //    public int ordine;
 
-    @NotBlank()
-    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    public String code;
+    //    @NotBlank()
+    //    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
+    //    public String code;
+
+    //    @AIField(type = AETypeField.enumeration, enumClazz = AETypeVers.class, usaComboBox = true)
+    public AETypeVers type;
+
+    public double release;
+
+    public String titolo;
+
+    public LocalDate giorno;
 
     public String descrizione;
+
+    public boolean usaBase;
+
+    public boolean usaCompany;
+
 
     @Override
     public String toString() {
         return "";
     }
 
-    public int getOrdine() {
-        return ordine;
+    public AETypeVers getType() {
+        return type;
     }
 
-    public void setOrdine(int ordine) {
-        this.ordine = ordine;
+    public void setType(AETypeVers type) {
+        this.type = type;
     }
 
-    public String getCode() {
-        return code;
+    public double getRelease() {
+        return release;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setRelease(double release) {
+        this.release = release;
+    }
+
+    public String getTitolo() {
+        return titolo;
+    }
+
+    public void setTitolo(String titolo) {
+        this.titolo = titolo;
+    }
+
+    public LocalDate getGiorno() {
+        return giorno;
+    }
+
+    public void setGiorno(LocalDate giorno) {
+        this.giorno = giorno;
+    }
+
+    public boolean isUsaBase() {
+        return usaBase;
+    }
+
+    public void setUsaBase(boolean usaBase) {
+        this.usaBase = usaBase;
+    }
+
+    public boolean isUsaCompany() {
+        return usaCompany;
+    }
+
+    public void setUsaCompany(boolean usaCompany) {
+        this.usaCompany = usaCompany;
     }
 
     public String getDescrizione() {
@@ -55,4 +101,4 @@ public class Versione extends AEntity {
         this.descrizione = descrizione;
     }
 
-}// end of Bean
+}// end of crud entity class
