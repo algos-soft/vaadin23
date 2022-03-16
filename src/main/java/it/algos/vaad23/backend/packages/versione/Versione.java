@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.packages.versione;
 
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import org.springframework.data.mongodb.core.index.*;
 
 import java.time.*;
 
@@ -17,12 +18,8 @@ import java.time.*;
  */
 public class Versione extends AEntity {
 
-    //    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    //    public int ordine;
-
-    //    @NotBlank()
-    //    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    //    public String code;
+    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
+    public int ordine;
 
     //    @AIField(type = AETypeField.enumeration, enumClazz = AETypeVers.class, usaComboBox = true)
     public AETypeVers type;
@@ -35,14 +32,22 @@ public class Versione extends AEntity {
 
     public String descrizione;
 
-    public boolean usaBase;
+    public String company;
 
-    public boolean usaCompany;
+    public boolean vaadin23;
 
 
     @Override
     public String toString() {
         return "";
+    }
+
+    public int getOrdine() {
+        return ordine;
+    }
+
+    public void setOrdine(int ordine) {
+        this.ordine = ordine;
     }
 
     public AETypeVers getType() {
@@ -61,6 +66,14 @@ public class Versione extends AEntity {
         this.release = release;
     }
 
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
     public String getTitolo() {
         return titolo;
     }
@@ -77,21 +90,6 @@ public class Versione extends AEntity {
         this.giorno = giorno;
     }
 
-    public boolean isUsaBase() {
-        return usaBase;
-    }
-
-    public void setUsaBase(boolean usaBase) {
-        this.usaBase = usaBase;
-    }
-
-    public boolean isUsaCompany() {
-        return usaCompany;
-    }
-
-    public void setUsaCompany(boolean usaCompany) {
-        this.usaCompany = usaCompany;
-    }
 
     public String getDescrizione() {
         return descrizione;
@@ -99,6 +97,14 @@ public class Versione extends AEntity {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
+    }
+
+    public boolean isVaadin23() {
+        return vaadin23;
+    }
+
+    public void setVaadin23(boolean vaadin23) {
+        this.vaadin23 = vaadin23;
     }
 
 }// end of crud entity class

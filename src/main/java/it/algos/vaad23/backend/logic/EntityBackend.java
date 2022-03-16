@@ -23,6 +23,11 @@ import java.util.*;
 public abstract class EntityBackend extends AbstractService {
 
     /**
+     * The Entity Class  (obbligatoria sempre e final)
+     */
+    protected final Class<? extends AEntity> entityClazz;
+
+    /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
      * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
@@ -37,11 +42,6 @@ public abstract class EntityBackend extends AbstractService {
      */
     @Autowired
     public TextService textService;
-
-    /**
-     * The Entity Class  (obbligatoria sempre e final)
-     */
-    protected final Class<? extends AEntity> entityClazz;
 
     protected MongoRepository repository;
 
@@ -81,7 +81,13 @@ public abstract class EntityBackend extends AbstractService {
         return repository.findAll();
     }
 
-    public AEntity add(Object entity) {
+    public AEntity add(Object objEntity) {
+        AEntity entity = (AEntity) objEntity;
+
+        //        if (entity.id == VUOTA) {
+        //            entity.id = nextId();
+        //        }
+
         return (AEntity) repository.insert(entity);
     }
 
@@ -90,8 +96,13 @@ public abstract class EntityBackend extends AbstractService {
     }
 
     public void delete(Object entity) {
-        repository.delete(entity);
+        try {
+            repository.delete(entity);
+        } catch (Exception unErrore) {
+            logger.error(unErrore);
+        }
     }
+
 
     public void reset() {
     }

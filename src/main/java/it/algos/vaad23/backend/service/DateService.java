@@ -4,6 +4,9 @@ import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
+import java.time.*;
+import java.time.format.*;
+
 /**
  * Project vaadin23
  * Created by Algos
@@ -178,6 +181,10 @@ public class DateService extends AbstractService {
 
     public String toTextMinuti(final long durata) {
         return durata < 1 ? INFERIORE_MINUTO : toTextSecondi(durata * 60);
+    }
+
+    public String get() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("d-MMM-yy"));
     }
 
 }

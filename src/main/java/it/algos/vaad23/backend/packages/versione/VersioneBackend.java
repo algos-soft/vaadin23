@@ -1,10 +1,13 @@
 package it.algos.vaad23.backend.packages.versione;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
+
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -25,6 +28,7 @@ import org.springframework.stereotype.*;
 //@AIScript(sovraScrivibile = true)
 public class VersioneBackend extends EntityBackend {
 
+    private VersioneRepository versioneRepository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -38,6 +42,152 @@ public class VersioneBackend extends EntityBackend {
      */
     public VersioneBackend(@Autowired @Qualifier(TAG_VERSIONE) final MongoRepository repository) {
         super(repository, Versione.class);
+        this.versioneRepository = (VersioneRepository) repository;
+    }
+
+    //    public long nextId() {
+    //        long nextId = 1;
+    //        List<Versione> listaDiUnSoloElemento = null;
+    //        Versione versione = null;
+    //
+    //        try {
+    //            listaDiUnSoloElemento = versioneRepository.findFirstVersioneByIdIsNotNullOrderByIdDesc();
+    //        } catch (Exception unErrore) {
+    //            logger.error(unErrore);
+    //            return nextId;
+    //        }
+    //
+    //        if (listaDiUnSoloElemento != null && listaDiUnSoloElemento.size() == 1) {
+    //            versione = listaDiUnSoloElemento.get(0);
+    //        }
+    //
+    //        if (versione != null) {
+    //            nextId = versione.getId();
+    //            nextId = nextId + 1;
+    //        }
+    //
+    //        return nextId;
+    //    }
+
+
+    public int nextOrdine() {
+        int nextOrdine = 1;
+        List<Versione> listaDiUnSoloElemento = null;
+        Versione versione = null;
+
+        try {
+            listaDiUnSoloElemento = versioneRepository.findFirstVersioneByTitoloIsNotNullOrderByOrdineDesc();
+        } catch (Exception unErrore) {
+            logger.error(unErrore);
+            return nextOrdine;
+        }
+
+        if (listaDiUnSoloElemento != null && listaDiUnSoloElemento.size() == 1) {
+            versione = listaDiUnSoloElemento.get(0);
+        }
+
+        if (versione != null) {
+            nextOrdine = versione.getOrdine();
+            nextOrdine = nextOrdine + 1;
+        }
+
+        return nextOrdine;
+    }
+
+    public boolean isEsiste(final String titolo, final String descrizione) {
+        Versione versione = null;
+
+        try {
+            versione = versioneRepository.findFirstByTitoloAndDescrizione(titolo, descrizione);
+        } catch (Exception unErrore) {
+            logger.error(unErrore);
+        }
+
+        return versione != null;
+    }
+
+    /**
+     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria e unica) <br>
+     *
+     * @param sigla     del progetto interessato (transient, obbligatorio, un solo carattere) <br>
+     * @param newOrdine progressivo della versione (transient, obbligatorio) <br>
+     *
+     * @return true se trovata
+     */
+    public boolean isMancaByKeyUnica(final String sigla, final int newOrdine) {
+        return findByKeyUnica(getIdKey(sigla, newOrdine)) == null;
+    }
+
+    /**
+     * Recupera una istanza della Entity usando la query della property specifica (obbligatoria e unica) <br>
+     *
+     * @param keyCode (obbligatorio, unico)
+     *
+     * @return istanza della Entity, null se non trovata
+     */
+    public Versione findByKeyUnica(final String keyCode) {
+        Versione entity = null;
+        Object optional = repository.findById(keyCode);
+
+        if (((Optional) optional).isPresent()) {
+            entity = (Versione) ((Optional) optional).get();
+        }
+
+        return entity;
+    }
+
+    /**
+     * Ordine di presentazione (obbligatorio, unico per ogni project), <br>
+     * Viene calcolato in automatico alla creazione della entity <br>
+     * Recupera dal DB il valore massimo pre-esistente della property per lo specifico progetto <br>
+     * Incrementa di uno il risultato <br>
+     *
+     * @param sigla     del progetto interessato (transient, obbligatorio, un solo carattere) <br>
+     * @param newOrdine progressivo della versione (transient, obbligatorio) <br>
+     */
+    public String getIdKey(final String sigla, int newOrdine) {
+        String keyCode = VUOTA;
+        List<Versione> lista;
+        String idKey = "0";
+
+        if (newOrdine == 0) {
+            lista = versioneRepository.findByIdRegexOrderByOrdineDesc(sigla);
+            if (lista != null && lista.size() > 0) {
+                idKey = lista.get(0).getId();
+                idKey = idKey.substring(1);
+                idKey = idKey.startsWith(PUNTO) ? textService.levaTesta(idKey, PUNTO) : idKey;
+                idKey = idKey.startsWith(PUNTO) ? textService.levaTesta(idKey, PUNTO) : idKey;//doppio per numeri sopra i 10 e fino a 100
+            }
+
+            try {
+                newOrdine = Integer.decode(idKey);
+                newOrdine++;
+            } catch (Exception unErrore) {
+                logger.error(unErrore);
+            }
+        }
+
+        //        if (newOrdine < 100) {
+        //            if (newOrdine < 10) {
+        //                keyCode = sigla + PUNTO + PUNTO + newOrdine;
+        //            }
+        //            else {
+        //                keyCode = sigla + PUNTO + newOrdine;
+        //            }
+        //        }
+        //        else {
+        //            keyCode = sigla + newOrdine;
+        //        }
+
+        return sigla + newOrdine;
+    }
+
+    public List<Versione> findByDescrizioneContainingIgnoreCase(final String value) {
+        return versioneRepository.findByDescrizioneContainingIgnoreCase(value);
+    }
+
+    public List<Versione> findByType(final AETypeVers type) {
+        return versioneRepository.findByType(type);
     }
 
 

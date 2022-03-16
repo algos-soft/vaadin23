@@ -26,7 +26,7 @@ public class Continente extends AEntity {
     private boolean abitato;
 
     public Continente(String id, int ordine, String nome, boolean abitato) {
-        this.id = id;
+//        this.id = id;
         this.ordine = ordine;
         this.nome = nome;
         this.abitato = abitato;

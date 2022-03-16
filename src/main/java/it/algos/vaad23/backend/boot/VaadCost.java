@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadCost {
 
+    public static final String ALGOS = "algos";
+
     public static final String PATH_RISORSE = "src/main/resources/META-INF/resources/";
 
     public static final String PATH_ALGOS = "it.algos";

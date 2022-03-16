@@ -20,7 +20,7 @@ import org.springframework.boot.web.servlet.support.*;
  * <p>
  * The entry point of the Spring Boot application.
  * <p>
- * Use the @PWA annotation make the application installable on phones, tablets
+ * Use the @PWA annotation make the application installable on phones, tablets,
  * and some desktop browsers.
  */
 @SpringBootApplication(scanBasePackages = {"it.algos"}, exclude = {SecurityAutoConfiguration.class})

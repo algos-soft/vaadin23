@@ -1,6 +1,9 @@
 package it.algos.vaad23.backend.entity;
 
 
+import com.vaadin.flow.component.template.Id;
+
+import javax.persistence.*;
 import java.io.*;
 import java.time.*;
 
@@ -73,6 +76,8 @@ public abstract class AEntity implements Serializable {
      */
     //    @AIField(caption = "Key", required = true)  @todo rimettere
     //    @AIColumn(header = "Key", widthEM = 12) @todo rimettere
+    @Id
+    @GeneratedValue
     public String id;
 
 
@@ -106,6 +111,13 @@ public abstract class AEntity implements Serializable {
     //    @AIColumn() @todo rimettere
     public LocalDateTime modifica;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
 }
 

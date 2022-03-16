@@ -1,6 +1,5 @@
 package it.algos.vaad23.backend.boot;
 
-import com.vaadin.flow.spring.annotation.*;
 import it.algos.application.views.addressform.*;
 import it.algos.simple.ui.views.about.*;
 import it.algos.simple.ui.views.carrelloform.*;
@@ -10,10 +9,9 @@ import it.algos.vaad23.backend.packages.geografia.continente.*;
 import it.algos.vaad23.backend.packages.versione.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.beans.factory.config.*;
-import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.EventListener;
 import org.springframework.context.event.*;
+import org.springframework.core.env.*;
 
 import javax.servlet.*;
 import java.util.*;
@@ -30,8 +28,8 @@ import java.util.*;
  * Any class that use the @EventListener annotation, will be executed before the application is up and its
  * onContextRefreshEvent method will be called
  * <p>
- * Questa classe riceve un @EventListener alla partenza del programma <br>
- * Deve essere creata una sottoclasse per l' applicazione specifica che: <br>
+ * Questa classe astratta riceve un @EventListener dalla sottoclasse concreta alla partenza del programma <br>
+ * Deve essere creata una sottoclasse (obbligatoria) per l' applicazione specifica che: <br>
  * 1) regola alcuni parametri standard del database MongoDB <br>
  * 2) regola le variabili generali dell'applicazione <br>
  * 3) crea i dati di alcune collections sul DB mongo <br>
@@ -41,9 +39,7 @@ import java.util.*;
  * 7) costruisce una versione demo <br>
  * 8) controlla l' esistenza di utenti abilitati all' accesso <br>
  */
-@SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class VaadBoot implements ServletContextListener {
+public abstract class VaadBoot implements ServletContextListener {
 
 
     /**
@@ -60,6 +56,12 @@ public class VaadBoot implements ServletContextListener {
      */
     public AIVers versInstance;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata dal framework SpringBoot/Vaadin usando il metodo setter() <br>
+     * al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    public Environment environment;
 
     /**
      * Constructor with @Autowired on setter. Usato quando ci sono sottoclassi. <br>
@@ -74,6 +76,7 @@ public class VaadBoot implements ServletContextListener {
         //        this.setLogger(logger);
         this.setDataInstance(dataInstance);
         this.setVersInstance(versInstance);
+        this.setEnvironment(environment);
     }// end of constructor with @Autowired on setter
 
     /**
@@ -135,6 +138,15 @@ public class VaadBoot implements ServletContextListener {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         VaadVar.versionClazz = VaadVers.class;
+
+        /**
+         * Versione dell' applicazione base vaadflow14 <br>
+         * Usato solo internamente <br>
+         * Deve essere regolato in backend.boot.VaadBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.vaadin23Version = Double.parseDouble(Objects.requireNonNull(environment.getProperty("algos.vaadin23.version")));
+
+
     }
 
     /**
@@ -189,6 +201,17 @@ public class VaadBoot implements ServletContextListener {
     @Qualifier(TAG_FLOW_VERSION)
     public void setVersInstance(final AIVers versInstance) {
         this.versInstance = versInstance;
+    }
+
+    /**
+     * Set con @Autowired di una property chiamata dal costruttore <br>
+     * Istanza di una classe di SpringBoot <br>
+     * Chiamata dal costruttore di questa classe con valore nullo <br>
+     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public void setEnvironment(final Environment environment) {
+        this.environment = environment;
     }
 
 }

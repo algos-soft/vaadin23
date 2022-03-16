@@ -10,14 +10,16 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
+import java.time.*;
+
 /**
  * Project vaadflow14
  * Created by Algos
  * User: gac
  * Date: mar, 08-feb-2022
  * Time: 16:45
- * Log delle versioni, modifiche e patch installate <br>
  * <p>
+ * Log delle versioni, modifiche e patch installate <br>
  * Executed on container startup <br>
  * Setup non-UI logic here <br>
  * Classe eseguita solo quando l'applicazione viene caricata/parte nel server (Tomcat o altri) <br>
@@ -25,9 +27,26 @@ import org.springframework.context.annotation.Scope;
  */
 @SpringComponent
 @Qualifier(TAG_FLOW_VERSION)
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadVers implements AIVers {
 
+    /**
+     * Property statica per le versioni inserite da vaadin23 direttamente <br>
+     */
+    private final static String CODE_PROJECT_VAADIN = "V";
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public DateService dateService;
+
+    /**
+     * Property corrente per la sigla iniziale della codifica alfanumerica delle versioni <br>
+     */
+    protected String codeProject;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -46,52 +65,64 @@ public class VaadVers implements AIVers {
     protected VersioneBackend backend;
 
     /**
+     * Executed on container startup <br>
+     * Setup non-UI logic here <br>
      * This method is called prior to the servlet context being initialized (when the Web application is deployed). <br>
      * You can initialize servlet context related data here. <br>
+     * Metodo eseguito solo quando l'applicazione viene caricata/parte nel server (Tomcat o altri) <br>
+     * Eseguito quindi a ogni avvio/riavvio del server e NON a ogni sessione <br>
      * <p>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      * Tutte le aggiunte, modifiche e patch vengono inserite con una versione <br>
      * L'ordine di inserimento è FONDAMENTALE <br>
      */
     public void inizia() {
-        //--prima installazione del progetto base VaadFlow14
+        int k = 0;
+        codeProject = CODE_PROJECT_VAADIN;
+
+        //--prima installazione del progetto base vaadin23
         //--non fa nulla, solo informativo
-        this.flow(AETypeVers.setup, "Setup", "Installazione iniziale di VaadFlow");
+        if (installa(++k)) {
+            this.crea(k, AETypeVers.setup, "Installazione iniziale di vaadin23");
+        }
+
+
     }
 
     /**
-     * Inserimento di una versione del progetto base VaadFlow14 <br>
+     * Controlla che la versione non esista già <br>
+     * Controlla in base alla sigla iniziale del progetto e al numero progressivo <br>
      */
-    protected void flow(final AETypeVers type, final String code, final String descrizione) {
-        this.crea(type, code, descrizione, true, false);
-    }
-
-
-    /**
-     * Inserimento di una versione del progetto specifico in esecuzione <br>
-     */
-    protected void specifico(final AETypeVers type, final String code, final String descrizione) {
-        this.crea(type, code, descrizione, false, false);
+    public boolean installa(final int k) {
+        return backend.isMancaByKeyUnica(codeProject, k);
     }
 
 
     /**
      * Inserimento di una versione del progetto base VaadFlow14 <br>
      * Controlla che la entity non esista già <br>
+     * Ordine messo in automatico (progressivo) <br>
      */
-    protected void crea(final AETypeVers type, final String titolo, final String descrizione, final boolean usaBase, final boolean usaCompany) {
+    protected void crea(final int k, final AETypeVers type, final String descrizione) {
         Versione versione = new Versione();
-        versione.id = "pippoz";
+        boolean riferitoVaadin23 = codeProject.equals(CODE_PROJECT_VAADIN);
+        String tag = " del ";
+
+        versione.id = codeProject + k;
+        versione.ordine = backend.nextOrdine();
         versione.type = type;
-        versione.titolo = titolo;
+        versione.release = riferitoVaadin23 ? VaadVar.vaadin23Version : VaadVar.projectVersion;
+        versione.titolo = String.format("%s%s%s", versione.release, tag, dateService.get());
+        versione.giorno = LocalDate.now();
         versione.descrizione = descrizione;
-        versione.usaBase = usaBase;
-        versione.usaCompany = usaCompany;
+        versione.company = ALGOS;
+        versione.vaadin23 = riferitoVaadin23;
+
         try {
             backend.add(versione);
         } catch (Exception unErrore) {
             logger.error(unErrore);
         }
-
     }
 
 }

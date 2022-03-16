@@ -73,4 +73,20 @@ public class VaadVar {
      */
     public static Class versionClazz;
 
+
+    /**
+     * Versione dell' applicazione base vaadflow14 <br>
+     * Usato solo internamente <br>
+     * Deve essere regolato in backend.boot.VaadBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static double vaadin23Version;
+
+
+    /**
+     * Versione dell' applicazione <br>
+     * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static double projectVersion;
+
 }

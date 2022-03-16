@@ -2,7 +2,6 @@ package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
@@ -155,9 +154,27 @@ public class LogService extends AbstractService {
     /**
      * Gestisce un log di errore <br>
      *
-     * @param message testo del log
+     * @param eccezione che genera il messaggio di log
      */
-    public void error(final Exception unErrore) {
+    public void warn(final Exception eccezione) {
+        base(AELogLevel.warn, eccezione);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     *
+     * @param eccezione che genera il messaggio di log
+     */
+    public void error(final Exception eccezione) {
+        base(AELogLevel.error, eccezione);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     *
+     * @param eccezione che genera il messaggio di log
+     */
+    public void base(final AELogLevel level, final Exception eccezione) {
         boolean usaTagIniziale = true;
         String tagClasse = "class=";
         String tagMetodo = "method=";
@@ -171,8 +188,9 @@ public class LogService extends AbstractService {
         int padClass = PAD_CLASS;
         int padMethod = PAD_METHOD;
         int padLine = PAD_LINE;
+        String errorText = eccezione.getCause() != null ? eccezione.getCause().getMessage() : eccezione.getMessage();
 
-        StackTraceElement[] matrice = unErrore.getStackTrace();
+        StackTraceElement[] matrice = eccezione.getStackTrace();
         Optional stackPossibile = Arrays.stream(matrice)
                 .filter(algos -> algos.getClassName().startsWith(PATH_ALGOS))
                 .findFirst();
@@ -199,9 +217,9 @@ public class LogService extends AbstractService {
         metodo = textService.fixSizeQuadre(metodo, padMethod);
         riga = textService.fixSizeQuadre(riga + VUOTA, padLine);
 
-        message = String.format("%s%s%s%s%s%s%s", classe, DOPPIO_SPAZIO, metodo, DOPPIO_SPAZIO, riga, SEP, unErrore.getCause().getMessage());
+        message = String.format("%s%s%s%s%s%s%s", classe, DOPPIO_SPAZIO, metodo, DOPPIO_SPAZIO, riga, SEP, errorText);
 
-        this.logBase(AELogLevel.error, message);
+        this.logBase(level, message);
     }
 
     /**
@@ -396,7 +414,7 @@ public class LogService extends AbstractService {
      *
      * @param message da registrare
      */
-    public void log(AITypeLog type, String message) {
+    public void log(AIType type, String message) {
         //        info(type, message); @todo sistemare
     }
 

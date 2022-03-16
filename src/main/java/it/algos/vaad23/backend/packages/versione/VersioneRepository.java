@@ -1,7 +1,7 @@
 package it.algos.vaad23.backend.packages.versione;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
@@ -25,12 +25,26 @@ import java.util.*;
 //@AIScript(sovraScrivibile = true)
 public interface VersioneRepository extends MongoRepository<Versione, String> {
 
+    @Override
     List<Versione> findAll();
 
-    <Versione extends AEntity> Versione insert(Versione entity);
+    @Override
+    Versione insert(Versione entity);
 
-    <Versione extends AEntity> Versione save(Versione entity);
+    @Override
+    Versione save(Versione entity);
 
+    @Override
     void delete(Versione entity);
+
+    Versione findFirstByTitoloAndDescrizione(String titolo, String descrizione);
+
+    List<Versione> findFirstVersioneByTitoloIsNotNullOrderByOrdineDesc();
+
+    List<Versione> findByIdRegexOrderByOrdineDesc(String idKey);
+
+    List<Versione> findByDescrizioneContainingIgnoreCase(String descrizione);
+
+    List<Versione> findByType(AETypeVers type);
 
 }// end of crud repository class

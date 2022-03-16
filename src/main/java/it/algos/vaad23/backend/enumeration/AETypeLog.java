@@ -1,7 +1,5 @@
 package it.algos.vaad23.backend.enumeration;
 
-import it.algos.vaad23.backend.interfaces.*;
-
 import java.util.*;
 
 /**
@@ -11,7 +9,7 @@ import java.util.*;
  * Date: mer, 26-set-2018
  * Time: 07:39
  */
-public enum AETypeLog implements AITypeLog {
+public enum AETypeLog implements AIType {
 
     system("system"),
     setup("setup"),
