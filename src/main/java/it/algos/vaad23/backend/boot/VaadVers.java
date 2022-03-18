@@ -4,13 +4,11 @@ import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.packages.versione.*;
+import it.algos.vaad23.backend.packages.utility.versione.*;
 import it.algos.vaad23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
-
-import java.time.*;
 
 /**
  * Project vaadflow14
@@ -104,25 +102,9 @@ public class VaadVers implements AIVers {
      * Ordine messo in automatico (progressivo) <br>
      */
     protected void crea(final int k, final AETypeVers type, final String descrizione) {
-        Versione versione = new Versione();
+        String key = codeProject + k;
         boolean riferitoVaadin23 = codeProject.equals(CODE_PROJECT_VAADIN);
-        String tag = " del ";
-
-        versione.id = codeProject + k;
-        versione.ordine = backend.nextOrdine();
-        versione.type = type;
-        versione.release = riferitoVaadin23 ? VaadVar.vaadin23Version : VaadVar.projectVersion;
-        versione.titolo = String.format("%s%s%s", versione.release, tag, dateService.get());
-        versione.giorno = LocalDate.now();
-        versione.descrizione = descrizione;
-        versione.company = ALGOS;
-        versione.vaadin23 = riferitoVaadin23;
-
-        try {
-            backend.add(versione);
-        } catch (Exception unErrore) {
-            logger.error(unErrore);
-        }
+        backend.crea(key, type, descrizione, ALGOS, riferitoVaadin23);
     }
 
 }

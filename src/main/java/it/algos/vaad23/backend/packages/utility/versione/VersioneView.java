@@ -1,10 +1,13 @@
-package it.algos.vaad23.backend.packages.versione;
+package it.algos.vaad23.backend.packages.utility.versione;
 
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -21,6 +24,9 @@ import java.util.*;
 @Route(value = TAG_VERSIONE, layout = MainLayout.class)
 public class VersioneView extends CrudView {
 
+    private TextField filter;
+
+    private VersioneBackend backend;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -30,14 +36,13 @@ public class VersioneView extends CrudView {
      * Regola il service specifico di persistenza dei dati e lo passa al costruttore della superclasse <br>
      * Regola la entityClazz (final nella superclasse) associata a questa @Route view <br>
      *
-     * @param backend service specifico per la businessLogic e il collegamento con la persistenza dei dati
+     * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
-    public VersioneView(@Autowired final VersioneBackend backend) {
-        super(backend, Versione.class);
+    public VersioneView(@Autowired final VersioneBackend crudBackend) {
+        super(crudBackend, Versione.class, true);
+        this.backend = crudBackend;
 
         crud.getGrid().setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
-        //        crud.getCrudFormFactory().setFieldCaptions(CrudOperation.ADD, "Add new pippoz");
-        crud.setRowCountCaption("%d user(s) found");
 
         String larId = "3em";
         String larType = "9em";
@@ -52,20 +57,19 @@ public class VersioneView extends CrudView {
         crud.getGrid().getColumnByKey("company").setWidth(larCompany).setFlexGrow(0);
 
         // additional components
-        TextField filter = new TextField();
+        filter = new TextField();
         filter.setPlaceholder("Filter by descrizione");
         filter.setClearButtonVisible(true);
         crud.getCrudLayout().addFilterComponent(filter);
-        filter.addValueChangeListener(e -> crud.refreshGrid());
+        filter.addValueChangeListener(event -> crud.refreshGrid());
 
-        //                ComboBox combo = new ComboBox();
-        //                combo.setPlaceholder("Type");
-        //                combo.setClearButtonVisible(true);
-        //                List items = AETypeVers.getAll();
-        //                combo.setItems(items);
-        //                crud.getCrudLayout().addFilterComponent(combo);
-        //                combo.addValueChangeListener(e -> crud.refreshGrid());
-        //                combo.setValue(AETypeVers.miglioramento);
+        ComboBox combo = new ComboBox();
+        combo.setPlaceholder("Type");
+        combo.setClearButtonVisible(true);
+        List items = AETypeVers.getAll();
+        combo.setItems(items);
+        crud.getCrudLayout().addFilterComponent(combo);
+        combo.addValueChangeListener(event -> filtroCombo(event));
 
         // logic configuration
         crud.setOperations(
@@ -87,5 +91,22 @@ public class VersioneView extends CrudView {
         crud.setAddOperationVisible(false);
         crud.setDeleteOperationVisible(false);
     }
+
+    public void filtroCombo(HasValue.ValueChangeEvent event) {
+        List items;
+
+        if (event.getValue() instanceof AETypeVers type) {
+            filter.setValue(VUOTA);
+            items = backend.findByType(type);
+            crud.getGrid().setItems(items);
+            return;
+        }
+
+        if (event.getValue() == null) {
+            crud.refreshGrid();
+            return;
+        }
+    }
+
 
 }// end of crud @Route view class

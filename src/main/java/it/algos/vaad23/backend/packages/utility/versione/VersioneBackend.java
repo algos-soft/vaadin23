@@ -1,12 +1,14 @@
-package it.algos.vaad23.backend.packages.versione;
+package it.algos.vaad23.backend.packages.utility.versione;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+import java.time.*;
 import java.util.*;
 
 /**
@@ -28,7 +30,7 @@ import java.util.*;
 //@AIScript(sovraScrivibile = true)
 public class VersioneBackend extends EntityBackend {
 
-    private VersioneRepository versioneRepository;
+    private VersioneRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -38,37 +40,37 @@ public class VersioneBackend extends EntityBackend {
      * Regola la classe di persistenza dei dati specifica e la passa al costruttore della superclasse <br>
      * Regola la entityClazz (final nella superclasse) associata a questo service <br>
      *
-     * @param repository per la persistenza dei dati
+     * @param crudRepository per la persistenza dei dati
      */
-    public VersioneBackend(@Autowired @Qualifier(TAG_VERSIONE) final MongoRepository repository) {
-        super(repository, Versione.class);
-        this.versioneRepository = (VersioneRepository) repository;
+    public VersioneBackend(@Autowired @Qualifier(TAG_VERSIONE) final MongoRepository crudRepository) {
+        super(crudRepository, Versione.class);
+        this.repository = (VersioneRepository) crudRepository;
     }
 
-    //    public long nextId() {
-    //        long nextId = 1;
-    //        List<Versione> listaDiUnSoloElemento = null;
-    //        Versione versione = null;
-    //
-    //        try {
-    //            listaDiUnSoloElemento = versioneRepository.findFirstVersioneByIdIsNotNullOrderByIdDesc();
-    //        } catch (Exception unErrore) {
-    //            logger.error(unErrore);
-    //            return nextId;
-    //        }
-    //
-    //        if (listaDiUnSoloElemento != null && listaDiUnSoloElemento.size() == 1) {
-    //            versione = listaDiUnSoloElemento.get(0);
-    //        }
-    //
-    //        if (versione != null) {
-    //            nextId = versione.getId();
-    //            nextId = nextId + 1;
-    //        }
-    //
-    //        return nextId;
-    //    }
 
+    /**
+     * Ordine messo in automatico (progressivo) <br>
+     */
+    public void crea(final String key, final AETypeVers type, final String descrizione, final String company, final boolean riferitoVaadin23) {
+        Versione versione = new Versione();
+        String tag = " del ";
+
+        versione.id = key;
+        versione.ordine = this.nextOrdine();
+        versione.type = type;
+        versione.release = riferitoVaadin23 ? VaadVar.vaadin23Version : VaadVar.projectVersion;
+        versione.titolo = String.format("%s%s%s", versione.release, tag, dateService.get());
+        versione.giorno = LocalDate.now();
+        versione.descrizione = textService.isValid(descrizione) ? descrizione : null; ;
+        versione.company = textService.isValid(company) ? company : null;
+        versione.vaadin23 = riferitoVaadin23;
+
+        try {
+            this.add(versione);
+        } catch (Exception unErrore) {
+            logger.error(unErrore);
+        }
+    }
 
     public int nextOrdine() {
         int nextOrdine = 1;
@@ -76,7 +78,7 @@ public class VersioneBackend extends EntityBackend {
         Versione versione = null;
 
         try {
-            listaDiUnSoloElemento = versioneRepository.findFirstVersioneByTitoloIsNotNullOrderByOrdineDesc();
+            listaDiUnSoloElemento = repository.findFirstVersioneByTitoloIsNotNullOrderByOrdineDesc();
         } catch (Exception unErrore) {
             logger.error(unErrore);
             return nextOrdine;
@@ -98,7 +100,7 @@ public class VersioneBackend extends EntityBackend {
         Versione versione = null;
 
         try {
-            versione = versioneRepository.findFirstByTitoloAndDescrizione(titolo, descrizione);
+            versione = repository.findFirstByTitoloAndDescrizione(titolo, descrizione);
         } catch (Exception unErrore) {
             logger.error(unErrore);
         }
@@ -146,12 +148,11 @@ public class VersioneBackend extends EntityBackend {
      * @param newOrdine progressivo della versione (transient, obbligatorio) <br>
      */
     public String getIdKey(final String sigla, int newOrdine) {
-        String keyCode = VUOTA;
         List<Versione> lista;
         String idKey = "0";
 
         if (newOrdine == 0) {
-            lista = versioneRepository.findByIdRegexOrderByOrdineDesc(sigla);
+            lista = repository.findByIdRegexOrderByOrdineDesc(sigla);
             if (lista != null && lista.size() > 0) {
                 idKey = lista.get(0).getId();
                 idKey = idKey.substring(1);
@@ -167,27 +168,15 @@ public class VersioneBackend extends EntityBackend {
             }
         }
 
-        //        if (newOrdine < 100) {
-        //            if (newOrdine < 10) {
-        //                keyCode = sigla + PUNTO + PUNTO + newOrdine;
-        //            }
-        //            else {
-        //                keyCode = sigla + PUNTO + newOrdine;
-        //            }
-        //        }
-        //        else {
-        //            keyCode = sigla + newOrdine;
-        //        }
-
         return sigla + newOrdine;
     }
 
     public List<Versione> findByDescrizioneContainingIgnoreCase(final String value) {
-        return versioneRepository.findByDescrizioneContainingIgnoreCase(value);
+        return repository.findByDescrizioneContainingIgnoreCase(value);
     }
 
     public List<Versione> findByType(final AETypeVers type) {
-        return versioneRepository.findByType(type);
+        return repository.findByType(type);
     }
 
 

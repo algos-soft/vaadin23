@@ -28,6 +28,7 @@ import java.util.*;
 //@AIScript(sovraScrivibile = true)
 public class ContinenteBackend extends EntityBackend {
 
+    private ContinenteRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -37,10 +38,11 @@ public class ContinenteBackend extends EntityBackend {
      * Regola la classe di persistenza dei dati specifica e la passa al costruttore della superclasse <br>
      * Regola la entityClazz (final nella superclasse) associata a questo service <br>
      *
-     * @param repository per la persistenza dei dati
+     * @param crudRepository per la persistenza dei dati
      */
-    public ContinenteBackend(@Autowired @Qualifier(TAG_CONTINENTE) final MongoRepository repository) {
-        super(repository, Continente.class);
+    public ContinenteBackend(@Autowired @Qualifier(TAG_CONTINENTE) final MongoRepository crudRepository) {
+        super(crudRepository, Continente.class);
+        this.repository = (ContinenteRepository) crudRepository;
     }
 
     public void reset() {

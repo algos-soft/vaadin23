@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.*;
 import org.slf4j.*;
 import org.springframework.boot.test.context.*;
 
+import java.util.*;
 import java.util.stream.*;
 
 /**
@@ -104,21 +105,71 @@ public class LogServiceTest extends ATest {
 
     @Test
     @Order(1)
-    @DisplayName("1 - Debug generico")
-    void debug() {
-        sorgente = "Messaggio di debug";
+    @DisplayName("1 - Messaggi solo testo su slf4jLogger")
+    void log1() {
+        sorgente2 = AELogLevel.info.toString();
+        sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
+        service.info(sorgente);
+
+        sorgente2 = AELogLevel.warn.toString();
+        sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
+        service.warn(sorgente);
+
+        sorgente2 = AELogLevel.error.toString();
+        sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
+        service.error(sorgente);
+
+        sorgente2 = AELogLevel.debug.toString();
+        sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         service.debug(sorgente);
     }
 
     @Test
     @Order(2)
-    @DisplayName("2 - Info generico")
-    void info() {
-        sorgente = "Messaggio di info";
-        service.info(sorgente);
+    @DisplayName("2 - Messaggi con typo su slf4jLogger")
+    void log2() {
+        sorgente2 = AELogLevel.info.toString();
+        sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        service.info(AETypeLog.checkData, sorgente);
+
+        sorgente2 = AELogLevel.info.toString();
+        sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        service.info(AETypeLog.download, sorgente);
+
+        sorgente2 = AELogLevel.info.toString();
+        sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        service.info(AETypeLog.preferenze, sorgente);
+
+        sorgente2 = AELogLevel.warn.toString();
+        sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        service.warn(AETypeLog.modifica, sorgente);
+
+        sorgente2 = AELogLevel.error.toString();
+        sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        service.error(AETypeLog.startup, sorgente);
+
+        sorgente2 = AELogLevel.debug.toString();
+        sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        service.debug(sorgente);
     }
 
     @Test
+    @Order(3)
+    @DisplayName("3 - Messaggi registrati su mongoDB")
+    void log3() {
+        sorgente2 = AELogLevel.info.toString();
+
+        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
+        service.infoDb(AETypeLog.checkData, sorgente);
+
+        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
+        service.warnDb(AETypeLog.export, sorgente);
+
+        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
+        service.errorDb(AETypeLog.delete, sorgente);
+    }
+
+    //    @Test
     @Order(3)
     @DisplayName("3 - Warn generico")
     void warn() {
@@ -126,7 +177,7 @@ public class LogServiceTest extends ATest {
         service.warn(sorgente);
     }
 
-    @Test
+    //    @Test
     @Order(4)
     @DisplayName("4 - Error generico")
     void error() {
@@ -134,14 +185,14 @@ public class LogServiceTest extends ATest {
         service.error(sorgente);
     }
 
-    @Test
+    //    @Test
     @Order(5)
     @DisplayName("5 - Info vuota")
     void info2() {
         service.info(VUOTA);
     }
 
-    @Test
+    //    @Test
     @Order(6)
     @DisplayName("6 - Info tipizzata")
     void infoType() {
@@ -149,7 +200,7 @@ public class LogServiceTest extends ATest {
         service.info(AETypeLog.setup, sorgente);
     }
 
-    @Test
+    //    @Test
     @Order(7)
     @DisplayName("7 - Info con company")
     void infoCompany() {
@@ -158,27 +209,35 @@ public class LogServiceTest extends ATest {
         service.info(AETypeLog.setup, wrap, sorgente);
     }
 
-    @Test
+    //    @Test
     @Order(8)
     @DisplayName("8 - Info con incolonnamento")
-        //--companySigla
-        //--userName
-        //--addressIP
-        //--type
-        //--messaggio
+    //--companySigla
+    //--userName
+    //--addressIP
+    //--type
+    //--messaggio
     void infoCompanyIncolonnate() {
         System.out.println("8 - Info con incolonnamento");
         System.out.println(VUOTA);
         COMPANY().forEach(this::printWrap);
     }
 
-    @Test
+    //    @Test
     @Order(9)
     @DisplayName("9 - Invio di una mail")
     void infoMail() {
         System.out.println("9 - Invio di una mail");
         sorgente = "L'utente Rossi Carlo si è loggato con una password errata";
         wrap = appContext.getBean(WrapLogCompany.class, "crpt", "Rossi C.", "2001:B07:AD4:2177:9B56:DB51:33E0:A151");
+        //        service.mail(AETypeLog.login, wrap, sorgente);
+    }
+
+    //    @Test
+    @Order(10)
+    @DisplayName("10 - Prova")
+    void prova() {
+        arrayService.isEmpty(new ArrayList());
         //        service.mail(AETypeLog.login, wrap, sorgente);
     }
 

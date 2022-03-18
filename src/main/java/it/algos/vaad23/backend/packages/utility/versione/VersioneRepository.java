@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.versione;
+package it.algos.vaad23.backend.packages.utility.versione;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;

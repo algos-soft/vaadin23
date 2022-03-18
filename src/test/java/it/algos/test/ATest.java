@@ -4,6 +4,7 @@ import com.vaadin.flow.server.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.service.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
@@ -160,6 +161,9 @@ public abstract class ATest {
     @InjectMocks
     protected ResourceService resourceService;
 
+    @Autowired
+    protected LoggerBackend loggerBackend;
+
 
     //--tag
     //--esiste nella enumeration
@@ -232,6 +236,7 @@ public abstract class ATest {
         assertNotNull(reflectionService);
         assertNotNull(fileService);
         assertNotNull(resourceService);
+        assertNotNull(loggerBackend);
     }
 
 
@@ -246,8 +251,13 @@ public abstract class ATest {
         dateService.textService = textService;
         arrayService.textService = textService;
         resourceService.textService = textService;
+        logService.fileService = fileService;
+        logService.textService = textService;
+        logService.loggerBackend = loggerBackend;
         resourceService.fileService = fileService;
         fileService.logger = logService;
+        fileService.textService = textService;
+        arrayService.logger = logService;
     }
 
     /**
@@ -309,9 +319,11 @@ public abstract class ATest {
         if (unErrore.getEntityBean() != null) {
             System.out.println(String.format("EntityBean %s %s", FORWARD, unErrore.getEntityBean().toString()));
         }
-        if (unErrore.getClazz() != null) {
-            System.out.println(String.format("Clazz %s %s", FORWARD, unErrore.getClazz().getSimpleName()));
-        }
+
+        //@todo rimettere in AlgosException
+        //        if (unErrore.getClazz() != null) {
+        //            System.out.println(String.format("Clazz %s %s", FORWARD, unErrore.getClazz().getSimpleName()));
+        //        }
         //        if (textService.isValid(unErrore.getMethod())) {
         //            System.out.println(String.format("Method %s %s()", FORWARD, unErrore.getMethod()));
         //        }
@@ -325,7 +337,7 @@ public abstract class ATest {
         }
 
         if (unErrore instanceof AlgosException erroreAlgos) {
-            System.out.println(String.format("Class %s %s", FORWARD, erroreAlgos.getClazz().getSimpleName()));
+            System.out.println(String.format("Class %s %s", FORWARD, erroreAlgos.getClazz()));
             System.out.println(String.format("Method %s %s", FORWARD, erroreAlgos.getMethod()));
             System.out.println(String.format("Message %s %s", FORWARD, erroreAlgos.getMessage()));
         }

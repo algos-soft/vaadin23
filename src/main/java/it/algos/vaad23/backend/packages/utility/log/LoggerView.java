@@ -1,8 +1,6 @@
-package it.algos.vaad23.backend.packages.geografia.continente;
+package it.algos.vaad23.backend.packages.utility.log;
 
-import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.router.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -10,15 +8,15 @@ import org.springframework.beans.factory.annotation.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: dom, 13-mar-2022
- * Time: 20:30
+ * Date: mer, 16-mar-2022
+ * Time: 19:47
  * <p>
  */
-@PageTitle(TAG_CONTINENTE)
-@Route(value = TAG_CONTINENTE, layout = MainLayout.class)
-public class ContinenteView extends CrudView {
+@PageTitle("Logger")
+@Route(value = "logger", layout = MainLayout.class)
+public class LoggerView extends CrudView {
 
-    private ContinenteBackend backend;
+    private LoggerBackend backend;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -30,21 +28,11 @@ public class ContinenteView extends CrudView {
      *
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
-    public ContinenteView(@Autowired final ContinenteBackend crudBackend) {
-        super(crudBackend, Continente.class, true);
+    public LoggerView(@Autowired final LoggerBackend crudBackend) {
+        super(crudBackend, Logger.class, false);
         this.backend = crudBackend;
 
-        crud.getGrid().setColumns("ordine", "nome", "abitato");
-
-        // additional components
-        Button reset = new Button("Reset");
-        crud.getCrudLayout().addFilterComponent(reset);
-        reset.addClickListener(e -> reset());
-    }
-
-    public void reset() {
-        backend.reset();
-        crud.refreshGrid();
+        crud.getGrid().setColumns("livello", "type", "evento", "descrizione", "company", "user", "classe", "metodo", "linea");
     }
 
 }// end of crud @Route view class

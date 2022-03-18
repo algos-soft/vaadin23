@@ -2,7 +2,9 @@ package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.wrapper.*;
+import org.slf4j.Logger;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
@@ -24,7 +26,7 @@ import java.util.function.*;
  * <p>
  * Classe di servizio per i log. <br>
  * <p>
- * Diverse località di 'uscita' dei logs, regolate da flag: <br>
+ * Diverse modalità di 'uscita' dei logs, regolate da flag: <br>
  * A) nella cartella di log (sempre) <br>
  * B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag <br>
  * C) nella collection del database (facoltativo per alcuni programmi) <br>
@@ -33,10 +35,14 @@ import java.util.function.*;
  * Diversi 'livelli' dei logs: debug, info, warn, error <br>
  * <p>
  * Diverse modalità di 'presentazione' (formattazione e incolonnamento) dei logs, regolate da flag: <br>
- * Nel log, incolonnare la data, alcuni campi fissi (di larghezza) e poi la descrizione libera <br>
- * A) Se è una multi-company con security, i campi fissi sono: company, utente, IP e type <br>
- * B) Se l' applicazione non è multi-company e non ha security, l' unico campo fisso è il type <br>
- * Nella mail, invece d'incolonnare i campi fissi, si va a capo <br>
+ * A) Nel log, incolonnare la data, alcuni campi fissi (di larghezza) e poi la descrizione libera <br>
+ * ...Se è una multi-company con security, i campi fissi sono: company, utente, IP e type <br>
+ * ...Se l' applicazione non è multi-company e non ha security, l' unico campo fisso è il type <br>
+ * C) Nella view della collection i campi sono (per i livelli info e warn):
+ * ...Multi-company -> livello, type, data, descrizione, company, user
+ * ...Single-company -> livello, type, data, descrizione,
+ * C) Per i livelli error e debug si aggiungono -> classe, metodo, linea
+ * D) Nella mail, invece d'incolonnare i campi fissi, si va a capo <br>
  * <p>
  * I type di log vengono presi dalla enum AETypeLog <br>
  * Il progetto specifico può aggiungere dei type presi da una propria enum <br>
@@ -59,6 +65,14 @@ public class LogService extends AbstractService {
     public static final int PAD_METHOD = 20;
 
     public static final int PAD_LINE = 3;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public LoggerBackend loggerBackend;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -106,32 +120,6 @@ public class LogService extends AbstractService {
         esegue(AETypeLog.warn, message, clazz, methodName);
     }
 
-    /**
-     * Gestisce un log di debug <br>
-     *
-     * @param message testo del log
-     */
-    public void debug(final String message) {
-        this.logBase(AELogLevel.debug, message);
-    }
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param message testo del log
-     */
-    public void info(final String message) {
-        this.info(null, message);
-    }
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param message testo del log
-     */
-    public void info(final AETypeLog type, final String message) {
-        this.info(type, null, message);
-    }
 
     /**
      * Gestisce un log di info <br>
@@ -142,14 +130,6 @@ public class LogService extends AbstractService {
         this.logBase(AELogLevel.info, type, wrap, message);
     }
 
-    /**
-     * Gestisce un log di warning <br>
-     *
-     * @param message testo del log
-     */
-    public void warn(final String message) {
-        this.logBase(AELogLevel.warn, message);
-    }
 
     /**
      * Gestisce un log di errore <br>
@@ -222,14 +202,6 @@ public class LogService extends AbstractService {
         this.logBase(level, message);
     }
 
-    /**
-     * Gestisce un log di errore <br>
-     *
-     * @param message testo del log
-     */
-    public void error(final String message) {
-        this.logBase(AELogLevel.error, message);
-    }
 
     /**
      * Gestisce una mail <br>
@@ -408,14 +380,157 @@ public class LogService extends AbstractService {
         //        warn(unErrore.toString(), clazz, methodName); @todo sistemare
     }
 
+
     /**
-     * Gestisce un log generico <br>
-     * Di default usa il livello 'info' <br>
+     * Gestisce un log di info <br>
      *
-     * @param message da registrare
+     * @param message di descrizione dell'evento
      */
-    public void log(AIType type, String message) {
-        //        info(type, message); @todo sistemare
+    public void info(final String message) {
+        logBase(AELogLevel.info, AETypeLog.system, false, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di info <br>
+     *
+     * @param type    merceologico di specificazione
+     * @param message di descrizione dell'evento
+     */
+    public void info(final AETypeLog type, final String message) {
+        logBase(AELogLevel.info, type, false, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di info <br>
+     * Facoltativo (flag) su mongoDB <br>
+     *
+     * @param type    merceologico di specificazione
+     * @param message di descrizione dell'evento
+     */
+    public void infoDb(final AETypeLog type, final String message) {
+        logBase(AELogLevel.info, type, true, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di warning <br>
+     *
+     * @param message di descrizione dell'evento
+     */
+    public void warn(final String message) {
+        logBase(AELogLevel.warn, AETypeLog.system, false, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di warning <br>
+     *
+     * @param type    merceologico di specificazione
+     * @param message di descrizione dell'evento
+     */
+    public void warn(final AETypeLog type, final String message) {
+        logBase(AELogLevel.warn, type, false, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di warning <br>
+     * Facoltativo (flag) su mongoDB <br>
+     *
+     * @param type    merceologico di specificazione
+     * @param message di descrizione dell'evento
+     */
+    public void warnDb(final AETypeLog type, final String message) {
+        logBase(AELogLevel.warn, type, true, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     *
+     * @param message di descrizione dell'evento
+     */
+    public void error(final String message) {
+        logBase(AELogLevel.error, AETypeLog.system, false, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     *
+     * @param type    merceologico di specificazione
+     * @param message di descrizione dell'evento
+     */
+    public void error(final AETypeLog type, final String message) {
+        logBase(AELogLevel.error, type, false, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     * Facoltativo (flag) su mongoDB <br>
+     *
+     * @param type    merceologico di specificazione
+     * @param message di descrizione dell'evento
+     */
+    public void errorDb(final AETypeLog type, final String message) {
+        logBase(AELogLevel.error, type, true, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di debug <br>
+     *
+     * @param message di descrizione dell'evento
+     */
+    public void debug(final String message) {
+        logBase(AELogLevel.debug, AETypeLog.system, false, false, message, null, null);
+    }
+
+
+    /**
+     * Gestisce tutti i log <br>
+     * <p>
+     * Sempre su slf4jLogger <br>
+     * Facoltativo (flag) su mongoDB <br>
+     * Facoltativo (flag) via mail <br>
+     * <p>
+     * Data evento sempre (automatica)
+     * Type e descrizione sempre
+     * In caso di errore runTime anche classe, metodo e riga del file che ha generato l'errore
+     * In caso di multiCompany anche company, user e IP
+     * <p>
+     * Formattazioni diverse:
+     * ...slf4jLogger (parentesi quadre di larghezza fissa)
+     * ...mongoDb (singole colonne per le property)
+     * ...mail (a capo ogni property)
+     *
+     * @param level       tra info,warn,error,debug
+     * @param type        merceologico di specificazione
+     * @param flagUsaDB   per memorizzare anche su mongoDB e visualizzare in LoggerView
+     * @param flagUsaMail per spedire una mail
+     * @param descrizione dell'evento in alternativa/aggiunta a quella dell'eccezione
+     * @param eccezione   da gestire
+     * @param wrap        di informazioni su company, userName e address
+     */
+    private void logBase(final AELogLevel level,
+                         final AETypeLog type,
+                         final boolean flagUsaDB,
+                         final boolean flagUsaMail,
+                         final String descrizione,
+                         final Exception eccezione,
+                         final WrapLogCompany wrap) {
+
+        String typeText = textService.fixSizeQuadre(type.getTag(), 10);
+        String message = String.format("%s%s%s", typeText, SPAZIO, descrizione);
+
+        // logback-spring.xml
+        switch (level) {
+            case info -> slf4jLogger.info(message);
+            case warn -> slf4jLogger.warn(message);
+            case error -> slf4jLogger.error(message);
+            case debug -> slf4jLogger.debug(message);
+            default -> slf4jLogger.info(message);
+        }
+
+        // mongoDB
+        if (flagUsaDB) {
+            loggerBackend.crea(level, type, descrizione, VUOTA, VUOTA, VUOTA, VUOTA, 0);
+        }
+
     }
 
 }

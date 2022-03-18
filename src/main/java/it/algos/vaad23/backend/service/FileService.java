@@ -2115,7 +2115,7 @@ public class FileService extends AbstractService {
         try {
             listaAllPathNames = recursionSubPathNames(start);
         } catch (Exception unErrore) {
-            throw AlgosException.stack(unErrore, getClass(), "getAllSubPathFiles");
+            throw AlgosException.crea(unErrore);
         }
 
         if (arrayService.isAllValid(listaAllPathNames)) {
@@ -2156,13 +2156,13 @@ public class FileService extends AbstractService {
 
         nomeModulo = AEWizCost.nameVaadFlow14Lower.get();
         if (textService.isEmpty(nomeModulo)) {
-            throw AlgosException.message(String.format("Manca il nome del modulo in %s.%s", this.getClass().getSimpleName(), "getPathAllPackageFiles()"));
+            logger.error(AlgosException.crea("Manca il nome del modulo"));
         }
         lista.addAll(getPathModuloPackageFiles(nomeModulo));
 
         nomeModulo = VaadVar.projectNameModulo;
         if (textService.isEmpty(nomeModulo)) {
-            throw AlgosException.message(String.format("Manca il nome del modulo in %s.%s", this.getClass().getSimpleName(), "getPathAllPackageFiles()"));
+            logger.error(AlgosException.crea("Manca il nome del modulo"));
         }
         lista.addAll(getPathModuloPackageFiles(VaadVar.projectNameModulo));
 
@@ -2254,9 +2254,9 @@ public class FileService extends AbstractService {
 
         if (textService.isEmpty(simpleName)) {
             if (simpleName == null) {
-                throw AlgosException.stack("Il parametro in ingresso è nullo", getClass(), "getCanonicalName");
+                logger.error(AlgosException.crea("Il parametro in ingresso è nullo"));
             }
-            throw AlgosException.stack("Il parametro in ingresso è vuoto", getClass(), "getCanonicalName");
+            logger.error(AlgosException.crea("Il parametro in ingresso è vuoto"));
         }
 
         if (simpleName.endsWith(JAVA_SUFFIX)) {
@@ -2266,7 +2266,7 @@ public class FileService extends AbstractService {
 
         lista = getPathBreveAllPackageFiles();
         if (lista == null || lista.size() < 1) {
-            throw AlgosException.stack("Non sono riuscito a creare la lista dei files del package", getClass(), "getCanonicalName");
+            logger.error(AlgosException.crea("Non sono riuscito a creare la lista dei files del package"));
         }
 
         classeFinalePrevista = estraeClasseFinale(simpleName);
@@ -2280,7 +2280,7 @@ public class FileService extends AbstractService {
         }
 
         if (textService.isEmpty(canonicalName)) {
-            throw AlgosException.stack(String.format("Nel package non esiste la classe %s", simpleName), getClass(), "getCanonicalName");
+            logger.error(AlgosException.crea(String.format("Nel package non esiste la classe %s", simpleName)));
         }
 
         return canonicalName;

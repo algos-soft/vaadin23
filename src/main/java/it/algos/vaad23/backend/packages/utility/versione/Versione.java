@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.versione;
+package it.algos.vaad23.backend.packages.utility.versione;
 
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;

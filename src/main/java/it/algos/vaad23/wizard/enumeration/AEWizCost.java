@@ -369,13 +369,13 @@ public enum AEWizCost {
                 if (text.isValid(this.value)) {
                     if (!valueSystem.equals(this.value)) {
                         message = String.format("FlowVar.projectNameDirectoryIdea=%s mentre il programma gira in %s", this.value, valueSystem);
-                        logger.log(AETypeLog.wizard, message);
+                        logger.info(AETypeLog.wizard, message);
                         this.value = ERRORE;
                     }
                 }
                 else {
                     message = String.format("Il programma gira in %s ma manca il valore di FlowVar.projectNameDirectoryIdea come controllo", valueSystem);
-                    logger.log(AETypeLog.wizard, message);
+                    logger.info(AETypeLog.wizard, message);
                     this.value = ERRORE;
                 }
             }
@@ -407,7 +407,7 @@ public enum AEWizCost {
                 }
                 else {
                     message = String.format("Il programma gira in %s ma manca il valore di FlowVar.projectNameModulo come controllo", valueSystem);
-                    logger.log(AETypeLog.wizard, message);
+                    logger.info(AETypeLog.wizard, message);
                     this.value = ERRORE;
                 }
             }
@@ -442,7 +442,7 @@ public enum AEWizCost {
                 this.setValida(true);
             }
             else {
-                logger.log(AETypeLog.wizard, "Manca il nome del progetto in FlowVar.projectNameUpper");
+                logger.info(AETypeLog.wizard, "Manca il nome del progetto in FlowVar.projectNameUpper");
                 this.value = ERRORE;
                 this.setValida(false);
             }

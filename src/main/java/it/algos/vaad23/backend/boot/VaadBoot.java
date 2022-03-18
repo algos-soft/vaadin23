@@ -6,7 +6,9 @@ import it.algos.simple.ui.views.carrelloform.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.packages.geografia.continente.*;
-import it.algos.vaad23.backend.packages.versione.*;
+import it.algos.vaad23.backend.packages.utility.log.*;
+import it.algos.vaad23.backend.packages.utility.note.*;
+import it.algos.vaad23.backend.packages.utility.versione.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.event.EventListener;
@@ -168,6 +170,8 @@ public abstract class VaadBoot implements ServletContextListener {
         VaadVar.menuRouteList.add(CarrelloFormView.class);
         VaadVar.menuRouteList.add(VersioneView.class);
         VaadVar.menuRouteList.add(ContinenteView.class);
+        VaadVar.menuRouteList.add(LoggerView.class);
+        VaadVar.menuRouteList.add(NotaView.class);
     }
 
     /**

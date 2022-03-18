@@ -43,7 +43,7 @@ public abstract class EntityBackend extends AbstractService {
     @Autowired
     public TextService textService;
 
-    protected MongoRepository repository;
+    protected MongoRepository crudRepository;
 
     /**
      * Constructor @Autowired. <br>
@@ -52,8 +52,8 @@ public abstract class EntityBackend extends AbstractService {
      * Se ci sono DUE o più costruttori, va in errore <br>
      * Se ci sono DUE costruttori, di cui uno senza parametri, inietta quello senza parametri <br>
      */
-    public EntityBackend(final MongoRepository repository, final Class<? extends AEntity> entityClazz) {
-        this.repository = repository;
+    public EntityBackend(final MongoRepository crudRepository, final Class<? extends AEntity> entityClazz) {
+        this.crudRepository = crudRepository;
         this.entityClazz = entityClazz;
     }// end of constructor with @Autowired
 
@@ -78,26 +78,22 @@ public abstract class EntityBackend extends AbstractService {
     }
 
     public List findAll() {
-        return repository.findAll();
+        return crudRepository.findAll();
     }
 
     public AEntity add(Object objEntity) {
         AEntity entity = (AEntity) objEntity;
 
-        //        if (entity.id == VUOTA) {
-        //            entity.id = nextId();
-        //        }
-
-        return (AEntity) repository.insert(entity);
+        return (AEntity) crudRepository.insert(entity);
     }
 
     public AEntity update(Object entity) {
-        return (AEntity) repository.save(entity);
+        return (AEntity) crudRepository.save(entity);
     }
 
     public void delete(Object entity) {
         try {
-            repository.delete(entity);
+            crudRepository.delete(entity);
         } catch (Exception unErrore) {
             logger.error(unErrore);
         }

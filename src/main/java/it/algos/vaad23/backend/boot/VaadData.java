@@ -318,7 +318,7 @@ public class VaadData implements AIData {
         }
 
         //--seleziona le classes che estendono AEntity
-        logger.log(AETypeLog.checkData, VUOTA);
+        logger.info(AETypeLog.checkData, VUOTA);
         try {
             //            allEntityClasses = Arrays.asList(allModulePackagesClasses.stream().filter(checkEntity).sorted().toArray());÷÷@todo rimettere
         } catch (Exception unErrore) {
@@ -330,7 +330,7 @@ public class VaadData implements AIData {
         else {
             message = String.format("In %s non è stato trovato nessun package con classi di tipo AEntity", moduleName);
         }
-        logger.log(AETypeLog.checkData, message);
+        logger.info(AETypeLog.checkData, message);
 
         //        //--seleziona le Entity classes che estendono AREntity
         //        allResetEntityClasses = Arrays.asList(allEntityClasses.stream().filter(checkResetEntity).sorted().toArray());
@@ -347,7 +347,7 @@ public class VaadData implements AIData {
         else {
             message = String.format("In %s non è stato trovato nessun package con classi di tipo AEntity che hanno usaBoot=true", moduleName);
         }
-        logger.log(AETypeLog.checkData, message);
+        logger.info(AETypeLog.checkData, message);
 
         //--seleziona le xxxService classes che hanno il metodo reset() oppure download()
         if (allUsaBootEntityClasses != null) {
@@ -359,14 +359,14 @@ public class VaadData implements AIData {
         else {
             message = String.format("In %s non è stato trovato nessun package con classi di tipo xxxService che hanno reset() oppure download()", moduleName);
         }
-        logger.log(AETypeLog.checkData, message);
+        logger.info(AETypeLog.checkData, message);
 
         //--elabora le entity classes che hanno il metodo reset() oppure download() e quindi sono ricreabili
         //--eseguendo xxxService.bootReset (forEach=elaborazione)
         if (allEntityClassesRicreabiliResetDownload != null) {
             //            allEntityClassesRicreabiliResetDownload.stream().forEach(bootReset); @todo rimettere
             message = String.format("Controllati i dati iniziali di %s", moduleName);
-            logger.log(AETypeLog.checkData, message);
+            logger.info(AETypeLog.checkData, message);
         }
 
     }
