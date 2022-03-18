@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.utility.note;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 
@@ -30,7 +31,7 @@ public class Nota extends AEntity {
 
     @Override
     public String toString() {
-        return "";
+        return VUOTA;
     }
 
     public AENotaLevel getLivello() {
