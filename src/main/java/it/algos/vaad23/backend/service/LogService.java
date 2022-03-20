@@ -1,7 +1,9 @@
 package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.slf4j.Logger;
@@ -12,7 +14,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
 import javax.annotation.*;
-import java.util.*;
 import java.util.function.*;
 
 
@@ -52,19 +53,6 @@ import java.util.function.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class LogService extends AbstractService {
 
-    public static final int PAD_COMPANY = 5;
-
-    public static final int PAD_UTENTE = 15;
-
-    public static final int PAD_ADDRESS_IP = 37;
-
-    public static final int PAD_TYPE = 18;
-
-    public static final int PAD_CLASS = 20;
-
-    public static final int PAD_METHOD = 20;
-
-    public static final int PAD_LINE = 3;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -109,99 +97,6 @@ public class LogService extends AbstractService {
         slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
     }
 
-    /**
-     * Gestisce un log di warning <br>
-     *
-     * @param message    da registrare
-     * @param clazz      di provenienza della richiesta
-     * @param methodName di provenienza della richiesta
-     */
-    public void warn(String message, Class clazz, String methodName) {
-        esegue(AETypeLog.warn, message, clazz, methodName);
-    }
-
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param message testo del log
-     */
-    public void info(final AETypeLog type, final WrapLogCompany wrap, final String message) {
-        this.logBase(AELogLevel.info, type, wrap, message);
-    }
-
-
-    /**
-     * Gestisce un log di errore <br>
-     *
-     * @param eccezione che genera il messaggio di log
-     */
-    public void warn(final Exception eccezione) {
-        base(AELogLevel.warn, eccezione);
-    }
-
-    /**
-     * Gestisce un log di errore <br>
-     *
-     * @param eccezione che genera il messaggio di log
-     */
-    public void error(final Exception eccezione) {
-        base(AELogLevel.error, eccezione);
-    }
-
-    /**
-     * Gestisce un log di errore <br>
-     *
-     * @param eccezione che genera il messaggio di log
-     */
-    public void base(final AELogLevel level, final Exception eccezione) {
-        boolean usaTagIniziale = true;
-        String tagClasse = "class=";
-        String tagMetodo = "method=";
-        String tagRiga = "line=";
-        String message;
-        StackTraceElement stack = null;
-        String classe = VUOTA;
-        String metodo = VUOTA;
-        int line = 0;
-        String riga = VUOTA;
-        int padClass = PAD_CLASS;
-        int padMethod = PAD_METHOD;
-        int padLine = PAD_LINE;
-        String errorText = eccezione.getCause() != null ? eccezione.getCause().getMessage() : eccezione.getMessage();
-
-        StackTraceElement[] matrice = eccezione.getStackTrace();
-        Optional stackPossibile = Arrays.stream(matrice)
-                .filter(algos -> algos.getClassName().startsWith(PATH_ALGOS))
-                .findFirst();
-
-        if (stackPossibile != null) {
-            stack = (StackTraceElement) stackPossibile.get();
-            classe = stack.getClassName();
-            classe = fileService.estraeClasseFinale(classe);
-            metodo = stack.getMethodName();
-            line = stack.getLineNumber();
-            riga = line + VUOTA;
-        }
-
-        if (usaTagIniziale) {
-            classe = tagClasse + classe;
-            metodo = tagMetodo + metodo;
-            riga = tagRiga + riga;
-            padClass += tagClasse.length();
-            padMethod += tagMetodo.length();
-            padLine += tagRiga.length();
-        }
-
-        classe = textService.fixSizeQuadre(classe, padClass);
-        metodo = textService.fixSizeQuadre(metodo, padMethod);
-        riga = textService.fixSizeQuadre(riga + VUOTA, padLine);
-
-        message = String.format("%s%s%s%s%s%s%s", classe, DOPPIO_SPAZIO, metodo, DOPPIO_SPAZIO, riga, SEP, errorText);
-
-        this.logBase(level, message);
-    }
-
 
     /**
      * Gestisce una mail <br>
@@ -217,96 +112,12 @@ public class LogService extends AbstractService {
         return false;
     }
 
-    /**
-     * Gestisce un log generico <br>
-     *
-     * @param level     di log: debug/info/warning/error
-     * @param messageIn testo del log
-     */
-    public void logBase(final AELogLevel level, final String messageIn) {
-        String message = messageIn.trim();
 
-        switch (level) {
-            case debug -> slf4jLogger.debug(message);
-            case info -> slf4jLogger.info(message);
-            case warn -> slf4jLogger.warn(message);
-            case error -> slf4jLogger.error(message);
-        }
-    }
-
-    /**
-     * Gestisce un log generico <br>
-     *
-     * @param level     di log: debug/info/warning/error
-     * @param type      merceologico di specificazione
-     * @param wrap      di informazioni su company, userName e address
-     * @param messageIn testo del log
-     */
-    public void logBase(final AELogLevel level, final AETypeLog type, final WrapLogCompany wrap, final String messageIn) {
-        String message = fixMessageLog(type, wrap, messageIn);
-
-        switch (level) {
-            case debug -> slf4jLogger.debug(message);
-            case info -> slf4jLogger.info(message);
-            case warn -> slf4jLogger.warn(message);
-            case error -> slf4jLogger.error(message);
-        }
-    }
-
-
-    /**
-     * Gestisce un log di warning <br>
-     *
-     * @param type       livello di log
-     * @param message    da registrare
-     * @param clazz      di provenienza della richiesta
-     * @param methodName di provenienza della richiesta
-     */
-    private void esegue(AETypeLog type, String message, Class clazz, String methodName) {
-        String clazzTxt;
-        String sep = " --- ";
-        String end = "()";
-        String typeTxt = type.getTag();
-        typeTxt = textService.fixSizeQuadre(typeTxt, 10);
-        message = typeTxt + DOPPIO_SPAZIO + message;
-
-        if (slf4jLogger == null) {
-            return;
-        }
-
-        if (clazz != null) {
-            clazzTxt = clazz.getSimpleName();
-            message += sep + clazzTxt;
-        }
-
-        if (textService.isValid(methodName)) {
-            message += PUNTO + methodName + end;
-        }
-
-        if (type != null) {
-            switch (type) {
-                case info:
-                case modifica:
-                    slf4jLogger.info(message.trim());
-                    break;
-                case warn:
-                    slf4jLogger.warn(message.trim());
-                    break;
-                case error:
-                    slf4jLogger.error(message.trim());
-                    break;
-                default:
-                    this.warn("Switch - caso non definito", this.getClass(), "esegue");
-                    break;
-            }
-        }
-    }
-
-    public String fixMessageLog(final AETypeLog type, final WrapLogCompany wrap, final String messageIn) {
+    public String fixMessageLog(final WrapLogCompany wrap, final String messageIn) {
         String message = messageIn;
 
         if (wrap != null) {
-            message = wrap.getLog() + SEP + message;
+            message = wrap.getLog() + DOPPIO_SPAZIO + message;
         }
 
         return message.trim();
@@ -323,63 +134,6 @@ public class LogService extends AbstractService {
         return message.trim();
     }
 
-    //    public void info(AILogType type, String message) {
-    //        String typeTxt;
-    //
-    //        typeTxt = type != null ? type.getTag() : AETypeLog.system.getTag();
-    //        typeTxt = text.fixSizeQuadre(typeTxt, 10);
-    //
-    //        message = typeTxt + DOPPIO_SPAZIO + message;
-    //        adminLogger.info(message.trim());
-    //    }
-
-    /**
-     * Gestisce un log di error <br>
-     *
-     * @param unErrore   da gestire
-     * @param clazz      di provenienza della richiesta
-     * @param methodName di provenienza della richiesta
-     */
-    public void error(Exception unErrore, Class clazz, String methodName) {
-        logBase(AELogLevel.error, AETypeLog.error, null, unErrore.toString());
-    }
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param message    della informazione da gestire
-     * @param clazz      di provenienza della richiesta
-     * @param methodName di provenienza della richiesta
-     */
-    public void info(String message, Class clazz, String methodName) {
-        //@todo Funzionalità ancora da implementare
-        //        sendTerminale(AELogLivello.info, descrizione, clazz, methodName);
-        //@todo Funzionalità ancora da implementare
-        esegue(AETypeLog.info, message, clazz, methodName);
-    }
-
-    /**
-     * Gestisce un log di error <br>
-     *
-     * @param message    da registrare
-     * @param clazz      di provenienza della richiesta
-     * @param methodName di provenienza della richiesta
-     */
-    public void error(String message, Class clazz, String methodName) {
-        //        esegue(AETypeLog.error, message, clazz, methodName);@todo sistemare
-    }
-
-    /**
-     * Gestisce un log di error <br>
-     *
-     * @param unErrore   da gestire
-     * @param clazz      di provenienza della richiesta
-     * @param methodName di provenienza della richiesta
-     */
-    public void warn(Exception unErrore, Class clazz, String methodName) {
-        //        warn(unErrore.toString(), clazz, methodName); @todo sistemare
-    }
-
 
     /**
      * Gestisce un log di info <br>
@@ -388,6 +142,15 @@ public class LogService extends AbstractService {
      */
     public void info(final String message) {
         logBase(AELogLevel.info, AETypeLog.system, false, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di info <br>
+     *
+     * @param stack info su messaggio e StackTrace
+     */
+    public void info(final Exception stack) {
+        logBase(AELogLevel.info, AETypeLog.system, false, false, VUOTA, stack, null);
     }
 
     /**
@@ -409,6 +172,46 @@ public class LogService extends AbstractService {
      */
     public void infoDb(final AETypeLog type, final String message) {
         logBase(AELogLevel.info, type, true, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di info <br>
+     *
+     * @param type    merceologico di specificazione
+     * @param message di descrizione dell'evento
+     * @param wrap    di informazioni su company, userName e address
+     */
+    public void info(final AETypeLog type, final String message, final WrapLogCompany wrap) {
+        logBase(AELogLevel.info, type, true, false, message, null, wrap);
+    }
+
+    /**
+     * Gestisce un log di info <br>
+     *
+     * @param type  merceologico di specificazione
+     * @param stack info su messaggio e StackTrace
+     */
+    public void info(final AETypeLog type, final Exception stack) {
+        logBase(AELogLevel.info, type, false, false, VUOTA, stack, null);
+    }
+
+    /**
+     * Gestisce un log di warning <br>
+     *
+     * @param stack info su messaggio e StackTrace
+     */
+    public void warn(final Exception stack) {
+        logBase(AELogLevel.warn, AETypeLog.system, false, false, VUOTA, stack, null);
+    }
+
+    /**
+     * Gestisce un log di warning <br>
+     * Facoltativo (flag) su mongoDB <br>
+     *
+     * @param stack info su messaggio e StackTrace
+     */
+    public void warnDb(final Exception stack) {
+        logBase(AELogLevel.warn, AETypeLog.system, true, false, VUOTA, stack, null);
     }
 
     /**
@@ -441,6 +244,47 @@ public class LogService extends AbstractService {
         logBase(AELogLevel.warn, type, true, false, message, null, null);
     }
 
+
+    /**
+     * Gestisce un log di warning <br>
+     *
+     * @param type  merceologico di specificazione
+     * @param stack info su messaggio e StackTrace
+     */
+    public void warn(final AETypeLog type, final Exception stack) {
+        logBase(AELogLevel.warn, type, false, false, VUOTA, stack, null);
+    }
+
+    /**
+     * Gestisce un log di warning <br>
+     * Facoltativo (flag) su mongoDB <br>
+     *
+     * @param type  merceologico di specificazione
+     * @param stack info su messaggio e StackTrace
+     */
+    public void warnDb(final AETypeLog type, final Exception stack) {
+        logBase(AELogLevel.warn, type, true, false, VUOTA, stack, null);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     *
+     * @param stack info su messaggio e StackTrace
+     */
+    public void error(final Exception stack) {
+        logBase(AELogLevel.error, AETypeLog.system, false, false, VUOTA, stack, null);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     * Facoltativo (flag) su mongoDB <br>
+     *
+     * @param stack info su messaggio e StackTrace
+     */
+    public void errorDb(final Exception stack) {
+        logBase(AELogLevel.error, AETypeLog.system, true, false, VUOTA, stack, null);
+    }
+
     /**
      * Gestisce un log di errore <br>
      *
@@ -460,6 +304,7 @@ public class LogService extends AbstractService {
         logBase(AELogLevel.error, type, false, false, message, null, null);
     }
 
+
     /**
      * Gestisce un log di errore <br>
      * Facoltativo (flag) su mongoDB <br>
@@ -469,6 +314,27 @@ public class LogService extends AbstractService {
      */
     public void errorDb(final AETypeLog type, final String message) {
         logBase(AELogLevel.error, type, true, false, message, null, null);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     *
+     * @param type  merceologico di specificazione
+     * @param stack info su messaggio e StackTrace
+     */
+    public void error(final AETypeLog type, final Exception stack) {
+        logBase(AELogLevel.error, type, false, false, VUOTA, stack, null);
+    }
+
+    /**
+     * Gestisce un log di errore <br>
+     * Facoltativo (flag) su mongoDB <br>
+     *
+     * @param type  merceologico di specificazione
+     * @param stack info su messaggio e StackTrace
+     */
+    public void errorDb(final AETypeLog type, final Exception stack) {
+        logBase(AELogLevel.error, type, true, false, VUOTA, stack, null);
     }
 
     /**
@@ -513,9 +379,48 @@ public class LogService extends AbstractService {
                          final String descrizione,
                          final Exception eccezione,
                          final WrapLogCompany wrap) {
+        String typeText;
+        String message = descrizione;
+        String company = VUOTA;
+        String user = VUOTA;
+        String classe = VUOTA;
+        String metodo = VUOTA;
+        int linea = 0;
 
-        String typeText = textService.fixSizeQuadre(type.getTag(), 10);
-        String message = String.format("%s%s%s", typeText, SPAZIO, descrizione);
+        typeText = textService.fixSizeQuadre(type.getTag(), 10);
+        message = String.format("%s%s%s", typeText, SPAZIO, message);
+
+        // StackTrace dell'errore
+        if (eccezione != null) {
+            message = eccezione.getMessage();
+            if (eccezione instanceof AlgosException algosException) {
+                classe = algosException.getClazz();
+                classe = fileService.estraeClasseFinale(classe);
+                metodo = algosException.getMethod();
+                linea = algosException.getLineNum();
+                message = utilityService.getStackTrace(algosException);
+            }
+            message = String.format("%s%s%s", typeText, SPAZIO, message);
+        }
+
+        // mongoDB
+        if (flagUsaDB) {
+            loggerBackend.crea(level, type, descrizione, company, user, classe, metodo, linea);
+        }
+
+        // mail
+        if (flagUsaMail) {
+        }
+
+        // usaCompany
+        if (VaadVar.usaCompany) {
+            if (wrap != null) {
+                message = fixMessageLog(wrap, message);
+            }
+        }
+
+        // styling finale
+        message = String.format("%s%s", DUE_PUNTI_SPAZIO, message);
 
         // logback-spring.xml
         switch (level) {
@@ -525,12 +430,6 @@ public class LogService extends AbstractService {
             case debug -> slf4jLogger.debug(message);
             default -> slf4jLogger.info(message);
         }
-
-        // mongoDB
-        if (flagUsaDB) {
-            loggerBackend.crea(level, type, descrizione, VUOTA, VUOTA, VUOTA, VUOTA, 0);
-        }
-
     }
 
 }

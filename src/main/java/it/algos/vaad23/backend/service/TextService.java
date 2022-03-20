@@ -629,9 +629,10 @@ public class TextService extends AbstractService {
      * @return stringa con lunghezza prefissata e singole parentesi quadre aggiunte
      */
     public String fixSizeQuadre(final String testoIn, final int size) {
-        String stringaOut = this.setNoQuadre(testoIn);
+        String stringaOut = setNoQuadre(testoIn);
         stringaOut = rightPad(stringaOut, size);
         stringaOut = fixSize(stringaOut, size);
+
         if (this.isValid(stringaOut)) {
             if (!stringaOut.startsWith(QUADRA_INI)) {
                 stringaOut = QUADRA_INI + stringaOut;
@@ -639,6 +640,10 @@ public class TextService extends AbstractService {
             if (!stringaOut.endsWith(QUADRA_END)) {
                 stringaOut = stringaOut + QUADRA_END;
             }
+        }
+
+        if (this.isEmpty(stringaOut) && size > 0) {
+            stringaOut = QUADRA_INI + StringUtils.rightPad(VUOTA, size) + QUADRA_END;
         }
 
         return stringaOut.trim();

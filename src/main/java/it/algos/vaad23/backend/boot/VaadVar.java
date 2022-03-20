@@ -89,4 +89,23 @@ public class VaadVar {
      */
     public static double projectVersion;
 
+    /**
+     * Controlla se l' applicazione è multi-company oppure no <br>
+     * Di default uguale a false <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     * Se usaCompany=true anche usaSecurity deve essere true <br>
+     */
+    public static boolean usaCompany;
+
+    /**
+     * Controlla se l' applicazione usa il login oppure no <br>
+     * Se si usa il login, occorre la classe SecurityConfiguration <br>
+     * Se non si usa il login, occorre disabilitare l'Annotation @EnableWebSecurity di SecurityConfiguration <br>
+     * Di default uguale a false <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     * Se usaCompany=true anche usaSecurity deve essere true <br>
+     * Può essere true anche se usaCompany=false <br>
+     */
+    public static boolean usaSecurity;
+
 }

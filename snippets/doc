@@ -76,6 +76,7 @@
     }
 
     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
 
     public final static String XXX = "";
@@ -88,3 +89,4 @@
     // Methods order
     @Annotation public protected private abstract static final synchronized native strictfp
 
+    logger.warn(AETypeLog.file, new AlgosException(SWITCH));

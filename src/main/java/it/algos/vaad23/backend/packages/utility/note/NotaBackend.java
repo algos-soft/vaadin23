@@ -95,6 +95,7 @@ public class NotaBackend extends EntityBackend {
         return repository.findByLivelloAndType(level, type);
     }
 
+    @Override
     public List<Nota> findByDescrizioneAndLivelloAndType(final String value, final AENotaLevel level, final AETypeLog type) {
         if (level != null && type != null) {
             return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndType(value, level, type);

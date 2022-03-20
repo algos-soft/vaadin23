@@ -164,6 +164,9 @@ public abstract class ATest {
     @Autowired
     protected LoggerBackend loggerBackend;
 
+    @Autowired
+    protected UtilityService utilityService;
+
 
     //--tag
     //--esiste nella enumeration
@@ -258,6 +261,7 @@ public abstract class ATest {
         fileService.logger = logService;
         fileService.textService = textService;
         arrayService.logger = logService;
+        logService.utilityService = utilityService;
     }
 
     /**

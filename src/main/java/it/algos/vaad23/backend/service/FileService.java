@@ -779,7 +779,7 @@ public class FileService extends AbstractService {
                 FileUtils.deleteDirectory(directoryToBeDeleted);
                 return VUOTA;
             } catch (Exception unErrore) {
-                logger.error(unErrore, this.getClass(), "deleteDirectoryStr");
+                logger.error(AETypeLog.file, unErrore);
                 return NON_CANCELLATA_DIRECTORY;
             }
         }
@@ -924,7 +924,8 @@ public class FileService extends AbstractService {
         String path = this.findPathBreve(destPath, firstDirectory);
 
         if (!this.isEsisteFile(srcPath)) {
-            logger.warn("Non sono riuscito a trovare il file " + srcPath + " nella directory indicata", this.getClass(), "copyFile");
+            message = "Non sono riuscito a trovare il file " + srcPath + " nella directory indicata";
+            logger.warn(AETypeLog.file, new AlgosException(message));
             return;
         }
 
@@ -933,27 +934,27 @@ public class FileService extends AbstractService {
             case fileSovrascriveSempreAncheSeEsiste:
                 if (esisteFileDest) {
                     message = "Il file: " + path + " esisteva già ed è stato modificato.";
-                    logger.info(message, this.getClass(), "copyFile");
+                    logger.info(AETypeLog.file, new AlgosException(message));
                 }
                 else {
                     message = "Il file: " + path + " non esisteva ed è stato copiato.";
-                    logger.info(message, this.getClass(), "copyFile");
+                    logger.info(AETypeLog.file, new AlgosException(message));
                 }
                 this.copyFileDeletingAll(srcPath, destPath);
                 break;
             case fileSoloSeNonEsiste:
                 if (esisteFileDest) {
                     message = "Il file: " + path + " esisteva già e non è stato modificato.";
-                    logger.info(message, this.getClass(), "copyFile");
+                    logger.info(AETypeLog.file, new AlgosException(message));
                 }
                 else {
                     this.copyFileDeletingAll(srcPath, destPath);
                     message = "Il file: " + path + " non esisteva ed è stato copiato.";
-                    logger.info(message, this.getClass(), "copyFile");
+                    logger.info(AETypeLog.file, new AlgosException(message));
                 }
                 break;
             default:
-                logger.warn("Switch - caso non definito", this.getClass(), "copyFile");
+                logger.warn(AETypeLog.file, new AlgosException(SWITCH));
                 break;
         }
     }
@@ -1025,7 +1026,7 @@ public class FileService extends AbstractService {
                             message = "La directory: " + path + " esisteva già e non è stata toccata.";
                         }
                         if (stampaInfo) {
-                            logger.info(message, this.getClass(), "copyDirectory");
+                            logger.info(AETypeLog.file, new AlgosException(message));
                         }
                         message = VUOTA;
                         break;
@@ -1040,7 +1041,7 @@ public class FileService extends AbstractService {
                                 message = "La directory: " + path + " non esisteva ed è stata creata.";
                             }
                             if (stampaInfo) {
-                                logger.info(message, this.getClass(), "copyDirectory");
+                                logger.info(AETypeLog.file, new AlgosException(message));
                             }
                             message = VUOTA;
                         }
@@ -1064,7 +1065,7 @@ public class FileService extends AbstractService {
                                 message = "La directory: " + path + " non esisteva ed è stata creata.";
                             }
                             if (stampaInfo) {
-                                logger.info(message, this.getClass(), "copyDirectory");
+                                logger.info(AETypeLog.file, new AlgosException(message));
                             }
                         }
                         else {
@@ -1078,7 +1079,7 @@ public class FileService extends AbstractService {
                         break;
                     default:
                         copiata = copyDirectoryAddingOnly(srcPath, destPath);
-                        logger.warn("Switch - caso non definito", this.getClass(), "copyDirectory");
+                        logger.warn(AETypeLog.file, new AlgosException(SWITCH));
                         break;
                 }
             }
@@ -1088,7 +1089,7 @@ public class FileService extends AbstractService {
         }
 
         if (!copiata && textService.isValid(message)) {
-            logger.error(message, this.getClass(), "copyDirectory");
+            logger.error(AETypeLog.file, new AlgosException(SWITCH));
         }
 
         return copiata;
@@ -1315,14 +1316,14 @@ public class FileService extends AbstractService {
                 sovraScriveFile(pathFileToBeWritten, testo);
                 message = "Il file: " + path + " esisteva già ed è stato aggiornato";
                 if (stampaInfo) {
-                    logger.info(message, this.getClass(), "scriveFile");
+                    logger.info(AETypeLog.file, new AlgosException(message));
                 }
                 result = AResult.valido(message);
             }
             else {
                 message = "Il file: " + path + " esisteva già e non è stato modificato";
                 if (stampaInfo) {
-                    logger.info(message, this.getClass(), "scriveFile");
+                    logger.info(AETypeLog.file, new AlgosException(message));
                 }
                 result = AResult.errato(message);
             }
@@ -1401,7 +1402,7 @@ public class FileService extends AbstractService {
 
             testo = textService.levaCoda(testo, aCapo);
         } catch (Exception unErrore) {
-            logger.error(unErrore, this.getClass(), "leggeFile");
+            logger.error(AETypeLog.file, unErrore);
         }
 
         return testo;
@@ -1815,14 +1816,17 @@ public class FileService extends AbstractService {
      */
     public String findPathDirectory(String pathIn, String directoryFindPath) {
         String pathOut = pathIn.trim();
+        String message;
 
         if (textService.isEmpty(pathIn)) {
-            logger.warn("Nullo il path in ingresso", this.getClass(), "findPathDirectory");
+            message = "Nullo il path in ingresso";
+            logger.warn(AETypeLog.file, new AlgosException(message));
             return pathOut;
         }
 
         if (textService.isEmpty(directoryFindPath)) {
-            logger.info("Nulla la directory in ingresso", this.getClass(), "findPathDirectory");
+            message = "Nulla la directory in ingresso";
+            logger.warn(AETypeLog.file, new AlgosException(message));
             return pathOut;
         }
 
@@ -1831,7 +1835,8 @@ public class FileService extends AbstractService {
         }
         else {
             pathOut = VUOTA;
-            logger.warn("Non esiste la directory indicata nel path indicato", this.getClass(), "findPathDirectory");
+            message = "Non esiste la directory indicata nel path indicato";
+            logger.warn(AETypeLog.file, new AlgosException(message));
         }
 
         return pathOut.trim();
@@ -2156,13 +2161,13 @@ public class FileService extends AbstractService {
 
         nomeModulo = AEWizCost.nameVaadFlow14Lower.get();
         if (textService.isEmpty(nomeModulo)) {
-            logger.error(AlgosException.crea("Manca il nome del modulo"));
+            logger.error(new AlgosException("Manca il nome del modulo"));
         }
         lista.addAll(getPathModuloPackageFiles(nomeModulo));
 
         nomeModulo = VaadVar.projectNameModulo;
         if (textService.isEmpty(nomeModulo)) {
-            logger.error(AlgosException.crea("Manca il nome del modulo"));
+            logger.error(new AlgosException("Manca il nome del modulo"));
         }
         lista.addAll(getPathModuloPackageFiles(VaadVar.projectNameModulo));
 
@@ -2254,9 +2259,9 @@ public class FileService extends AbstractService {
 
         if (textService.isEmpty(simpleName)) {
             if (simpleName == null) {
-                logger.error(AlgosException.crea("Il parametro in ingresso è nullo"));
+                logger.error(new AlgosException("Il parametro in ingresso è nullo"));
             }
-            logger.error(AlgosException.crea("Il parametro in ingresso è vuoto"));
+            logger.error(new AlgosException("Il parametro in ingresso è vuoto"));
         }
 
         if (simpleName.endsWith(JAVA_SUFFIX)) {
@@ -2266,7 +2271,7 @@ public class FileService extends AbstractService {
 
         lista = getPathBreveAllPackageFiles();
         if (lista == null || lista.size() < 1) {
-            logger.error(AlgosException.crea("Non sono riuscito a creare la lista dei files del package"));
+            logger.error(new AlgosException("Non sono riuscito a creare la lista dei files del package"));
         }
 
         classeFinalePrevista = estraeClasseFinale(simpleName);
@@ -2280,7 +2285,7 @@ public class FileService extends AbstractService {
         }
 
         if (textService.isEmpty(canonicalName)) {
-            logger.error(AlgosException.crea(String.format("Nel package non esiste la classe %s", simpleName)));
+            logger.error(new AlgosException(String.format("Nel package non esiste la classe %s", simpleName)));
         }
 
         return canonicalName;

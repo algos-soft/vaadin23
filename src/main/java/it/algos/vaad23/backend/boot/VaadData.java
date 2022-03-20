@@ -314,7 +314,7 @@ public class VaadData implements AIData {
         try {
             allModulePackagesClasses = fileService.getModuleSubFilesEntity(moduleName);
         } catch (Exception unErrore) {
-            logger.error(unErrore, this.getClass(), "resetData");
+            logger.error(AETypeLog.file, unErrore);
         }
 
         //--seleziona le classes che estendono AEntity
@@ -322,7 +322,7 @@ public class VaadData implements AIData {
         try {
             //            allEntityClasses = Arrays.asList(allModulePackagesClasses.stream().filter(checkEntity).sorted().toArray());÷÷@todo rimettere
         } catch (Exception unErrore) {
-            logger.error(unErrore, this.getClass(), "resetData");
+            logger.error(AETypeLog.file, unErrore);
         }
         if (arrayService.isAllValid(allEntityClasses)) {
             message = String.format("In %s sono stati trovati %d packages con classi di tipo AEntity", moduleName, allEntityClasses.size());

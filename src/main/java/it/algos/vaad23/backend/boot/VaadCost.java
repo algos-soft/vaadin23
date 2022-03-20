@@ -48,6 +48,8 @@ public class VaadCost {
 
     public static final String SPAZIO = " ";
 
+    public static final String DUE_PUNTI_SPAZIO = DUE_PUNTI + SPAZIO;
+
     public static final String DOPPIO_SPAZIO = SPAZIO + SPAZIO;
 
     public static final String QUADRA_INI = "[";
@@ -136,6 +138,8 @@ public class VaadCost {
 
     public static final String ROUTE_NAME_GENERIC_FORM = "form";
 
+
+    public static final String SWITCH = "Switch - caso non definito";
 
     /**
      * tag per la singola graffa di apertura

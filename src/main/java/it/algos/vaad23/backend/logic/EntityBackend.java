@@ -1,6 +1,7 @@
 package it.algos.vaad23.backend.logic;
 
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
@@ -71,7 +72,7 @@ public abstract class EntityBackend extends AbstractService {
         try {
             newEntityBean = entityClazz.getDeclaredConstructor().newInstance();
         } catch (Exception unErrore) {
-            logger.warn(unErrore.toString(), this.getClass(), "newEntity");
+            logger.warn(AETypeLog.nuovo, unErrore);
         }
 
         return newEntityBean;
@@ -99,6 +100,10 @@ public abstract class EntityBackend extends AbstractService {
         }
     }
 
+
+    public List findByDescrizioneAndLivelloAndType(final String value, final AENotaLevel level, final AETypeLog type) {
+        return null;
+    }
 
     public void reset() {
     }

@@ -1,15 +1,10 @@
 package it.algos.vaad23.backend.boot;
 
-import it.algos.application.views.addressform.*;
-import it.algos.simple.ui.views.about.*;
-import it.algos.simple.ui.views.carrelloform.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.packages.geografia.continente.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.packages.utility.note.*;
 import it.algos.vaad23.backend.packages.utility.versione.*;
-import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.context.event.*;
@@ -120,6 +115,7 @@ public abstract class VaadBoot implements ServletContextListener {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixVariabili() {
+
         /**
          * Lista dei moduli di menu da inserire nel Drawer del MainLayout per le gestione delle @Routes. <br>
          * Regolata dall'applicazione durante l'esecuzione del 'container startup' (non-UI logic) <br>
@@ -148,7 +144,24 @@ public abstract class VaadBoot implements ServletContextListener {
          */
         VaadVar.vaadin23Version = Double.parseDouble(Objects.requireNonNull(environment.getProperty("algos.vaadin23.version")));
 
+        /**
+         * Controlla se l' applicazione è multi-company oppure no <br>
+         * Di default uguale a false <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         * Se usaCompany=true anche usaSecurity deve essere true <br>
+         */
+        VaadVar.usaCompany = false;
 
+        /**
+         * Controlla se l' applicazione usa il login oppure no <br>
+         * Se si usa il login, occorre la classe SecurityConfiguration <br>
+         * Se non si usa il login, occorre disabilitare l'Annotation @EnableWebSecurity di SecurityConfiguration <br>
+         * Di default uguale a false <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         * Se usaCompany=true anche usaSecurity deve essere true <br>
+         * Può essere true anche se usaCompany=false <br>
+         */
+        VaadVar.usaSecurity = false;
     }
 
     /**
@@ -164,14 +177,14 @@ public abstract class VaadBoot implements ServletContextListener {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixMenuRoutes() {
-        VaadVar.menuRouteList.add(HelloWorldView.class);
-        VaadVar.menuRouteList.add(AboutView.class);
-        VaadVar.menuRouteList.add(AddressFormView.class);
-        VaadVar.menuRouteList.add(CarrelloFormView.class);
+        //        VaadVar.menuRouteList.add(HelloWorldView.class);
+        //        VaadVar.menuRouteList.add(AboutView.class);
+        //        VaadVar.menuRouteList.add(AddressFormView.class);
+        //        VaadVar.menuRouteList.add(CarrelloFormView.class);
+        //        VaadVar.menuRouteList.add(ContinenteView.class);
         VaadVar.menuRouteList.add(VersioneView.class);
-        VaadVar.menuRouteList.add(ContinenteView.class);
-        VaadVar.menuRouteList.add(LoggerView.class);
         VaadVar.menuRouteList.add(NotaView.class);
+        VaadVar.menuRouteList.add(LoggerView.class);
     }
 
     /**

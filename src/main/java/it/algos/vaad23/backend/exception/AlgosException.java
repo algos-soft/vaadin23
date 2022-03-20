@@ -15,9 +15,8 @@ import java.util.*;
  */
 public class AlgosException extends Exception {
 
-    private AEntity entityBean;
 
-    private Throwable cause;
+    private AEntity entityBean;
 
     public AlgosException(final Throwable cause) {
         super(cause);
@@ -40,31 +39,29 @@ public class AlgosException extends Exception {
         this.entityBean = entityBean;
     }
 
-
     public static AlgosException crea(final Throwable cause) {
-        return AlgosException.crea(cause, VUOTA);
+        return new AlgosException(cause);
     }
 
-    public static AlgosException crea(final String message) {
-        return AlgosException.crea(null, message);
-    }
+    //    public static AlgosException crea(final String message) {
+    //        return AlgosException.crea(null, message);
+    //    }
+    //
+    //    public static AlgosException crea(final Throwable cause, final String message) {
+    //        return new AlgosException(cause, message);
+    //    }
+    //
+    //    public static AlgosException crea(final Throwable cause, final AEntity entityBean) {
+    //        return new AlgosException(cause, VUOTA, entityBean);
+    //    }
+    //
+    //    public static AlgosException crea(final Throwable cause, final String message, final AEntity entityBean) {
+    //        AlgosException algosException = new AlgosException(cause, message);
+    //        algosException.entityBean = entityBean;
+    //
+    //        return algosException;
+    //    }
 
-
-    public static AlgosException crea(final Throwable cause, final String message) {
-        return new AlgosException(cause, message);
-    }
-
-
-    public static AlgosException crea(final Throwable cause, final AEntity entityBean) {
-        return new AlgosException(cause, VUOTA, entityBean);
-    }
-
-    public static AlgosException crea(final Throwable cause, final String message, final AEntity entityBean) {
-        AlgosException algosException = new AlgosException(cause, message);
-        algosException.entityBean = entityBean;
-
-        return algosException;
-    }
 
     public AEntity getEntityBean() {
         return entityBean;
@@ -84,7 +81,7 @@ public class AlgosException extends Exception {
     /**
      * Metodo da cui proviene l'errore <br>
      *
-     * @return simpleName della classe di errore
+     * @return nome del metodo di errore
      */
     public String getMethod() {
         StackTraceElement stack = getStack();
@@ -94,22 +91,39 @@ public class AlgosException extends Exception {
     /**
      * Riga da cui proviene l'errore <br>
      *
-     * @return simpleName della classe di errore
+     * @return numero della linea di errore
      */
-    public int getLine() {
+    public int getLineNum() {
         StackTraceElement stack = getStack();
         return stack != null ? stack.getLineNumber() : 0;
+    }
+
+    /**
+     * Riga da cui proviene l'errore <br>
+     *
+     * @return testo della linea di errore
+     */
+    public String getLine() {
+        return getLineNum() + VUOTA;
     }
 
 
     /**
      * Stack dell'errore <br>
      */
-    private StackTraceElement getStack() {
+    public StackTraceElement getStack() {
         StackTraceElement stack = null;
+        StackTraceElement[] matrice = null;
 
-        if (cause != null) {
-            StackTraceElement[] matrice = cause.getStackTrace();
+        if (this.getCause() != null) {
+            matrice = this.getCause().getStackTrace();
+        }
+
+        if (matrice == null) {
+            matrice = this.getStackTrace();
+        }
+
+        if (matrice != null) {
             Optional stackPossibile = Arrays.stream(matrice)
                     .filter(algos -> algos.getClassName().startsWith(PATH_ALGOS))
                     .findFirst();

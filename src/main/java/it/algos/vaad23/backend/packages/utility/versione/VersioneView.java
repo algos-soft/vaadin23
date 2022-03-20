@@ -7,9 +7,11 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
+import org.vaadin.crudui.crud.*;
 
 import java.util.*;
 
@@ -56,6 +58,11 @@ public class VersioneView extends CrudView {
         crud.getGrid().getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
         crud.getGrid().getColumnByKey("company").setWidth(larCompany).setFlexGrow(0);
 
+        // colonne visibili
+        if (!VaadVar.usaCompany) {
+            crud.getGrid().getColumnByKey("company").setVisible(false);
+        }
+
         // additional components
         filter = new TextField();
         filter.setPlaceholder("Filter by descrizione");
@@ -89,7 +96,19 @@ public class VersioneView extends CrudView {
         crud.getGrid().sort(lista);
 
         crud.setAddOperationVisible(false);
+        crud.setUpdateOperationVisible(false);
         crud.setDeleteOperationVisible(false);
+
+        // fields visibili
+        if (VaadVar.usaCompany) {
+            crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "company", "ordine", "vaadin23");
+            crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "company", "vaadin23");
+        }
+        else {
+            crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "ordine", "vaadin23");
+            crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "vaadin23");
+        }
+
     }
 
     public void filtroCombo(HasValue.ValueChangeEvent event) {

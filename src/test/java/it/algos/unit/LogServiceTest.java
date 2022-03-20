@@ -3,7 +3,9 @@ package it.algos.unit;
 import it.algos.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
@@ -35,6 +37,8 @@ public class LogServiceTest extends ATest {
 
 
     private WrapLogCompany wrap;
+
+    private AlgosException exception;
 
     /**
      * Classe principale di riferimento <br>
@@ -100,6 +104,8 @@ public class LogServiceTest extends ATest {
 
         wrap = null;
         service.mailService = mailService;
+        VaadVar.usaCompany = false;
+        exception = null;
     }
 
 
@@ -158,23 +164,72 @@ public class LogServiceTest extends ATest {
     @DisplayName("3 - Messaggi registrati su mongoDB")
     void log3() {
         sorgente2 = AELogLevel.info.toString();
-
         sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
         service.infoDb(AETypeLog.checkData, sorgente);
 
+        sorgente2 = AELogLevel.warn.toString();
         sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
         service.warnDb(AETypeLog.export, sorgente);
 
+        sorgente2 = AELogLevel.error.toString();
         sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
         service.errorDb(AETypeLog.delete, sorgente);
     }
 
-    //    @Test
-    @Order(3)
-    @DisplayName("3 - Warn generico")
-    void warn() {
-        sorgente = "Messaggio di warning";
-        service.warn(sorgente);
+    @Test
+    @Order(4)
+    @DisplayName("4 - Messaggi con company")
+    void log4() {
+        VaadVar.usaCompany = true;
+
+        sorgente2 = AELogLevel.info.toString();
+        sorgente = String.format("Messaggio di %s con company", sorgente2);
+        service.info(AETypeLog.checkData, sorgente, wrap);
+
+        wrap = WrapLogCompany.crea("crpt", "Domenichini", VUOTA);
+        wrap.textService = textService; // serve solo per i test
+        service.info(AETypeLog.checkData, sorgente, wrap);
+
+        wrap = WrapLogCompany.crea("pap", "Mario C.", "345.989.0.0");
+        wrap.textService = textService; // serve solo per i test
+        service.info(AETypeLog.checkData, sorgente, wrap);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - Messaggi comprensivi di StackTrace")
+    void stackTrace() {
+        System.out.println(sorgente);
+        System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
+
+        sorgente = "Messaggi comprensivi di StackTrace con new AlgosException (giusto)";
+        exception = new AlgosException(sorgente);
+        service.warn(AETypeLog.export, exception);
+        service.error(AETypeLog.delete, exception);
+
+        sorgente = "Messaggi esclusivi di StackTrace (inutile)";
+        exception = AlgosException.crea(new Exception(sorgente));
+        service.warn(exception);
+        service.error(exception);
+    }
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Messaggi con StackTrace registrati su mongoDB")
+    void stackTraceConDb() {
+        System.out.println(sorgente);
+        System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
+
+        sorgente = "Messaggi con StackTrace registrati su mongoDB";
+        exception = AlgosException.crea(new Exception(sorgente));
+        service.warnDb(AETypeLog.export, exception);
+        service.errorDb(AETypeLog.delete, exception);
+
+        sorgente = "Messaggi generici con StackTrace registrati su mongoDB";
+        exception = AlgosException.crea(new Exception(sorgente));
+        service.warnDb(exception);
+        service.errorDb(exception);
     }
 
     //    @Test
@@ -201,13 +256,13 @@ public class LogServiceTest extends ATest {
     }
 
     //    @Test
-    @Order(7)
-    @DisplayName("7 - Info con company")
-    void infoCompany() {
-        sorgente = "Info con company";
-        wrap = appContext.getBean(WrapLogCompany.class, "crpt", "ugonottiMario", "23.5678.987");
-        service.info(AETypeLog.setup, wrap, sorgente);
-    }
+    //    @Order(7)
+    //    @DisplayName("7 - Info con company")
+    //    void infoCompany() {
+    //        sorgente = "Info con company";
+    //        wrap = appContext.getBean(WrapLogCompany.class, "crpt", "ugonottiMario", "23.5678.987");
+    //        service.info(AETypeLog.setup, wrap, sorgente);
+    //    }
 
     //    @Test
     @Order(8)
@@ -244,7 +299,7 @@ public class LogServiceTest extends ATest {
     void printWrap(Arguments arg) {
         Object[] mat = arg.get();
         wrap = appContext.getBean(WrapLogCompany.class, mat[0], mat[1], mat[2]);
-        service.info((AETypeLog) mat[3], wrap, (String) mat[4]);
+        service.info((AETypeLog) mat[3], (String) mat[4], wrap);
     }
 
     /**

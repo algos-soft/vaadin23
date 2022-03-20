@@ -55,18 +55,18 @@ public class LoggerBackend extends EntityBackend {
         entity.livello = livello;
         entity.type = type;
         entity.evento = LocalDateTime.now();
-        entity.descrizione = descrizione;
-        entity.company = company;
-        entity.user = user;
-        entity.classe = classe;
-        entity.metodo = metodo;
+        entity.descrizione = textService.isValid(descrizione) ? descrizione : null;
+        entity.company = textService.isValid(company) ? company : null;
+        entity.user = textService.isValid(user) ? user : null;
+        entity.classe = textService.isValid(classe) ? classe : null;
+        entity.metodo = textService.isValid(metodo) ? metodo : null;
         entity.linea = linea;
 
         try {
             this.add(entity);
         } catch (Exception unErrore) {
             //            logger.error(unErrore);
-            System.out.println("erore");
+            System.out.println("errore");
         }
     }
 

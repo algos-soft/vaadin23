@@ -18,6 +18,10 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class WrapLogCompany {
 
+    public static final String IP_DEFAULT = "127.0.0.1";
+
+    public static final String LOCAL_HOST = "localhost";
+
     public static final int PAD_COMPANY = 5;
 
     public static final int PAD_UTENTE = 15;
@@ -67,12 +71,13 @@ public class WrapLogCompany {
         String companyText = this.companySigla;
         String userText = this.userName;
         String addressText = this.addressIP;
+        addressText = textService.isValid(addressText) ? addressText : IP_DEFAULT;
 
         companyText = textService.fixSizeQuadre(companyText, PAD_COMPANY);
         userText = textService.fixSizeQuadre(userText, PAD_UTENTE);
         addressText = textService.fixSizeQuadre(addressText, PAD_ADDRESS_IP);
 
-        return companyText + DOPPIO_SPAZIO + userText + DOPPIO_SPAZIO + addressText;
+        return companyText + SPAZIO + userText + SPAZIO + addressText;
     }
 
     public String getMail(final String messageIn) {

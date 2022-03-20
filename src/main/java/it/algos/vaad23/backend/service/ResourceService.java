@@ -3,6 +3,7 @@ package it.algos.vaad23.backend.service;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.server.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.*;
 import org.springframework.beans.factory.config.*;
@@ -235,7 +236,7 @@ public class ResourceService extends AbstractService {
             try {
                 bytes = FileUtils.readFileToByteArray(resourceFile);
             } catch (Exception unErrore) {
-                logger.warn(unErrore, this.getClass(), "getBytes");
+                logger.warn(unErrore);
             }
         }
 
@@ -259,7 +260,7 @@ public class ResourceService extends AbstractService {
                 resource = new StreamResource("manca.jpg", () -> new ByteArrayInputStream(bytes));
                 image = new Image(resource, "manca");
             } catch (Exception unErrore) {
-                logger.error(unErrore, this.getClass(), "nomeDelMetodo");
+                logger.error(AETypeLog.resource, unErrore);
             }
         }
 
