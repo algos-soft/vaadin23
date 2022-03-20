@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.*;
  */
 @PageTitle(TAG_CONTINENTE)
 @Route(value = TAG_CONTINENTE, layout = MainLayout.class)
-public class ContinenteView extends CrudView {
+public class ContinenteView extends AlgosView {
 
     private ContinenteBackend backend;
 

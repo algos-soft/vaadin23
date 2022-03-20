@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.*;
  */
 @PageTitle("Logger")
 @Route(value = "logger", layout = MainLayout.class)
-public class LoggerView extends CrudView {
+public class LoggerView extends AlgosView {
 
     private TextField filter;
 

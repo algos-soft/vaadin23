@@ -24,7 +24,7 @@ import java.util.*;
  */
 @PageTitle(TAG_VERSIONE)
 @Route(value = TAG_VERSIONE, layout = MainLayout.class)
-public class VersioneView extends CrudView {
+public class VersioneView extends AlgosView {
 
     private TextField filter;
 
