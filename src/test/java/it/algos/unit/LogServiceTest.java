@@ -202,15 +202,17 @@ public class LogServiceTest extends ATest {
         System.out.println(sorgente);
         System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
 
-        sorgente = "Messaggi comprensivi di StackTrace con new AlgosException (giusto)";
-        exception = new AlgosException(sorgente);
-        service.warn(AETypeLog.export, exception);
-        service.error(AETypeLog.delete, exception);
+        service.warn(AETypeLog.export, new AlgosException("service.warn(AETypeLog.export, new AlgosException(\"testo\"));"));
+        service.error(AETypeLog.delete, new AlgosException("service.error(AETypeLog.delete, new AlgosException(\"testo\"));"));
 
-        sorgente = "Messaggi esclusivi di StackTrace (inutile)";
-        exception = AlgosException.crea(new Exception(sorgente));
-        service.warn(exception);
-        service.error(exception);
+        service.warn(new AlgosException("service.warn(new AlgosException(\"testo\"));"));
+        service.error(new AlgosException("service.error(new AlgosException(\"testo\"));"));
+
+        service.warn(new AlgosException(VUOTA));
+        service.error(new AlgosException(VUOTA));
+
+        service.warn(new AlgosException());
+        service.error(new AlgosException());
     }
 
 
@@ -221,15 +223,17 @@ public class LogServiceTest extends ATest {
         System.out.println(sorgente);
         System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
 
-        sorgente = "Messaggi con StackTrace registrati su mongoDB";
-        exception = AlgosException.crea(new Exception(sorgente));
-        service.warnDb(AETypeLog.export, exception);
-        service.errorDb(AETypeLog.delete, exception);
+        service.warnDb(AETypeLog.export, new AlgosException("service.warn(AETypeLog.export, new AlgosException(\"testo\"));"));
+        service.errorDb(AETypeLog.delete, new AlgosException("service.error(AETypeLog.delete, new AlgosException(\"testo\"));"));
 
-        sorgente = "Messaggi generici con StackTrace registrati su mongoDB";
-        exception = AlgosException.crea(new Exception(sorgente));
-        service.warnDb(exception);
-        service.errorDb(exception);
+        service.warnDb(new AlgosException("service.warn(new AlgosException(\"testo\"));"));
+        service.errorDb(new AlgosException("service.error(new AlgosException(\"testo\"));"));
+
+        service.warnDb(new AlgosException(VUOTA));
+        service.errorDb(new AlgosException(VUOTA));
+
+        service.warnDb(new AlgosException());
+        service.errorDb(new AlgosException());
     }
 
     //    @Test

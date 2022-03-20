@@ -84,6 +84,16 @@ public class VaadVers implements AIVers {
             this.crea(k, AETypeVers.setup, "Installazione iniziale di vaadin23");
         }
 
+        //--new package
+        if (installa(++k)) {
+            this.crea(k, AETypeVers.addition, "Package 'versione' funzionante");
+        }
+
+        //--new package
+        if (installa(++k)) {
+            this.crea(k, AETypeVers.addition, "Package 'nota' funzionante");
+        }
+
 
     }
 

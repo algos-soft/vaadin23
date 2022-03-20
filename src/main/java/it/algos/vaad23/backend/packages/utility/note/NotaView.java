@@ -1,6 +1,7 @@
 package it.algos.vaad23.backend.packages.utility.note;
 
 import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -54,8 +55,28 @@ public class NotaView extends CrudView {
     public void fixPreferenze() {
         super.fixPreferenze();
 
+        this.usaBottoneDelete = true;
         this.usaBottoneFilter = true;
     }
+
+    /**
+     * Qui vanno i collegamenti con la logica del backend <br>
+     * logic configuration <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void backendLogic() {
+        super.backendLogic();
+
+        gridCrud.setSavedMessage("Nota salvata");
+        gridCrud.setDeletedMessage("Nota cancellata");
+
+        crudForm.setVisibleProperties(CrudOperation.ADD, "livello", "type", "descrizione");
+        crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "inizio", "fine", "descrizione", "fatto");
+        crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "fatto");
+        crudForm.setVisibleProperties(CrudOperation.DELETE, "livello", "type", "inizio", "descrizione", "fatto", "fine");
+    }
+
 
     /**
      * Regola la visibilità delle colonne della grid <br>
@@ -63,6 +84,8 @@ public class NotaView extends CrudView {
      */
     @Override
     public void fixVisibilitaColumns() {
+        super.fixVisibilitaColumns();
+
         grid.setColumns("livello", "type", "inizio", "descrizione", "fatto", "fine");
 
         String larLevel = "9em";
@@ -77,12 +100,19 @@ public class NotaView extends CrudView {
         grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
         grid.getColumnByKey("fatto").setWidth(larBool).setFlexGrow(0);
         grid.getColumnByKey("fine").setWidth(larData).setFlexGrow(0);
-
-        crudForm.setVisibleProperties(CrudOperation.ADD, "livello", "type", "descrizione");
-        crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "inizio", "fine", "descrizione", "fatto");
-        crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "fatto");
-        crudForm.setVisibleProperties(CrudOperation.DELETE, "livello", "type", "inizio", "descrizione", "fatto", "fine");
     }
+
+    /**
+     * Regola la visibilità dei fields del Form<br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixVisibilitaFields() {
+        super.fixVisibilitaFields();
+
+        crudForm.setFieldType("descrizione", TextArea.class);
+    }
+
 
     /**
      * Componenti aggiuntivi oltre quelli base <br>
@@ -108,6 +138,7 @@ public class NotaView extends CrudView {
         gridCrud.getCrudLayout().addFilterComponent(comboTypeLog);
         comboTypeLog.addValueChangeListener(event -> sincroFiltri());
     }
+
 
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
@@ -140,6 +171,15 @@ public class NotaView extends CrudView {
         }
 
         return items;
+    }
+
+    /**
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     */
+    protected void delete() {
+        backend.deleteAll();
+        gridCrud.refreshGrid();
+        gridCrud.setDeletedMessage("Cancellate tutte le note");
     }
 
 }// end of crud @Route view class

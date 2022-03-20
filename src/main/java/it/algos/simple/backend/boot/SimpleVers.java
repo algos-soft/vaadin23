@@ -52,11 +52,7 @@ public class SimpleVers extends VaadVers {
         //--prima installazione del progetto specifico 'Simple'
         //--non fa nulla, solo informativo
         if (installa(++k)) {
-            this.crea(k, AETypeVers.setup, "Installazione iniziale di simple");
-        }
-
-        if (installa(++k)) {
-            this.crea(k, AETypeVers.patch, "Prova");
+            this.crea(k, AETypeVers.setup, "Installazione iniziale del programma simple");
         }
 
     }

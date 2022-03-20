@@ -66,7 +66,7 @@ public class UtilityService extends AbstractService {
         metodo = textService.fixSizeQuadre(metodo, padMethod);
         riga = textService.fixSizeQuadre(riga + VUOTA, padLine);
 
-        return String.format("%s%s%s%s%s%s%s", classe, DOPPIO_SPAZIO, metodo, DOPPIO_SPAZIO, riga, SEP, message);
+        return String.format("%s%s%s%s%s%s%s", classe, SPAZIO, metodo, SPAZIO, riga, SPAZIO, message);
     }
 
 

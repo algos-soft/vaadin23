@@ -381,6 +381,7 @@ public class LogService extends AbstractService {
                          final WrapLogCompany wrap) {
         String typeText;
         String message = descrizione;
+        String descrizioneDB = descrizione;
         String company = VUOTA;
         String user = VUOTA;
         String classe = VUOTA;
@@ -392,20 +393,21 @@ public class LogService extends AbstractService {
 
         // StackTrace dell'errore
         if (eccezione != null) {
-            message = eccezione.getMessage();
+            descrizioneDB = eccezione.getMessage();
             if (eccezione instanceof AlgosException algosException) {
+                descrizioneDB = algosException.getMessage();
                 classe = algosException.getClazz();
                 classe = fileService.estraeClasseFinale(classe);
                 metodo = algosException.getMethod();
                 linea = algosException.getLineNum();
                 message = utilityService.getStackTrace(algosException);
             }
-            message = String.format("%s%s%s", typeText, SPAZIO, message);
+            message = String.format("%s%s%s", typeText, DOPPIO_SPAZIO, message);
         }
 
         // mongoDB
         if (flagUsaDB) {
-            loggerBackend.crea(level, type, descrizione, company, user, classe, metodo, linea);
+            loggerBackend.crea(level, type, descrizioneDB, company, user, classe, metodo, linea);
         }
 
         // mail

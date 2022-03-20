@@ -15,8 +15,14 @@ import java.util.*;
  */
 public class AlgosException extends Exception {
 
+    private String message;
 
     private AEntity entityBean;
+
+    public AlgosException() {
+        super(VUOTA);
+        this.message = VUOTA;
+    }
 
     public AlgosException(final Throwable cause) {
         super(cause);
@@ -24,10 +30,12 @@ public class AlgosException extends Exception {
 
     public AlgosException(final String message) {
         super(message);
+        this.message = message;
     }
 
     public AlgosException(final Throwable cause, final String message) {
         super(message, cause);
+        this.message = message;
     }
 
     public AlgosException(final Throwable cause, final AEntity entityBean) {
@@ -36,6 +44,7 @@ public class AlgosException extends Exception {
 
     public AlgosException(final Throwable cause, final String message, final AEntity entityBean) {
         super(message, cause);
+        this.message = message;
         this.entityBean = entityBean;
     }
 
@@ -67,6 +76,9 @@ public class AlgosException extends Exception {
         return entityBean;
     }
 
+    public String getMessage() {
+        return getCause() != null ? getCause().getMessage() : message;
+    }
 
     /**
      * Classe da cui proviene l'errore <br>

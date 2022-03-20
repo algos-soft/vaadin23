@@ -100,6 +100,14 @@ public abstract class EntityBackend extends AbstractService {
         }
     }
 
+    public void deleteAll() {
+        try {
+            crudRepository.deleteAll();
+        } catch (Exception unErrore) {
+            logger.error(unErrore);
+        }
+    }
+
     public List findByDescrizione(final String value) {
         return null;
     }

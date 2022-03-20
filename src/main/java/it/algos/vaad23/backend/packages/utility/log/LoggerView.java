@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.packages.utility.log;
 
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -9,7 +10,9 @@ import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
+import org.vaadin.crudui.crud.*;
 
+import java.time.format.*;
 import java.util.*;
 
 /**
@@ -59,12 +62,42 @@ public class LoggerView extends CrudView {
     }
 
     /**
+     * Qui va tutta la logica iniziale della view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void initView() {
+        super.initView();
+
+        gridCrud.setAddOperationVisible(false);
+        gridCrud.setUpdateOperationVisible(false);
+        gridCrud.setDeleteOperationVisible(false);
+
+    }
+
+    /**
+     * Qui vanno i collegamenti con la logica del backend <br>
+     * logic configuration <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void backendLogic() {
+        super.backendLogic();
+
+        gridCrud.setAddOperationVisible(false);
+        gridCrud.setUpdateOperationVisible(true);
+        gridCrud.setDeleteOperationVisible(false);
+    }
+
+    /**
      * Regola la visibilità delle colonne della grid <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
     public void fixVisibilitaColumns() {
-        gridCrud.getGrid().setColumns("livello", "type", "evento", "descrizione", "company", "user", "classe", "metodo", "linea");
+        super.fixVisibilitaColumns();
+
+        grid.setColumns("livello", "type", "descrizione", "company", "user", "classe", "metodo", "linea");
 
         String larLevel = "5em";
         String larType = "9em";
@@ -75,20 +108,45 @@ public class LoggerView extends CrudView {
         String larMetodo = "12em";
         String larLinea = "5em";
 
-        gridCrud.getGrid().getColumnByKey("livello").setWidth(larLevel).setFlexGrow(0).setHeader("#");
-        gridCrud.getGrid().getColumnByKey("type").setWidth(larType).setFlexGrow(0);
-        gridCrud.getGrid().getColumnByKey("evento").setWidth(larEvento).setFlexGrow(0);
-        gridCrud.getGrid().getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
-        gridCrud.getGrid().getColumnByKey("company").setWidth(larCompany).setFlexGrow(0);
-        gridCrud.getGrid().getColumnByKey("user").setWidth(larCompany).setFlexGrow(0);
-        gridCrud.getGrid().getColumnByKey("classe").setWidth(larClasse).setFlexGrow(0);
-        gridCrud.getGrid().getColumnByKey("metodo").setWidth(larMetodo).setFlexGrow(0);
-        gridCrud.getGrid().getColumnByKey("linea").setHeader("Riga").setWidth(larLinea).setFlexGrow(0);
+        grid.getColumnByKey("livello").setWidth(larLevel).setFlexGrow(0).setHeader("#");
+        grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0);
+        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
+        grid.getColumnByKey("company").setWidth(larCompany).setFlexGrow(0).setVisible(VaadVar.usaCompany);
+        grid.getColumnByKey("user").setWidth(larCompany).setFlexGrow(0).setVisible(VaadVar.usaCompany);
+        ;
+        grid.getColumnByKey("classe").setWidth(larClasse).setFlexGrow(0);
+        grid.getColumnByKey("metodo").setWidth(larMetodo).setFlexGrow(0);
+        grid.getColumnByKey("linea").setHeader("Riga").setWidth(larLinea).setFlexGrow(0);
 
-        if (!VaadVar.usaCompany) {
-            gridCrud.getGrid().getColumnByKey("company").setVisible(false);
-            gridCrud.getGrid().getColumnByKey("user").setVisible(false);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yy HH:mm:ss");
+        grid.addColumn(bean -> formatter.format(((Logger) bean).getEvento())).setKey("evento").setHeader("Evento").setWidth(larEvento).setFlexGrow(0);
+    }
+
+    /**
+     * Regola la visibilità dei fields del Form<br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixVisibilitaFields() {
+        super.fixVisibilitaFields();
+
+        if (VaadVar.usaCompany) {
+            crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "descrizione", "company", "user", "classe", "metodo", "linea", "evento");
+            crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "company", "user", "classe", "metodo", "linea", "evento");
         }
+        else {
+            crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "descrizione", "classe", "metodo", "linea", "evento");
+            crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "classe", "metodo", "linea", "evento");
+        }
+
+        crudForm.setFieldType("descrizione", TextArea.class);
+
+        //        crudForm.setFieldProvider("evento", logger -> {
+        //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yy HH:mm:ss");
+        //            TextField field = new TextField("Evento");
+        //            field.setValue(((Logger) logger).evento.format(formatter));
+        //            return field;
+        //        });
     }
 
     /**

@@ -1,6 +1,8 @@
 package it.algos.vaad23.ui.views;
 
+import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.grid.*;
+import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
@@ -25,7 +27,11 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected GridCrud gridCrud;
 
+    protected Button buttonDelete;
+
     protected TextField filter;
+
+    protected boolean usaBottoneDelete;
 
     protected boolean usaBottoneFilter;
 
@@ -69,10 +75,10 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     public void afterNavigation(AfterNavigationEvent beforeEnterEvent) {
         this.fixPreferenze();
         this.initView();
+        this.backendLogic();
         this.fixVisibilitaColumns();
         this.fixVisibilitaFields();
         this.fixOrdinamento();
-        this.backendLogic();
         this.fixAdditionalComponents();
     }
 
@@ -83,6 +89,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixPreferenze() {
+        this.usaBottoneDelete = false;
         this.usaBottoneFilter = false;
     }
 
@@ -91,6 +98,20 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void initView() {
+    }
+
+    /**
+     * Qui vanno i collegamenti con la logica del backend <br>
+     * logic configuration <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void backendLogic() {
+        gridCrud.setOperations(
+                () -> sincroFiltri(),
+                user -> crudBackend.add(user),
+                user -> crudBackend.update(user),
+                user -> crudBackend.delete(user)
+        );
     }
 
     /**
@@ -114,18 +135,6 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     public void fixOrdinamento() {
     }
 
-    /**
-     * Qui vanno i collegamenti con la logica del backend <br>
-     * logic configuration <br>
-     */
-    protected void backendLogic() {
-        gridCrud.setOperations(
-                () -> sincroFiltri(),
-                user -> crudBackend.add(user),
-                user -> crudBackend.update(user),
-                user -> crudBackend.delete(user)
-        );
-    }
 
     /**
      * Componenti aggiuntivi oltre quelli base <br>
@@ -133,6 +142,15 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void fixAdditionalComponents() {
+        if (usaBottoneDelete) {
+            buttonDelete = new Button();
+            buttonDelete.setIcon(VaadinIcon.TRASH.create());
+            buttonDelete.setText("Delete All");
+            buttonDelete.getElement().setAttribute("theme", "error");
+            gridCrud.getCrudLayout().addFilterComponent(buttonDelete);
+            buttonDelete.addClickListener(event -> delete());
+        }
+
         if (usaBottoneFilter) {
             filter = new TextField();
             filter.setPlaceholder("Filter by descrizione");
@@ -159,6 +177,12 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         }
 
         return items;
+    }
+
+    /**
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     */
+    protected void delete() {
     }
 
 }

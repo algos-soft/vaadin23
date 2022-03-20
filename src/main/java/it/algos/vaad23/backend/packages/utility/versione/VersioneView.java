@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.packages.utility.versione;
 
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -71,6 +72,25 @@ public class VersioneView extends CrudView {
     }
 
     /**
+     * Qui vanno i collegamenti con la logica del backend <br>
+     * logic configuration <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void backendLogic() {
+        super.backendLogic();
+
+        if (VaadVar.usaCompany) {
+            crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "company", "vaadin23");
+            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "company", "vaadin23");
+        }
+        else {
+            crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "vaadin23");
+            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "vaadin23");
+        }
+    }
+
+    /**
      * Regola la visibilità delle colonne della grid <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
@@ -78,10 +98,10 @@ public class VersioneView extends CrudView {
     public void fixVisibilitaColumns() {
         super.fixVisibilitaColumns();
 
-        gridCrud.getGrid().setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
+        grid.setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
 
         String larId = "3em";
-        String larType = "9em";
+        String larType = "8em";
         String larTitolo = "11em";
         String larDesc = "30em";
         String larCompany = "8em";
@@ -107,14 +127,7 @@ public class VersioneView extends CrudView {
     public void fixVisibilitaFields() {
         super.fixVisibilitaFields();
 
-        if (VaadVar.usaCompany) {
-            crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "company", "ordine", "vaadin23");
-            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "company", "vaadin23");
-        }
-        else {
-            crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "ordine", "vaadin23");
-            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "vaadin23");
-        }
+        crudForm.setFieldType("descrizione", TextArea.class);
     }
 
     /**

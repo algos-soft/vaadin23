@@ -10,7 +10,7 @@ import java.util.*;
  * Time: 13:46
  */
 public enum AETypeVers {
-    setup, patch, miglioramento;
+    setup, patch, upgrade, error, addition, custom, test, fix, company;
 
     public static List<AETypeVers> getAll() {
         return Arrays.stream(values()).toList();
