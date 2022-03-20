@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.*;
  */
 @PageTitle(TAG_CONTINENTE)
 @Route(value = TAG_CONTINENTE, layout = MainLayout.class)
-public class ContinenteView extends AlgosView {
+public class ContinenteView extends CrudView {
 
     private ContinenteBackend backend;
 
@@ -34,17 +34,17 @@ public class ContinenteView extends AlgosView {
         super(crudBackend, Continente.class, true);
         this.backend = crudBackend;
 
-        crud.getGrid().setColumns("ordine", "nome", "abitato");
+        gridCrud.getGrid().setColumns("ordine", "nome", "abitato");
 
         // additional components
         Button reset = new Button("Reset");
-        crud.getCrudLayout().addFilterComponent(reset);
+        gridCrud.getCrudLayout().addFilterComponent(reset);
         reset.addClickListener(e -> reset());
     }
 
     public void reset() {
         backend.reset();
-        crud.refreshGrid();
+        gridCrud.refreshGrid();
     }
 
 }// end of crud @Route view class

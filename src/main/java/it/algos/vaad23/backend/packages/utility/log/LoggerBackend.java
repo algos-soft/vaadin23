@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
 import java.time.*;
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -68,6 +69,20 @@ public class LoggerBackend extends EntityBackend {
             //            logger.error(unErrore);
             System.out.println("errore");
         }
+    }
+
+    @Override
+    public List<Logger> findByDescrizioneAndLivelloAndType(final String value, final AENotaLevel level, final AETypeLog type) {
+        if (level != null && type != null) {
+            return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndType(value, level, type);
+        }
+        if (level != null) {
+            return repository.findByDescrizioneContainingIgnoreCaseAndLivello(value, level);
+        }
+        if (type != null) {
+            return repository.findByDescrizioneContainingIgnoreCaseAndType(value, type);
+        }
+        return repository.findByDescrizioneContainingIgnoreCase(value);
     }
 
 }// end of crud backend class

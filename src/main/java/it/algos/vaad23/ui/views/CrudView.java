@@ -1,6 +1,7 @@
 package it.algos.vaad23.ui.views;
 
 import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
@@ -8,6 +9,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import org.vaadin.crudui.crud.impl.*;
+import org.vaadin.crudui.form.*;
 import org.vaadin.crudui.layout.impl.*;
 
 import java.util.*;
@@ -19,11 +21,11 @@ import java.util.*;
  * Date: dom, 20-mar-2022
  * Time: 11:05
  */
-public abstract class AlgosView extends VerticalLayout implements AfterNavigationObserver {
+public abstract class CrudView extends VerticalLayout implements AfterNavigationObserver {
 
     protected EntityBackend crudBackend;
 
-    protected GridCrud crud;
+    protected GridCrud gridCrud;
 
     protected TextField filter;
 
@@ -37,30 +39,36 @@ public abstract class AlgosView extends VerticalLayout implements AfterNavigatio
 
     protected boolean usaComboType;
 
+    protected Grid grid;
 
-    public AlgosView(EntityBackend crudBackend, Class entityClazz, boolean splitLayout) {
-        //        super(crudBackend, entityClazz, splitLayout);
+    protected CrudFormFactory crudForm;
+
+    public CrudView(EntityBackend crudBackend, Class entityClazz, boolean splitLayout) {
         this.crudBackend = crudBackend;
+
         // crud instance
         if (splitLayout) {
-            crud = new GridCrud<>(entityClazz, new HorizontalSplitCrudLayout());
+            gridCrud = new GridCrud<>(entityClazz, new HorizontalSplitCrudLayout());
         }
         else {
-            crud = new GridCrud<>(entityClazz);
+            gridCrud = new GridCrud<>(entityClazz);
         }
 
         // grid configuration
-        crud.getCrudFormFactory().setUseBeanValidation(true);
+        gridCrud.getCrudFormFactory().setUseBeanValidation(true);
 
         // logic configuration
-        crud.setFindAllOperation(() -> crudBackend.findAll());
-        crud.setAddOperation(crudBackend::add);
-        crud.setUpdateOperation(crudBackend::update);
-        crud.setDeleteOperation(crudBackend::delete);
+        gridCrud.setFindAllOperation(() -> crudBackend.findAll());
+        gridCrud.setAddOperation(crudBackend::add);
+        gridCrud.setUpdateOperation(crudBackend::update);
+        gridCrud.setDeleteOperation(crudBackend::delete);
+
+        grid = gridCrud.getGrid();
+        crudForm = gridCrud.getCrudFormFactory();
 
         // layout configuration
         setSizeFull();
-        this.add(crud);
+        this.add(gridCrud);
     }
 
     /**
@@ -71,6 +79,9 @@ public abstract class AlgosView extends VerticalLayout implements AfterNavigatio
     public void afterNavigation(AfterNavigationEvent beforeEnterEvent) {
         this.fixPreferenze();
         this.initView();
+        this.fixVisibilitaColumns();
+        this.fixVisibilitaFields();
+        this.fixOrdinamento();
         this.backendLogic();
         this.fixAdditionalComponents();
     }
@@ -95,11 +106,32 @@ public abstract class AlgosView extends VerticalLayout implements AfterNavigatio
     }
 
     /**
+     * Regola la visibilità delle colonne della grid <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void fixVisibilitaColumns() {
+    }
+
+    /**
+     * Regola la visibilità dei fields del Form<br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void fixVisibilitaFields() {
+    }
+
+    /**
+     * Regola l'ordinamento della <grid <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void fixOrdinamento() {
+    }
+
+    /**
      * Qui vanno i collegamenti con la logica del backend <br>
      * logic configuration <br>
      */
     protected void backendLogic() {
-        crud.setOperations(
+        gridCrud.setOperations(
                 () -> sincroFiltri(),
                 user -> crudBackend.add(user),
                 user -> crudBackend.update(user),
@@ -116,8 +148,8 @@ public abstract class AlgosView extends VerticalLayout implements AfterNavigatio
             filter = new TextField();
             filter.setPlaceholder("Filter by descrizione");
             filter.setClearButtonVisible(true);
-            crud.getCrudLayout().addFilterComponent(filter);
-            filter.addValueChangeListener(event -> crud.refreshGrid());
+            gridCrud.getCrudLayout().addFilterComponent(filter);
+            filter.addValueChangeListener(event -> gridCrud.refreshGrid());
         }
 
         if (usaComboLivello) {
@@ -126,7 +158,7 @@ public abstract class AlgosView extends VerticalLayout implements AfterNavigatio
             comboLivello.setClearButtonVisible(true);
             List items = AENotaLevel.getAll();
             comboLivello.setItems(items);
-            crud.getCrudLayout().addFilterComponent(comboLivello);
+            gridCrud.getCrudLayout().addFilterComponent(comboLivello);
             comboLivello.addValueChangeListener(event -> sincroFiltri());
         }
 
@@ -136,7 +168,7 @@ public abstract class AlgosView extends VerticalLayout implements AfterNavigatio
             comboType.setClearButtonVisible(true);
             List items2 = AETypeLog.getAll();
             comboType.setItems(items2);
-            crud.getCrudLayout().addFilterComponent(comboType);
+            gridCrud.getCrudLayout().addFilterComponent(comboType);
             comboType.addValueChangeListener(event -> sincroFiltri());
         }
     }
@@ -167,7 +199,7 @@ public abstract class AlgosView extends VerticalLayout implements AfterNavigatio
         }
 
         if (items != null) {
-            crud.getGrid().setItems(items);
+            gridCrud.getGrid().setItems(items);
         }
 
         return items;

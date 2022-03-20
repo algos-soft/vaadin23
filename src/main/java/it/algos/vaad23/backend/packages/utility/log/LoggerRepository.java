@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.packages.utility.log;
 
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -36,5 +37,13 @@ public interface LoggerRepository extends MongoRepository<Logger, String> {
     <Logger extends AEntity> Logger save(Logger entity);
 
     void delete(Logger entity);
+
+    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivello(String descrizione, AENotaLevel level);
+
+    List<Logger> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypeLog type);
+
+    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivelloAndType(String descrizione, AENotaLevel level, AETypeLog type);
+
+    List<Logger> findByDescrizioneContainingIgnoreCase(String descrizione);
 
 }// end of crud repository class

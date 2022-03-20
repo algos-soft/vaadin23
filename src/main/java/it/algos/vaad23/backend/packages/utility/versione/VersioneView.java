@@ -1,9 +1,6 @@
 package it.algos.vaad23.backend.packages.utility.versione;
 
-import com.vaadin.flow.component.*;
-import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
-import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -24,10 +21,10 @@ import java.util.*;
  */
 @PageTitle(TAG_VERSIONE)
 @Route(value = TAG_VERSIONE, layout = MainLayout.class)
-public class VersioneView extends AlgosView {
+public class VersioneView extends CrudView {
 
-    private TextField filter;
 
+    //--per eventuali metodi specifici
     private VersioneBackend backend;
 
     /**
@@ -43,8 +40,44 @@ public class VersioneView extends AlgosView {
     public VersioneView(@Autowired final VersioneBackend crudBackend) {
         super(crudBackend, Versione.class, true);
         this.backend = crudBackend;
+    }
 
-        crud.getGrid().setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
+
+    /**
+     * Preferenze usate da questa view <br>
+     * Primo metodo chiamato dopo AfterNavigationEvent <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixPreferenze() {
+        super.fixPreferenze();
+
+        this.usaBottoneFilter = true;
+        this.usaComboType = true;
+    }
+
+    /**
+     * Qui va tutta la logica iniziale della view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void initView() {
+        super.initView();
+
+        gridCrud.setAddOperationVisible(false);
+        gridCrud.setUpdateOperationVisible(false);
+        gridCrud.setDeleteOperationVisible(false);
+    }
+
+    /**
+     * Regola la visibilità delle colonne della grid <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixVisibilitaColumns() {
+        super.fixVisibilitaColumns();
+
+        gridCrud.getGrid().setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
 
         String larId = "3em";
         String larType = "9em";
@@ -52,79 +85,77 @@ public class VersioneView extends AlgosView {
         String larDesc = "30em";
         String larCompany = "8em";
 
-        crud.getGrid().getColumnByKey("id").setWidth(larId).setFlexGrow(0);
-        crud.getGrid().getColumnByKey("type").setWidth(larType).setFlexGrow(0);
-        crud.getGrid().getColumnByKey("titolo").setWidth(larTitolo).setFlexGrow(0);
-        crud.getGrid().getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
-        crud.getGrid().getColumnByKey("company").setWidth(larCompany).setFlexGrow(0);
+        grid.getColumnByKey("id").setWidth(larId).setFlexGrow(0);
+        grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0);
+        grid.getColumnByKey("titolo").setWidth(larTitolo).setFlexGrow(0);
+        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
+        grid.getColumnByKey("company").setWidth(larCompany).setFlexGrow(0);
+        grid.getColumnByKey("vaadin23").setVisible(false);
+        grid.getColumnByKey("ordine").setVisible(false);
 
-        // colonne visibili
         if (!VaadVar.usaCompany) {
-            crud.getGrid().getColumnByKey("company").setVisible(false);
+            grid.getColumnByKey("company").setVisible(false);
         }
+    }
 
-        // additional components
-        filter = new TextField();
-        filter.setPlaceholder("Filter by descrizione");
-        filter.setClearButtonVisible(true);
-        crud.getCrudLayout().addFilterComponent(filter);
-        filter.addValueChangeListener(event -> crud.refreshGrid());
+    /**
+     * Regola la visibilità dei fields del Form<br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixVisibilitaFields() {
+        super.fixVisibilitaFields();
 
-        ComboBox combo = new ComboBox();
-        combo.setPlaceholder("Type");
-        combo.setClearButtonVisible(true);
-        List items = AETypeVers.getAll();
-        combo.setItems(items);
-        crud.getCrudLayout().addFilterComponent(combo);
-        combo.addValueChangeListener(event -> filtroCombo(event));
+        if (VaadVar.usaCompany) {
+            crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "company", "ordine", "vaadin23");
+            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "company", "vaadin23");
+        }
+        else {
+            crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "ordine", "vaadin23");
+            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "vaadin23");
+        }
+    }
 
-        // logic configuration
-        crud.setOperations(
-                () -> backend.findByDescrizioneContainingIgnoreCase(filter.getValue()),
-                user -> backend.add(user),
-                user -> backend.update(user),
-                user -> backend.delete(user)
-        );
-
-        Grid.Column columnVaad = crud.getGrid().getColumnByKey("vaadin23");
-        columnVaad.setVisible(false);
-        Grid.Column columnOrd = crud.getGrid().getColumnByKey("ordine");
-        columnOrd.setVisible(false);
+    /**
+     * Regola l'ordinamento della <grid <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixOrdinamento() {
+        super.fixOrdinamento();
+        Grid.Column columnVaad = grid.getColumnByKey("vaadin23");
+        Grid.Column columnOrd = grid.getColumnByKey("ordine");
         List<GridSortOrder> lista = new ArrayList<>();
         lista.add(new GridSortOrder(columnVaad, SortDirection.DESCENDING));
         lista.add(new GridSortOrder(columnOrd, SortDirection.ASCENDING));
-        crud.getGrid().sort(lista);
-
-        crud.setAddOperationVisible(false);
-        crud.setUpdateOperationVisible(false);
-        crud.setDeleteOperationVisible(false);
-
-        // fields visibili
-        if (VaadVar.usaCompany) {
-            crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "company", "ordine", "vaadin23");
-            crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "company", "vaadin23");
-        }
-        else {
-            crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "ordine", "vaadin23");
-            crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "vaadin23");
-        }
-
+        gridCrud.getGrid().sort(lista);
     }
 
-    public void filtroCombo(HasValue.ValueChangeEvent event) {
-        List items;
+    /**
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     */
+    protected List sincroFiltri() {
+        List items = null;
+        String textSearch = VUOTA;
+        AETypeLog type = null;
 
-        if (event.getValue() instanceof AETypeVers type) {
-            filter.setValue(VUOTA);
-            items = backend.findByType(type);
-            crud.getGrid().setItems(items);
-            return;
+        if (usaBottoneFilter && filter != null) {
+            textSearch = filter != null ? filter.getValue() : VUOTA;
         }
 
-        if (event.getValue() == null) {
-            crud.refreshGrid();
-            return;
+        if (usaComboType && comboType != null) {
+            type = (AETypeLog) comboType.getValue();
         }
+
+        if (usaBottoneFilter && usaComboType) {
+            items = crudBackend.findByDescrizioneAndType(textSearch, type);
+        }
+
+        if (items != null) {
+            gridCrud.getGrid().setItems(items);
+        }
+
+        return items;
     }
 
 

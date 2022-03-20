@@ -47,4 +47,6 @@ public interface VersioneRepository extends MongoRepository<Versione, String> {
 
     List<Versione> findByType(AETypeVers type);
 
+    List<Versione> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypeLog type);
+
 }// end of crud repository class

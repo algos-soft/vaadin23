@@ -61,7 +61,8 @@ public class VersioneBackend extends EntityBackend {
         versione.release = riferitoVaadin23 ? VaadVar.vaadin23Version : VaadVar.projectVersion;
         versione.titolo = String.format("%s%s%s", versione.release, tag, dateService.get());
         versione.giorno = LocalDate.now();
-        versione.descrizione = textService.isValid(descrizione) ? descrizione : null; ;
+        versione.descrizione = textService.isValid(descrizione) ? descrizione : null;
+        ;
         versione.company = textService.isValid(company) ? company : null;
         versione.vaadin23 = riferitoVaadin23;
 
@@ -177,6 +178,13 @@ public class VersioneBackend extends EntityBackend {
 
     public List<Versione> findByType(final AETypeVers type) {
         return repository.findByType(type);
+    }
+
+    public List<Versione> findByDescrizioneAndType(final String value, final AETypeLog type) {
+        if (type != null) {
+            return repository.findByDescrizioneContainingIgnoreCaseAndType(value, type);
+        }
+        return repository.findByDescrizioneContainingIgnoreCase(value);
     }
 
 

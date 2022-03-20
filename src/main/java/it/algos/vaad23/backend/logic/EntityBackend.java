@@ -105,6 +105,10 @@ public abstract class EntityBackend extends AbstractService {
         return null;
     }
 
+    public List findByDescrizioneAndType(final String value, final AETypeLog type) {
+        return null;
+    }
+
     public void reset() {
     }
 

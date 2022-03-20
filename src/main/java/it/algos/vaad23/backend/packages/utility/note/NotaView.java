@@ -15,11 +15,12 @@ import org.vaadin.crudui.crud.*;
  */
 @PageTitle("Nota")
 @Route(value = "nota", layout = MainLayout.class)
-public class NotaView extends AlgosView {
+public class NotaView extends CrudView {
 
 
     //--per eventuali metodi specifici
     private NotaBackend backend;
+
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -29,11 +30,11 @@ public class NotaView extends AlgosView {
      * Regola il service specifico di persistenza dei dati e lo passa al costruttore della superclasse <br>
      * Regola la entityClazz (final nella superclasse) associata a questa @Route view <br>
      *
-     * @param entityBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
+     * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
-    public NotaView(@Autowired final NotaBackend entityBackend) {
-        super(entityBackend, Nota.class, true);
-        this.backend = entityBackend;
+    public NotaView(@Autowired final NotaBackend crudBackend) {
+        super(crudBackend, Nota.class, true);
+        this.backend = crudBackend;
     }
 
     /**
@@ -51,14 +52,12 @@ public class NotaView extends AlgosView {
     }
 
     /**
-     * Qui va tutta la logica iniziale della view <br>
+     * Regola la visibilità delle colonne della grid <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void initView() {
-        super.initView();
-
-        crud.getGrid().setColumns("livello", "type", "inizio", "descrizione", "fatto", "fine");
+    public void fixVisibilitaColumns() {
+        grid.setColumns("livello", "type", "inizio", "descrizione", "fatto", "fine");
 
         String larLevel = "9em";
         String larType = "9em";
@@ -66,18 +65,17 @@ public class NotaView extends AlgosView {
         String larDesc = "30em";
         String larBool = "8em";
 
-        crud.getGrid().getColumnByKey("livello").setWidth(larLevel).setFlexGrow(0);
-        crud.getGrid().getColumnByKey("type").setWidth(larType).setFlexGrow(0);
-        crud.getGrid().getColumnByKey("inizio").setWidth(larData).setFlexGrow(0);
-        crud.getGrid().getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
-        crud.getGrid().getColumnByKey("fatto").setWidth(larBool).setFlexGrow(0);
-        crud.getGrid().getColumnByKey("fine").setWidth(larData).setFlexGrow(0);
+        grid.getColumnByKey("livello").setWidth(larLevel).setFlexGrow(0);
+        grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0);
+        grid.getColumnByKey("inizio").setWidth(larData).setFlexGrow(0);
+        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
+        grid.getColumnByKey("fatto").setWidth(larBool).setFlexGrow(0);
+        grid.getColumnByKey("fine").setWidth(larData).setFlexGrow(0);
 
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.ADD, "livello", "type", "descrizione");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.READ, "livello", "type", "inizio", "fine", "descrizione", "fatto");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "fatto");
-        crud.getCrudFormFactory().setVisibleProperties(CrudOperation.DELETE, "livello", "type", "inizio", "descrizione", "fatto", "fine");
+        crudForm.setVisibleProperties(CrudOperation.ADD, "livello", "type", "descrizione");
+        crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "inizio", "fine", "descrizione", "fatto");
+        crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "fatto");
+        crudForm.setVisibleProperties(CrudOperation.DELETE, "livello", "type", "inizio", "descrizione", "fatto", "fine");
     }
-
 
 }// end of crud @Route view class
