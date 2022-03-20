@@ -50,7 +50,7 @@ public class NotaBackend extends EntityBackend {
     public Nota add(Object objEntity) {
         if (objEntity instanceof Nota notaEntity) {
             notaEntity.inizio = LocalDate.now();
-            notaEntity.livello = notaEntity.livello != null ? notaEntity.livello : AENotaLevel.normale;
+            notaEntity.livello = notaEntity.livello != null ? notaEntity.livello : AELevelNota.normale;
             notaEntity.type = notaEntity.type != null ? notaEntity.type : AETypeLog.system;
 
             return (Nota) crudRepository.insert(notaEntity);
@@ -77,7 +77,7 @@ public class NotaBackend extends EntityBackend {
         return repository.findByDescrizioneContainingIgnoreCase(value);
     }
 
-    public List<Nota> findByLevel(final AENotaLevel level) {
+    public List<Nota> findByLevel(final AELevelNota level) {
         return repository.findByLivello(level);
     }
 
@@ -85,7 +85,7 @@ public class NotaBackend extends EntityBackend {
         return repository.findByType(type);
     }
 
-    public List<Nota> findByLivelloAndType(final AENotaLevel level, final AETypeLog type) {
+    public List<Nota> findByLivelloAndType(final AELevelNota level, final AETypeLog type) {
         if (level == null) {
             return repository.findByType(type);
         }
@@ -96,7 +96,7 @@ public class NotaBackend extends EntityBackend {
     }
 
     @Override
-    public List<Nota> findByDescrizioneAndLivelloAndType(final String value, final AENotaLevel level, final AETypeLog type) {
+    public List<Nota> findByDescrizioneAndLivelloAndType(final String value, final AELevelNota level, final AETypeLog type) {
         if (level != null && type != null) {
             return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndType(value, level, type);
         }

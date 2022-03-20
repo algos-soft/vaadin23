@@ -49,7 +49,7 @@ public class LoggerBackend extends EntityBackend {
     /**
      * Ordine messo in automatico (progressivo) <br>
      */
-    public void crea(final AELogLevel livello, final AETypeLog type, final String descrizione, final String company, final String user,
+    public void crea(final AELevelLog livello, final AETypeLog type, final String descrizione, final String company, final String user,
                      final String classe, final String metodo, final int linea) {
         Logger entity = new Logger();
 
@@ -71,8 +71,7 @@ public class LoggerBackend extends EntityBackend {
         }
     }
 
-    @Override
-    public List<Logger> findByDescrizioneAndLivelloAndType(final String value, final AENotaLevel level, final AETypeLog type) {
+    public List<Logger> findByDescrizioneAndLivelloAndType(final String value, final AELevelLog level, final AETypeLog type) {
         if (level != null && type != null) {
             return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndType(value, level, type);
         }

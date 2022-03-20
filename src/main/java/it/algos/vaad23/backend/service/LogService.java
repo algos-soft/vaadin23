@@ -141,7 +141,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void info(final String message) {
-        logBase(AELogLevel.info, AETypeLog.system, false, false, message, null, null);
+        logBase(AELevelLog.info, AETypeLog.system, false, false, message, null, null);
     }
 
     /**
@@ -150,7 +150,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void info(final Exception stack) {
-        logBase(AELogLevel.info, AETypeLog.system, false, false, VUOTA, stack, null);
+        logBase(AELevelLog.info, AETypeLog.system, false, false, VUOTA, stack, null);
     }
 
     /**
@@ -160,7 +160,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void info(final AETypeLog type, final String message) {
-        logBase(AELogLevel.info, type, false, false, message, null, null);
+        logBase(AELevelLog.info, type, false, false, message, null, null);
     }
 
     /**
@@ -171,7 +171,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void infoDb(final AETypeLog type, final String message) {
-        logBase(AELogLevel.info, type, true, false, message, null, null);
+        logBase(AELevelLog.info, type, true, false, message, null, null);
     }
 
     /**
@@ -182,7 +182,7 @@ public class LogService extends AbstractService {
      * @param wrap    di informazioni su company, userName e address
      */
     public void info(final AETypeLog type, final String message, final WrapLogCompany wrap) {
-        logBase(AELogLevel.info, type, true, false, message, null, wrap);
+        logBase(AELevelLog.info, type, true, false, message, null, wrap);
     }
 
     /**
@@ -192,7 +192,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void info(final AETypeLog type, final Exception stack) {
-        logBase(AELogLevel.info, type, false, false, VUOTA, stack, null);
+        logBase(AELevelLog.info, type, false, false, VUOTA, stack, null);
     }
 
     /**
@@ -201,7 +201,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void warn(final Exception stack) {
-        logBase(AELogLevel.warn, AETypeLog.system, false, false, VUOTA, stack, null);
+        logBase(AELevelLog.warn, AETypeLog.system, false, false, VUOTA, stack, null);
     }
 
     /**
@@ -211,7 +211,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void warnDb(final Exception stack) {
-        logBase(AELogLevel.warn, AETypeLog.system, true, false, VUOTA, stack, null);
+        logBase(AELevelLog.warn, AETypeLog.system, true, false, VUOTA, stack, null);
     }
 
     /**
@@ -220,7 +220,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void warn(final String message) {
-        logBase(AELogLevel.warn, AETypeLog.system, false, false, message, null, null);
+        logBase(AELevelLog.warn, AETypeLog.system, false, false, message, null, null);
     }
 
     /**
@@ -230,7 +230,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void warn(final AETypeLog type, final String message) {
-        logBase(AELogLevel.warn, type, false, false, message, null, null);
+        logBase(AELevelLog.warn, type, false, false, message, null, null);
     }
 
     /**
@@ -241,7 +241,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void warnDb(final AETypeLog type, final String message) {
-        logBase(AELogLevel.warn, type, true, false, message, null, null);
+        logBase(AELevelLog.warn, type, true, false, message, null, null);
     }
 
 
@@ -252,7 +252,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void warn(final AETypeLog type, final Exception stack) {
-        logBase(AELogLevel.warn, type, false, false, VUOTA, stack, null);
+        logBase(AELevelLog.warn, type, false, false, VUOTA, stack, null);
     }
 
     /**
@@ -263,7 +263,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void warnDb(final AETypeLog type, final Exception stack) {
-        logBase(AELogLevel.warn, type, true, false, VUOTA, stack, null);
+        logBase(AELevelLog.warn, type, true, false, VUOTA, stack, null);
     }
 
     /**
@@ -272,7 +272,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void error(final Exception stack) {
-        logBase(AELogLevel.error, AETypeLog.system, false, false, VUOTA, stack, null);
+        logBase(AELevelLog.error, AETypeLog.system, false, false, VUOTA, stack, null);
     }
 
     /**
@@ -282,7 +282,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void errorDb(final Exception stack) {
-        logBase(AELogLevel.error, AETypeLog.system, true, false, VUOTA, stack, null);
+        logBase(AELevelLog.error, AETypeLog.system, true, false, VUOTA, stack, null);
     }
 
     /**
@@ -291,7 +291,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void error(final String message) {
-        logBase(AELogLevel.error, AETypeLog.system, false, false, message, null, null);
+        logBase(AELevelLog.error, AETypeLog.system, false, false, message, null, null);
     }
 
     /**
@@ -301,7 +301,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void error(final AETypeLog type, final String message) {
-        logBase(AELogLevel.error, type, false, false, message, null, null);
+        logBase(AELevelLog.error, type, false, false, message, null, null);
     }
 
 
@@ -313,7 +313,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void errorDb(final AETypeLog type, final String message) {
-        logBase(AELogLevel.error, type, true, false, message, null, null);
+        logBase(AELevelLog.error, type, true, false, message, null, null);
     }
 
     /**
@@ -323,7 +323,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void error(final AETypeLog type, final Exception stack) {
-        logBase(AELogLevel.error, type, false, false, VUOTA, stack, null);
+        logBase(AELevelLog.error, type, false, false, VUOTA, stack, null);
     }
 
     /**
@@ -334,7 +334,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public void errorDb(final AETypeLog type, final Exception stack) {
-        logBase(AELogLevel.error, type, true, false, VUOTA, stack, null);
+        logBase(AELevelLog.error, type, true, false, VUOTA, stack, null);
     }
 
     /**
@@ -343,7 +343,7 @@ public class LogService extends AbstractService {
      * @param message di descrizione dell'evento
      */
     public void debug(final String message) {
-        logBase(AELogLevel.debug, AETypeLog.system, false, false, message, null, null);
+        logBase(AELevelLog.debug, AETypeLog.system, false, false, message, null, null);
     }
 
 
@@ -372,7 +372,7 @@ public class LogService extends AbstractService {
      * @param eccezione   da gestire
      * @param wrap        di informazioni su company, userName e address
      */
-    private void logBase(final AELogLevel level,
+    private void logBase(final AELevelLog level,
                          final AETypeLog type,
                          final boolean flagUsaDB,
                          final boolean flagUsaMail,

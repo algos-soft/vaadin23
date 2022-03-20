@@ -21,7 +21,6 @@ public class Versione extends AEntity {
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
     public int ordine;
 
-    //    @AIField(type = AETypeField.enumeration, enumClazz = AETypeVers.class, usaComboBox = true)
     public AETypeVers type;
 
     public double release;

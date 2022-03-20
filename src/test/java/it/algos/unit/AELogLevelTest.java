@@ -28,22 +28,22 @@ import java.util.stream.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AELogLevelTest extends ATest {
 
-    private AELogLevel type;
+    private AELevelLog type;
 
-    private List<AELogLevel> listaLivel;
+    private List<AELevelLog> listaLivel;
 
     private List<String> listaTag;
 
-    private AELogLevel[] matrice;
+    private AELevelLog[] matrice;
 
 
     //--log level
     protected static Stream<Arguments> LIVELLI() {
         return Stream.of(
-                Arguments.of(AELogLevel.debug),
-                Arguments.of(AELogLevel.info),
-                Arguments.of(AELogLevel.warn),
-                Arguments.of(AELogLevel.error)
+                Arguments.of(AELevelLog.debug),
+                Arguments.of(AELevelLog.info),
+                Arguments.of(AELevelLog.warn),
+                Arguments.of(AELevelLog.error)
         );
     }
 
@@ -77,14 +77,14 @@ public class AELogLevelTest extends ATest {
     @Order(1)
     @DisplayName("matrice dei valori")
     void matrice() {
-        matrice = AELogLevel.values();
+        matrice = AELevelLog.values();
         assertNotNull(matrice);
 
         System.out.println("Tutti i valori della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
-        for (AELogLevel valore : matrice) {
+        for (AELevelLog valore : matrice) {
             System.out.println(valore);
         }
     }
@@ -93,7 +93,7 @@ public class AELogLevelTest extends ATest {
     @Order(2)
     @DisplayName("lista dei valori")
     void lista() {
-        listaLivel = AELogLevel.getAll();
+        listaLivel = AELevelLog.getAll();
         assertNotNull(listaLivel);
 
         System.out.println("Tutti i valori della enumeration come ArrayList()");
@@ -109,7 +109,7 @@ public class AELogLevelTest extends ATest {
     @Order(3)
     @DisplayName("getColor")
         //--log level
-    void getColor(final AELogLevel type) {
+    void getColor(final AELevelLog type) {
         assertNotNull(type);
 
         System.out.println(VUOTA);
@@ -122,7 +122,7 @@ public class AELogLevelTest extends ATest {
     @Order(4)
     @DisplayName("getPref")
         //--log level
-    void getPref(final AELogLevel type) {
+    void getPref(final AELevelLog type) {
         assertNotNull(type);
 
         System.out.println("Stringa di valori (text) da usare per memorizzare la preferenza");

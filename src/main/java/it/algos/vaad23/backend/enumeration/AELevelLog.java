@@ -13,7 +13,7 @@ import java.util.*;
  * Date: lun, 07-mar-2022
  * Time: 11:45
  */
-public enum AELogLevel implements AIPref {
+public enum AELevelLog implements AIPref {
     debug(GREEN),
     info(BRIGHT_BLUE),
     warn(YELLOW),
@@ -23,11 +23,11 @@ public enum AELogLevel implements AIPref {
     public String color;
 
 
-    AELogLevel(String color) {
+    AELevelLog(String color) {
         this.color = color;
     }
 
-    public static List<AELogLevel> getAll() {
+    public static List<AELevelLog> getAll() {
         return Arrays.stream(values()).toList();
     }
 

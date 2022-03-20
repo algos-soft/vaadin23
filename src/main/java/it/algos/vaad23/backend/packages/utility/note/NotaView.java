@@ -1,9 +1,14 @@
 package it.algos.vaad23.backend.packages.utility.note;
 
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.router.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.vaadin.crudui.crud.*;
+
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -18,9 +23,12 @@ import org.vaadin.crudui.crud.*;
 public class NotaView extends CrudView {
 
 
+    private ComboBox comboLivello;
+
+    private ComboBox comboTypeLog;
+
     //--per eventuali metodi specifici
     private NotaBackend backend;
-
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -47,8 +55,6 @@ public class NotaView extends CrudView {
         super.fixPreferenze();
 
         this.usaBottoneFilter = true;
-        this.usaComboLivello = true;
-        this.usaComboType = true;
     }
 
     /**
@@ -76,6 +82,64 @@ public class NotaView extends CrudView {
         crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "inizio", "fine", "descrizione", "fatto");
         crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "fatto");
         crudForm.setVisibleProperties(CrudOperation.DELETE, "livello", "type", "inizio", "descrizione", "fatto", "fine");
+    }
+
+    /**
+     * Componenti aggiuntivi oltre quelli base <br>
+     * Tipicamente bottoni di selezione/filtro <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixAdditionalComponents() {
+        super.fixAdditionalComponents();
+
+        comboLivello = new ComboBox();
+        comboLivello.setPlaceholder("Livello");
+        comboLivello.setClearButtonVisible(true);
+        List items = AELevelNota.getAll();
+        comboLivello.setItems(items);
+        gridCrud.getCrudLayout().addFilterComponent(comboLivello);
+        comboLivello.addValueChangeListener(event -> sincroFiltri());
+
+        comboTypeLog = new ComboBox();
+        comboTypeLog.setPlaceholder("Type");
+        comboTypeLog.setClearButtonVisible(true);
+        List items2 = AETypeLog.getAll();
+        comboTypeLog.setItems(items2);
+        gridCrud.getCrudLayout().addFilterComponent(comboTypeLog);
+        comboTypeLog.addValueChangeListener(event -> sincroFiltri());
+    }
+
+    /**
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     */
+    protected List sincroFiltri() {
+        List items = null;
+        String textSearch = VUOTA;
+        AELevelNota level = null;
+        AETypeLog type = null;
+
+        if (usaBottoneFilter && filter != null) {
+            textSearch = filter != null ? filter.getValue() : VUOTA;
+            items = backend.findByDescrizione(textSearch);
+        }
+
+        if (comboLivello != null) {
+            level = (AELevelNota) comboLivello.getValue();
+        }
+
+        if (comboTypeLog != null) {
+            type = (AETypeLog) comboTypeLog.getValue();
+        }
+
+        if (usaBottoneFilter) {
+            items = backend.findByDescrizioneAndLivelloAndType(textSearch, level, type);
+        }
+
+        if (items != null) {
+            gridCrud.getGrid().setItems(items);
+        }
+
+        return items;
     }
 
 }// end of crud @Route view class

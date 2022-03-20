@@ -180,7 +180,7 @@ public class VersioneBackend extends EntityBackend {
         return repository.findByType(type);
     }
 
-    public List<Versione> findByDescrizioneAndType(final String value, final AETypeLog type) {
+    public List<Versione> findByDescrizioneAndType(final String value, final AETypeVers type) {
         if (type != null) {
             return repository.findByDescrizioneContainingIgnoreCaseAndType(value, type);
         }

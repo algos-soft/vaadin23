@@ -100,8 +100,11 @@ public abstract class EntityBackend extends AbstractService {
         }
     }
 
+    public List findByDescrizione(final String value) {
+        return null;
+    }
 
-    public List findByDescrizioneAndLivelloAndType(final String value, final AENotaLevel level, final AETypeLog type) {
+    public List findByDescrizioneAndLivelloAndType(final String value, final AELevelNota level, final AETypeLog type) {
         return null;
     }
 

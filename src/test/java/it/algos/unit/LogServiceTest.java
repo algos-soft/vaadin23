@@ -113,19 +113,19 @@ public class LogServiceTest extends ATest {
     @Order(1)
     @DisplayName("1 - Messaggi solo testo su slf4jLogger")
     void log1() {
-        sorgente2 = AELogLevel.info.toString();
+        sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         service.info(sorgente);
 
-        sorgente2 = AELogLevel.warn.toString();
+        sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         service.warn(sorgente);
 
-        sorgente2 = AELogLevel.error.toString();
+        sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         service.error(sorgente);
 
-        sorgente2 = AELogLevel.debug.toString();
+        sorgente2 = AELevelLog.debug.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         service.debug(sorgente);
     }
@@ -134,27 +134,27 @@ public class LogServiceTest extends ATest {
     @Order(2)
     @DisplayName("2 - Messaggi con typo su slf4jLogger")
     void log2() {
-        sorgente2 = AELogLevel.info.toString();
+        sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         service.info(AETypeLog.checkData, sorgente);
 
-        sorgente2 = AELogLevel.info.toString();
+        sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         service.info(AETypeLog.download, sorgente);
 
-        sorgente2 = AELogLevel.info.toString();
+        sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         service.info(AETypeLog.preferenze, sorgente);
 
-        sorgente2 = AELogLevel.warn.toString();
+        sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         service.warn(AETypeLog.modifica, sorgente);
 
-        sorgente2 = AELogLevel.error.toString();
+        sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         service.error(AETypeLog.startup, sorgente);
 
-        sorgente2 = AELogLevel.debug.toString();
+        sorgente2 = AELevelLog.debug.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         service.debug(sorgente);
     }
@@ -163,15 +163,15 @@ public class LogServiceTest extends ATest {
     @Order(3)
     @DisplayName("3 - Messaggi registrati su mongoDB")
     void log3() {
-        sorgente2 = AELogLevel.info.toString();
+        sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
         service.infoDb(AETypeLog.checkData, sorgente);
 
-        sorgente2 = AELogLevel.warn.toString();
+        sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
         service.warnDb(AETypeLog.export, sorgente);
 
-        sorgente2 = AELogLevel.error.toString();
+        sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
         service.errorDb(AETypeLog.delete, sorgente);
     }
@@ -182,7 +182,7 @@ public class LogServiceTest extends ATest {
     void log4() {
         VaadVar.usaCompany = true;
 
-        sorgente2 = AELogLevel.info.toString();
+        sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio di %s con company", sorgente2);
         service.info(AETypeLog.checkData, sorgente, wrap);
 

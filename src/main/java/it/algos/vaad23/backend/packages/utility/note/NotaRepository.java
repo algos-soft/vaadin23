@@ -41,16 +41,16 @@ public interface NotaRepository extends MongoRepository<Nota, String> {
 
     List<Nota> findByDescrizioneContainingIgnoreCase(String descrizione);
 
-    List<Nota> findByLivello(AENotaLevel level);
+    List<Nota> findByLivello(AELevelNota level);
 
     List<Nota> findByType(AETypeLog type);
 
-    List<Nota> findByLivelloAndType(AENotaLevel level, AETypeLog type);
+    List<Nota> findByLivelloAndType(AELevelNota level, AETypeLog type);
 
-    List<Nota> findByDescrizioneContainingIgnoreCaseAndLivello(String descrizione, AENotaLevel level);
+    List<Nota> findByDescrizioneContainingIgnoreCaseAndLivello(String descrizione, AELevelNota level);
 
     List<Nota> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypeLog type);
 
-    List<Nota> findByDescrizioneContainingIgnoreCaseAndLivelloAndType(String descrizione, AENotaLevel level, AETypeLog type);
+    List<Nota> findByDescrizioneContainingIgnoreCaseAndLivelloAndType(String descrizione, AELevelNota level, AETypeLog type);
 
 }// end of crud repository class

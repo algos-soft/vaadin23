@@ -11,7 +11,7 @@ import java.util.*;
  * Date: ven, 18-mar-2022
  * Time: 07:13
  */
-public enum AENotaLevel implements AIType {
+public enum AELevelNota implements AIType {
     dettaglio(GREEN),
     normale(BRIGHT_BLUE),
     urgente(YELLOW),
@@ -21,11 +21,11 @@ public enum AENotaLevel implements AIType {
     public String tag;
 
 
-    AENotaLevel(String tag) {
+    AELevelNota(String tag) {
         this.tag = tag;
     }
 
-    public static List<AENotaLevel> getAll() {
+    public static List<AELevelNota> getAll() {
         return Arrays.stream(values()).toList();
     }
 

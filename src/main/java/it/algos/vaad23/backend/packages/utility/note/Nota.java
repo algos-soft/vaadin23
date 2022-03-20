@@ -17,7 +17,7 @@ import java.time.*;
  */
 public class Nota extends AEntity {
 
-    public AENotaLevel livello;
+    public AELevelNota livello;
 
     public AETypeLog type;
 
@@ -34,11 +34,11 @@ public class Nota extends AEntity {
         return VUOTA;
     }
 
-    public AENotaLevel getLivello() {
+    public AELevelNota getLivello() {
         return livello;
     }
 
-    public void setLivello(AENotaLevel livello) {
+    public void setLivello(AELevelNota livello) {
         this.livello = livello;
     }
 

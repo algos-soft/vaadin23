@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.utility.versione;
 
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
@@ -23,6 +24,7 @@ import java.util.*;
 @Route(value = TAG_VERSIONE, layout = MainLayout.class)
 public class VersioneView extends CrudView {
 
+    private ComboBox comboTypeVers;
 
     //--per eventuali metodi specifici
     private VersioneBackend backend;
@@ -53,7 +55,6 @@ public class VersioneView extends CrudView {
         super.fixPreferenze();
 
         this.usaBottoneFilter = true;
-        this.usaComboType = true;
     }
 
     /**
@@ -118,11 +119,10 @@ public class VersioneView extends CrudView {
 
     /**
      * Regola l'ordinamento della <grid <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     @Override
     public void fixOrdinamento() {
-        super.fixOrdinamento();
         Grid.Column columnVaad = grid.getColumnByKey("vaadin23");
         Grid.Column columnOrd = grid.getColumnByKey("ordine");
         List<GridSortOrder> lista = new ArrayList<>();
@@ -131,24 +131,43 @@ public class VersioneView extends CrudView {
         gridCrud.getGrid().sort(lista);
     }
 
+
+    /**
+     * Componenti aggiuntivi oltre quelli base <br>
+     * Tipicamente bottoni di selezione/filtro <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixAdditionalComponents() {
+        super.fixAdditionalComponents();
+
+        comboTypeVers = new ComboBox();
+        comboTypeVers.setPlaceholder("Type");
+        comboTypeVers.setClearButtonVisible(true);
+        List items2 = AETypeVers.getAll();
+        comboTypeVers.setItems(items2);
+        gridCrud.getCrudLayout().addFilterComponent(comboTypeVers);
+        comboTypeVers.addValueChangeListener(event -> sincroFiltri());
+    }
+
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected List sincroFiltri() {
         List items = null;
         String textSearch = VUOTA;
-        AETypeLog type = null;
+        AETypeVers type = null;
 
         if (usaBottoneFilter && filter != null) {
             textSearch = filter != null ? filter.getValue() : VUOTA;
+            items = backend.findByDescrizione(textSearch);
         }
 
-        if (usaComboType && comboType != null) {
-            type = (AETypeLog) comboType.getValue();
+        if (comboTypeVers != null) {
+            type = (AETypeVers) comboTypeVers.getValue();
         }
 
-        if (usaBottoneFilter && usaComboType) {
-            items = crudBackend.findByDescrizioneAndType(textSearch, type);
+        if (usaBottoneFilter) {
+            items = backend.findByDescrizioneAndType(textSearch, type);
         }
 
         if (items != null) {
