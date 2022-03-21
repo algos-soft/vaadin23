@@ -173,13 +173,5 @@ public class NotaView extends CrudView {
         return items;
     }
 
-    /**
-     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
-     */
-    protected void delete() {
-        backend.deleteAll();
-        gridCrud.refreshGrid();
-        gridCrud.setDeletedMessage("Cancellate tutte le note");
-    }
 
 }// end of crud @Route view class

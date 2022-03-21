@@ -52,10 +52,6 @@ public class AlgosException extends Exception {
         return new AlgosException(cause);
     }
 
-    //    public static AlgosException crea(final String message) {
-    //        return AlgosException.crea(null, message);
-    //    }
-    //
     //    public static AlgosException crea(final Throwable cause, final String message) {
     //        return new AlgosException(cause, message);
     //    }

@@ -3,11 +3,15 @@ package it.algos.vaad23.ui.views;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.logic.*;
+import it.algos.vaad23.ui.dialog.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
 import org.vaadin.crudui.crud.impl.*;
 import org.vaadin.crudui.form.*;
 import org.vaadin.crudui.layout.impl.*;
@@ -22,6 +26,14 @@ import java.util.*;
  * Time: 11:05
  */
 public abstract class CrudView extends VerticalLayout implements AfterNavigationObserver {
+
+    /**
+     * Istanza di una interfaccia SpringBoot <br>
+     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ApplicationContext appContext;
 
     protected EntityBackend crudBackend;
 
@@ -80,6 +92,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.fixVisibilitaFields();
         this.fixOrdinamento();
         this.fixAdditionalComponents();
+        this.addListeners();
     }
 
 
@@ -135,6 +148,14 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     public void fixOrdinamento() {
     }
 
+    /**
+     * Aggiunge tutti i listeners ai bottoni di 'topPlaceholder' che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da afterNavigation() <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
+    }
 
     /**
      * Componenti aggiuntivi oltre quelli base <br>
@@ -148,7 +169,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             buttonDelete.setText("Delete All");
             buttonDelete.getElement().setAttribute("theme", "error");
             gridCrud.getCrudLayout().addFilterComponent(buttonDelete);
-            buttonDelete.addClickListener(event -> delete());
+            buttonDelete.addClickListener(event -> openConfirmDeleteAll());
         }
 
         if (usaBottoneFilter) {
@@ -177,6 +198,29 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         }
 
         return items;
+    }
+
+
+    /**
+     * Opens the confirmation dialog before deleting all items. <br>
+     * <p>
+     * The dialog will display the given title and message(s), then call <br>
+     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
+     */
+    protected final void openConfirmDeleteAll() {
+        appContext.getBean(DialogDelete.class, "tutta la collection").open(this::deleteAll);
+    }
+
+    /**
+     * Cancellazione effettiva (dopo dialogo di conferma) di tutte le entities della collezione. <br>
+     * Rimanda al service specifico <br>
+     * Azzera gli items <br>
+     * Ridisegna la GUI <br>
+     */
+    public void deleteAll() {
+        crudBackend.deleteAll();
+        gridCrud.refreshGrid();
+        Notification.show("Cancellata tutta la collection");
     }
 
     /**

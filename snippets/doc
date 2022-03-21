@@ -90,3 +90,7 @@
     @Annotation public protected private abstract static final synchronized native strictfp
 
     logger.warn(AETypeLog.file, new AlgosException(SWITCH));
+
+        // When creating a notification using the `show` static method,
+        // the duration is 5-sec by default.
+        Notification.show("Cancellata tutta la collection");

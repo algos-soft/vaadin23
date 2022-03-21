@@ -226,6 +226,7 @@ public class LogServiceTest extends ATest {
         service.warnDb(AETypeLog.export, new AlgosException("service.warn(AETypeLog.export, new AlgosException(\"testo\"));"));
         service.errorDb(AETypeLog.delete, new AlgosException("service.error(AETypeLog.delete, new AlgosException(\"testo\"));"));
 
+        // giusto
         service.warnDb(new AlgosException("service.warn(new AlgosException(\"testo\"));"));
         service.errorDb(new AlgosException("service.error(new AlgosException(\"testo\"));"));
 
@@ -234,6 +235,7 @@ public class LogServiceTest extends ATest {
 
         service.warnDb(new AlgosException());
         service.errorDb(new AlgosException());
+
     }
 
     //    @Test
