@@ -9,6 +9,7 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.logic.*;
+import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
@@ -35,15 +36,23 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     @Autowired
     public ApplicationContext appContext;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public LogService logger;
+
     protected EntityBackend crudBackend;
 
     protected GridCrud gridCrud;
 
-    protected Button buttonDelete;
+    protected Button buttonDeleteAll;
 
     protected TextField filter;
 
-    protected boolean usaBottoneDelete;
+    protected boolean usaBottoneDeleteAll;
 
     protected boolean usaBottoneFilter;
 
@@ -102,7 +111,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixPreferenze() {
-        this.usaBottoneDelete = false;
+        this.usaBottoneDeleteAll = false;
         this.usaBottoneFilter = false;
     }
 
@@ -163,13 +172,13 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void fixAdditionalComponents() {
-        if (usaBottoneDelete) {
-            buttonDelete = new Button();
-            buttonDelete.setIcon(VaadinIcon.TRASH.create());
-            buttonDelete.setText("Delete All");
-            buttonDelete.getElement().setAttribute("theme", "error");
-            gridCrud.getCrudLayout().addFilterComponent(buttonDelete);
-            buttonDelete.addClickListener(event -> openConfirmDeleteAll());
+        if (usaBottoneDeleteAll) {
+            buttonDeleteAll = new Button();
+            buttonDeleteAll.setIcon(VaadinIcon.TRASH.create());
+            buttonDeleteAll.setText("Delete All");
+            buttonDeleteAll.getElement().setAttribute("theme", "error");
+            gridCrud.getCrudLayout().addFilterComponent(buttonDeleteAll);
+            buttonDeleteAll.addClickListener(event -> openConfirmDeleteAll());
         }
 
         if (usaBottoneFilter) {
@@ -218,9 +227,20 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Ridisegna la GUI <br>
      */
     public void deleteAll() {
-        crudBackend.deleteAll();
-        gridCrud.refreshGrid();
-        Notification.show("Cancellata tutta la collection");
+        if (crudBackend.countAll() > 0) {
+            try {
+                crudBackend.deleteAll();
+            } catch (Exception unErrore) {
+                Notification.show("Non sono riuscito a cancellare la collection").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                logger.errorDb(unErrore);
+                return;
+            }
+            gridCrud.refreshGrid();
+            Notification.show("Cancellata tutta la collection").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        }
+        else {
+            Notification.show("La collection era già vuota").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        }
     }
 
     /**

@@ -58,6 +58,7 @@ public class LoggerView extends CrudView {
     public void fixPreferenze() {
         super.fixPreferenze();
 
+        this.usaBottoneDeleteAll = true;
         this.usaBottoneFilter = true;
     }
 

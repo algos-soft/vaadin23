@@ -111,58 +111,100 @@ public class LogServiceTest extends ATest {
 
     @Test
     @Order(1)
-    @DisplayName("1 - Messaggi solo testo su slf4jLogger")
+    @DisplayName("1 - Messaggi di solo testo su slf4jLogger")
     void log1() {
+        System.out.println("1 - Messaggi di solo testo su slf4jLogger");
+        System.out.println(VUOTA);
+
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
-        service.info(sorgente);
+        ottenuto = service.info(sorgente);
+        printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
-        service.warn(sorgente);
+        ottenuto = service.warn(sorgente);
+        printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
-        service.error(sorgente);
+        ottenuto = service.error(sorgente);
+        printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.debug.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
-        service.debug(sorgente);
+        ottenuto = service.debug(sorgente);
+        printMessaggio(ottenuto);
     }
 
     @Test
     @Order(2)
     @DisplayName("2 - Messaggi con typo su slf4jLogger")
     void log2() {
-        sorgente2 = AELevelLog.info.toString();
-        sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        service.info(AETypeLog.checkData, sorgente);
+        System.out.println("2 - Messaggi con typo su slf4jLogger");
+        System.out.println(VUOTA);
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        service.info(AETypeLog.download, sorgente);
+        ottenuto = service.info(AETypeLog.checkData, sorgente);
+        printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        service.info(AETypeLog.preferenze, sorgente);
+        ottenuto = service.info(AETypeLog.download, sorgente);
+        printMessaggio(ottenuto);
+
+        sorgente2 = AELevelLog.info.toString();
+        sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        ottenuto = service.info(AETypeLog.preferenze, sorgente);
+        printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        service.warn(AETypeLog.modifica, sorgente);
+        ottenuto = service.warn(AETypeLog.modifica, sorgente);
+        printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        service.error(AETypeLog.startup, sorgente);
+        ottenuto = service.error(AETypeLog.startup, sorgente);
+        printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.debug.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        service.debug(sorgente);
+        ottenuto = service.debug(sorgente);
+        printMessaggio(ottenuto);
     }
+
 
     @Test
     @Order(3)
-    @DisplayName("3 - Messaggi registrati su mongoDB")
+    @DisplayName("3 - Messaggi con company and user")
     void log3() {
+        VaadVar.usaCompany = true;
+        System.out.println("3 - Messaggi con company and user");
+        System.out.println(VUOTA);
+
+        sorgente = String.format("Messaggio di %s senza company (wrap=null)", AELevelLog.info);
+        ottenuto = service.info(AETypeLog.checkData, sorgente, wrap);
+        printMessaggio(ottenuto);
+
+        sorgente = String.format("Messaggio di %s con company (wrap!=null)", AELevelLog.info);
+        wrap = WrapLogCompany.crea("crpt", "Domenichini", VUOTA);
+        wrap.textService = textService; // serve solo per il test
+        ottenuto = service.info(AETypeLog.checkData, sorgente, wrap);
+        printMessaggio(ottenuto);
+
+        sorgente = String.format("Messaggio di %s con company (wrap!=null)", AELevelLog.warn);
+        wrap = WrapLogCompany.crea("pap", "Mario C.", "345.989.0.0");
+        wrap.textService = textService; // serve solo per il test
+        ottenuto = service.warn(AETypeLog.checkData, sorgente, wrap);
+        printMessaggio(ottenuto);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - Messaggi registrati su mongoDB")
+    void log4() {
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
         service.infoDb(AETypeLog.checkData, sorgente);
@@ -176,24 +218,6 @@ public class LogServiceTest extends ATest {
         service.errorDb(AETypeLog.delete, sorgente);
     }
 
-    @Test
-    @Order(4)
-    @DisplayName("4 - Messaggi con company")
-    void log4() {
-        VaadVar.usaCompany = true;
-
-        sorgente2 = AELevelLog.info.toString();
-        sorgente = String.format("Messaggio di %s con company", sorgente2);
-        service.info(AETypeLog.checkData, sorgente, wrap);
-
-        wrap = WrapLogCompany.crea("crpt", "Domenichini", VUOTA);
-        wrap.textService = textService; // serve solo per i test
-        service.info(AETypeLog.checkData, sorgente, wrap);
-
-        wrap = WrapLogCompany.crea("pap", "Mario C.", "345.989.0.0");
-        wrap.textService = textService; // serve solo per i test
-        service.info(AETypeLog.checkData, sorgente, wrap);
-    }
 
     @Test
     @Order(5)
@@ -300,6 +324,11 @@ public class LogServiceTest extends ATest {
     void prova() {
         arrayService.isEmpty(new ArrayList());
         //        service.mail(AETypeLog.login, wrap, sorgente);
+    }
+
+    void printMessaggio(String messaggio) {
+        System.out.println(String.format("Messaggio: %s", messaggio));
+        System.out.println(VUOTA);
     }
 
     void printWrap(Arguments arg) {

@@ -94,6 +94,11 @@ public class VaadVers implements AIVers {
             this.crea(k, AETypeVers.addition, "Package 'nota' funzionante");
         }
 
+        //--new package
+        if (installa(++k)) {
+            this.crea(k, AETypeVers.addition, "Package 'logger' funzionante");
+        }
+
 
     }
 

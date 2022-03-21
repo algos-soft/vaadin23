@@ -108,6 +108,10 @@ public abstract class EntityBackend extends AbstractService {
         }
     }
 
+    public int countAll() {
+        return 0;
+    }
+
     public List findByDescrizione(final String value) {
         return null;
     }

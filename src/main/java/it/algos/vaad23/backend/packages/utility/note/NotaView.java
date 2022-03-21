@@ -55,7 +55,7 @@ public class NotaView extends CrudView {
     public void fixPreferenze() {
         super.fixPreferenze();
 
-        this.usaBottoneDelete = true;
+        this.usaBottoneDeleteAll = true;
         this.usaBottoneFilter = true;
     }
 

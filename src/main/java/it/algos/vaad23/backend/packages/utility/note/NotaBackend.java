@@ -73,6 +73,10 @@ public class NotaBackend extends EntityBackend {
 
     }
 
+    public int countAll() {
+        return repository.findAll().size();
+    }
+
     public List<Nota> findByDescrizione(final String value) {
         return repository.findByDescrizioneContainingIgnoreCase(value);
     }

@@ -30,6 +30,7 @@ import java.util.*;
 @Repository
 public interface NotaRepository extends MongoRepository<Nota, String> {
 
+
     List<Nota> findAll();
 
     <Nota extends AEntity> Nota insert(Nota entity);
