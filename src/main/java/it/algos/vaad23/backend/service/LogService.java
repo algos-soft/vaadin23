@@ -361,6 +361,29 @@ public class LogService extends AbstractService {
         return logBase(AELevelLog.debug, AETypeLog.system, false, false, message, null, null);
     }
 
+    public String info(final WrapLog wrap) {
+        return logBase(AELevelLog.info, wrap);
+    }
+
+    public String warn(final WrapLog wrap) {
+        return logBase(AELevelLog.warn, wrap);
+    }
+
+    public String error(final WrapLog wrap) {
+        return logBase(AELevelLog.error, wrap);
+    }
+
+    private String logBase(final AELevelLog level, final WrapLog wrap) {
+        return logBase(
+                level,
+                wrap.getType(),
+                wrap.isFlagUsaDB(),
+                wrap.isFlagUsaDB(),
+                wrap.getMessage(),
+                wrap.getException(),
+                null
+        );
+    }
 
     /**
      * Gestisce tutti i log <br>
@@ -388,23 +411,28 @@ public class LogService extends AbstractService {
      * @param wrap        di informazioni su company, userName e address
      */
     private String logBase(final AELevelLog level,
-                           final AETypeLog type,
+                           AETypeLog type,
                            final boolean flagUsaDB,
                            final boolean flagUsaMail,
                            final String descrizione,
                            final Exception eccezione,
                            final WrapLogCompany wrap) {
         String typeText;
-        String message = descrizione;
+        String message = descrizione != null ? descrizione : VUOTA;
         String descrizioneDB = descrizione;
         String company = VUOTA;
         String user = VUOTA;
         String classe = VUOTA;
         String metodo = VUOTA;
         int linea = 0;
+        String sep = SEP; //@todo eventuale (non obbligatorio) flag di preferenza per DOPPIO_SPAZIO
 
-        typeText = textService.fixSizeQuadre(type.getTag(), 10);
-        message = String.format("%s%s%s", typeText, SPAZIO, message);
+        if (true) {//@todo mettere in preferenza un flag
+            type = type != null ? type : AETypeLog.system;
+        }
+
+        typeText = type != null ? textService.fixSizeQuadre(type.getTag(), 10) : VUOTA;
+        message = String.format("%s%s%s", typeText, textService.isValid(typeText) ? sep : VUOTA, message);
 
         // StackTrace dell'errore
         if (eccezione != null) {
@@ -417,7 +445,7 @@ public class LogService extends AbstractService {
                 linea = algosException.getLineNum();
                 message = utilityService.getStackTrace(algosException);
             }
-            message = String.format("%s%s%s", typeText, DOPPIO_SPAZIO, message);
+            message = String.format("%s%s%s", typeText, textService.isValid(typeText) ? sep : VUOTA, message);
         }
 
         // mongoDB

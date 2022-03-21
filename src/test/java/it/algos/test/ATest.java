@@ -265,7 +265,7 @@ public abstract class ATest {
     }
 
     /**
-     * Qui passa prima di ogni test, chiamato dalle sottoclassi <br>
+     * Qui passa prima di ogni test delle sottoclassi <br>
      * Invocare PRIMA il metodo setUpEach() della superclasse <br>
      * Si possono aggiungere regolazioni specifiche <br>
      */

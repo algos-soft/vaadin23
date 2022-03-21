@@ -24,7 +24,7 @@ import java.util.*;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, esiste già @Service) <br>
  */
 @Service
-@Qualifier("Logger") //@todo Qualifier da sostituire (eventualmente) con costante da registrare su VaadCost 
+@Qualifier("Logger") //@todo Qualifier da sostituire (eventualmente) con costante da registrare su VaadCost
 //@AIScript(sovraScrivibile = true)
 public class LoggerBackend extends EntityBackend {
 

@@ -94,3 +94,18 @@
         // When creating a notification using the `show` static method,
         // the duration is 5-sec by default.
         Notification.show("Cancellata tutta la collection");
+
+
+String result = new StringBuilder()
+  .append("foo")
+  .append("bar")
+  .replace(4, 6, "az")
+  .reverse()
+  .toString(); // "zaboof"
+
+  Mail mail = new MailBuilder()
+  .from("donald.t@mail.com")
+  .to("joe.b@mail.com")
+  .subject("Congratulations on recent promotion")
+  .body("Yours truly, Donald")
+  .build();
