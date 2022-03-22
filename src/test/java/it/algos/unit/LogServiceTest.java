@@ -112,37 +112,38 @@ public class LogServiceTest extends ATest {
     }
 
 
-    //    @Test
+    @Test
     @Order(1)
     @DisplayName("1 - Messaggi di solo testo su slf4jLogger")
     void log1() {
         System.out.println("1 - Messaggi di solo testo su slf4jLogger");
         System.out.println(VUOTA);
-        StringBuilder sb = new StringBuilder("palindrome!");
-        sb.append("").reverse().toString();
+        //        StringBuilder sb = new StringBuilder("palindrome!");
+        //        sb.append("").reverse().toString();
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
-        ottenuto = service.info(sorgente);
+        ottenuto = service.info(new WrapLog().message(sorgente));
+
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
-        ottenuto = service.warn(sorgente);
+        ottenuto = service.warn(new WrapLog().message(sorgente));
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
-        ottenuto = service.error(sorgente);
+        ottenuto = service.error(new WrapLog().message(sorgente));
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.debug.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
-        ottenuto = service.debug(sorgente);
+        ottenuto = service.debug(new WrapLog().message(sorgente));
         printMessaggio(ottenuto);
     }
 
-    //    @Test
+    @Test
     @Order(2)
     @DisplayName("2 - Messaggi con typo su slf4jLogger")
     void log2() {
@@ -151,37 +152,37 @@ public class LogServiceTest extends ATest {
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        ottenuto = service.info(AETypeLog.checkData, sorgente);
+        ottenuto = service.info(new WrapLog().type(AETypeLog.checkData).message(sorgente));
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        ottenuto = service.info(AETypeLog.download, sorgente);
+        ottenuto = service.info(new WrapLog().type(AETypeLog.download).message(sorgente));
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        ottenuto = service.info(AETypeLog.preferenze, sorgente);
+        ottenuto = service.info(new WrapLog().type(AETypeLog.preferenze).message(sorgente));
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        ottenuto = service.warn(AETypeLog.modifica, sorgente);
+        ottenuto = service.warn(new WrapLog().type(AETypeLog.modifica).message(sorgente));
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        ottenuto = service.error(AETypeLog.startup, sorgente);
+        ottenuto = service.error(new WrapLog().type(AETypeLog.startup).message(sorgente));
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.debug.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
-        ottenuto = service.debug(sorgente);
+        ottenuto = service.debug(new WrapLog().type(AETypeLog.startup).message(sorgente));
         printMessaggio(ottenuto);
     }
 
 
-    //    @Test
+    @Test
     @Order(3)
     @DisplayName("3 - Messaggi con company and user")
     void log3() {
@@ -189,38 +190,43 @@ public class LogServiceTest extends ATest {
         System.out.println("3 - Messaggi con company and user");
         System.out.println(VUOTA);
 
-        sorgente = String.format("Messaggio di %s senza company (wrap=null)", AELevelLog.info);
-        ottenuto = service.info(AETypeLog.checkData, sorgente, wrapCompany);
+        sorgente = String.format("Messaggio di %s con company", AELevelLog.info);
+        ottenuto = service.info(new WrapLog().message(sorgente).company("crpt"));
         printMessaggio(ottenuto);
 
-        sorgente = String.format("Messaggio di %s con company (wrap!=null)", AELevelLog.info);
-        wrapCompany = WrapLogCompany.crea("crpt", "Domenichini", VUOTA);
-        wrapCompany.textService = textService; // serve solo per il test
-        ottenuto = service.info(AETypeLog.checkData, sorgente, wrapCompany);
+        sorgente = String.format("Messaggio di %s con type e company", AELevelLog.info);
+        ottenuto = service.info(new WrapLog().type(AETypeLog.password).message(sorgente).company("gaps"));
         printMessaggio(ottenuto);
 
-        sorgente = String.format("Messaggio di %s con company (wrap!=null)", AELevelLog.warn);
-        wrapCompany = WrapLogCompany.crea("pap", "Mario C.", "345.989.0.0");
-        wrapCompany.textService = textService; // serve solo per il test
-        ottenuto = service.warn(AETypeLog.checkData, sorgente, wrapCompany);
+        sorgente = String.format("Messaggio di %s con type, company e user", AELevelLog.info);
+        ottenuto = service.info(new WrapLog().type(AETypeLog.elabora).message(sorgente).company("pap").user("Marcella P."));
         printMessaggio(ottenuto);
+
+        sorgente = String.format("Messaggio di %s con type, company, user e indirizzo IP", AELevelLog.info);
+        ottenuto = service.info(new WrapLog().type(AETypeLog.modifica).message(sorgente).company("crpt").user("Facchinetti Mario").address("2001:B07:AD4:2177:9B56:DB51:33E0:A151"));
+        printMessaggio(ottenuto);
+
+        sorgente = String.format("Messaggio di %s con type, company, user e indirizzo IP", AELevelLog.warn);
+        ottenuto = service.warn(new WrapLog().type(AETypeLog.modifica).message(sorgente).company("crpt").user("Facchinetti Mario").address("2001:B07:AD4:2177:9B56:DB51:33E0:A151"));
+        printMessaggio(ottenuto);
+
     }
 
     //    @Test
     @Order(4)
     @DisplayName("4 - Messaggi registrati su mongoDB")
     void log4() {
-        sorgente2 = AELevelLog.info.toString();
-        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
-        service.infoDb(AETypeLog.checkData, sorgente);
+        //        sorgente2 = AELevelLog.info.toString();
+        //        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
+        //        service.infoDb(AETypeLog.checkData, sorgente);
 
-        sorgente2 = AELevelLog.warn.toString();
-        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
-        service.warnDb(AETypeLog.export, sorgente);
+        //        sorgente2 = AELevelLog.warn.toString();
+        //        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
+        //        service.warnDb(AETypeLog.export, sorgente);
 
-        sorgente2 = AELevelLog.error.toString();
-        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
-        service.errorDb(AETypeLog.delete, sorgente);
+        //        sorgente2 = AELevelLog.error.toString();
+        //        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
+        //        service.errorDb(AETypeLog.delete, sorgente);
     }
 
 
@@ -252,18 +258,18 @@ public class LogServiceTest extends ATest {
         System.out.println(sorgente);
         System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
 
-        service.warnDb(AETypeLog.export, new AlgosException("service.warn(AETypeLog.export, new AlgosException(\"testo\"));"));
-        service.errorDb(AETypeLog.delete, new AlgosException("service.error(AETypeLog.delete, new AlgosException(\"testo\"));"));
+        //        service.warnDb(AETypeLog.export, new AlgosException("service.warn(AETypeLog.export, new AlgosException(\"testo\"));"));
+        //        service.errorDb(AETypeLog.delete, new AlgosException("service.error(AETypeLog.delete, new AlgosException(\"testo\"));"));
 
         // giusto
-        service.warnDb(new AlgosException("service.warn(new AlgosException(\"testo\"));"));
-        service.errorDb(new AlgosException("service.error(new AlgosException(\"testo\"));"));
+        //        service.warnDb(new AlgosException("service.warn(new AlgosException(\"testo\"));"));
+        //        service.errorDb(new AlgosException("service.error(new AlgosException(\"testo\"));"));
 
-        service.warnDb(new AlgosException(VUOTA));
-        service.errorDb(new AlgosException(VUOTA));
+        //        service.warnDb(new AlgosException(VUOTA));
+        //        service.errorDb(new AlgosException(VUOTA));
 
-        service.warnDb(new AlgosException());
-        service.errorDb(new AlgosException());
+        //        service.warnDb(new AlgosException());
+        //        service.errorDb(new AlgosException());
 
     }
 
@@ -271,7 +277,8 @@ public class LogServiceTest extends ATest {
     @Order(7)
     @DisplayName("7 - Utilizzo di wrapLog con Fluent API")
     void wrapLog() {
-        System.out.println("Creo un wrapLog senza SpringBoot");
+        System.out.println("7 - Utilizzo di wrapLog con Fluent API");
+        System.out.println("Creo un wrapLog senza SpringBoot - no @Autowired");
         System.out.println("Chiamo logService usando wrapLog");
 
         System.out.println(VUOTA);
@@ -317,29 +324,27 @@ public class LogServiceTest extends ATest {
         service.info(new WrapLog().type(AETypeLog.login).message("Altro testo").exception(new AlgosException("Altri metodi")));
     }
 
-    //    @Test
-    @Order(5)
-    @DisplayName("5 - Info vuota")
-    void info2() {
-        service.info(VUOTA);
-    }
+    @Test
+    @Order(8)
+    @DisplayName("8 - Utilizzo di wrapLog per multiCompany")
+    void wrapLogCompany() {
+        System.out.println("8 - Utilizzo di wrapLog per multiCompany");
+        System.out.println("Creo un wrapLog senza SpringBoot - no @Autowired");
+        System.out.println("Chiamo logService usando wrapLog");
 
-    //    @Test
-    @Order(6)
-    @DisplayName("6 - Info tipizzata")
-    void infoType() {
-        sorgente = "Info tipizzata";
-        service.info(AETypeLog.setup, sorgente);
-    }
+        System.out.println(VUOTA);
+        wrapLog = new WrapLog().message("Solo testo");
+        service.info(wrapLog);
 
-    //    @Test
-    //    @Order(7)
-    //    @DisplayName("7 - Info con company")
-    //    void infoCompany() {
-    //        sorgente = "Info con company";
-    //        wrap = appContext.getBean(WrapLogCompany.class, "crpt", "ugonottiMario", "23.5678.987");
-    //        service.info(AETypeLog.setup, wrap, sorgente);
-    //    }
+        sorgente = "Marco Pettinelli";
+        System.out.println(VUOTA);
+        wrapLog = new WrapLog().message(String.format("L'utente %s ha eseguito questa operazione", sorgente));
+        service.info(wrapLog);
+
+        System.out.println(VUOTA);
+        wrapLog = new WrapLog().message(String.format("L'utente %s ha eseguito questa operazione", sorgente)).user(sorgente);
+        service.info(wrapLog);
+    }
 
     //    @Test
     @Order(8)
@@ -381,7 +386,7 @@ public class LogServiceTest extends ATest {
     void printWrap(Arguments arg) {
         Object[] mat = arg.get();
         wrapCompany = appContext.getBean(WrapLogCompany.class, mat[0], mat[1], mat[2]);
-        service.info((AETypeLog) mat[3], (String) mat[4], wrapCompany);
+        //        service.info((AETypeLog) mat[3], (String) mat[4], wrapCompany);
     }
 
     /**

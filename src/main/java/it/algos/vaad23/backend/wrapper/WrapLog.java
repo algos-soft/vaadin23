@@ -35,9 +35,11 @@ public class WrapLog {
 
     private String addressIP;
 
-    private boolean flagUsaDB;
+    private boolean multiCompany = false;
 
-    private boolean flagUsaMail;
+    private boolean usaDB = false;
+
+    private boolean usaMail = false;
 
     public WrapLog() {
     }
@@ -60,26 +62,29 @@ public class WrapLog {
 
     public WrapLog company(String companySigla) {
         this.companySigla = companySigla;
+        this.multiCompany = true;
         return this;
     }
 
     public WrapLog user(String userName) {
         this.userName = userName;
+        this.multiCompany = true;
         return this;
     }
 
     public WrapLog address(String addressIP) {
         this.addressIP = addressIP;
+        this.multiCompany = true;
         return this;
     }
 
     public WrapLog usaDb() {
-        this.flagUsaDB = true;
+        this.usaDB = true;
         return this;
     }
 
     public WrapLog usaMail() {
-        this.flagUsaMail = true;
+        this.usaMail = true;
         return this;
     }
 
@@ -107,12 +112,16 @@ public class WrapLog {
         return addressIP;
     }
 
-    public boolean isFlagUsaDB() {
-        return flagUsaDB;
+    public boolean isMultiCompany() {
+        return multiCompany;
     }
 
-    public boolean isFlagUsaMail() {
-        return flagUsaMail;
+    public boolean isUsaDB() {
+        return usaDB;
+    }
+
+    public boolean isUsaMail() {
+        return usaMail;
     }
 
 }

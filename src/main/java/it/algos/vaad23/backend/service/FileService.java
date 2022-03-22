@@ -934,23 +934,23 @@ public class FileService extends AbstractService {
             case fileSovrascriveSempreAncheSeEsiste:
                 if (esisteFileDest) {
                     message = "Il file: " + path + " esisteva già ed è stato modificato.";
-                    logger.info(AETypeLog.file, new AlgosException(message));
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
                 }
                 else {
                     message = "Il file: " + path + " non esisteva ed è stato copiato.";
-                    logger.info(AETypeLog.file, new AlgosException(message));
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
                 }
                 this.copyFileDeletingAll(srcPath, destPath);
                 break;
             case fileSoloSeNonEsiste:
                 if (esisteFileDest) {
                     message = "Il file: " + path + " esisteva già e non è stato modificato.";
-                    logger.info(AETypeLog.file, new AlgosException(message));
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
                 }
                 else {
                     this.copyFileDeletingAll(srcPath, destPath);
                     message = "Il file: " + path + " non esisteva ed è stato copiato.";
-                    logger.info(AETypeLog.file, new AlgosException(message));
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
                 }
                 break;
             default:
@@ -1026,7 +1026,7 @@ public class FileService extends AbstractService {
                             message = "La directory: " + path + " esisteva già e non è stata toccata.";
                         }
                         if (stampaInfo) {
-                            logger.info(AETypeLog.file, new AlgosException(message));
+                            logger.info(new WrapLog().type(AETypeLog.file).message(message));
                         }
                         message = VUOTA;
                         break;
@@ -1041,7 +1041,7 @@ public class FileService extends AbstractService {
                                 message = "La directory: " + path + " non esisteva ed è stata creata.";
                             }
                             if (stampaInfo) {
-                                logger.info(AETypeLog.file, new AlgosException(message));
+                                logger.info(new WrapLog().type(AETypeLog.file).message(message));
                             }
                             message = VUOTA;
                         }
@@ -1065,7 +1065,7 @@ public class FileService extends AbstractService {
                                 message = "La directory: " + path + " non esisteva ed è stata creata.";
                             }
                             if (stampaInfo) {
-                                logger.info(AETypeLog.file, new AlgosException(message));
+                                logger.info(new WrapLog().type(AETypeLog.file).message(message));
                             }
                         }
                         else {
@@ -1316,14 +1316,14 @@ public class FileService extends AbstractService {
                 sovraScriveFile(pathFileToBeWritten, testo);
                 message = "Il file: " + path + " esisteva già ed è stato aggiornato";
                 if (stampaInfo) {
-                    logger.info(AETypeLog.file, new AlgosException(message));
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
                 }
                 result = AResult.valido(message);
             }
             else {
                 message = "Il file: " + path + " esisteva già e non è stato modificato";
                 if (stampaInfo) {
-                    logger.info(AETypeLog.file, new AlgosException(message));
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
                 }
                 result = AResult.errato(message);
             }

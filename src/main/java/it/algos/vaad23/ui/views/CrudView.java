@@ -232,7 +232,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
                 crudBackend.deleteAll();
             } catch (Exception unErrore) {
                 Notification.show("Non sono riuscito a cancellare la collection").addThemeVariants(NotificationVariant.LUMO_ERROR);
-                logger.errorDb(unErrore);
+                logger.error(unErrore);
                 return;
             }
             gridCrud.refreshGrid();

@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -33,8 +34,14 @@ public class UtilityService extends AbstractService {
 
     public static final int PAD_LINE = 3;
 
-    public String getStackTrace(AlgosException exception) {
-        boolean usaTagIniziale = true;
+    public static final int PAD_COMPANY = 5;
+
+    public static final int PAD_USER = 18;
+
+    public static final int PAD_IP = 37;
+
+    public String getStackTrace(final AlgosException exception) {
+        boolean usaTagIniziale = true; //@todo mettere flag preferenze
         String tagClasse = "class=";
         String tagMetodo = "method=";
         String tagRiga = "line=";
@@ -69,5 +76,32 @@ public class UtilityService extends AbstractService {
         return String.format("%s%s%s%s%s%s%s", classe, SPAZIO, metodo, SPAZIO, riga, SPAZIO, message);
     }
 
+    public String getCompanyPack(final WrapLog wrap) {
+        boolean usaTagIniziale = true; //@todo mettere flag preferenze
+        int padCompany = PAD_COMPANY;
+        int padUser = PAD_USER;
+        int padIP = PAD_IP;
+        String tagCompany = "company=";
+        String tagUser = "user=";
+        String tagIP = "ip=";
+        String companySigla = wrap.getCompanySigla();
+        String userName = wrap.getUserName();
+        String addressIP = wrap.getAddressIP();
+
+        if (usaTagIniziale) {
+            companySigla = tagCompany + companySigla;
+            userName = tagUser + userName;
+            addressIP = tagIP + addressIP;
+            padCompany += tagCompany.length();
+            padUser += tagUser.length();
+            padIP += tagIP.length();
+        }
+
+        companySigla = textService.fixSizeQuadre(companySigla, padCompany);
+        userName = textService.fixSizeQuadre(userName, padUser);
+        addressIP = textService.fixSizeQuadre(addressIP + VUOTA, padIP);
+
+        return String.format("%s%s%s%s%s", companySigla, SPAZIO, userName, SPAZIO, addressIP);
+    }
 
 }

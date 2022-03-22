@@ -4,6 +4,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static it.algos.vaad23.wizard.scripts.WizCost.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
@@ -369,13 +370,13 @@ public enum AEWizCost {
                 if (text.isValid(this.value)) {
                     if (!valueSystem.equals(this.value)) {
                         message = String.format("FlowVar.projectNameDirectoryIdea=%s mentre il programma gira in %s", this.value, valueSystem);
-                        logger.info(AETypeLog.wizard, message);
+                        logger.info(new WrapLog().type(AETypeLog.wizard).message(message));
                         this.value = ERRORE;
                     }
                 }
                 else {
                     message = String.format("Il programma gira in %s ma manca il valore di FlowVar.projectNameDirectoryIdea come controllo", valueSystem);
-                    logger.info(AETypeLog.wizard, message);
+                    logger.info(new WrapLog().type(AETypeLog.wizard).message(message));
                     this.value = ERRORE;
                 }
             }
@@ -407,7 +408,7 @@ public enum AEWizCost {
                 }
                 else {
                     message = String.format("Il programma gira in %s ma manca il valore di FlowVar.projectNameModulo come controllo", valueSystem);
-                    logger.info(AETypeLog.wizard, message);
+                    logger.info(new WrapLog().type(AETypeLog.wizard).message(message));
                     this.value = ERRORE;
                 }
             }
@@ -442,7 +443,7 @@ public enum AEWizCost {
                 this.setValida(true);
             }
             else {
-                logger.info(AETypeLog.wizard, "Manca il nome del progetto in FlowVar.projectNameUpper");
+                logger.info(new WrapLog().type(AETypeLog.wizard).message("Manca il nome del progetto in FlowVar.projectNameUpper"));
                 this.value = ERRORE;
                 this.setValida(false);
             }

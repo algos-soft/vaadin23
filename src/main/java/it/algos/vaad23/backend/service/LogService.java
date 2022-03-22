@@ -134,76 +134,161 @@ public class LogService extends AbstractService {
         return message.trim();
     }
 
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param message di descrizione dell'evento
-     */
-    public String info(final String message) {
-        return logBase(AELevelLog.info, AETypeLog.system, false, false, message, null, null);
-    }
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param stack info su messaggio e StackTrace
-     */
-    public String info(final Exception stack) {
-        return logBase(AELevelLog.info, AETypeLog.system, false, false, VUOTA, stack, null);
-    }
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param type    merceologico di specificazione
-     * @param message di descrizione dell'evento
-     */
-    public String info(final AETypeLog type, final String message) {
-        return logBase(AELevelLog.info, type, false, false, message, null, null);
-    }
-
-    /**
-     * Gestisce un log di info <br>
-     * Facoltativo (flag) su mongoDB <br>
-     *
-     * @param type    merceologico di specificazione
-     * @param message di descrizione dell'evento
-     */
-    public String infoDb(final AETypeLog type, final String message) {
-        return logBase(AELevelLog.info, type, true, false, message, null, null);
-    }
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param type    merceologico di specificazione
-     * @param message di descrizione dell'evento
-     * @param wrap    di informazioni su company, userName e address
-     */
-    public String info(final AETypeLog type, final String message, final WrapLogCompany wrap) {
-        return logBase(AELevelLog.info, type, true, false, message, null, wrap);
-    }
-
-    /**
-     * Gestisce un log di info <br>
-     *
-     * @param type  merceologico di specificazione
-     * @param stack info su messaggio e StackTrace
-     */
-    public String info(final AETypeLog type, final Exception stack) {
-        return logBase(AELevelLog.info, type, false, false, VUOTA, stack, null);
-    }
-
-    /**
-     * Gestisce un log di warning <br>
-     *
-     * @param message di descrizione dell'evento
-     */
-    public String warn(final String message) {
-        return logBase(AELevelLog.warn, AETypeLog.system, false, false, message, null, null);
-    }
-
+    //    /**
+    //     * Gestisce un log di info <br>
+    //     *
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String info(final String message) {
+    //        return logBase(AELevelLog.info, AETypeLog.system, false, false, message, null, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di info <br>
+    //     *
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String info(final Exception stack) {
+    //        return logBase(AELevelLog.info, AETypeLog.system, false, false, VUOTA, stack, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di info <br>
+    //     *
+    //     * @param type    merceologico di specificazione
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String info(final AETypeLog type, final String message) {
+    //        return logBase(AELevelLog.info, type, false, false, message, null, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di info <br>
+    //     * Facoltativo (flag) su mongoDB <br>
+    //     *
+    //     * @param type    merceologico di specificazione
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String infoDb(final AETypeLog type, final String message) {
+    //        return logBase(AELevelLog.info, type, true, false, message, null, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di info <br>
+    //     *
+    //     * @param type    merceologico di specificazione
+    //     * @param message di descrizione dell'evento
+    //     * @param wrap    di informazioni su company, userName e address
+    //     */
+    //    public String info(final AETypeLog type, final String message, final WrapLogCompany wrap) {
+    //        return logBase(AELevelLog.info, type, true, false, message, null, wrap);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di info <br>
+    //     *
+    //     * @param type  merceologico di specificazione
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String info(final AETypeLog type, final Exception stack) {
+    //        return logBase(AELevelLog.info, type, false, false, VUOTA, stack, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di warning <br>
+    //     *
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String warn(final String message) {
+    //        return logBase(AELevelLog.warn, AETypeLog.system, false, false, message, null, null);
+    //    }
+    //
+    //
+    //    /**
+    //     * Gestisce un log di warning <br>
+    //     *
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String warn(final Exception stack) {
+    //        return logBase(AELevelLog.warn, AETypeLog.system, false, false, VUOTA, stack, null);
+    //    }
+    //
+    //
+    //    /**
+    //     * Gestisce un log di warning <br>
+    //     *
+    //     * @param type    merceologico di specificazione
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String warn(final AETypeLog type, final String message) {
+    //        return logBase(AELevelLog.warn, type, false, false, message, null, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di warning <br>
+    //     * Facoltativo (flag) su mongoDB <br>
+    //     *
+    //     * @param type    merceologico di specificazione
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String warnDb(final AETypeLog type, final String message) {
+    //        return logBase(AELevelLog.warn, type, true, false, message, null, null);
+    //    }
+    //
+    //
+    //    /**
+    //     * Gestisce un log di warning <br>
+    //     *
+    //     * @param type    merceologico di specificazione
+    //     * @param message di descrizione dell'evento
+    //     * @param wrap    di informazioni su company, userName e address
+    //     */
+    //    public String warn(final AETypeLog type, final String message, final WrapLogCompany wrap) {
+    //        return logBase(AELevelLog.warn, type, true, false, message, null, wrap);
+    //    }
+    //
+    //
+    //    /**
+    //     * Gestisce un log di warning <br>
+    //     * Facoltativo (flag) su mongoDB <br>
+    //     *
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String warnDb(final Exception stack) {
+    //        return logBase(AELevelLog.warn, AETypeLog.system, true, false, VUOTA, stack, null);
+    //    }
+    //
+    //
+    //    /**
+    //     * Gestisce un log di warning <br>
+    //     *
+    //     * @param type  merceologico di specificazione
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String warn(final AETypeLog type, final Exception stack) {
+    //        return logBase(AELevelLog.warn, type, false, false, VUOTA, stack, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di warning <br>
+    //     * Facoltativo (flag) su mongoDB <br>
+    //     *
+    //     * @param type  merceologico di specificazione
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String warnDb(final AETypeLog type, final Exception stack) {
+    //        return logBase(AELevelLog.warn, type, true, false, VUOTA, stack, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di errore <br>
+    //     *
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String error(final Exception stack) {
+    //        return logBase(AELevelLog.error, AETypeLog.system, false, false, VUOTA, stack, null);
+    //    }
+    //
 
     /**
      * Gestisce un log di warning <br>
@@ -211,54 +296,8 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public String warn(final Exception stack) {
-        return logBase(AELevelLog.warn, AETypeLog.system, false, false, VUOTA, stack, null);
+        return logBase(AELevelLog.warn, new WrapLog().exception(AlgosException.crea(stack)));
     }
-
-
-    /**
-     * Gestisce un log di warning <br>
-     *
-     * @param type    merceologico di specificazione
-     * @param message di descrizione dell'evento
-     */
-    public String warn(final AETypeLog type, final String message) {
-        return logBase(AELevelLog.warn, type, false, false, message, null, null);
-    }
-
-    /**
-     * Gestisce un log di warning <br>
-     * Facoltativo (flag) su mongoDB <br>
-     *
-     * @param type    merceologico di specificazione
-     * @param message di descrizione dell'evento
-     */
-    public String warnDb(final AETypeLog type, final String message) {
-        return logBase(AELevelLog.warn, type, true, false, message, null, null);
-    }
-
-
-    /**
-     * Gestisce un log di warning <br>
-     *
-     * @param type    merceologico di specificazione
-     * @param message di descrizione dell'evento
-     * @param wrap    di informazioni su company, userName e address
-     */
-    public String warn(final AETypeLog type, final String message, final WrapLogCompany wrap) {
-        return logBase(AELevelLog.warn, type, true, false, message, null, wrap);
-    }
-
-
-    /**
-     * Gestisce un log di warning <br>
-     * Facoltativo (flag) su mongoDB <br>
-     *
-     * @param stack info su messaggio e StackTrace
-     */
-    public String warnDb(final Exception stack) {
-        return logBase(AELevelLog.warn, AETypeLog.system, true, false, VUOTA, stack, null);
-    }
-
 
     /**
      * Gestisce un log di warning <br>
@@ -267,18 +306,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public String warn(final AETypeLog type, final Exception stack) {
-        return logBase(AELevelLog.warn, type, false, false, VUOTA, stack, null);
-    }
-
-    /**
-     * Gestisce un log di warning <br>
-     * Facoltativo (flag) su mongoDB <br>
-     *
-     * @param type  merceologico di specificazione
-     * @param stack info su messaggio e StackTrace
-     */
-    public String warnDb(final AETypeLog type, final Exception stack) {
-        return logBase(AELevelLog.warn, type, true, false, VUOTA, stack, null);
+        return logBase(AELevelLog.warn, new WrapLog().type(type).exception(AlgosException.crea(stack)));
     }
 
     /**
@@ -287,48 +315,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public String error(final Exception stack) {
-        return logBase(AELevelLog.error, AETypeLog.system, false, false, VUOTA, stack, null);
-    }
-
-    /**
-     * Gestisce un log di errore <br>
-     * Facoltativo (flag) su mongoDB <br>
-     *
-     * @param stack info su messaggio e StackTrace
-     */
-    public String errorDb(final Exception stack) {
-        return logBase(AELevelLog.error, AETypeLog.system, true, false, VUOTA, stack, null);
-    }
-
-    /**
-     * Gestisce un log di errore <br>
-     *
-     * @param message di descrizione dell'evento
-     */
-    public String error(final String message) {
-        return logBase(AELevelLog.error, AETypeLog.system, false, false, message, null, null);
-    }
-
-    /**
-     * Gestisce un log di errore <br>
-     *
-     * @param type    merceologico di specificazione
-     * @param message di descrizione dell'evento
-     */
-    public String error(final AETypeLog type, final String message) {
-        return logBase(AELevelLog.error, type, false, false, message, null, null);
-    }
-
-
-    /**
-     * Gestisce un log di errore <br>
-     * Facoltativo (flag) su mongoDB <br>
-     *
-     * @param type    merceologico di specificazione
-     * @param message di descrizione dell'evento
-     */
-    public String errorDb(final AETypeLog type, final String message) {
-        return logBase(AELevelLog.error, type, true, false, message, null, null);
+        return logBase(AELevelLog.error, new WrapLog().exception(AlgosException.crea(stack)));
     }
 
     /**
@@ -338,28 +325,70 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public String error(final AETypeLog type, final Exception stack) {
-        return logBase(AELevelLog.error, type, false, false, VUOTA, stack, null);
+        return logBase(AELevelLog.error, new WrapLog().type(type).exception(AlgosException.crea(stack)));
     }
 
-    /**
-     * Gestisce un log di errore <br>
-     * Facoltativo (flag) su mongoDB <br>
-     *
-     * @param type  merceologico di specificazione
-     * @param stack info su messaggio e StackTrace
-     */
-    public String errorDb(final AETypeLog type, final Exception stack) {
-        return logBase(AELevelLog.error, type, true, false, VUOTA, stack, null);
-    }
-
-    /**
-     * Gestisce un log di debug <br>
-     *
-     * @param message di descrizione dell'evento
-     */
-    public String debug(final String message) {
-        return logBase(AELevelLog.debug, AETypeLog.system, false, false, message, null, null);
-    }
+    //
+    //    /**
+    //     * Gestisce un log di errore <br>
+    //     *
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String error(final String message) {
+    //        return logBase(AELevelLog.error, AETypeLog.system, false, false, message, null, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di errore <br>
+    //     *
+    //     * @param type    merceologico di specificazione
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String error(final AETypeLog type, final String message) {
+    //        return logBase(AELevelLog.error, type, false, false, message, null, null);
+    //    }
+    //
+    //
+    //    /**
+    //     * Gestisce un log di errore <br>
+    //     * Facoltativo (flag) su mongoDB <br>
+    //     *
+    //     * @param type    merceologico di specificazione
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String errorDb(final AETypeLog type, final String message) {
+    //        return logBase(AELevelLog.error, type, true, false, message, null, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di errore <br>
+    //     *
+    //     * @param type  merceologico di specificazione
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String error(final AETypeLog type, final Exception stack) {
+    //        return logBase(AELevelLog.error, type, false, false, VUOTA, stack, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di errore <br>
+    //     * Facoltativo (flag) su mongoDB <br>
+    //     *
+    //     * @param type  merceologico di specificazione
+    //     * @param stack info su messaggio e StackTrace
+    //     */
+    //    public String errorDb(final AETypeLog type, final Exception stack) {
+    //        return logBase(AELevelLog.error, type, true, false, VUOTA, stack, null);
+    //    }
+    //
+    //    /**
+    //     * Gestisce un log di debug <br>
+    //     *
+    //     * @param message di descrizione dell'evento
+    //     */
+    //    public String debug(final String message) {
+    //        return logBase(AELevelLog.debug, AETypeLog.system, false, false, message, null, null);
+    //    }
 
     public String info(final WrapLog wrap) {
         return logBase(AELevelLog.info, wrap);
@@ -373,17 +402,10 @@ public class LogService extends AbstractService {
         return logBase(AELevelLog.error, wrap);
     }
 
-    private String logBase(final AELevelLog level, final WrapLog wrap) {
-        return logBase(
-                level,
-                wrap.getType(),
-                wrap.isFlagUsaDB(),
-                wrap.isFlagUsaDB(),
-                wrap.getMessage(),
-                wrap.getException(),
-                null
-        );
+    public String debug(final WrapLog wrap) {
+        return logBase(AELevelLog.debug, wrap);
     }
+
 
     /**
      * Gestisce tutti i log <br>
@@ -402,37 +424,44 @@ public class LogService extends AbstractService {
      * ...mongoDb (singole colonne per le property)
      * ...mail (a capo ogni property)
      *
-     * @param level       tra info,warn,error,debug
-     * @param type        merceologico di specificazione
-     * @param flagUsaDB   per memorizzare anche su mongoDB e visualizzare in LoggerView
-     * @param flagUsaMail per spedire una mail
-     * @param descrizione dell'evento in alternativa/aggiunta a quella dell'eccezione
-     * @param eccezione   da gestire
-     * @param wrap        di informazioni su company, userName e address
+     * @param level        tra info,warn,error,debug
+     * @param type         merceologico di specificazione
+     * @param flagUsaDB    per memorizzare anche su mongoDB e visualizzare in LoggerView
+     * @param flagUsaMail  per spedire una mail
+     * @param descrizione  dell'evento in alternativa/aggiunta a quella dell'eccezione
+     * @param eccezione    da gestire
+     * @param companySigla nelle applicazioni multiCompany
+     * @param userName     nelle applicazioni multiCompany
+     * @param addressIP    del collegamento remoto
      */
-    private String logBase(final AELevelLog level,
-                           AETypeLog type,
-                           final boolean flagUsaDB,
-                           final boolean flagUsaMail,
-                           final String descrizione,
-                           final Exception eccezione,
-                           final WrapLogCompany wrap) {
+    private String logBase(final AELevelLog level, final WrapLog wrap) {
         String typeText;
-        String message = descrizione != null ? descrizione : VUOTA;
-        String descrizioneDB = descrizione;
+        String message;
+        String descrizioneDB;
         String company = VUOTA;
         String user = VUOTA;
         String classe = VUOTA;
         String metodo = VUOTA;
         int linea = 0;
         String sep = SEP; //@todo eventuale (non obbligatorio) flag di preferenza per DOPPIO_SPAZIO
+        AETypeLog type = wrap.getType();
+        boolean flagUsaDB = wrap.isUsaDB();
+        boolean flagUsaMail = wrap.isUsaMail();
+        String descrizione = wrap.getMessage();
+        Exception eccezione = wrap.getException();
+        //        String bloccoCompany = wrap.isMultiCompany()?utilityService.getCompanyPack(wrap):VUOTA;
 
-        if (true) {//@todo mettere in preferenza un flag
-            type = type != null ? type : AETypeLog.system;
-        }
-
+        type = type != null ? type : AETypeLog.system;
         typeText = type != null ? textService.fixSizeQuadre(type.getTag(), 10) : VUOTA;
-        message = String.format("%s%s%s", typeText, textService.isValid(typeText) ? sep : VUOTA, message);
+        message = textService.isValid(typeText) ? typeText + sep : VUOTA;
+        message += wrap.isMultiCompany() ? utilityService.getCompanyPack(wrap) + SPAZIO : VUOTA;
+        message += wrap.getMessage();
+
+        //        message = descrizione != null ? descrizione : VUOTA;
+        descrizioneDB = descrizione;
+
+        //        typeText = type != null ? textService.fixSizeQuadre(type.getTag(), 10) : VUOTA;
+        //        message = String.format("%s%s%s", typeText, textService.isValid(typeText) ? sep : VUOTA, message);
 
         // StackTrace dell'errore
         if (eccezione != null) {
@@ -460,7 +489,7 @@ public class LogService extends AbstractService {
         // usaCompany
         if (VaadVar.usaCompany) {
             if (wrap != null) {
-                message = fixMessageLog(wrap, message);
+                //                message = fixMessageLog(wrap, message);
             }
         }
 

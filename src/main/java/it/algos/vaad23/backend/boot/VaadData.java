@@ -5,6 +5,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -318,7 +319,7 @@ public class VaadData implements AIData {
         }
 
         //--seleziona le classes che estendono AEntity
-        logger.info(AETypeLog.checkData, VUOTA);
+        logger.info(new WrapLog().type(AETypeLog.checkData));
         try {
             //            allEntityClasses = Arrays.asList(allModulePackagesClasses.stream().filter(checkEntity).sorted().toArray());÷÷@todo rimettere
         } catch (Exception unErrore) {
@@ -330,7 +331,7 @@ public class VaadData implements AIData {
         else {
             message = String.format("In %s non è stato trovato nessun package con classi di tipo AEntity", moduleName);
         }
-        logger.info(AETypeLog.checkData, message);
+        logger.info(new WrapLog().type(AETypeLog.checkData).message(message));
 
         //        //--seleziona le Entity classes che estendono AREntity
         //        allResetEntityClasses = Arrays.asList(allEntityClasses.stream().filter(checkResetEntity).sorted().toArray());
@@ -347,7 +348,7 @@ public class VaadData implements AIData {
         else {
             message = String.format("In %s non è stato trovato nessun package con classi di tipo AEntity che hanno usaBoot=true", moduleName);
         }
-        logger.info(AETypeLog.checkData, message);
+        logger.info(new WrapLog().type(AETypeLog.checkData).message(message));
 
         //--seleziona le xxxService classes che hanno il metodo reset() oppure download()
         if (allUsaBootEntityClasses != null) {
@@ -359,14 +360,14 @@ public class VaadData implements AIData {
         else {
             message = String.format("In %s non è stato trovato nessun package con classi di tipo xxxService che hanno reset() oppure download()", moduleName);
         }
-        logger.info(AETypeLog.checkData, message);
+        logger.info(new WrapLog().type(AETypeLog.checkData).message(message));
 
         //--elabora le entity classes che hanno il metodo reset() oppure download() e quindi sono ricreabili
         //--eseguendo xxxService.bootReset (forEach=elaborazione)
         if (allEntityClassesRicreabiliResetDownload != null) {
             //            allEntityClassesRicreabiliResetDownload.stream().forEach(bootReset); @todo rimettere
             message = String.format("Controllati i dati iniziali di %s", moduleName);
-            logger.info(AETypeLog.checkData, message);
+            logger.info(new WrapLog().type(AETypeLog.checkData).message(message));
         }
 
     }
