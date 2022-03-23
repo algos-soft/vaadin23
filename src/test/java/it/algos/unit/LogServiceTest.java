@@ -113,7 +113,7 @@ public class LogServiceTest extends ATest {
     }
 
 
-    //    @Test
+    @Test
     @Order(1)
     @DisplayName("1 - Messaggi di solo testo su slf4jLogger")
     void log1() {
@@ -149,7 +149,7 @@ public class LogServiceTest extends ATest {
         printMessaggio(ottenuto);
     }
 
-    //    @Test
+    @Test
     @Order(2)
     @DisplayName("2 - Messaggi con typo su slf4jLogger")
     void log2() {
@@ -200,7 +200,7 @@ public class LogServiceTest extends ATest {
     }
 
 
-    //    @Test
+    @Test
     @Order(3)
     @DisplayName("3 - Messaggi con company and user")
     void log3() {
@@ -230,13 +230,21 @@ public class LogServiceTest extends ATest {
 
     }
 
-    //    @Test
+    @Test
     @Order(4)
     @DisplayName("4 - Messaggi registrati su mongoDB")
     void log4() {
-        //        sorgente2 = AELevelLog.info.toString();
-        //        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
-        //        service.infoDb(AETypeLog.checkData, sorgente);
+        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", AELevelLog.info);
+        ottenuto = service.info(new WrapLog().message(sorgente).usaDb());
+        printMessaggio(ottenuto);
+
+        sorgente = String.format("Messaggio su mongoDB tipizzato", AELevelLog.info);
+        ottenuto = service.info(new WrapLog().type(AETypeLog.bio).message(sorgente).usaDb());
+        printMessaggio(ottenuto);
+
+        sorgente = String.format("Messaggio di errore su mongoDB tipizzato", AELevelLog.info);
+        ottenuto = service.error(new WrapLog().type(AETypeLog.bio).message(sorgente).usaDb().exception(new AlgosException("Messaggio generato dall'errore")));
+        printMessaggio(ottenuto);
 
         //        sorgente2 = AELevelLog.warn.toString();
         //        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
@@ -248,7 +256,7 @@ public class LogServiceTest extends ATest {
     }
 
 
-    //    @Test
+    @Test
     @Order(5)
     @DisplayName("5 - Messaggi comprensivi di StackTrace")
     void stackTrace() {

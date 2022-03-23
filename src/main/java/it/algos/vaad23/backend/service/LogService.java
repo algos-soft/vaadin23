@@ -422,25 +422,11 @@ public class LogService extends AbstractService {
      * ...slf4jLogger (parentesi quadre di larghezza fissa)
      * ...mongoDb (singole colonne per le property)
      * ...mail (a capo ogni property)
-     *
-     * @param level        tra info,warn,error,debug
-     * @param type         merceologico di specificazione
-     * @param flagUsaDB    per memorizzare anche su mongoDB e visualizzare in LoggerView
-     * @param flagUsaMail  per spedire una mail
-     * @param descrizione  dell'evento in alternativa/aggiunta a quella dell'eccezione
-     * @param eccezione    da gestire
-     * @param companySigla nelle applicazioni multiCompany
-     * @param userName     nelle applicazioni multiCompany
-     * @param addressIP    del collegamento remoto
+     * <p>
      */
     private String logBase(final AELevelLog level, final WrapLog wrap) {
         String typeText;
         String message;
-        String company = VUOTA;
-        String user = VUOTA;
-        String classe = VUOTA;
-        String metodo = VUOTA;
-        int linea = 0;
         AETypeLog type = wrap.getType();
         boolean flagUsaDB = wrap.isUsaDB();
         boolean flagUsaMail = wrap.isUsaMail();
@@ -477,7 +463,7 @@ public class LogService extends AbstractService {
 
         //-- Inserimento opzionale nella collection di mongoDB
         if (flagUsaDB) {
-            loggerBackend.crea(level, type, wrap.getMessage(), company, user, classe, metodo, linea);
+            loggerBackend.crea(level, wrap);
         }
 
         //-- Invio opzionale di una mail

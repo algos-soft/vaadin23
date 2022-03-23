@@ -30,6 +30,8 @@ public class Logger extends AEntity {
 
     public String user;
 
+    public String address;
+
     public String classe;
 
     public String metodo;
@@ -106,6 +108,14 @@ public class Logger extends AEntity {
 
     public void setLinea(int linea) {
         this.linea = linea;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

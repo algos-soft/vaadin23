@@ -262,6 +262,7 @@ public abstract class ATest {
         fileService.textService = textService;
         arrayService.logger = logService;
         logService.utilityService = utilityService;
+        logService.loggerBackend = loggerBackend;
     }
 
     /**

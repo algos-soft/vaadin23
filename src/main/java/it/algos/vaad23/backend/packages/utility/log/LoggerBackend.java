@@ -1,7 +1,9 @@
 package it.algos.vaad23.backend.packages.utility.log;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
@@ -46,19 +48,32 @@ public class LoggerBackend extends EntityBackend {
         this.repository = (LoggerRepository) crudRepository;
     }
 
-    /**
-     * Ordine messo in automatico (progressivo) <br>
-     */
-    public void crea(final AELevelLog livello, final AETypeLog type, final String descrizione, final String company, final String user,
-                     final String classe, final String metodo, final int linea) {
+
+    public void crea(final AELevelLog livello, final WrapLog wrap) {
         Logger entity = new Logger();
+        AETypeLog type = wrap.getType();
+        String message = wrap.getMessageDB();
+        String companySigla = wrap.getCompanySigla();
+        String userName = wrap.getUserName();
+        String addressIP = wrap.getAddressIP();
+        String classe = VUOTA;
+        String metodo = VUOTA;
+        int linea = 0;
+
+        if (wrap.getException() != null) {
+            classe = wrap.getException().getClazz();
+            classe = fileService.estraeClasseFinale(classe);
+            metodo = wrap.getException().getMethod();
+            linea = wrap.getException().getLineNum();
+        }
 
         entity.livello = livello;
         entity.type = type;
         entity.evento = LocalDateTime.now();
-        entity.descrizione = textService.isValid(descrizione) ? descrizione : null;
-        entity.company = textService.isValid(company) ? company : null;
-        entity.user = textService.isValid(user) ? user : null;
+        entity.descrizione = textService.isValid(message) ? message : null;
+        entity.company = textService.isValid(companySigla) ? companySigla : null;
+        entity.user = textService.isValid(userName) ? userName : null;
+        entity.address = textService.isValid(addressIP) ? addressIP : null;
         entity.classe = textService.isValid(classe) ? classe : null;
         entity.metodo = textService.isValid(metodo) ? metodo : null;
         entity.linea = linea;
@@ -70,6 +85,31 @@ public class LoggerBackend extends EntityBackend {
             System.out.println("errore");
         }
     }
+
+    //    /**
+    //     *
+    //     */
+    //    public void crea(final AELevelLog livello, final AETypeLog type, final String descrizione, final String company, final String user,
+    //                     final String classe, final String metodo, final int linea) {
+    //        Logger entity = new Logger();
+    //
+    //        entity.livello = livello;
+    //        entity.type = type;
+    //        entity.evento = LocalDateTime.now();
+    //        entity.descrizione = textService.isValid(descrizione) ? descrizione : null;
+    //        entity.company = textService.isValid(company) ? company : null;
+    //        entity.user = textService.isValid(user) ? user : null;
+    //        entity.classe = textService.isValid(classe) ? classe : null;
+    //        entity.metodo = textService.isValid(metodo) ? metodo : null;
+    //        entity.linea = linea;
+    //
+    //        try {
+    //            this.add(entity);
+    //        } catch (Exception unErrore) {
+    //            //            logger.error(unErrore);
+    //            System.out.println("errore");
+    //        }
+    //    }
 
     public List<Logger> findByDescrizioneAndLivelloAndType(final String value, final AELevelLog level, final AETypeLog type) {
         if (level != null && type != null) {
