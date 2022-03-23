@@ -1,6 +1,7 @@
 package it.algos.vaad23.backend.wrapper;
 
 import com.vaadin.flow.spring.annotation.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import org.springframework.beans.factory.config.*;
@@ -41,6 +42,8 @@ public class WrapLog {
 
     private boolean usaMail = false;
 
+    private boolean usaStackTrace = false;
+
     public WrapLog() {
     }
 
@@ -57,6 +60,7 @@ public class WrapLog {
 
     public WrapLog exception(AlgosException exception) {
         this.exception = exception;
+        this.usaStackTrace = true;
         return this;
     }
 
@@ -93,7 +97,7 @@ public class WrapLog {
     }
 
     public String getMessage() {
-        return message;
+        return (message != null && message.length() > 0) ? message : exception != null ? exception.getMessage() : VUOTA;
     }
 
     public AlgosException getException() {
@@ -122,6 +126,14 @@ public class WrapLog {
 
     public boolean isUsaMail() {
         return usaMail;
+    }
+
+    public boolean isUsaStackTrace() {
+        return usaStackTrace;
+    }
+
+    public void setUsaStackTrace(boolean usaStackTrace) {
+        this.usaStackTrace = usaStackTrace;
     }
 
 }

@@ -227,4 +227,20 @@ public class VaadCost {
 
     public static final String TAG_FLOW_VERSION = "flowversion";
 
+    public static final int PAD_TYPE = 10;
+
+    public static final int PAD_CLASS = 20;
+
+    public static final int PAD_SYSTEM = 10;
+
+    public static final int PAD_METHOD = 20;
+
+    public static final int PAD_LINE = 3;
+
+    public static final int PAD_COMPANY = 5;
+
+    public static final int PAD_USER = 18;
+
+    public static final int PAD_IP = 37;
+
 }

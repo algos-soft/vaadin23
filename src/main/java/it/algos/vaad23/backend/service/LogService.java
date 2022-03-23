@@ -1,7 +1,6 @@
 package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
@@ -437,64 +436,53 @@ public class LogService extends AbstractService {
     private String logBase(final AELevelLog level, final WrapLog wrap) {
         String typeText;
         String message;
-        String descrizioneDB;
         String company = VUOTA;
         String user = VUOTA;
         String classe = VUOTA;
         String metodo = VUOTA;
         int linea = 0;
-        String sep = SEP; //@todo eventuale (non obbligatorio) flag di preferenza per DOPPIO_SPAZIO
         AETypeLog type = wrap.getType();
         boolean flagUsaDB = wrap.isUsaDB();
         boolean flagUsaMail = wrap.isUsaMail();
-        String descrizione = wrap.getMessage();
-        Exception eccezione = wrap.getException();
-        //        String bloccoCompany = wrap.isMultiCompany()?utilityService.getCompanyPack(wrap):VUOTA;
 
+        //--type merceologico con quadre e pad di larghezza fissa
         type = type != null ? type : AETypeLog.system;
-        typeText = type != null ? textService.fixSizeQuadre(type.getTag(), 10) : VUOTA;
-        message = textService.isValid(typeText) ? typeText + sep : VUOTA;
-        message += wrap.isMultiCompany() ? utilityService.getCompanyPack(wrap) + SPAZIO : VUOTA;
+        typeText = type != null ? textService.fixSizeQuadre(type.getTag(), PAD_TYPE) : VUOTA;
+
+        //--1) Inserimento fisso iniziale del type merceologico - se manca di default usa 'system'
+        message = textService.isValid(typeText) ? typeText + SEP : VUOTA;
+
+        //--2) Messaggio fisso della descrizione
         message += wrap.getMessage();
 
-        //        message = descrizione != null ? descrizione : VUOTA;
-        descrizioneDB = descrizione;
+        //--3) Inserimento opzionale dei dati (company, user, IP) se multiCompany
+        if (wrap.isMultiCompany()) {
+            message += SPAZIO + utilityService.getCompanyPack(wrap);
+        }
 
-        //        typeText = type != null ? textService.fixSizeQuadre(type.getTag(), 10) : VUOTA;
-        //        message = String.format("%s%s%s", typeText, textService.isValid(typeText) ? sep : VUOTA, message);
-
-        // StackTrace dell'errore
-        if (eccezione != null) {
-            descrizioneDB = eccezione.getMessage();
-            if (eccezione instanceof AlgosException algosException) {
-                descrizioneDB = algosException.getMessage();
-                classe = algosException.getClazz();
-                classe = fileService.estraeClasseFinale(classe);
-                metodo = algosException.getMethod();
-                linea = algosException.getLineNum();
-                message = utilityService.getStackTrace(algosException);
+        //--4) Inserimento opzionale dello stackTrace dell'errore (o della partenza del log)
+        //--Obbligatorio per AETypeLog.error, facoltativo per gli altri type
+        if (type == AETypeLog.error || wrap.isUsaStackTrace()) {
+            message += SPAZIO + utilityService.getStackTrace(wrap.getException()) + SPAZIO;
+            message = DUE_PUNTI_SPAZIO + message;
+            //--Se forzo con WrapLog().message() un messaggio diverso da quello generato dall'errore, li mostra entrambi
+            //--Quello forzato in testa e quello generato dall'errore in coda
+            if (!wrap.getMessage().equals(wrap.getException().getMessage())) {
+                message += SPAZIO + wrap.getException().getMessage();
             }
-            message = String.format("%s%s%s", typeText, textService.isValid(typeText) ? sep : VUOTA, message);
+        }
+        else {
+            message = String.format("%s%s", DUE_PUNTI_SPAZIO, message);
         }
 
-        // mongoDB
+        //-- Inserimento opzionale nella collection di mongoDB
         if (flagUsaDB) {
-            loggerBackend.crea(level, type, descrizioneDB, company, user, classe, metodo, linea);
+            loggerBackend.crea(level, type, wrap.getMessage(), company, user, classe, metodo, linea);
         }
 
-        // mail
+        //-- Invio opzionale di una mail
         if (flagUsaMail) {
         }
-
-        // usaCompany
-        if (VaadVar.usaCompany) {
-            if (wrap != null) {
-                //                message = fixMessageLog(wrap, message);
-            }
-        }
-
-        // styling finale
-        message = String.format("%s%s", DUE_PUNTI_SPAZIO, message);
 
         // logback-spring.xml
         switch (level) {

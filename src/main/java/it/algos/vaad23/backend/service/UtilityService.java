@@ -28,17 +28,6 @@ import org.springframework.stereotype.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class UtilityService extends AbstractService {
 
-    public static final int PAD_CLASS = 20;
-
-    public static final int PAD_METHOD = 20;
-
-    public static final int PAD_LINE = 3;
-
-    public static final int PAD_COMPANY = 5;
-
-    public static final int PAD_USER = 18;
-
-    public static final int PAD_IP = 37;
 
     public String getStackTrace(final AlgosException exception) {
         boolean usaTagIniziale = true; //@todo mettere flag preferenze
@@ -73,7 +62,7 @@ public class UtilityService extends AbstractService {
         metodo = textService.fixSizeQuadre(metodo, padMethod);
         riga = textService.fixSizeQuadre(riga + VUOTA, padLine);
 
-        return String.format("%s%s%s%s%s%s%s", classe, SPAZIO, metodo, SPAZIO, riga, SPAZIO, message);
+        return String.format("%s%s%s%s%s", classe, SPAZIO, metodo, SPAZIO, riga);
     }
 
     public String getCompanyPack(final WrapLog wrap) {

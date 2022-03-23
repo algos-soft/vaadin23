@@ -9,6 +9,7 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
 import org.slf4j.*;
 import org.springframework.boot.test.context.*;
@@ -112,38 +113,43 @@ public class LogServiceTest extends ATest {
     }
 
 
-    @Test
+    //    @Test
     @Order(1)
     @DisplayName("1 - Messaggi di solo testo su slf4jLogger")
     void log1() {
         System.out.println("1 - Messaggi di solo testo su slf4jLogger");
         System.out.println(VUOTA);
-        //        StringBuilder sb = new StringBuilder("palindrome!");
-        //        sb.append("").reverse().toString();
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.system.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.info(new WrapLog().message(sorgente));
-
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.system.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.warn(new WrapLog().message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.system.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.error(new WrapLog().message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.debug.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.system.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.debug(new WrapLog().message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
     }
 
-    @Test
+    //    @Test
     @Order(2)
     @DisplayName("2 - Messaggi con typo su slf4jLogger")
     void log2() {
@@ -152,37 +158,49 @@ public class LogServiceTest extends ATest {
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.checkData.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.info(new WrapLog().type(AETypeLog.checkData).message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.download.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.info(new WrapLog().type(AETypeLog.download).message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.preferenze.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.info(new WrapLog().type(AETypeLog.preferenze).message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.warn.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.modifica.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.warn(new WrapLog().type(AETypeLog.modifica).message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.error.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.startup.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.error(new WrapLog().type(AETypeLog.startup).message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
         sorgente2 = AELevelLog.debug.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
+        previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.startup.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.debug(new WrapLog().type(AETypeLog.startup).message(sorgente));
+        assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
     }
 
 
-    @Test
+    //    @Test
     @Order(3)
     @DisplayName("3 - Messaggi con company and user")
     void log3() {
@@ -283,45 +301,56 @@ public class LogServiceTest extends ATest {
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog();
-        service.info(wrapLog);
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().message("Solo testo");
-        service.info(wrapLog);
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().message("Testo e type").type(AETypeLog.modifica);
-        service.info(wrapLog);
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().type(AETypeLog.modifica).message("Type e testo (uguale come sopra; cambiando l'ordine dei fattori il risultato non cambia)");
-        service.info(wrapLog);
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().type(AETypeLog.password).message("Info o warn il wrap è uguale");
-        service.warn(wrapLog);
+        ottenuto = service.warn(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().type(AETypeLog.mongo).message("Anche per error");
-        service.error(wrapLog);
+        ottenuto = service.error(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().exception(new AlgosException("Eccezione"));
-        service.error(wrapLog);
+        ottenuto = service.error(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().type(AETypeLog.elabora).exception(new AlgosException("Eccezione con type"));
-        service.error(wrapLog);
+        ottenuto = service.error(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().exception(new AlgosException("Qualcosa non ha funzionato"));
-        service.info(wrapLog);
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
-        service.info(new WrapLog().exception(new AlgosException("Motivo del malfunzionamento")));
+        ottenuto = service.info(new WrapLog().exception(new AlgosException("Motivo del malfunzionamento")));
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
-        service.info(new WrapLog().type(AETypeLog.login).message("Altro testo").exception(new AlgosException("Altri metodi")));
+        ottenuto = service.info(new WrapLog().type(AETypeLog.login).message("Altro testo").exception(new AlgosException("Altri metodi")));
+        printMessaggio(ottenuto);
     }
 
     @Test
@@ -334,16 +363,40 @@ public class LogServiceTest extends ATest {
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().message("Solo testo");
-        service.info(wrapLog);
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
 
         sorgente = "Marco Pettinelli";
         System.out.println(VUOTA);
         wrapLog = new WrapLog().message(String.format("L'utente %s ha eseguito questa operazione", sorgente));
-        service.info(wrapLog);
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
 
         System.out.println(VUOTA);
         wrapLog = new WrapLog().message(String.format("L'utente %s ha eseguito questa operazione", sorgente)).user(sorgente);
-        service.info(wrapLog);
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
+    }
+
+
+    @Test
+    @Order(9)
+    @DisplayName("9 - Utilizzo di wrapLog per multiCompany con error")
+    void wrapLogCompanyError() {
+        System.out.println("9 - Utilizzo di wrapLog per multiCompany con error");
+        System.out.println("Creo un wrapLog senza SpringBoot - no @Autowired");
+        System.out.println("Chiamo logService usando wrapLog");
+
+        System.out.println(VUOTA);
+        wrapLog = new WrapLog().exception(new AlgosException("Qualcosa non ha funzionato")).company("crpt");
+        ottenuto = service.info(wrapLog);
+        printMessaggio(ottenuto);
+
+        sorgente = "L'utente Rossi Carlo si è loggato con una password errata";
+        System.out.println(VUOTA);
+        wrapLog = new WrapLog().exception(new AlgosException("Qualcosa non ha funzionato")).company("crpt").message(sorgente);
+        ottenuto = service.error(wrapLog);
+        printMessaggio(ottenuto);
     }
 
     //    @Test
@@ -360,15 +413,6 @@ public class LogServiceTest extends ATest {
         COMPANY().forEach(this::printWrap);
     }
 
-    //    @Test
-    @Order(9)
-    @DisplayName("9 - Invio di una mail")
-    void infoMail() {
-        System.out.println("9 - Invio di una mail");
-        sorgente = "L'utente Rossi Carlo si è loggato con una password errata";
-        wrapCompany = appContext.getBean(WrapLogCompany.class, "crpt", "Rossi C.", "2001:B07:AD4:2177:9B56:DB51:33E0:A151");
-        //        service.mail(AETypeLog.login, wrap, sorgente);
-    }
 
     //    @Test
     @Order(10)
