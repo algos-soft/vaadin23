@@ -150,7 +150,7 @@ public abstract class VaadBoot implements ServletContextListener {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          * Se usaCompany=true anche usaSecurity deve essere true <br>
          */
-        VaadVar.usaCompany = true;
+        VaadVar.usaCompany = false;
 
         /**
          * Controlla se l' applicazione usa il login oppure no <br>

@@ -86,30 +86,9 @@ public class LoggerBackend extends EntityBackend {
         }
     }
 
-    //    /**
-    //     *
-    //     */
-    //    public void crea(final AELevelLog livello, final AETypeLog type, final String descrizione, final String company, final String user,
-    //                     final String classe, final String metodo, final int linea) {
-    //        Logger entity = new Logger();
-    //
-    //        entity.livello = livello;
-    //        entity.type = type;
-    //        entity.evento = LocalDateTime.now();
-    //        entity.descrizione = textService.isValid(descrizione) ? descrizione : null;
-    //        entity.company = textService.isValid(company) ? company : null;
-    //        entity.user = textService.isValid(user) ? user : null;
-    //        entity.classe = textService.isValid(classe) ? classe : null;
-    //        entity.metodo = textService.isValid(metodo) ? metodo : null;
-    //        entity.linea = linea;
-    //
-    //        try {
-    //            this.add(entity);
-    //        } catch (Exception unErrore) {
-    //            //            logger.error(unErrore);
-    //            System.out.println("errore");
-    //        }
-    //    }
+    public int countAll() {
+        return repository.findAll().size();
+    }
 
     public List<Logger> findByDescrizioneAndLivelloAndType(final String value, final AELevelLog level, final AETypeLog type) {
         if (level != null && type != null) {

@@ -46,6 +46,7 @@ public abstract class EntityBackend extends AbstractService {
 
     protected MongoRepository crudRepository;
 
+
     /**
      * Constructor @Autowired. <br>
      * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
