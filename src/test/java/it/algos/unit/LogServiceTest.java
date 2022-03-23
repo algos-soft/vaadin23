@@ -245,14 +245,6 @@ public class LogServiceTest extends ATest {
         sorgente = String.format("Messaggio di errore su mongoDB tipizzato", AELevelLog.info);
         ottenuto = service.error(new WrapLog().type(AETypeLog.bio).message(sorgente).usaDb().exception(new AlgosException("Messaggio generato dall'errore")));
         printMessaggio(ottenuto);
-
-        //        sorgente2 = AELevelLog.warn.toString();
-        //        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
-        //        service.warnDb(AETypeLog.export, sorgente);
-
-        //        sorgente2 = AELevelLog.error.toString();
-        //        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", sorgente2);
-        //        service.errorDb(AETypeLog.delete, sorgente);
     }
 
 
@@ -277,27 +269,25 @@ public class LogServiceTest extends ATest {
     }
 
 
-    //    @Test
-    @Order(6)
+        @Test
+        @Order(6)
     @DisplayName("6 - Messaggi con StackTrace registrati su mongoDB")
     void stackTraceConDb() {
-        System.out.println(sorgente);
-        System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
+            System.out.println(sorgente);
+            System.out.println("L'errore può essere di sistema oppure un AlgosException generato nel codice");
 
-        //        service.warnDb(AETypeLog.export, new AlgosException("service.warn(AETypeLog.export, new AlgosException(\"testo\"));"));
-        //        service.errorDb(AETypeLog.delete, new AlgosException("service.error(AETypeLog.delete, new AlgosException(\"testo\"));"));
+            wrapLog = new WrapLog()
+                    .message("Messaggio")
+                    .type(AETypeLog.password)
+                    .exception(new AlgosException("Niente"))
+                    .company("crpt")
+                    .user("Domenichetti")
+                    .address("2001:B07:6466:70A3:D869:97FA:FB8E:C443")
+                    .usaDb();
 
-        // giusto
-        //        service.warnDb(new AlgosException("service.warn(new AlgosException(\"testo\"));"));
-        //        service.errorDb(new AlgosException("service.error(new AlgosException(\"testo\"));"));
-
-        //        service.warnDb(new AlgosException(VUOTA));
-        //        service.errorDb(new AlgosException(VUOTA));
-
-        //        service.warnDb(new AlgosException());
-        //        service.errorDb(new AlgosException());
-
-    }
+            ottenuto = service.error(wrapLog);
+            printMessaggio(ottenuto);
+        }
 
     @Test
     @Order(7)

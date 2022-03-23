@@ -114,7 +114,6 @@ public class LoggerView extends CrudView {
         grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
         grid.getColumnByKey("company").setWidth(larCompany).setFlexGrow(0).setVisible(VaadVar.usaCompany);
         grid.getColumnByKey("user").setWidth(larCompany).setFlexGrow(0).setVisible(VaadVar.usaCompany);
-        ;
         grid.getColumnByKey("classe").setWidth(larClasse).setFlexGrow(0);
         grid.getColumnByKey("metodo").setWidth(larMetodo).setFlexGrow(0);
         grid.getColumnByKey("linea").setHeader("Riga").setWidth(larLinea).setFlexGrow(0);
