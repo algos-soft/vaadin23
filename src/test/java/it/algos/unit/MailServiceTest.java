@@ -19,7 +19,7 @@ import java.time.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("notEver")
+@Tag("slowly")
 @DisplayName("Mail service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MailServiceTest extends ATest {

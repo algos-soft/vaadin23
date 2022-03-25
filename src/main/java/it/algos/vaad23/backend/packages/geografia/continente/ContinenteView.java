@@ -31,7 +31,7 @@ public class ContinenteView extends CrudView {
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
     public ContinenteView(@Autowired final ContinenteBackend crudBackend) {
-        super(crudBackend, Continente.class, true);
+        super(crudBackend, Continente.class);
         this.backend = crudBackend;
 
         gridCrud.getGrid().setColumns("ordine", "nome", "abitato");

@@ -15,9 +15,9 @@ import java.util.stream.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: lun, 07-mar-2022
- * Time: 16:50
- * Unit test di una enumeration <br>
+ * Date: ven, 25-mar-2022
+ * Time: 16:58
+ * Unit test di una classe di servizio <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
@@ -25,18 +25,18 @@ import java.util.stream.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
 @Tag("enums")
-@DisplayName("Enumeration AELogLevel")
+@DisplayName("Enumeration AENotaLevel")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AELogLevelTest extends ATest {
+public class AENotaLevelTest extends ATest {
 
-    private AELogLevel type;
 
-    private List<AELogLevel> listaEnum;
+    private AENotaLevel type;
+
+    private List<AENotaLevel> listaEnum;
 
     private List<String> listaTag;
 
-    private AELogLevel[] matrice;
-
+    private AENotaLevel[] matrice;
 
     //--tag
     //--esiste nella enumeration
@@ -62,7 +62,7 @@ public class AELogLevelTest extends ATest {
 
 
     /**
-     * Qui passa a ogni test delle sottoclassi <br>
+     * Qui passa prima di ogni test delle sottoclassi <br>
      * Invocare PRIMA il metodo setUp() della superclasse <br>
      * Si possono aggiungere regolazioni specifiche <br>
      */
@@ -76,18 +76,19 @@ public class AELogLevelTest extends ATest {
         matrice = null;
     }
 
+
     @Test
     @Order(1)
     @DisplayName("1 - matrice dei valori")
     void matrice() {
-        matrice = AELogLevel.values();
+        matrice = AENotaLevel.values();
         assertNotNull(matrice);
 
         System.out.println("Tutti i valori della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
-        for (AELogLevel valore : matrice) {
+        for (AENotaLevel valore : matrice) {
             System.out.println(valore);
         }
     }
@@ -96,7 +97,7 @@ public class AELogLevelTest extends ATest {
     @Order(2)
     @DisplayName("2 - lista dei valori")
     void lista() {
-        listaEnum = AELogLevel.getAllEnums();
+        listaEnum = AENotaLevel.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println("Tutte le occorrenze della enumeration come ArrayList()");
@@ -111,7 +112,7 @@ public class AELogLevelTest extends ATest {
     @Order(3)
     @DisplayName("3 - lista come stringa")
     void listaString() {
-        ottenutoArray = AELogLevel.getAllStringValues();
+        ottenutoArray = AENotaLevel.getAllStringValues();
         assertNotNull(ottenutoArray);
 
         System.out.println("Tutte le occorrenze della enumeration sotto forma di stringa");
@@ -126,7 +127,7 @@ public class AELogLevelTest extends ATest {
     @Order(4)
     @DisplayName("4 - lista come tag")
     void listaTag() {
-        listaTag = AELogLevel.getAllTags();
+        listaTag = AENotaLevel.getAllTags();
         assertNotNull(listaTag);
 
         System.out.println("Tutti i valori 'tag' della enumeration");
@@ -137,11 +138,12 @@ public class AELogLevelTest extends ATest {
         System.out.println(VUOTA);
     }
 
+
     @Test
     @Order(5)
     @DisplayName("5 - lista come string -> tag")
     void listaStringTag() {
-        listaEnum = AELogLevel.getAllEnums();
+        listaEnum = AENotaLevel.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println(String.format("Tutti i valori 'string -> tag' della enumeration (%s valori)", listaEnum.size()));
@@ -167,7 +169,7 @@ public class AELogLevelTest extends ATest {
         Object[] mat = arg.get();
         sorgente = (String) mat[0];
         previstoBooleano = (boolean) mat[1];
-        type = AELogLevel.getType(sorgente);
+        type = AENotaLevel.getType(sorgente);
         assertTrue(previstoBooleano ? type != null : type == null);
 
         System.out.println(VUOTA);
@@ -194,7 +196,7 @@ public class AELogLevelTest extends ATest {
         Object[] mat = arg.get();
         sorgente = (String) mat[0];
         previstoBooleano = (boolean) mat[1];
-        type = AELogLevel.getType(sorgente);
+        type = AENotaLevel.getType(sorgente);
         assertTrue(previstoBooleano ? type != null : type == null);
 
         System.out.println(VUOTA);

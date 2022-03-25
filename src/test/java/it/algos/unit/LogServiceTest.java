@@ -31,10 +31,10 @@ import java.util.stream.*;
  */
 @SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllIntegration")
+@Tag("spring")
 @DisplayName("Log service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class LogServiceTest extends ATest {
+public class LogServiceTest extends STest {
 
 
     private WrapLogCompany wrapCompany;
@@ -120,28 +120,28 @@ public class LogServiceTest extends ATest {
         System.out.println("1 - Messaggi di solo testo su slf4jLogger");
         System.out.println(VUOTA);
 
-        sorgente2 = AELevelLog.info.toString();
+        sorgente2 = AELogLevel.info.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.system.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.info(new WrapLog().message(sorgente));
         assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
-        sorgente2 = AELevelLog.warn.toString();
+        sorgente2 = AELogLevel.warn.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.system.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.warn(new WrapLog().message(sorgente));
         assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
-        sorgente2 = AELevelLog.error.toString();
+        sorgente2 = AELogLevel.error.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.system.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.error(new WrapLog().message(sorgente));
         assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
-        sorgente2 = AELevelLog.debug.toString();
+        sorgente2 = AELogLevel.debug.toString();
         sorgente = String.format("Messaggio semplice di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.system.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.debug(new WrapLog().message(sorgente));
@@ -156,42 +156,42 @@ public class LogServiceTest extends ATest {
         System.out.println("2 - Messaggi con typo su slf4jLogger");
         System.out.println(VUOTA);
 
-        sorgente2 = AELevelLog.info.toString();
+        sorgente2 = AELogLevel.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.checkData.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.info(new WrapLog().type(AETypeLog.checkData).message(sorgente));
         assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
-        sorgente2 = AELevelLog.info.toString();
+        sorgente2 = AELogLevel.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.download.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.info(new WrapLog().type(AETypeLog.download).message(sorgente));
         assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
-        sorgente2 = AELevelLog.info.toString();
+        sorgente2 = AELogLevel.info.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.preferenze.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.info(new WrapLog().type(AETypeLog.preferenze).message(sorgente));
         assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
-        sorgente2 = AELevelLog.warn.toString();
+        sorgente2 = AELogLevel.warn.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.modifica.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.warn(new WrapLog().type(AETypeLog.modifica).message(sorgente));
         assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
-        sorgente2 = AELevelLog.error.toString();
+        sorgente2 = AELogLevel.error.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.startup.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.error(new WrapLog().type(AETypeLog.startup).message(sorgente));
         assertEquals(previsto, ottenuto);
         printMessaggio(ottenuto);
 
-        sorgente2 = AELevelLog.debug.toString();
+        sorgente2 = AELogLevel.debug.toString();
         sorgente = String.format("Messaggio typo di %s proveniente dal test", sorgente2);
         previsto = DUE_PUNTI_SPAZIO + textService.fixSizeQuadre(AETypeLog.startup.toString(), PAD_SYSTEM) + SEP + sorgente;
         ottenuto = service.debug(new WrapLog().type(AETypeLog.startup).message(sorgente));
@@ -208,23 +208,23 @@ public class LogServiceTest extends ATest {
         System.out.println("3 - Messaggi con company and user");
         System.out.println(VUOTA);
 
-        sorgente = String.format("Messaggio di %s con company", AELevelLog.info);
+        sorgente = String.format("Messaggio di %s con company", AELogLevel.info);
         ottenuto = service.info(new WrapLog().message(sorgente).company("crpt"));
         printMessaggio(ottenuto);
 
-        sorgente = String.format("Messaggio di %s con type e company", AELevelLog.info);
+        sorgente = String.format("Messaggio di %s con type e company", AELogLevel.info);
         ottenuto = service.info(new WrapLog().type(AETypeLog.password).message(sorgente).company("gaps"));
         printMessaggio(ottenuto);
 
-        sorgente = String.format("Messaggio di %s con type, company e user", AELevelLog.info);
+        sorgente = String.format("Messaggio di %s con type, company e user", AELogLevel.info);
         ottenuto = service.info(new WrapLog().type(AETypeLog.elabora).message(sorgente).company("pap").user("Marcella P."));
         printMessaggio(ottenuto);
 
-        sorgente = String.format("Messaggio di %s con type, company, user e indirizzo IP", AELevelLog.info);
+        sorgente = String.format("Messaggio di %s con type, company, user e indirizzo IP", AELogLevel.info);
         ottenuto = service.info(new WrapLog().type(AETypeLog.modifica).message(sorgente).company("crpt").user("Facchinetti Mario").address("2001:B07:AD4:2177:9B56:DB51:33E0:A151"));
         printMessaggio(ottenuto);
 
-        sorgente = String.format("Messaggio di %s con type, company, user e indirizzo IP", AELevelLog.warn);
+        sorgente = String.format("Messaggio di %s con type, company, user e indirizzo IP", AELogLevel.warn);
         ottenuto = service.warn(new WrapLog().type(AETypeLog.modifica).message(sorgente).company("crpt").user("Facchinetti Mario").address("2001:B07:AD4:2177:9B56:DB51:33E0:A151"));
         printMessaggio(ottenuto);
 
@@ -234,15 +234,15 @@ public class LogServiceTest extends ATest {
     @Order(4)
     @DisplayName("4 - Messaggi registrati su mongoDB")
     void log4() {
-        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", AELevelLog.info);
+        sorgente = String.format("Messaggio su mongoDB di %s proveniente dal test", AELogLevel.info);
         ottenuto = service.info(new WrapLog().message(sorgente).usaDb());
         printMessaggio(ottenuto);
 
-        sorgente = String.format("Messaggio su mongoDB tipizzato", AELevelLog.info);
+        sorgente = String.format("Messaggio su mongoDB tipizzato", AELogLevel.info);
         ottenuto = service.info(new WrapLog().type(AETypeLog.bio).message(sorgente).usaDb());
         printMessaggio(ottenuto);
 
-        sorgente = String.format("Messaggio di errore su mongoDB tipizzato", AELevelLog.info);
+        sorgente = String.format("Messaggio di errore su mongoDB tipizzato", AELogLevel.info);
         ottenuto = service.error(new WrapLog().type(AETypeLog.bio).message(sorgente).usaDb().exception(new AlgosException("Messaggio generato dall'errore")));
         printMessaggio(ottenuto);
     }

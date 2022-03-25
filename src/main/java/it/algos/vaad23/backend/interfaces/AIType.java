@@ -1,11 +1,11 @@
-package it.algos.vaad23.backend.enumeration;
+package it.algos.vaad23.backend.interfaces;
 
 /**
- * Project vaadin23
+ * Project vaadflow14
  * Created by Algos
  * User: gac
- * Date: mer, 16-mar-2022
- * Time: 08:30
+ * Date: lun, 15-feb-2021
+ * Time: 21:04
  */
 public interface AIType {
 

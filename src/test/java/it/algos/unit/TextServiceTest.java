@@ -1,6 +1,5 @@
 package it.algos.unit;
 
-import it.algos.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
@@ -8,7 +7,6 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
-import org.springframework.boot.test.context.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -25,9 +23,8 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
-@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllValido")
+@Tag("quickly")
 @DisplayName("Text service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TextServiceTest extends ATest {

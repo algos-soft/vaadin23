@@ -45,7 +45,7 @@ public class LoggerView extends CrudView {
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
     public LoggerView(@Autowired final LoggerBackend crudBackend) {
-        super(crudBackend, Logger.class, false);
+        super(crudBackend, Logger.class);
         this.backend = crudBackend;
     }
 
@@ -60,6 +60,20 @@ public class LoggerView extends CrudView {
 
         this.usaBottoneDeleteAll = true;
         this.usaBottoneFilter = true;
+    }
+
+    /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixAlertLayout() {
+        super.fixAlertLayout();
+        this.add(getSpan("Diverse modalità di 'uscita' dei logs, regolate da flag:"));
+        this.add(getSpan("A) nella cartella di log (sempre)"));
+        this.add(getSpan("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag"));
+        this.add(getSpan("C) nella collection del database (facoltativo)"));
+        this.add(getSpan("D) in una mail (facoltativo e di norma solo per 'error')"));
     }
 
     /**
@@ -172,7 +186,7 @@ public class LoggerView extends CrudView {
         comboLivello = new ComboBox();
         comboLivello.setPlaceholder("Livello");
         comboLivello.setClearButtonVisible(true);
-        List items = AELevelLog.getAll();
+        List items = AELogLevel.getAllEnums();
         comboLivello.setItems(items);
         gridCrud.getCrudLayout().addFilterComponent(comboLivello);
         comboLivello.addValueChangeListener(event -> sincroFiltri());
@@ -180,7 +194,7 @@ public class LoggerView extends CrudView {
         comboTypeLog = new ComboBox();
         comboTypeLog.setPlaceholder("Type");
         comboTypeLog.setClearButtonVisible(true);
-        List items2 = AETypeLog.getAll();
+        List items2 = AETypeLog.getAllEnums();
         comboTypeLog.setItems(items2);
         gridCrud.getCrudLayout().addFilterComponent(comboTypeLog);
         comboTypeLog.addValueChangeListener(event -> sincroFiltri());
@@ -193,7 +207,7 @@ public class LoggerView extends CrudView {
     protected List sincroFiltri() {
         List items = null;
         String textSearch = VUOTA;
-        AELevelLog level = null;
+        AELogLevel level = null;
         AETypeLog type = null;
 
         if (usaBottoneFilter && filter != null) {
@@ -202,7 +216,7 @@ public class LoggerView extends CrudView {
         }
 
         if (comboLivello != null) {
-            level = (AELevelLog) comboLivello.getValue();
+            level = (AELogLevel) comboLivello.getValue();
         }
 
         if (comboTypeLog != null) {

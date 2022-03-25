@@ -99,6 +99,10 @@ public class VaadVers implements AIVers {
             this.crea(k, AETypeVers.addition, "Package 'logger' funzionante");
         }
 
+        if (installa(++k)) {
+            this.crea(k, AETypeVers.addition, "Alert colorati in testa alle view");
+        }
+
 
     }
 

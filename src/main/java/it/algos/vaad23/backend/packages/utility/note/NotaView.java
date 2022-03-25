@@ -42,7 +42,7 @@ public class NotaView extends CrudView {
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
     public NotaView(@Autowired final NotaBackend crudBackend) {
-        super(crudBackend, Nota.class, true);
+        super(crudBackend, Nota.class);
         this.backend = crudBackend;
     }
 
@@ -55,8 +55,18 @@ public class NotaView extends CrudView {
     public void fixPreferenze() {
         super.fixPreferenze();
 
+        this.splitLayout = true;
         this.usaBottoneDeleteAll = true;
         this.usaBottoneFilter = true;
+    }
+
+    /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixAlertLayout() {
+        super.fixAlertLayout();
     }
 
     /**
@@ -125,7 +135,7 @@ public class NotaView extends CrudView {
         comboLivello = new ComboBox();
         comboLivello.setPlaceholder("Livello");
         comboLivello.setClearButtonVisible(true);
-        List items = AELevelNota.getAll();
+        List items = AENotaLevel.getAllEnums();
         comboLivello.setItems(items);
         gridCrud.getCrudLayout().addFilterComponent(comboLivello);
         comboLivello.addValueChangeListener(event -> sincroFiltri());
@@ -133,7 +143,7 @@ public class NotaView extends CrudView {
         comboTypeLog = new ComboBox();
         comboTypeLog.setPlaceholder("Type");
         comboTypeLog.setClearButtonVisible(true);
-        List items2 = AETypeLog.getAll();
+        List items2 = AETypeLog.getAllEnums();
         comboTypeLog.setItems(items2);
         gridCrud.getCrudLayout().addFilterComponent(comboTypeLog);
         comboTypeLog.addValueChangeListener(event -> sincroFiltri());
@@ -146,7 +156,7 @@ public class NotaView extends CrudView {
     protected List sincroFiltri() {
         List items = null;
         String textSearch = VUOTA;
-        AELevelNota level = null;
+        AENotaLevel level = null;
         AETypeLog type = null;
 
         if (usaBottoneFilter && filter != null) {
@@ -155,7 +165,7 @@ public class NotaView extends CrudView {
         }
 
         if (comboLivello != null) {
-            level = (AELevelNota) comboLivello.getValue();
+            level = (AENotaLevel) comboLivello.getValue();
         }
 
         if (comboTypeLog != null) {

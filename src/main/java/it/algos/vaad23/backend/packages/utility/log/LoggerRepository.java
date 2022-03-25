@@ -38,11 +38,11 @@ public interface LoggerRepository extends MongoRepository<Logger, String> {
 
     void delete(Logger entity);
 
-    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivello(String descrizione, AELevelLog level);
+    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivello(String descrizione, AELogLevel level);
 
     List<Logger> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypeLog type);
 
-    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivelloAndType(String descrizione, AELevelLog level, AETypeLog type);
+    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivelloAndType(String descrizione, AELogLevel level, AETypeLog type);
 
     List<Logger> findByDescrizioneContainingIgnoreCase(String descrizione);
 

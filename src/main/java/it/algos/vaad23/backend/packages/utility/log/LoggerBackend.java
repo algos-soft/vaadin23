@@ -49,7 +49,7 @@ public class LoggerBackend extends EntityBackend {
     }
 
 
-    public void crea(final AELevelLog livello, final WrapLog wrap) {
+    public void crea(final AELogLevel livello, final WrapLog wrap) {
         Logger entity = new Logger();
         AETypeLog type = wrap.getType();
         String message = wrap.getMessageDB();
@@ -90,7 +90,7 @@ public class LoggerBackend extends EntityBackend {
         return repository.findAll().size();
     }
 
-    public List<Logger> findByDescrizioneAndLivelloAndType(final String value, final AELevelLog level, final AETypeLog type) {
+    public List<Logger> findByDescrizioneAndLivelloAndType(final String value, final AELogLevel level, final AETypeLog type) {
         if (level != null && type != null) {
             return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndType(value, level, type);
         }

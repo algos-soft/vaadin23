@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllValido")
+@Tag("quickly")
 @DisplayName("Class service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ClassServiceTest extends ATest {

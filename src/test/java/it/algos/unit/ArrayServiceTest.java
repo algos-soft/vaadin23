@@ -23,7 +23,7 @@ import java.util.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllValido")
+@Tag("quickly")
 @DisplayName("Array service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ArrayServiceTest extends ATest {

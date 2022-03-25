@@ -4,13 +4,15 @@ import com.vaadin.flow.server.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.exception.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.service.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
+import org.slf4j.Logger;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.context.*;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -47,6 +49,8 @@ public abstract class ATest {
     protected static final String[] ARRAY_SHORT_STRING_DUE = {CONTENUTO_DUE};
 
     protected static final List<String> LIST_SHORT_STRING_DUE = new ArrayList(Arrays.asList(ARRAY_SHORT_STRING_DUE));
+
+    public Logger slf4jLogger;
 
     protected boolean previstoBooleano;
 
@@ -128,9 +132,6 @@ public abstract class ATest {
 
     protected StreamResource streamResource;
 
-    @Autowired
-    protected ApplicationContext appContext;
-
     @InjectMocks
     protected TextService textService;
 
@@ -161,12 +162,14 @@ public abstract class ATest {
     @InjectMocks
     protected ResourceService resourceService;
 
+    @InjectMocks
+    protected HtmlService htmlService;
+
     @Autowired
     protected LoggerBackend loggerBackend;
 
-    @Autowired
+    @InjectMocks
     protected UtilityService utilityService;
-
 
     //--tag
     //--esiste nella enumeration
@@ -177,6 +180,7 @@ public abstract class ATest {
                 Arguments.of("system", true),
                 Arguments.of("setup", true),
                 Arguments.of("login", true),
+                Arguments.of("pippoz", false),
                 Arguments.of("startup", true),
                 Arguments.of("checkMenu", true),
                 Arguments.of("checkData", true),
@@ -219,6 +223,8 @@ public abstract class ATest {
      */
     protected void setUpAll() {
         MockitoAnnotations.openMocks(this);
+        slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
+
         initMocks();
         fixRiferimentiIncrociati();
     }
@@ -230,6 +236,7 @@ public abstract class ATest {
      */
     protected void initMocks() {
         assertNotNull(textService);
+        assertNotNull(slf4jLogger);
         assertNotNull(logService);
         assertNotNull(mailService);
         assertNotNull(dateService);
@@ -239,7 +246,8 @@ public abstract class ATest {
         assertNotNull(reflectionService);
         assertNotNull(fileService);
         assertNotNull(resourceService);
-        assertNotNull(loggerBackend);
+        assertNotNull(utilityService);
+        assertNotNull(htmlService);
     }
 
 
@@ -262,7 +270,11 @@ public abstract class ATest {
         fileService.textService = textService;
         arrayService.logger = logService;
         logService.utilityService = utilityService;
+        logService.slf4jLogger = slf4jLogger;
         logService.loggerBackend = loggerBackend;
+        utilityService.fileService = fileService;
+        utilityService.textService = textService;
+        htmlService.textService = textService;
     }
 
     /**
@@ -316,9 +328,7 @@ public abstract class ATest {
         System.out.println(VUOTA);
         System.out.println("Errore");
         if (unErrore.getCause() != null) {
-            System.out.println(String.format("Cause %s %s", FORWARD,
-                    unErrore.getCause().getClass().getSimpleName()
-            ));
+            System.out.println(String.format("Cause %s %s", FORWARD, unErrore.getCause().getClass().getSimpleName()));
         }
         System.out.println(String.format("Message %s %s", FORWARD, unErrore.getMessage()));
         if (unErrore.getEntityBean() != null) {
@@ -417,6 +427,10 @@ public abstract class ATest {
                 }
             }
         }
+    }
+
+    protected void printTag(AIType enumTag) {
+        System.out.println(String.format("%s%s%s", enumTag, FORWARD, enumTag.getTag()));
     }
 
 }

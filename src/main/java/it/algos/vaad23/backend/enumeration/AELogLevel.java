@@ -13,22 +13,49 @@ import java.util.*;
  * Date: lun, 07-mar-2022
  * Time: 11:45
  */
-public enum AELevelLog implements AIPref {
+public enum AELogLevel implements AIType, AIPref {
     debug(GREEN),
     info(BRIGHT_BLUE),
     warn(YELLOW),
     error(RED),
     ;
 
-    public String color;
+    public String tag;
 
 
-    AELevelLog(String color) {
-        this.color = color;
+    AELogLevel(String tag) {
+        this.tag = tag;
     }
 
-    public static List<AELevelLog> getAll() {
+    public static List<AELogLevel> getAllEnums() {
         return Arrays.stream(values()).toList();
+    }
+
+    public static List<String> getAllStringValues() {
+        List<String> listaValues = new ArrayList<>();
+
+        getAllEnums().forEach(type -> listaValues.add(type.toString()));
+        return listaValues;
+    }
+
+    public static List<String> getAllTags() {
+        List<String> listaTags = new ArrayList<>();
+
+        getAllEnums().forEach(type -> listaTags.add(type.getTag()));
+        return listaTags;
+    }
+
+    public static AELogLevel getType(final String tag) {
+        return getAllEnums()
+                .stream()
+                .filter(type -> type.getTag().equals(tag))
+                .findAny()
+                .orElse(null);
+    }
+
+    @Override
+    public String getTag() {
+        return tag;
     }
 
     /**
@@ -42,7 +69,7 @@ public enum AELevelLog implements AIPref {
     public String getPref() {
         StringBuffer buffer = new StringBuffer();
 
-        getAll().forEach(level -> buffer.append(level.name() + VIRGOLA));
+        getAllEnums().forEach(level -> buffer.append(level.name() + VIRGOLA));
 
         buffer.delete(buffer.length() - 1, buffer.length());
         buffer.append(PUNTO_VIRGOLA);
@@ -50,29 +77,5 @@ public enum AELevelLog implements AIPref {
 
         return buffer.toString();
     }
-
-    public String getColor() {
-        return color;
-    }
-    //@todo Funzionalità ancora da implementare
-    //    /**
-    //     * Azione memorizzata nelle preferenze <br>
-    //     *
-    //     * @return azione
-    //     */
-    //    public static EALogLivello get(PreferenzaService pref) {
-    //        EALogLivello eaLogLevl = null;
-    //        String livelloStr = VUOTA;
-    //
-    //        if (pref != null) {
-    //            livelloStr = pref.getStr(EAPreferenza.logLevelCorrente);
-    //        }// end of if cycle
-    //
-    //        if (livelloStr.length() > 0) {
-    //            eaLogLevl = EALogLivello.valueOf(livelloStr);
-    //        }// end of if cycle
-    //
-    //        return eaLogLevl;
-    //    }// end of method
 
 }

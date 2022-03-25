@@ -1,5 +1,7 @@
 package it.algos.vaad23.backend.enumeration;
 
+import it.algos.vaad23.backend.interfaces.*;
+
 import java.util.*;
 
 /**
@@ -15,6 +17,7 @@ public enum AETypeLog implements AIType {
     setup("setup"),
     login("login"),
     startup("startup"),
+    sviluppo("sviluppo"),
     checkMenu("checkMenu"),
     checkData("checkData"),
     preferenze("preferenze"),
@@ -42,6 +45,7 @@ public enum AETypeLog implements AIType {
     utente("utente"),
     password("password"),
     bio("cicloBio"),
+    test("test"),
     ;
 
     private String tag;
@@ -52,20 +56,27 @@ public enum AETypeLog implements AIType {
     }
 
 
-    public static List<AETypeLog> getAll() {
+    public static List<AETypeLog> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
 
 
-    public static List<String> getAllTag() {
-        List<String> listaTag = new ArrayList<>();
+    public static List<String> getAllStringValues() {
+        List<String> listaValues = new ArrayList<>();
 
-        getAll().forEach(type -> listaTag.add(type.getTag()));
-        return listaTag;
+        getAllEnums().forEach(type -> listaValues.add(type.toString()));
+        return listaValues;
+    }
+
+    public static List<String> getAllTags() {
+        List<String> listaTags = new ArrayList<>();
+
+        getAllEnums().forEach(type -> listaTags.add(type.getTag()));
+        return listaTags;
     }
 
     public static AETypeLog getType(final String tag) {
-        return getAll()
+        return getAllEnums()
                 .stream()
                 .filter(type -> type.getTag().equals(tag))
                 .findAny()
@@ -77,5 +88,6 @@ public enum AETypeLog implements AIType {
     public String getTag() {
         return tag;
     }
+
 }
 

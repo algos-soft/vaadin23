@@ -18,7 +18,7 @@ import java.time.*;
 public class Logger extends AEntity {
 
 
-    public AELevelLog livello;
+    public AELogLevel livello;
 
     public AETypeLog type;
 
@@ -38,11 +38,11 @@ public class Logger extends AEntity {
 
     public int linea;
 
-    public AELevelLog getLivello() {
+    public AELogLevel getLivello() {
         return livello;
     }
 
-    public void setLivello(AELevelLog livello) {
+    public void setLivello(AELogLevel livello) {
         this.livello = livello;
     }
 

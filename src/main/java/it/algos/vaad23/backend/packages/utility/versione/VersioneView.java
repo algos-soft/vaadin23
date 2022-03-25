@@ -21,7 +21,7 @@ import java.util.*;
  * Date: sab, 12-mar-2022
  * Time: 18:24
  */
-@PageTitle(TAG_VERSIONE)
+@PageTitle("Versione")
 @Route(value = TAG_VERSIONE, layout = MainLayout.class)
 public class VersioneView extends CrudView {
 
@@ -41,7 +41,7 @@ public class VersioneView extends CrudView {
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
     public VersioneView(@Autowired final VersioneBackend crudBackend) {
-        super(crudBackend, Versione.class, true);
+        super(crudBackend, Versione.class);
         this.backend = crudBackend;
     }
 
@@ -55,7 +55,19 @@ public class VersioneView extends CrudView {
     public void fixPreferenze() {
         super.fixPreferenze();
 
+        this.splitLayout = true;
         this.usaBottoneFilter = true;
+    }
+
+    /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    public void fixAlertLayout() {
+        super.fixAlertLayout();
+        AETypeColor color = AETypeColor.blu;
+        this.add(getSpan("Sviluppo, patch e update del programma. Sigla V iniziale per il programma base Vaadin23"));
     }
 
     /**
@@ -70,6 +82,7 @@ public class VersioneView extends CrudView {
         gridCrud.setUpdateOperationVisible(false);
         gridCrud.setDeleteOperationVisible(false);
     }
+
 
     /**
      * Qui vanno i collegamenti con la logica del backend <br>
@@ -156,7 +169,7 @@ public class VersioneView extends CrudView {
         comboTypeVers = new ComboBox();
         comboTypeVers.setPlaceholder("Type");
         comboTypeVers.setClearButtonVisible(true);
-        List items2 = AETypeVers.getAll();
+        List items2 = AETypeVers.getAllEnums();
         comboTypeVers.setItems(items2);
         gridCrud.getCrudLayout().addFilterComponent(comboTypeVers);
         comboTypeVers.addValueChangeListener(event -> sincroFiltri());

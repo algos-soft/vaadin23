@@ -295,7 +295,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public String warn(final Exception stack) {
-        return logBase(AELevelLog.warn, new WrapLog().exception(AlgosException.crea(stack)));
+        return logBase(AELogLevel.warn, new WrapLog().exception(AlgosException.crea(stack)));
     }
 
     /**
@@ -305,7 +305,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public String warn(final AETypeLog type, final Exception stack) {
-        return logBase(AELevelLog.warn, new WrapLog().type(type).exception(AlgosException.crea(stack)));
+        return logBase(AELogLevel.warn, new WrapLog().type(type).exception(AlgosException.crea(stack)));
     }
 
     /**
@@ -314,7 +314,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public String error(final Exception stack) {
-        return logBase(AELevelLog.error, new WrapLog().exception(AlgosException.crea(stack)));
+        return logBase(AELogLevel.error, new WrapLog().exception(AlgosException.crea(stack)));
     }
 
     /**
@@ -324,7 +324,7 @@ public class LogService extends AbstractService {
      * @param stack info su messaggio e StackTrace
      */
     public String error(final AETypeLog type, final Exception stack) {
-        return logBase(AELevelLog.error, new WrapLog().type(type).exception(AlgosException.crea(stack)));
+        return logBase(AELogLevel.error, new WrapLog().type(type).exception(AlgosException.crea(stack)));
     }
 
     //
@@ -390,19 +390,19 @@ public class LogService extends AbstractService {
     //    }
 
     public String info(final WrapLog wrap) {
-        return logBase(AELevelLog.info, wrap);
+        return logBase(AELogLevel.info, wrap);
     }
 
     public String warn(final WrapLog wrap) {
-        return logBase(AELevelLog.warn, wrap);
+        return logBase(AELogLevel.warn, wrap);
     }
 
     public String error(final WrapLog wrap) {
-        return logBase(AELevelLog.error, wrap);
+        return logBase(AELogLevel.error, wrap);
     }
 
     public String debug(final WrapLog wrap) {
-        return logBase(AELevelLog.debug, wrap);
+        return logBase(AELogLevel.debug, wrap);
     }
 
 
@@ -424,7 +424,7 @@ public class LogService extends AbstractService {
      * ...mail (a capo ogni property)
      * <p>
      */
-    private String logBase(final AELevelLog level, final WrapLog wrap) {
+    private String logBase(final AELogLevel level, final WrapLog wrap) {
         String typeText;
         String message;
         AETypeLog type = wrap.getType();
@@ -433,7 +433,7 @@ public class LogService extends AbstractService {
 
         //--type merceologico con quadre e pad di larghezza fissa
         type = type != null ? type : AETypeLog.system;
-        typeText = type != null ? textService.fixSizeQuadre(type.getTag(), PAD_TYPE) : VUOTA;
+        typeText = type != null ? textService.fixSizeQuadre(type.getTag(), PAD_TYPE) : VUOTA;//@todo da sistemare
 
         //--1) Inserimento fisso iniziale del type merceologico - se manca di default usa 'system'
         message = textService.isValid(typeText) ? typeText + SEP : VUOTA;

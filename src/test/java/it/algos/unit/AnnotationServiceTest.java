@@ -27,7 +27,7 @@ import javax.validation.constraints.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllValido")
+@Tag("quickly")
 @DisplayName("Annotation service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AnnotationServiceTest extends ATest {
@@ -122,11 +122,11 @@ public class AnnotationServiceTest extends ATest {
         assertNull(document);
         System.out.println(String.format("Non esiste un @Document per la classe %s", sorgenteClasse.getSimpleName()));
 
-        System.out.println(VUOTA);
-        sorgenteClasse = Versione.class;
-        document = service.getDocument(sorgenteClasse);
-        assertNotNull(document);
-        System.out.println(String.format("Il @Document per la classe %s è '%s'", sorgenteClasse.getSimpleName(), document.value()));
+        //        System.out.println(VUOTA);
+        //        sorgenteClasse = Versione.class;
+        //        document = service.getDocument(sorgenteClasse);
+        //        assertNotNull(document);
+        //        System.out.println(String.format("Il @Document per la classe %s è '%s'", sorgenteClasse.getSimpleName(), document.value()));
     }
 
     @Test

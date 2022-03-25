@@ -5,7 +5,6 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 
 import java.util.*;
@@ -22,18 +21,19 @@ import java.util.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("testAllValido")
+@Tag("quickly")
+@Tag("enums")
 @DisplayName("Enumeration AETypeLog")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AETypeLogTest extends ATest {
 
     private AETypeLog type;
 
-    private List<AETypeLog> listaType;
+    private AETypeLog[] matrice;
+
+    private List<AETypeLog> listaEnum;
 
     private List<String> listaTag;
-
-    private AETypeLog[] matrice;
 
 
     /**
@@ -57,7 +57,7 @@ public class AETypeLogTest extends ATest {
         super.setUpEach();
 
         type = null;
-        listaType = null;
+        listaEnum = null;
         listaTag = null;
         matrice = null;
     }
@@ -65,11 +65,11 @@ public class AETypeLogTest extends ATest {
     @Test
     @Order(1)
     @DisplayName("1 - matrice dei valori")
-    public void matrice() {
+    void matrice() {
         matrice = AETypeLog.values();
         assertNotNull(matrice);
 
-        System.out.println("Tutti i valori della enumeration come matrice []");
+        System.out.println("Tutte le occorrenze della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
@@ -82,43 +82,82 @@ public class AETypeLogTest extends ATest {
     @Order(2)
     @DisplayName("2 - lista dei valori")
     void lista() {
-        listaType = AETypeLog.getAll();
-        assertNotNull(listaType);
+        listaEnum = AETypeLog.getAllEnums();
+        assertNotNull(listaEnum);
 
-        System.out.println("Tutti i valori della enumeration come ArrayList()");
+        System.out.println("Tutte le occorrenze della enumeration come ArrayList()");
         System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaType.size()));
+        System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaEnum.size()));
         System.out.println(VUOTA);
-        listaType.forEach(System.out::println);
+        listaEnum.forEach(System.out::println);
         System.out.println(VUOTA);
     }
 
     @Test
     @Order(3)
-    @DisplayName("3 - getAllTag")
-    void getAllTag() {
-        listaTag = AETypeLog.getAllTag();
-        assertNotNull(listaTag);
-        System.out.println(VUOTA);
+    @DisplayName("3 - lista come stringa")
+    void listaString() {
+        ottenutoArray = AETypeLog.getAllStringValues();
+        assertNotNull(ottenutoArray);
 
+        System.out.println("Tutte le occorrenze della enumeration sotto forma di stringa");
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d elementi nella Enumeration", ottenutoArray.size()));
+        System.out.println(VUOTA);
+        ottenutoArray.forEach(System.out::println);
+        System.out.println(VUOTA);
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - lista come tag")
+    void listaTag() {
+        listaTag = AETypeLog.getAllTags();
+        assertNotNull(listaTag);
+
+        System.out.println("Tutti i valori 'tag' della enumeration");
+        System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaTag.size()));
         System.out.println(VUOTA);
         listaTag.forEach(System.out::println);
         System.out.println(VUOTA);
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "TYPES")
-    @Order(4)
-    @DisplayName("4 - getSingleType")
+    @Test
+    @Order(5)
+    @DisplayName("5 - lista come string -> tag")
+    void listaStringTag() {
+        listaEnum = AETypeLog.getAllEnums();
+        assertNotNull(listaEnum);
+
+        System.out.println(String.format("Tutti i valori 'string -> tag' della enumeration (%s valori)", listaEnum.size()));
+        System.out.println(VUOTA);
+        listaEnum.forEach(enumTag -> printTag(enumTag));
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - getSingleType")
+    void getType() {
+        System.out.println("Tutte le occorrenze della enumeration con toString() -> tag");
         //--tag
         //--esiste nella enumeration
-    void getSingleType(final String tag, final boolean esiste) {
-        type = AETypeLog.getType(tag);
-        assertTrue(esiste ? type != null : type == null);
+        TYPES().forEach(this::getTypeBase);
+    }
+
+
+    //--tag
+    //--esiste nella enumeration
+    void getTypeBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoBooleano = (boolean) mat[1];
+        type = AETypeLog.getType(sorgente);
+        assertTrue(previstoBooleano ? type != null : type == null);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("%s%s%s", tag, FORWARD, type != null ? type.toString() : "non esiste"));
+        System.out.println(String.format("%s%s%s", type, FORWARD, type != null ? type.getTag() : "non esiste"));
     }
 
     /**

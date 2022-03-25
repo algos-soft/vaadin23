@@ -12,7 +12,7 @@ import java.util.*;
 public enum AETypeVers {
     setup, patch, upgrade, error, addition, custom, test, fix, company;
 
-    public static List<AETypeVers> getAll() {
+    public static List<AETypeVers> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
 }
