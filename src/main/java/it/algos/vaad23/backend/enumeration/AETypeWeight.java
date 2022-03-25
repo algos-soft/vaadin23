@@ -27,6 +27,8 @@ public enum AETypeWeight implements AIType {
     w800("800"),
     w900("900");
 
+    public static final String HTML = "font-weight";
+
     private String tag;
 
 

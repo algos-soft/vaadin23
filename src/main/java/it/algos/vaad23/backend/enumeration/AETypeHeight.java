@@ -1,35 +1,45 @@
 package it.algos.vaad23.backend.enumeration;
 
-import static com.vaadin.flow.server.frontend.FrontendUtils.*;
+
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.interfaces.*;
 
 import java.util.*;
 
 /**
- * Project vaadin23
+ * Project vaadflow14
  * Created by Algos
  * User: gac
- * Date: ven, 18-mar-2022
- * Time: 07:13
+ * Date: sab, 20-feb-2021
+ * Time: 17:40
  */
-public enum AENotaLevel implements AIType, AIPref {
-    dettaglio(GREEN),
-    normale(BRIGHT_BLUE),
-    urgente(YELLOW),
-    critico(RED),
+public enum AETypeHeight implements AIType, AIPref {
+
+    normal("1"),
+    number16("1.6"),
+    number20("2"),
+    px6("6px"),
+    px10("10px"),
+    px14("14px"),
+    px18("18px"),
+    px22("22px"),
+    cento80("80%"),
+    cento120("120%"),
     ;
 
-    public String tag;
+    public static final String HTML = "font-size";
+
+    private String tag;
 
 
-    AENotaLevel(String tag) {
+    AETypeHeight(String tag) {
         this.tag = tag;
     }
 
-    public static List<AENotaLevel> getAllEnums() {
+    public static List<AETypeHeight> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
+
 
     public static List<String> getAllStringValues() {
         List<String> listaValues = new ArrayList<>();
@@ -45,13 +55,14 @@ public enum AENotaLevel implements AIType, AIPref {
         return listaTags;
     }
 
-    public static AENotaLevel getType(final String tag) {
+    public static AETypeHeight getType(final String tag) {
         return getAllEnums()
                 .stream()
                 .filter(type -> type.getTag().equals(tag))
                 .findAny()
                 .orElse(null);
     }
+
 
     @Override
     public String getTag() {
@@ -77,5 +88,4 @@ public enum AENotaLevel implements AIType, AIPref {
 
         return buffer.toString();
     }
-
 }

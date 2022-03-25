@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Scope;
  * User: gac
  * Date: lun, 21-mar-2022
  * Time: 14:08
- * Wrapper di informazioni per accedere al logger <br>
+ * Wrapper di informazioni (Fluent API) per accedere al logger <br>
  * Può contenere:
  * -type (AETypeLog) merceologico per il log
  * -message (String)

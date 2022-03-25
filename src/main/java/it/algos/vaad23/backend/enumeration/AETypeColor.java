@@ -12,13 +12,14 @@ import java.util.*;
  * Time: 20:42
  */
 public enum AETypeColor implements AIType {
-
     normale("black"),
     nero("black"),
     blu("blue"),
     verde("green"),
     rosso("red"),
     ;
+
+    public static final String HTML = "color";
 
     private String tag;
 

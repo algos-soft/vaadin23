@@ -2,12 +2,14 @@ package it.algos.vaad23.backend.packages.utility.log;
 
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.vaadin.crudui.crud.*;
@@ -69,11 +71,25 @@ public class LoggerView extends CrudView {
     @Override
     public void fixAlertLayout() {
         super.fixAlertLayout();
+
+        span(new WrapSpan().message("A) nella cartella di log (sempre)").color(AETypeColor.rosso).weight(AETypeWeight.bold));
+        span(new WrapSpan().message("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag"));
+        span(new WrapSpan().message("C) nella collection del database (facoltativo)").color(AETypeColor.verde).height(AETypeHeight.cento80));
+        span(new WrapSpan().message("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag"));
+
         this.add(getSpan("Diverse modalità di 'uscita' dei logs, regolate da flag:"));
         this.add(getSpan("A) nella cartella di log (sempre)"));
         this.add(getSpan("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag"));
         this.add(getSpan("C) nella collection del database (facoltativo)"));
         this.add(getSpan("D) in una mail (facoltativo e di norma solo per 'error')"));
+    }
+
+    public void span(final WrapSpan wrap) {
+        Span span = htmlService.getSpan(wrap);
+
+        if (span != null) {
+            this.add(span);
+        }
     }
 
     /**

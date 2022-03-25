@@ -4,6 +4,7 @@ import com.vaadin.flow.component.html.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.interfaces.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -31,6 +32,51 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class HtmlService extends AbstractService {
 
+
+    /**
+     * Costruisce uno span completo <br>
+     *
+     * @param wrap con le varie regolazioni
+     *
+     * @return elemento Span per html
+     */
+    public Span getSpan(final WrapSpan wrap) {
+        Span span = new Span();
+        //        String height = AEPreferenza.lineHeight.getStr();
+        String heightText = "10px";
+        String message = VUOTA;
+        AETypeColor color = null;
+        AETypeWeight weight = null;
+        AETypeHeight height = null;
+
+        if (wrap == null) {
+            return span;
+        }
+
+        message = wrap.getMessage();
+        if (textService.isEmpty(message)) {
+            return span;
+        }
+        span.setText(message);
+        span.getElement().setProperty("innerHTML", message);
+
+        color = wrap.getColor();
+        if (color != null) {
+            span.getElement().getStyle().set(AETypeColor.HTML, color.getTag());
+        }
+
+        weight = wrap.getWeight();
+        if (weight != null) {
+            span.getElement().getStyle().set(AETypeWeight.HTML, weight.getTag());
+        }
+
+        height = wrap.getHeight();
+        if (height != null) {
+            span.getElement().getStyle().set(AETypeHeight.HTML, height.getTag());
+        }
+
+        return span;
+    }
 
     /**
      * Costruisce uno span semplice <br>

@@ -1,19 +1,23 @@
 package it.algos.unit;
 
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dialog.*;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.server.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Tag;
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: lun, 21-mar-2022
- * Time: 16:19
+ * Date: ven, 25-mar-2022
+ * Time: 21:22
  * Unit test di una classe di servizio <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -23,13 +27,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("quickly")
 @DisplayName("WrapLog")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class WrapLogTest extends ATest {
+public class WrapSpanTest extends ATest {
 
+    private UI ui = new UI();
 
     /**
      * Classe principale di riferimento <br>
      */
-    private WrapLog istanza;
+    private WrapSpan istanza;
 
 
     /**
@@ -41,8 +46,13 @@ public class WrapLogTest extends ATest {
     protected void setUpAll() {
         super.setUpAll();
         assertNull(istanza);
-    }
 
+        UI.setCurrent(ui);
+
+        VaadinSession session = Mockito.mock(VaadinSession.class);
+        Mockito.when(session.hasLock()).thenReturn(true);
+        ui.getInternals().setSession(session);
+    }
 
     /**
      * Qui passa prima di ogni test delle sottoclassi <br>
@@ -60,7 +70,7 @@ public class WrapLogTest extends ATest {
     @Order(1)
     @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new WrapLog();
+        istanza = new WrapSpan();
         assertNotNull(istanza);
         System.out.println(("1- Costruttore base senza parametri"));
         System.out.println(VUOTA);
@@ -69,56 +79,19 @@ public class WrapLogTest extends ATest {
 
     @Test
     @Order(2)
-    @DisplayName("2- Check methods senza API")
-    void normalMethods() {
-        istanza = new WrapLog();
+    @DisplayName("2- Dialogo")
+    void dialogo() {
+        istanza = new WrapSpan();
         assertNotNull(istanza);
-        System.out.println(("2- Check methods senza API"));
+        System.out.println(("1- Costruttore base senza parametri"));
         System.out.println(VUOTA);
-        System.out.println(String.format("Add type e message a un'istanza di %s SENZA API", istanza.getClass().getSimpleName()));
+        System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
 
-        istanza.type(AETypeLog.checkData);
-        istanza.message("messaggio di testo");
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("3- Fluent API")
-    void fluentApi() {
-        istanza = new WrapLog();
-        assertNotNull(istanza);
-        System.out.println(("3- Fluent API"));
-
-        System.out.println(VUOTA);
-        System.out.println(String.format("Add type e message a un'istanza di %s usando le API", istanza.getClass().getSimpleName()));
-        new WrapLog().type(AETypeLog.checkData).message("messaggio di testo");
-
-        System.out.println(VUOTA);
-        System.out.println(String.format("Add message e type (ordine diverso) a un'istanza di %s usando le API", istanza.getClass().getSimpleName()));
-        new WrapLog().message("messaggio di testo").type(AETypeLog.checkData);
-    }
-
-    @Test
-    @Order(4)
-    @DisplayName("4- Fluent API get message back")
-    void fluentApiGet() {
-        istanza = new WrapLog();
-        assertNotNull(istanza);
-        System.out.println(("4- Fluent API get message back"));
-
-        System.out.println(VUOTA);
-        System.out.println("Restituisce un messaggio");
-        ottenuto = new WrapLog().type(AETypeLog.checkData).message("messaggio di testo").getMessage();
-        System.out.println(ottenuto);
-    }
-
-    @Test
-    @Order(4)
-    @DisplayName("4- Fluent API get message back")
-    void fluentView() {
-        Dialog dialog = new Dialog();
+        Dialog dialog = new Dialog(new Label("Pippoz"));
+        dialog.setWidth("200px");
+        dialog.setHeight("100px");
+        ui.add(dialog);
         dialog.open();
-        assertNotNull(istanza);
     }
 
     /**
@@ -126,6 +99,7 @@ public class WrapLogTest extends ATest {
      */
     @AfterEach
     void tearDown() {
+        UI.setCurrent(null);
     }
 
 
