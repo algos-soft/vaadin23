@@ -1,42 +1,47 @@
 package it.algos.vaad23.backend.enumeration;
 
-
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.interfaces.*;
 
 import java.util.*;
 
 /**
- * Project vaadflow14
+ * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: sab, 20-feb-2021
- * Time: 17:40
+ * Date: sab, 26-mar-2022
+ * Time: 10:44
  */
-public enum AETypeHeight implements AIType, AIPref {
+public enum AELineHeight implements AIType, AIPref {
+
 
     normal("1"),
-    number16("1.6"),
-    number20("2"),
+    px0("0px"),
+    px2("2px"),
+    px4("4px"),
     px6("6px"),
+    px8("8px"),
     px10("10px"),
-    px14("14px"),
-    px18("18px"),
-    px22("22px"),
-    cento80("80%"),
+    px12("12px"),
+    cm05("0.5cm"),
+    cm08("0.5cm"),
+    number03("0.3"),
+    number05("0.5"),
+    number16("1.6"),
     cento120("120%"),
+    cento80("80%"),
     ;
 
-    public static final String HTML = "font-size";
+    public static final String HTML = "line-height";
 
     private String tag;
 
 
-    AETypeHeight(String tag) {
+    AELineHeight(String tag) {
         this.tag = tag;
     }
 
-    public static List<AETypeHeight> getAllEnums() {
+    public static List<AELineHeight> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
 
@@ -55,7 +60,7 @@ public enum AETypeHeight implements AIType, AIPref {
         return listaTags;
     }
 
-    public static AETypeHeight getType(final String tag) {
+    public static AELineHeight getType(final String tag) {
         return getAllEnums()
                 .stream()
                 .filter(type -> type.getTag().equals(tag))

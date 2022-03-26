@@ -11,7 +11,7 @@ import java.util.*;
  * Date: lun, 15-feb-2021
  * Time: 20:46
  */
-public enum AETypeWeight implements AIType {
+public enum AEFontWeight implements AIType {
 
     normal("normal"),
     bold("bold"),
@@ -32,11 +32,11 @@ public enum AETypeWeight implements AIType {
     private String tag;
 
 
-    AETypeWeight(String tag) {
+    AEFontWeight(String tag) {
         this.tag = tag;
     }
 
-    public static List<AETypeWeight> getAllEnums() {
+    public static List<AEFontWeight> getAllEnums() {
         return Arrays.stream(values()).toList();
     }
 
@@ -55,7 +55,7 @@ public enum AETypeWeight implements AIType {
         return listaTags;
     }
 
-    public static AETypeWeight getType(final String tag) {
+    public static AEFontWeight getType(final String tag) {
         return getAllEnums()
                 .stream()
                 .filter(type -> type.getTag().equals(tag))

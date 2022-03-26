@@ -43,8 +43,9 @@ public class HtmlService extends AbstractService {
         //        String heightText = "10px";
         String message;
         AETypeColor color;
-        AETypeWeight weight;
-        AETypeHeight height;
+        AEFontWeight weight;
+        AEFontHeight fontHeight;
+        AELineHeight lineHeight;
 
         if (wrap == null) {
             return span;
@@ -64,12 +65,17 @@ public class HtmlService extends AbstractService {
 
         weight = wrap.getWeight();
         if (weight != null) {
-            span.getElement().getStyle().set(AETypeWeight.HTML, weight.getTag());
+            span.getElement().getStyle().set(AEFontWeight.HTML, weight.getTag());
         }
 
-        height = wrap.getHeight();
-        if (height != null) {
-            span.getElement().getStyle().set(AETypeHeight.HTML, height.getTag());
+        fontHeight = wrap.getFontHeight();
+        if (fontHeight != null) {
+            span.getElement().getStyle().set(AEFontHeight.HTML, fontHeight.getTag());
+        }
+
+        lineHeight = wrap.getLineHeight();
+        if (lineHeight != null) {
+            span.getElement().getStyle().set(AELineHeight.HTML, lineHeight.getTag());
         }
 
         return span;
@@ -215,7 +221,7 @@ public class HtmlService extends AbstractService {
      */
     public String bold(String stringaIn) {
         String stringaOut = VUOTA;
-        String tagIni = String.format("<span style=\"font-weight:%s\">", AETypeWeight.bold.getTag());
+        String tagIni = String.format("<span style=\"font-weight:%s\">", AEFontWeight.bold.getTag());
         String tagEnd = "</span>";
 
         if (textService.isValid(stringaIn)) {

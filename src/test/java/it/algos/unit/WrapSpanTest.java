@@ -93,12 +93,12 @@ public class WrapSpanTest extends ATest {
         span = htmlService.getSpan(istanza);
         printSpan(span);
 
-        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AETypeWeight.bold);
+        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AEFontWeight.bold);
         assertNotNull(istanza);
         span = htmlService.getSpan(istanza);
         printSpan(span);
 
-        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AETypeWeight.bold).height(AETypeHeight.number16);
+        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontHeight.number16);
         assertNotNull(istanza);
         span = htmlService.getSpan(istanza);
         printSpan(span);

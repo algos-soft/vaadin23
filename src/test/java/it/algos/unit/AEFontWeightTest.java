@@ -24,16 +24,16 @@ import java.util.*;
 @Tag("enums")
 @DisplayName("Enumeration AETypeWeight")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AETypeWeightTest extends ATest {
+public class AEFontWeightTest extends ATest {
 
 
-    private AETypeWeight type;
+    private AEFontWeight type;
 
-    private List<AETypeWeight> listaEnum;
+    private List<AEFontWeight> listaEnum;
 
     private List<String> listaTag;
 
-    private AETypeWeight[] matrice;
+    private AEFontWeight[] matrice;
 
 
     /**
@@ -67,14 +67,14 @@ public class AETypeWeightTest extends ATest {
     @Order(1)
     @DisplayName("1 - matrice dei valori")
     void matrice() {
-        matrice = AETypeWeight.values();
+        matrice = AEFontWeight.values();
         assertNotNull(matrice);
 
         System.out.println("Tutti i valori della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
-        for (AETypeWeight valore : matrice) {
+        for (AEFontWeight valore : matrice) {
             System.out.println(valore);
         }
     }
@@ -83,7 +83,7 @@ public class AETypeWeightTest extends ATest {
     @Order(2)
     @DisplayName("2 - lista dei valori")
     void lista() {
-        listaEnum = AETypeWeight.getAllEnums();
+        listaEnum = AEFontWeight.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println("Tutte le occorrenze della enumeration come ArrayList()");
@@ -98,7 +98,7 @@ public class AETypeWeightTest extends ATest {
     @Order(3)
     @DisplayName("3 - lista come stringa")
     void listaString() {
-        ottenutoArray = AETypeWeight.getAllStringValues();
+        ottenutoArray = AEFontWeight.getAllStringValues();
         assertNotNull(ottenutoArray);
 
         System.out.println("Tutte le occorrenze della enumeration sotto forma di stringa");
@@ -113,7 +113,7 @@ public class AETypeWeightTest extends ATest {
     @Order(4)
     @DisplayName("4 - lista come tag")
     void listaTag() {
-        listaTag = AETypeWeight.getAllTags();
+        listaTag = AEFontWeight.getAllTags();
         assertNotNull(listaTag);
 
         System.out.println("Tutti i valori 'tag' della enumeration");
@@ -128,7 +128,7 @@ public class AETypeWeightTest extends ATest {
     @Order(5)
     @DisplayName("5 - lista come string -> tag")
     void listaStringTag() {
-        listaEnum = AETypeWeight.getAllEnums();
+        listaEnum = AEFontWeight.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println(String.format("Tutti i valori 'string -> tag' della enumeration (%s valori)", listaEnum.size()));

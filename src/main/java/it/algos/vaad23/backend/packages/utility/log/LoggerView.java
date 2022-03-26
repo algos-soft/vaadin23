@@ -72,21 +72,42 @@ public class LoggerView extends CrudView {
     public void fixAlertLayout() {
         super.fixAlertLayout();
 
-        span(new WrapSpan().message("A) nella cartella di log (sempre)").color(AETypeColor.rosso).weight(AETypeWeight.bold));
-        span(new WrapSpan().message("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag"));
-        span(new WrapSpan().message("C) nella collection del database (facoltativo)").color(AETypeColor.verde).height(AETypeHeight.cento80));
-        span(new WrapSpan().message("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag"));
-
-        this.add(getSpan("Diverse modalità di 'uscita' dei logs, regolate da flag:"));
-        this.add(getSpan("A) nella cartella di log (sempre)"));
-        this.add(getSpan("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag"));
-        this.add(getSpan("C) nella collection del database (facoltativo)"));
-        this.add(getSpan("D) in una mail (facoltativo e di norma solo per 'error')"));
+        spanBlue("Diverse modalità di 'uscita' dei logs, regolate da flag:");
+        span("A) nella cartella di log (sempre)");
+        span("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag");
+        span("C) nella collection del database (facoltativo)");
+        span("D) in una mail (facoltativo e di norma solo per 'error')");
     }
 
-    public void span(final WrapSpan wrap) {
-        Span span = htmlService.getSpan(wrap);
+    public void spanBlue(final String message) {
+        span(new WrapSpan(message).color(AETypeColor.blu));
+    }
 
+    public void spanRosso(final String message) {
+        span(new WrapSpan(message).color(AETypeColor.rosso));
+    }
+
+    public void span(final String message) {
+        span(new WrapSpan(message));
+    }
+
+    public void span(WrapSpan wrap) {
+        Span span;
+
+        if (wrap.getColor() == null) {
+            wrap.color(AETypeColor.verde);
+        }
+        if (wrap.getWeight() == null) {
+            wrap.weight(AEFontWeight.bold);
+        }
+        if (wrap.getFontHeight() == null) {
+            wrap.fontHeight(AEFontHeight.px14);
+        }
+        if (wrap.getLineHeight() == null) {
+            wrap.lineHeight(AELineHeight.px2);
+        }
+
+        span = htmlService.getSpan(wrap);
         if (span != null) {
             this.add(span);
         }

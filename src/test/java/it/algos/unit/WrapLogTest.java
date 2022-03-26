@@ -1,6 +1,5 @@
 package it.algos.unit;
 
-import com.vaadin.flow.component.dialog.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -116,9 +115,6 @@ public class WrapLogTest extends ATest {
     @Order(4)
     @DisplayName("4- Fluent API get message back")
     void fluentView() {
-        Dialog dialog = new Dialog();
-        dialog.open();
-        assertNotNull(istanza);
     }
 
     /**

@@ -22,11 +22,13 @@ public class WrapSpan {
 
     private String message;
 
-    private AETypeWeight weight;
+    private AEFontWeight weight;
 
     private AETypeColor color;
 
-    private AETypeHeight height;
+    private AEFontHeight fontHeight;
+
+    private AELineHeight lineHeight;
 
     public WrapSpan() {
     }
@@ -40,7 +42,7 @@ public class WrapSpan {
         return this;
     }
 
-    public WrapSpan weight(AETypeWeight weight) {
+    public WrapSpan weight(AEFontWeight weight) {
         this.weight = weight;
         return this;
     }
@@ -50,8 +52,13 @@ public class WrapSpan {
         return this;
     }
 
-    public WrapSpan height(AETypeHeight height) {
-        this.height = height;
+    public WrapSpan lineHeight(AELineHeight lineHeight) {
+        this.lineHeight = lineHeight;
+        return this;
+    }
+
+    public WrapSpan fontHeight(AEFontHeight fontHeight) {
+        this.fontHeight = fontHeight;
         return this;
     }
 
@@ -59,7 +66,7 @@ public class WrapSpan {
         return message;
     }
 
-    public AETypeWeight getWeight() {
+    public AEFontWeight getWeight() {
         return weight;
     }
 
@@ -67,8 +74,12 @@ public class WrapSpan {
         return color;
     }
 
-    public AETypeHeight getHeight() {
-        return height;
+    public AEFontHeight getFontHeight() {
+        return fontHeight;
+    }
+
+    public AELineHeight getLineHeight() {
+        return lineHeight;
     }
 
 }
