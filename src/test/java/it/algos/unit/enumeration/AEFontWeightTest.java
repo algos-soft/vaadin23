@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.enumeration;
 
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -13,7 +13,7 @@ import java.util.*;
  * Created by Algos
  * User: gac
  * Date: ven, 25-mar-2022
- * Time: 16:50
+ * Time: 17:21
  * Unit test di una classe di servizio <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -22,17 +22,18 @@ import java.util.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
 @Tag("enums")
-@DisplayName("Enumeration AECopyTest")
+@DisplayName("Enumeration AETypeWeight")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AECopyTest extends ATest {
+public class AEFontWeightTest extends ATest {
 
 
-    private AECopy copy;
+    private AEFontWeight type;
 
+    private List<AEFontWeight> listaEnum;
 
-    private AECopy[] matrice;
+    private List<String> listaTag;
 
-    private List<AECopy> listaCopy;
+    private AEFontWeight[] matrice;
 
 
     /**
@@ -55,7 +56,10 @@ public class AECopyTest extends ATest {
     protected void setUpEach() {
         super.setUpEach();
 
-        copy = null;
+        type = null;
+        listaEnum = null;
+        listaTag = null;
+        matrice = null;
     }
 
 
@@ -63,14 +67,14 @@ public class AECopyTest extends ATest {
     @Order(1)
     @DisplayName("1 - matrice dei valori")
     void matrice() {
-        matrice = AECopy.values();
+        matrice = AEFontWeight.values();
         assertNotNull(matrice);
 
-        System.out.println("Tutte le occorrenze della enumeration come matrice []");
+        System.out.println("Tutti i valori della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
-        for (AECopy valore : matrice) {
+        for (AEFontWeight valore : matrice) {
             System.out.println(valore);
         }
     }
@@ -79,15 +83,57 @@ public class AECopyTest extends ATest {
     @Order(2)
     @DisplayName("2 - lista dei valori")
     void lista() {
-        listaCopy = AECopy.getAllEnums();
-        assertNotNull(listaCopy);
+        listaEnum = AEFontWeight.getAllEnums();
+        assertNotNull(listaEnum);
 
         System.out.println("Tutte le occorrenze della enumeration come ArrayList()");
         System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaCopy.size()));
+        System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaEnum.size()));
         System.out.println(VUOTA);
-        listaCopy.forEach(System.out::println);
+        listaEnum.forEach(System.out::println);
         System.out.println(VUOTA);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - lista come stringa")
+    void listaString() {
+        ottenutoArray = AEFontWeight.getAllStringValues();
+        assertNotNull(ottenutoArray);
+
+        System.out.println("Tutte le occorrenze della enumeration sotto forma di stringa");
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d elementi nella Enumeration", ottenutoArray.size()));
+        System.out.println(VUOTA);
+        ottenutoArray.forEach(System.out::println);
+        System.out.println(VUOTA);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - lista come tag")
+    void listaTag() {
+        listaTag = AEFontWeight.getAllTags();
+        assertNotNull(listaTag);
+
+        System.out.println("Tutti i valori 'tag' della enumeration");
+        System.out.println(VUOTA);
+        System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaTag.size()));
+        System.out.println(VUOTA);
+        listaTag.forEach(System.out::println);
+        System.out.println(VUOTA);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - lista come string -> tag")
+    void listaStringTag() {
+        listaEnum = AEFontWeight.getAllEnums();
+        assertNotNull(listaEnum);
+
+        System.out.println(String.format("Tutti i valori 'string -> tag' della enumeration (%s valori)", listaEnum.size()));
+        System.out.println(VUOTA);
+        listaEnum.forEach(enumTag -> printTag(enumTag));
     }
 
 

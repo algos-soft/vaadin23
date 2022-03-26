@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.utility.note;
+package it.algos.vaad23.backend.packages.utility.nota;
 
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;

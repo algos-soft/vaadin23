@@ -1,17 +1,17 @@
-package it.algos.unit;
+package it.algos.unit.service;
 
 import it.algos.test.*;
-import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+
+import java.time.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: sab, 12-mar-2022
- * Time: 18:06
+ * Date: mar, 08-mar-2022
+ * Time: 11:33
  * <p>
  * Unit test di una classe di servizio (di norma) <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
@@ -19,17 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("quickly")
-@DisplayName("Class service")
+@Tag("slowly")
+@DisplayName("Mail service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ClassServiceTest extends ATest {
+public class MailServiceTest extends ATest {
 
 
     /**
      * Classe principale di riferimento <br>
      * Gia 'costruita' nella superclasse <br>
      */
-    private ClassService service;
+    private MailService service;
 
     /**
      * Execute only once before running all tests <br>
@@ -42,7 +42,7 @@ public class ClassServiceTest extends ATest {
         super.setUpAll();
 
         //--reindirizzo l'istanza della superclasse
-        service = classService;
+        service = mailService;
     }
 
 
@@ -57,27 +57,45 @@ public class ClassServiceTest extends ATest {
     }
 
 
+    /**
+     * Spedizione standard senza mittente e senza destinatario
+     */
     @Test
     @Order(1)
-    @DisplayName("1 - Test 'a freddo' (senza service)")
-    void first() {
-        Class clazz = VaadCost.class;
-        String canonicalName = clazz.getCanonicalName();
-        assertTrue(textService.isValid(canonicalName));
-        System.out.println(canonicalName);
-        Class clazz2 = null;
+    @DisplayName("Primo test")
+    public void send() {
+        sorgente = "Prova";
+        sorgente2 = String.format("Spedizione standard senza mittente e senza destinatario effettuato alle %s", LocalDateTime.now());
 
-        try {
-            clazz2 = Class.forName(canonicalName);
-        } catch (Exception unErrore) {
-            System.out.println(String.format(unErrore.getMessage()));
-        }
-        assertNotNull(clazz2);
-        System.out.println(clazz2.getSimpleName());
-        System.out.println(clazz2.getName());
-        System.out.println(clazz2.getCanonicalName());
+        service.send(sorgente, sorgente2);
     }
 
+
+    /**
+     * Spedizione standard senza mittente e con destinatario
+     */
+    @Test
+    @Order(2)
+    @DisplayName("Secondo test")
+    public void send2() {
+        sorgente = "Prova2";
+        sorgente2 = String.format("Spedizione standard col destinatario effettuato alle %s", LocalDateTime.now());
+
+        service.send("pippoz@algos.it", sorgente, sorgente2);
+    }
+
+    /**
+     * Spedizione standard senza mittente e con destinatario
+     */
+    @Test
+    @Order(3)
+    @DisplayName("Terzo test")
+    public void send3() {
+        sorgente = "Prova3";
+        sorgente2 = String.format("Spedizione standard col destinatario effettuato alle %s", LocalDateTime.now());
+
+        service.send(sorgente, sorgente2);
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

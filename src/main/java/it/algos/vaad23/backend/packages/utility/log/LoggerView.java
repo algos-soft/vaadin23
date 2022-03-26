@@ -2,14 +2,12 @@ package it.algos.vaad23.backend.packages.utility.log;
 
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
-import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.vaadin.crudui.crud.*;
@@ -69,8 +67,8 @@ public class LoggerView extends CrudView {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixAlertLayout() {
-        super.fixAlertLayout();
+    public void fixAlert() {
+        super.fixAlert();
 
         spanBlue("Diverse modalità di 'uscita' dei logs, regolate da flag:");
         span("A) nella cartella di log (sempre)");
@@ -79,75 +77,26 @@ public class LoggerView extends CrudView {
         span("D) in una mail (facoltativo e di norma solo per 'error')");
     }
 
-    public void spanBlue(final String message) {
-        span(new WrapSpan(message).color(AETypeColor.blu));
-    }
-
-    public void spanRosso(final String message) {
-        span(new WrapSpan(message).color(AETypeColor.rosso));
-    }
-
-    public void span(final String message) {
-        span(new WrapSpan(message));
-    }
-
-    public void span(WrapSpan wrap) {
-        Span span;
-
-        if (wrap.getColor() == null) {
-            wrap.color(AETypeColor.verde);
-        }
-        if (wrap.getWeight() == null) {
-            wrap.weight(AEFontWeight.bold);
-        }
-        if (wrap.getFontHeight() == null) {
-            wrap.fontHeight(AEFontHeight.px14);
-        }
-        if (wrap.getLineHeight() == null) {
-            wrap.lineHeight(AELineHeight.px2);
-        }
-
-        span = htmlService.getSpan(wrap);
-        if (span != null) {
-            this.add(span);
-        }
-    }
-
     /**
-     * Qui va tutta la logica iniziale della view <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void initView() {
-        super.initView();
+    protected void fixCrud() {
+        super.fixCrud();
 
         gridCrud.setAddOperationVisible(false);
         gridCrud.setUpdateOperationVisible(false);
         gridCrud.setDeleteOperationVisible(false);
-
     }
 
-    /**
-     * Qui vanno i collegamenti con la logica del backend <br>
-     * logic configuration <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void backendLogic() {
-        super.backendLogic();
-
-        gridCrud.setAddOperationVisible(false);
-        gridCrud.setUpdateOperationVisible(true);
-        gridCrud.setDeleteOperationVisible(false);
-    }
 
     /**
      * Regola la visibilità delle colonne della grid <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixVisibilitaColumns() {
-        super.fixVisibilitaColumns();
+    public void fixColumns() {
+        super.fixColumns();
 
         grid.setColumns("livello", "type", "descrizione", "company", "user", "classe", "metodo", "linea");
 
@@ -178,8 +127,8 @@ public class LoggerView extends CrudView {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixVisibilitaFields() {
-        super.fixVisibilitaFields();
+    public void fixFields() {
+        super.fixFields();
 
         if (VaadVar.usaCompany) {
             crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "descrizione", "company", "user", "classe", "metodo", "linea", "evento");
@@ -205,7 +154,7 @@ public class LoggerView extends CrudView {
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     @Override
-    public void fixOrdinamento() {
+    public void fixOrder() {
         Grid.Column column = grid.getColumnByKey("evento");
         List<GridSortOrder> lista = new ArrayList<>();
         lista.add(new GridSortOrder(column, SortDirection.DESCENDING));

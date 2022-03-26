@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.utility.note;
+package it.algos.vaad23.backend.packages.utility.nota;
 
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;

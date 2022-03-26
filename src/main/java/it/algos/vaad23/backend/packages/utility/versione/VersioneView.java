@@ -21,7 +21,7 @@ import java.util.*;
  * Date: sab, 12-mar-2022
  * Time: 18:24
  */
-@PageTitle("Versione")
+@PageTitle("Versioni")
 @Route(value = TAG_VERSIONE, layout = MainLayout.class)
 public class VersioneView extends CrudView {
 
@@ -64,34 +64,21 @@ public class VersioneView extends CrudView {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixAlertLayout() {
-        super.fixAlertLayout();
-        AETypeColor color = AETypeColor.blu;
-        this.add(getSpan("Sviluppo, patch e update del programma. Sigla V iniziale per il programma base Vaadin23"));
+    public void fixAlert() {
+        super.fixAlert();
+        span("Sviluppo, patch e update del programma. Sigla V iniziale per il programma base Vaadin23");
     }
 
     /**
-     * Qui va tutta la logica iniziale della view <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void initView() {
-        super.initView();
+    protected void fixCrud() {
+        super.fixCrud();
 
         gridCrud.setAddOperationVisible(false);
         gridCrud.setUpdateOperationVisible(false);
         gridCrud.setDeleteOperationVisible(false);
-    }
-
-
-    /**
-     * Qui vanno i collegamenti con la logica del backend <br>
-     * logic configuration <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void backendLogic() {
-        super.backendLogic();
 
         if (VaadVar.usaCompany) {
             crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "company", "vaadin23");
@@ -103,13 +90,14 @@ public class VersioneView extends CrudView {
         }
     }
 
+
     /**
      * Regola la visibilità delle colonne della grid <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixVisibilitaColumns() {
-        super.fixVisibilitaColumns();
+    public void fixColumns() {
+        super.fixColumns();
 
         grid.setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
 
@@ -137,8 +125,8 @@ public class VersioneView extends CrudView {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixVisibilitaFields() {
-        super.fixVisibilitaFields();
+    public void fixFields() {
+        super.fixFields();
 
         crudForm.setFieldType("descrizione", TextArea.class);
     }
@@ -148,7 +136,7 @@ public class VersioneView extends CrudView {
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     @Override
-    public void fixOrdinamento() {
+    public void fixOrder() {
         Grid.Column columnVaad = grid.getColumnByKey("vaadin23");
         Grid.Column columnOrd = grid.getColumnByKey("ordine");
         List<GridSortOrder> lista = new ArrayList<>();

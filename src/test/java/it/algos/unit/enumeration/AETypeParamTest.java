@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.enumeration;
 
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -13,7 +13,7 @@ import java.util.*;
  * Created by Algos
  * User: gac
  * Date: ven, 25-mar-2022
- * Time: 17:40
+ * Time: 17:38
  * Unit test di una classe di servizio <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -22,18 +22,18 @@ import java.util.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
 @Tag("enums")
-@DisplayName("Enumeration AETypeVers")
+@DisplayName("Enumeration AETypeParam")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AETypeVersTest extends ATest {
+public class AETypeParamTest extends ATest {
 
 
-    private AETypeVers type;
+    private AETypeParam type;
 
-    private List<AETypeVers> listaEnum;
+    private List<AETypeParam> listaEnum;
 
     private List<String> listaTag;
 
-    private AETypeVers[] matrice;
+    private AETypeParam[] matrice;
 
 
     /**
@@ -67,14 +67,14 @@ public class AETypeVersTest extends ATest {
     @Order(1)
     @DisplayName("1 - matrice dei valori")
     void matrice() {
-        matrice = AETypeVers.values();
+        matrice = AETypeParam.values();
         assertNotNull(matrice);
 
         System.out.println("Tutti i valori della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
-        for (AETypeVers valore : matrice) {
+        for (AETypeParam valore : matrice) {
             System.out.println(valore);
         }
     }
@@ -83,7 +83,7 @@ public class AETypeVersTest extends ATest {
     @Order(2)
     @DisplayName("2 - lista dei valori")
     void lista() {
-        listaEnum = AETypeVers.getAllEnums();
+        listaEnum = AETypeParam.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println("Tutte le occorrenze della enumeration come ArrayList()");

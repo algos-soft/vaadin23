@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.service;
 
 import com.vaadin.flow.router.*;
 import it.algos.test.*;

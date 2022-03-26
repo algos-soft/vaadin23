@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.utility.note;
+package it.algos.vaad23.backend.packages.utility.nota;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;

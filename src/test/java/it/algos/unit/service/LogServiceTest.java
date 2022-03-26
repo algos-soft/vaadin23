@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.service;
 
 import it.algos.*;
 import it.algos.test.*;

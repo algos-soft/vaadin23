@@ -1,20 +1,23 @@
-package it.algos.unit;
+package it.algos.unit.enumeration;
 
+import static com.vaadin.flow.server.frontend.FrontendUtils.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.provider.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: ven, 25-mar-2022
- * Time: 17:21
- * Unit test di una classe di servizio <br>
+ * Date: lun, 07-mar-2022
+ * Time: 16:50
+ * Unit test di una enumeration <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
@@ -22,19 +25,30 @@ import java.util.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
 @Tag("enums")
-@DisplayName("Enumeration AETypeWeight")
+@DisplayName("Enumeration AELogLevel")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AEFontWeightTest extends ATest {
+public class AELogLevelTest extends ATest {
 
+    private AELogLevel type;
 
-    private AEFontWeight type;
-
-    private List<AEFontWeight> listaEnum;
+    private List<AELogLevel> listaEnum;
 
     private List<String> listaTag;
 
-    private AEFontWeight[] matrice;
+    private AELogLevel[] matrice;
 
+
+    //--tag
+    //--esiste nella enumeration
+    protected static Stream<Arguments> LIVELLI() {
+        return Stream.of(
+                Arguments.of(GREEN, true),
+                Arguments.of(BRIGHT_BLUE, true),
+                Arguments.of(YELLOW, true),
+                Arguments.of(CHUNKS, false),
+                Arguments.of(RED, true)
+        );
+    }
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -48,7 +62,7 @@ public class AEFontWeightTest extends ATest {
 
 
     /**
-     * Qui passa prima di ogni test delle sottoclassi <br>
+     * Qui passa a ogni test delle sottoclassi <br>
      * Invocare PRIMA il metodo setUp() della superclasse <br>
      * Si possono aggiungere regolazioni specifiche <br>
      */
@@ -62,19 +76,18 @@ public class AEFontWeightTest extends ATest {
         matrice = null;
     }
 
-
     @Test
     @Order(1)
     @DisplayName("1 - matrice dei valori")
     void matrice() {
-        matrice = AEFontWeight.values();
+        matrice = AELogLevel.values();
         assertNotNull(matrice);
 
         System.out.println("Tutti i valori della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
-        for (AEFontWeight valore : matrice) {
+        for (AELogLevel valore : matrice) {
             System.out.println(valore);
         }
     }
@@ -83,7 +96,7 @@ public class AEFontWeightTest extends ATest {
     @Order(2)
     @DisplayName("2 - lista dei valori")
     void lista() {
-        listaEnum = AEFontWeight.getAllEnums();
+        listaEnum = AELogLevel.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println("Tutte le occorrenze della enumeration come ArrayList()");
@@ -98,7 +111,7 @@ public class AEFontWeightTest extends ATest {
     @Order(3)
     @DisplayName("3 - lista come stringa")
     void listaString() {
-        ottenutoArray = AEFontWeight.getAllStringValues();
+        ottenutoArray = AELogLevel.getAllStringValues();
         assertNotNull(ottenutoArray);
 
         System.out.println("Tutte le occorrenze della enumeration sotto forma di stringa");
@@ -113,7 +126,7 @@ public class AEFontWeightTest extends ATest {
     @Order(4)
     @DisplayName("4 - lista come tag")
     void listaTag() {
-        listaTag = AEFontWeight.getAllTags();
+        listaTag = AELogLevel.getAllTags();
         assertNotNull(listaTag);
 
         System.out.println("Tutti i valori 'tag' della enumeration");
@@ -128,7 +141,7 @@ public class AEFontWeightTest extends ATest {
     @Order(5)
     @DisplayName("5 - lista come string -> tag")
     void listaStringTag() {
-        listaEnum = AEFontWeight.getAllEnums();
+        listaEnum = AELogLevel.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println(String.format("Tutti i valori 'string -> tag' della enumeration (%s valori)", listaEnum.size()));
@@ -136,6 +149,63 @@ public class AEFontWeightTest extends ATest {
         listaEnum.forEach(enumTag -> printTag(enumTag));
     }
 
+    @Test
+    @Order(6)
+    @DisplayName("6 - getSingleType")
+    void getType() {
+        System.out.println("Tutte le occorrenze della enumeration con toString() -> tag");
+
+        //--tag
+        //--esiste nella enumeration
+        System.out.println(VUOTA);
+        LIVELLI().forEach(this::getTypeBase);
+    }
+
+    //--tag
+    //--esiste nella enumeration
+    void getTypeBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoBooleano = (boolean) mat[1];
+        type = AELogLevel.getType(sorgente);
+        assertTrue(previstoBooleano ? type != null : type == null);
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("%s%s%s", type, FORWARD, type != null ? type.getTag() : "non esiste"));
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - getPref")
+        //--tag
+        //--esiste nella enumeration
+    void getPref() {
+        System.out.println("Stringa di valori (text) da usare per memorizzare la preferenza");
+        System.out.println("La stringa è composta da tutti i valori separati da virgola");
+        System.out.println("Poi, separato da punto e virgola, viene il valore corrente");
+        System.out.println(VUOTA);
+
+        LIVELLI().forEach(this::getPrefBase);
+    }
+
+    //--tag
+    //--esiste nella enumeration
+    void getPrefBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoBooleano = (boolean) mat[1];
+        type = AELogLevel.getType(sorgente);
+        assertTrue(previstoBooleano ? type != null : type == null);
+
+        System.out.println(VUOTA);
+        if (type != null) {
+            System.out.println(String.format("%s%s%s", type, FORWARD, type.getPref()));
+        }
+        else {
+            System.out.println(String.format("Enumeration '%s' non prevista", sorgente));
+        }
+
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>

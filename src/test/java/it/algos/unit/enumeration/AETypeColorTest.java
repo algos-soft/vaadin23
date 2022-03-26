@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.enumeration;
 
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;

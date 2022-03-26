@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.utility.note;
+package it.algos.vaad23.backend.packages.utility.nota;
 
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.textfield.*;
@@ -19,7 +19,7 @@ import java.util.*;
  * Time: 06:55
  * <p>
  */
-@PageTitle("Nota")
+@PageTitle("Note")
 @Route(value = "nota", layout = MainLayout.class)
 public class NotaView extends CrudView {
 
@@ -65,18 +65,19 @@ public class NotaView extends CrudView {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixAlertLayout() {
-        super.fixAlertLayout();
+    public void fixAlert() {
+        super.fixAlert();
+        span("Appunti per sviluppi e @todo");
     }
 
     /**
+     * Logic configuration <br>
      * Qui vanno i collegamenti con la logica del backend <br>
-     * logic configuration <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    protected void backendLogic() {
-        super.backendLogic();
+    protected void fixCrud() {
+        super.fixCrud();
 
         gridCrud.setSavedMessage("Nota salvata");
         gridCrud.setDeletedMessage("Nota cancellata");
@@ -93,8 +94,8 @@ public class NotaView extends CrudView {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixVisibilitaColumns() {
-        super.fixVisibilitaColumns();
+    public void fixColumns() {
+        super.fixColumns();
 
         grid.setColumns("livello", "type", "inizio", "descrizione", "fatto", "fine");
 
@@ -117,8 +118,8 @@ public class NotaView extends CrudView {
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
-    public void fixVisibilitaFields() {
-        super.fixVisibilitaFields();
+    public void fixFields() {
+        super.fixFields();
 
         crudForm.setFieldType("descrizione", TextArea.class);
     }

@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.enumeration;
 
 import static com.vaadin.flow.server.frontend.FrontendUtils.*;
 import it.algos.test.*;

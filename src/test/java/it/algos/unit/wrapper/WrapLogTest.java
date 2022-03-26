@@ -1,22 +1,18 @@
-package it.algos.unit;
+package it.algos.unit.wrapper;
 
-import com.vaadin.flow.component.*;
-import com.vaadin.flow.server.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.Tag;
 import static org.junit.jupiter.api.Assertions.*;
-import org.mockito.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: ven, 25-mar-2022
- * Time: 21:22
+ * Date: lun, 21-mar-2022
+ * Time: 16:19
  * Unit test di una classe di servizio <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -24,16 +20,16 @@ import org.mockito.*;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
-@DisplayName("WrapSpan")
+@DisplayName("WrapLog")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class WrapSpanTest extends ATest {
+public class WrapLogTest extends ATest {
 
-    private UI ui = new UI();
 
     /**
      * Classe principale di riferimento <br>
      */
-    private WrapSpan istanza;
+    private WrapLog istanza;
+
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -44,13 +40,8 @@ public class WrapSpanTest extends ATest {
     protected void setUpAll() {
         super.setUpAll();
         assertNull(istanza);
-
-        UI.setCurrent(ui);
-
-        VaadinSession session = Mockito.mock(VaadinSession.class);
-        Mockito.when(session.hasLock()).thenReturn(true);
-        ui.getInternals().setSession(session);
     }
+
 
     /**
      * Qui passa prima di ogni test delle sottoclassi <br>
@@ -68,7 +59,7 @@ public class WrapSpanTest extends ATest {
     @Order(1)
     @DisplayName("1- Costruttore base senza parametri")
     void costruttoreBase() {
-        istanza = new WrapSpan();
+        istanza = new WrapLog();
         assertNotNull(istanza);
         System.out.println(("1- Costruttore base senza parametri"));
         System.out.println(VUOTA);
@@ -77,34 +68,53 @@ public class WrapSpanTest extends ATest {
 
     @Test
     @Order(2)
-    @DisplayName("2- Fluent API")
-    void dialogo() {
-        System.out.println(("2- Fluent API"));
+    @DisplayName("2- Check methods senza API")
+    void normalMethods() {
+        istanza = new WrapLog();
+        assertNotNull(istanza);
+        System.out.println(("2- Check methods senza API"));
         System.out.println(VUOTA);
-        sorgente = "Messaggio di testo";
+        System.out.println(String.format("Add type e message a un'istanza di %s SENZA API", istanza.getClass().getSimpleName()));
 
-        istanza = new WrapSpan().message(sorgente);
+        istanza.type(AETypeLog.checkData);
+        istanza.message("messaggio di testo");
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("3- Fluent API")
+    void fluentApi() {
+        istanza = new WrapLog();
         assertNotNull(istanza);
-        span = htmlService.getSpan(istanza);
-        printSpan(span);
+        System.out.println(("3- Fluent API"));
 
-        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Add type e message a un'istanza di %s usando le API", istanza.getClass().getSimpleName()));
+        new WrapLog().type(AETypeLog.checkData).message("messaggio di testo");
+
+        System.out.println(VUOTA);
+        System.out.println(String.format("Add message e type (ordine diverso) a un'istanza di %s usando le API", istanza.getClass().getSimpleName()));
+        new WrapLog().message("messaggio di testo").type(AETypeLog.checkData);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4- Fluent API get message back")
+    void fluentApiGet() {
+        istanza = new WrapLog();
         assertNotNull(istanza);
-        span = htmlService.getSpan(istanza);
-        printSpan(span);
+        System.out.println(("4- Fluent API get message back"));
 
-        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AEFontWeight.bold);
-        assertNotNull(istanza);
-        span = htmlService.getSpan(istanza);
-        printSpan(span);
+        System.out.println(VUOTA);
+        System.out.println("Restituisce un messaggio");
+        ottenuto = new WrapLog().type(AETypeLog.checkData).message("messaggio di testo").getMessage();
+        System.out.println(ottenuto);
+    }
 
-        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontHeight.number16);
-        assertNotNull(istanza);
-        span = htmlService.getSpan(istanza);
-        printSpan(span);
-
-        span = htmlService.getSpan(istanza);
-        printSpan(span);
+    @Test
+    @Order(4)
+    @DisplayName("4- Fluent API get message back")
+    void fluentView() {
     }
 
     /**
@@ -112,7 +122,6 @@ public class WrapSpanTest extends ATest {
      */
     @AfterEach
     void tearDown() {
-        UI.setCurrent(null);
     }
 
 

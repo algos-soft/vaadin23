@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.service;
 
 import it.algos.test.*;
 import it.algos.vaad23.backend.service.*;

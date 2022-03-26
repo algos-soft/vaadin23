@@ -243,4 +243,8 @@ public class VaadCost {
 
     public static final int PAD_IP = 37;
 
+    public static final String VERO = "true";
+
+    public static final String FALSO = "false";
+
 }

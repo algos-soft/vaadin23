@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.service;
 
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.html.*;

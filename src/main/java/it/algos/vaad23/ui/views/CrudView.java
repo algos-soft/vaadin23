@@ -9,8 +9,10 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
@@ -74,49 +76,27 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     Class entityClazz;
 
+
     public CrudView(EntityBackend crudBackend, Class entityClazz) {
         this.crudBackend = crudBackend;
         this.entityClazz = entityClazz;
-
-        //        // crud instance
-        //        if (splitLayout) {
-        //            gridCrud = new GridCrud<>(entityClazz, new HorizontalSplitCrudLayout());
-        //        }
-        //        else {
-        //            gridCrud = new GridCrud<>(entityClazz);
-        //        }
-        //
-        //        // grid configuration
-        //        gridCrud.getCrudFormFactory().setUseBeanValidation(true);
-        //
-        //        // logic configuration
-        //        gridCrud.setFindAllOperation(() -> crudBackend.findAll());
-        //        gridCrud.setAddOperation(crudBackend::add);
-        //        gridCrud.setUpdateOperation(crudBackend::update);
-        //        gridCrud.setDeleteOperation(crudBackend::delete);
-        //
-        //        grid = gridCrud.getGrid();
-        //        crudForm = gridCrud.getCrudFormFactory();
-        //
-        //        // layout configuration
-        //        setSizeFull();
-        //        this.add(gridCrud);
     }
+
 
     /**
      * Qui va tutta la logica della view <br>
+     * Invocato da SpringBoot dopo il metodo init() del costruttore <br>
+     * Sono disponibili tutte le istanze @Autowired <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     @Override
     public void afterNavigation(AfterNavigationEvent beforeEnterEvent) {
         this.fixPreferenze();
-        this.fixAlertLayout();
+        this.fixAlert();
         this.fixCrud();
-        this.initView();
-        this.backendLogic();
-        this.fixVisibilitaColumns();
-        this.fixVisibilitaFields();
-        this.fixOrdinamento();
+        this.fixColumns();
+        this.fixFields();
+        this.fixOrder();
         this.fixAdditionalComponents();
         this.addListeners();
     }
@@ -133,9 +113,12 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.usaBottoneFilter = false;
     }
 
-    public void fixCrud() {
-        this.crudBackend = crudBackend;
-
+    /**
+     * Logic configuration <br>
+     * Qui vanno i collegamenti con la logica del backend <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixCrud() {
         // crud instance
         if (splitLayout) {
             gridCrud = new GridCrud<>(entityClazz, new HorizontalSplitCrudLayout());
@@ -153,6 +136,13 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         gridCrud.setUpdateOperation(crudBackend::update);
         gridCrud.setDeleteOperation(crudBackend::delete);
 
+        //        gridCrud.setOperations(
+        //                () -> sincroFiltri(),
+        //                user -> crudBackend.add(user),
+        //                user -> crudBackend.update(user),
+        //                user -> crudBackend.delete(user)
+        //        );
+
         grid = gridCrud.getGrid();
         crudForm = gridCrud.getCrudFormFactory();
 
@@ -161,68 +151,48 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.add(gridCrud);
     }
 
-    /**
-     * Qui va tutta la logica iniziale della view <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    public void initView() {
-    }
 
     /**
      * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    public void fixAlertLayout() {
+    public void fixAlert() {
     }
 
-    /**
-     * Qui vanno i collegamenti con la logica del backend <br>
-     * logic configuration <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    protected void backendLogic() {
-        gridCrud.setOperations(
-                () -> sincroFiltri(),
-                user -> crudBackend.add(user),
-                user -> crudBackend.update(user),
-                user -> crudBackend.delete(user)
-        );
-    }
+    //    /**
+    //     * Qui vanno i collegamenti con la logica del backend <br>
+    //     * logic configuration <br>
+    //     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    //     */
+    //    protected void backendLogic() {
+    //    }
 
     /**
      * Regola la visibilità delle colonne della grid <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    public void fixVisibilitaColumns() {
+    public void fixColumns() {
     }
 
     /**
      * Regola la visibilità dei fields del Form<br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    public void fixVisibilitaFields() {
+    public void fixFields() {
     }
 
     /**
      * Regola l'ordinamento della <grid <br>
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
-    public void fixOrdinamento() {
+    public void fixOrder() {
     }
 
-    /**
-     * Aggiunge tutti i listeners ai bottoni di 'topPlaceholder' che sono stati creati SENZA listeners <br>
-     * <p>
-     * Chiamato da afterNavigation() <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    protected void addListeners() {
-    }
 
     /**
      * Componenti aggiuntivi oltre quelli base <br>
      * Tipicamente bottoni di selezione/filtro <br>
-     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixAdditionalComponents() {
         if (usaBottoneDeleteAll) {
@@ -241,6 +211,15 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             gridCrud.getCrudLayout().addFilterComponent(filter);
             filter.addValueChangeListener(event -> gridCrud.refreshGrid());
         }
+    }
+
+    /**
+     * Aggiunge tutti i listeners ai bottoni di 'topPlaceholder' che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da afterNavigation() <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
     }
 
     /**
@@ -304,6 +283,40 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     public Span getSpan(final String avviso) {
         return htmlService.getSpanVerde(avviso);
+    }
+
+    public void spanBlue(final String message) {
+        span(new WrapSpan(message).color(AETypeColor.blu));
+    }
+
+    public void spanRosso(final String message) {
+        span(new WrapSpan(message).color(AETypeColor.rosso));
+    }
+
+    public void span(final String message) {
+        span(new WrapSpan(message));
+    }
+
+    public void span(WrapSpan wrap) {
+        Span span;
+
+        if (wrap.getColor() == null) {
+            wrap.color(AETypeColor.verde);
+        }
+        if (wrap.getWeight() == null) {
+            wrap.weight(AEFontWeight.bold);
+        }
+        if (wrap.getFontHeight() == null) {
+            wrap.fontHeight(AEFontHeight.px14);
+        }
+        if (wrap.getLineHeight() == null) {
+            wrap.lineHeight(AELineHeight.px2);
+        }
+
+        span = htmlService.getSpan(wrap);
+        if (span != null) {
+            this.add(span);
+        }
     }
 
 }

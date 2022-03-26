@@ -1,4 +1,4 @@
-package it.algos.unit;
+package it.algos.unit.enumeration;
 
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -12,8 +12,8 @@ import java.util.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: sab, 26-mar-2022
- * Time: 10:50
+ * Date: ven, 25-mar-2022
+ * Time: 17:40
  * Unit test di una classe di servizio <br>
  * Estende la classe astratta ATest che contiene le regolazioni essenziali <br>
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
@@ -22,18 +22,18 @@ import java.util.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
 @Tag("enums")
-@DisplayName("Enumeration AELineHeight")
+@DisplayName("Enumeration AETypeVers")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AELineHeightTest extends ATest {
+public class AETypeVersTest extends ATest {
 
 
-    private AELineHeight type;
+    private AETypeVers type;
 
-    private List<AELineHeight> listaEnum;
+    private List<AETypeVers> listaEnum;
 
     private List<String> listaTag;
 
-    private AELineHeight[] matrice;
+    private AETypeVers[] matrice;
 
 
     /**
@@ -67,14 +67,14 @@ public class AELineHeightTest extends ATest {
     @Order(1)
     @DisplayName("1 - matrice dei valori")
     void matrice() {
-        matrice = AELineHeight.values();
+        matrice = AETypeVers.values();
         assertNotNull(matrice);
 
         System.out.println("Tutti i valori della enumeration come matrice []");
         System.out.println(VUOTA);
         System.out.println(String.format("Ci sono %d elementi nella Enumeration", matrice.length));
         System.out.println(VUOTA);
-        for (AELineHeight valore : matrice) {
+        for (AETypeVers valore : matrice) {
             System.out.println(valore);
         }
     }
@@ -83,7 +83,7 @@ public class AELineHeightTest extends ATest {
     @Order(2)
     @DisplayName("2 - lista dei valori")
     void lista() {
-        listaEnum = AELineHeight.getAllEnums();
+        listaEnum = AETypeVers.getAllEnums();
         assertNotNull(listaEnum);
 
         System.out.println("Tutte le occorrenze della enumeration come ArrayList()");
@@ -94,48 +94,6 @@ public class AELineHeightTest extends ATest {
         System.out.println(VUOTA);
     }
 
-    @Test
-    @Order(3)
-    @DisplayName("3 - lista come stringa")
-    void listaString() {
-        ottenutoArray = AELineHeight.getAllStringValues();
-        assertNotNull(ottenutoArray);
-
-        System.out.println("Tutte le occorrenze della enumeration sotto forma di stringa");
-        System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d elementi nella Enumeration", ottenutoArray.size()));
-        System.out.println(VUOTA);
-        ottenutoArray.forEach(System.out::println);
-        System.out.println(VUOTA);
-    }
-
-    @Test
-    @Order(4)
-    @DisplayName("4 - lista come tag")
-    void listaTag() {
-        listaTag = AELineHeight.getAllTags();
-        assertNotNull(listaTag);
-
-        System.out.println("Tutti i valori 'tag' della enumeration");
-        System.out.println(VUOTA);
-        System.out.println(String.format("Ci sono %d elementi nella Enumeration", listaTag.size()));
-        System.out.println(VUOTA);
-        listaTag.forEach(System.out::println);
-        System.out.println(VUOTA);
-    }
-
-
-    @Test
-    @Order(5)
-    @DisplayName("5 - lista come string -> tag")
-    void listaStringTag() {
-        listaEnum = AELineHeight.getAllEnums();
-        assertNotNull(listaEnum);
-
-        System.out.println(String.format("Tutti i valori 'string -> tag' della enumeration (%s valori)", listaEnum.size()));
-        System.out.println(VUOTA);
-        listaEnum.forEach(enumTag -> printTag(enumTag));
-    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>
