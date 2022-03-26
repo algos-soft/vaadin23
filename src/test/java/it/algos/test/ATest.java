@@ -1,5 +1,6 @@
 package it.algos.test;
 
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.server.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
@@ -89,6 +90,8 @@ public abstract class ATest {
     protected double previstoDouble = 0;
 
     protected double ottenutoDouble = 0;
+
+    protected Span span;
 
     protected Class clazz;
 
@@ -321,6 +324,7 @@ public abstract class ATest {
         mappa = null;
         bytes = null;
         streamResource = null;
+        span = null;
     }
 
 
@@ -431,6 +435,11 @@ public abstract class ATest {
 
     protected void printTag(AIType enumTag) {
         System.out.println(String.format("%s%s%s", enumTag, FORWARD, enumTag.getTag()));
+    }
+
+    protected void printSpan(Span span) {
+        System.out.println(span != null ? span.getElement().toString() : VUOTA);
+        System.out.println(VUOTA);
     }
 
 }

@@ -3,13 +3,10 @@ package it.algos.vaad23.backend.service;
 import com.vaadin.flow.component.html.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
-
-import java.util.*;
 
 /**
  * Project vaadflow14
@@ -43,11 +40,11 @@ public class HtmlService extends AbstractService {
     public Span getSpan(final WrapSpan wrap) {
         Span span = new Span();
         //        String height = AEPreferenza.lineHeight.getStr();
-        String heightText = "10px";
-        String message = VUOTA;
-        AETypeColor color = null;
-        AETypeWeight weight = null;
-        AETypeHeight height = null;
+        //        String heightText = "10px";
+        String message;
+        AETypeColor color;
+        AETypeWeight weight;
+        AETypeHeight height;
 
         if (wrap == null) {
             return span;
@@ -86,73 +83,9 @@ public class HtmlService extends AbstractService {
      * @return elemento Span per html
      */
     public Span getSpan(final String message) {
-        return getSpan(message, (AIType[]) null);
+        return getSpan(new WrapSpan(message));
     }
 
-    /**
-     * Costruisce uno span con eventuali property html specifiche <br>
-     *
-     * @param message  da visualizzare
-     * @param typeSpan property html da regolare: Color, Height, Size, Weight...
-     *
-     * @return elemento Span per html
-     */
-    public Span getSpan(final String message, final AIType... typeSpan) {
-        Span span = getSpanHtml(message);
-        //        String height = AEPreferenza.lineHeight.getStr();
-        String height = "0.5";
-
-        if (textService.isValid(message)) {
-            span.setText(message);
-
-            if (typeSpan != null && typeSpan.length > 0) {
-                for (AIType type : typeSpan) {
-                    if (type != null) {
-                        //                        span.getElement().getStyle().set(type.getValue(), type.getValue());//@todo errore
-                    }
-                }
-            }
-            span.getElement().getStyle().set("line-height", height);
-        }
-
-        return span;
-    }
-
-    /**
-     * Costruisce uno span
-     *
-     * @param message da visualizzare
-     *
-     * @return elemento per html
-     */
-    private Span getSpanBase(final AETypeColor typeColor, final String message, final AIType... typeSpan) {
-        List<AIType> typeList = new ArrayList(Arrays.asList(typeColor));
-
-        if (typeSpan != null && typeSpan.length > 0) {
-            for (AIType type : typeSpan) {
-                typeList.add(type);
-            }
-        }
-
-        if (typeList != null) {
-            return getSpan(message, typeList.toArray(new AIType[typeList.size()]));
-        }
-        else {
-            return getSpan(message, null);
-        }
-    }
-
-    /**
-     * Costruisce uno span colorato verde <br>
-     *
-     * @param message  da visualizzare
-     * @param typeSpan property html da regolare: Color, Height, Size, Weight...
-     *
-     * @return elemento Span per html
-     */
-    public Span getSpanVerde(final String message, final AIType... typeSpan) {
-        return getSpanBase(AETypeColor.verde, message, typeSpan);
-    }
 
     /**
      * Costruisce uno span colorato verde <br>
@@ -162,19 +95,9 @@ public class HtmlService extends AbstractService {
      * @return elemento Span per html
      */
     public Span getSpanVerde(final String message) {
-        return getSpanVerde(message, (AIType[]) null);
+        return getSpan(new WrapSpan(message).color(AETypeColor.verde));
     }
 
-    /**
-     * Costruisce uno span colorato
-     *
-     * @param message da visualizzare
-     *
-     * @return elemento per html
-     */
-    public Span getSpanBlu(final String message, final AIType... typeSpan) {
-        return getSpanBase(AETypeColor.blu, message, typeSpan);
-    }
 
     /**
      * Costruisce uno span colorato
@@ -184,19 +107,9 @@ public class HtmlService extends AbstractService {
      * @return elemento per html
      */
     public Span getSpanBlu(final String message) {
-        return getSpanBlu(message, null);
+        return getSpan(new WrapSpan(message).color(AETypeColor.blu));
     }
 
-    /**
-     * Costruisce uno span colorato
-     *
-     * @param message da visualizzare
-     *
-     * @return elemento per html
-     */
-    public Span getSpanRosso(final String message, final AIType... typeSpan) {
-        return getSpanBase(AETypeColor.rosso, message, typeSpan);
-    }
 
     /**
      * Costruisce uno span colorato
@@ -206,29 +119,9 @@ public class HtmlService extends AbstractService {
      * @return elemento per html
      */
     public Span getSpanRosso(final String message) {
-        return getSpanRosso(message, null);
+        return getSpan(new WrapSpan(message).color(AETypeColor.rosso));
     }
 
-    /**
-     * Costruisce uno span html
-     *
-     * @param message da visualizzare
-     *
-     * @return elemento per html
-     */
-    public Span getSpanHtml(final String message) {
-        Span span = new Span();
-        //        String height = AEPreferenza.lineHeight.getStr();
-        String height = "10px";
-
-        if (textService.isValid(message)) {
-            span.setText(message);
-            span.getElement().setProperty("innerHTML", message);
-            span.getElement().getStyle().set("line-height", height);
-        }
-
-        return span;
-    }
 
     /**
      * Contorna il testo con uno span
@@ -269,7 +162,7 @@ public class HtmlService extends AbstractService {
      *
      * @return testo contornato da tag iniziale e finale
      */
-    public String blu(final String testoIn) {
+    public String blue(final String testoIn) {
         return colore("blue", testoIn);
     }
 
@@ -286,7 +179,7 @@ public class HtmlService extends AbstractService {
 
     /**
      * Elimina un tag HTML in testa e coda della stringa. <br>
-     * Funziona solo se i tags sono esattamente in TESTA ed in CODA alla stringa <br>
+     * Funziona solo se i tags sono esattamente in TESTA e in CODA alla stringa <br>
      * Se arriva una stringa vuota, restituisce una stringa vuota <br>
      * Elimina spazi vuoti iniziali e finali <br>
      *

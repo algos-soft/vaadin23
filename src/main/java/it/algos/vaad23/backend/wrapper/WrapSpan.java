@@ -31,6 +31,10 @@ public class WrapSpan {
     public WrapSpan() {
     }
 
+    public WrapSpan(String message) {
+        this.message = message;
+    }
+
     public WrapSpan message(String message) {
         this.message = message;
         return this;
@@ -56,15 +60,15 @@ public class WrapSpan {
     }
 
     public AETypeWeight getWeight() {
-        return weight != null ? weight : AETypeWeight.normal;
+        return weight;
     }
 
     public AETypeColor getColor() {
-        return color != null ? color : AETypeColor.blu;
+        return color;
     }
 
     public AETypeHeight getHeight() {
-        return height != null ? height : AETypeHeight.normal;
+        return height;
     }
 
 }

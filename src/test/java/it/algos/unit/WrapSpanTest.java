@@ -1,11 +1,10 @@
 package it.algos.unit;
 
 import com.vaadin.flow.component.*;
-import com.vaadin.flow.component.dialog.*;
-import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.server.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.Tag;
@@ -25,7 +24,7 @@ import org.mockito.*;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
-@DisplayName("WrapLog")
+@DisplayName("WrapSpan")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class WrapSpanTest extends ATest {
 
@@ -35,7 +34,6 @@ public class WrapSpanTest extends ATest {
      * Classe principale di riferimento <br>
      */
     private WrapSpan istanza;
-
 
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
@@ -79,19 +77,34 @@ public class WrapSpanTest extends ATest {
 
     @Test
     @Order(2)
-    @DisplayName("2- Dialogo")
+    @DisplayName("2- Fluent API")
     void dialogo() {
-        istanza = new WrapSpan();
-        assertNotNull(istanza);
-        System.out.println(("1- Costruttore base senza parametri"));
+        System.out.println(("2- Fluent API"));
         System.out.println(VUOTA);
-        System.out.println(String.format("Costruttore base senza parametri per un'istanza di %s", istanza.getClass().getSimpleName()));
+        sorgente = "Messaggio di testo";
 
-        Dialog dialog = new Dialog(new Label("Pippoz"));
-        dialog.setWidth("200px");
-        dialog.setHeight("100px");
-        ui.add(dialog);
-        dialog.open();
+        istanza = new WrapSpan().message(sorgente);
+        assertNotNull(istanza);
+        span = htmlService.getSpan(istanza);
+        printSpan(span);
+
+        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde);
+        assertNotNull(istanza);
+        span = htmlService.getSpan(istanza);
+        printSpan(span);
+
+        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AETypeWeight.bold);
+        assertNotNull(istanza);
+        span = htmlService.getSpan(istanza);
+        printSpan(span);
+
+        istanza = new WrapSpan().message(sorgente).color(AETypeColor.verde).weight(AETypeWeight.bold).height(AETypeHeight.number16);
+        assertNotNull(istanza);
+        span = htmlService.getSpan(istanza);
+        printSpan(span);
+
+        span = htmlService.getSpan(istanza);
+        printSpan(span);
     }
 
     /**

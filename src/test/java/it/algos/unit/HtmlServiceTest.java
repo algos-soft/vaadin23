@@ -121,6 +121,120 @@ public class HtmlServiceTest extends ATest {
         assertEquals(ottenutoBooleano, previstoBooleano);
     }
 
+    @Test
+    @Order(3)
+    @DisplayName("3 - setNoHtmlTag")
+    void setNoHtmlTag() {
+        sorgente = "<code>IT-65</code>";
+
+        sorgente2 = "ref";
+        previsto = "<code>IT-65</code>";
+        ottenuto = service.setNoHtmlTag(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(ottenuto);
+
+        sorgente2 = "code";
+        previsto = "IT-65";
+        ottenuto = service.setNoHtmlTag(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(ottenuto);
+
+        sorgente = "<ref>Altro testo con ref</ref>";
+        sorgente2 = "ref";
+        previsto = "Altro testo con ref";
+        ottenuto = service.setNoHtmlTag(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+        System.out.println(ottenuto);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - verde")
+    void verde() {
+        sorgente = "Testo colorato verde";
+        previsto = "<span style=\"color:green\">Testo colorato verde</span>";
+        ottenuto = service.verde(sorgente);
+        assertEquals(previsto, ottenuto);
+        System.out.println(ottenuto);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - rosso")
+    void rosso() {
+        sorgente = "Testo colorato rosso";
+        previsto = "<span style=\"color:red\">Testo colorato rosso</span>";
+        ottenuto = service.rosso(sorgente);
+        assertEquals(previsto, ottenuto);
+        System.out.println(ottenuto);
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - blue")
+    void blu() {
+        sorgente = "Testo colorato blue";
+        previsto = "<span style=\"color:blue\">Testo colorato blue</span>";
+        ottenuto = service.blue(sorgente);
+        assertEquals(previsto, ottenuto);
+        System.out.println(ottenuto);
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - span normale")
+    void span() {
+        sorgente = "Testo non colorato";
+
+        previsto = "<span>Testo non colorato</span>";
+        span = service.getSpan(sorgente);
+        assertNotNull(span);
+        assertEquals(previsto, span.getElement().toString());
+        printSpan(span);
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - span rosso")
+    void spanRosso() {
+        sorgente = "Testo colorato rosso";
+
+        sorgente2 = "rosso";
+        previsto = "<span style=\"color:red\">Testo colorato rosso</span>";
+        span = service.getSpanRosso(sorgente);
+        assertNotNull(span);
+        assertEquals(previsto, span.getElement().toString());
+        printSpan(span);
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("9 - span verde")
+    void spanVerde() {
+        sorgente = "Testo colorato verde";
+
+        sorgente2 = "rosso";
+        previsto = "<span style=\"color:green\">Testo colorato verde</span>";
+        span = service.getSpanVerde(sorgente);
+        assertNotNull(span);
+        assertEquals(previsto, span.getElement().toString());
+        printSpan(span);
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("10 - span blue")
+    void colore() {
+        sorgente = "Testo colorato blue";
+
+        sorgente2 = "rosso";
+        previsto = "<span style=\"color:blue\">Testo colorato blue</span>";
+        span = service.getSpanBlu(sorgente);
+        assertNotNull(span);
+        assertEquals(previsto, span.getElement().toString());
+        printSpan(span);
+    }
+
     /**
      * Qui passa al termine di ogni singolo test <br>
      */

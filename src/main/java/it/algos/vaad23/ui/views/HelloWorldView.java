@@ -5,10 +5,14 @@ import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
+import org.springframework.context.annotation.*;
+import org.springframework.stereotype.*;
 
 import javax.annotation.security.*;
 
 @PermitAll
+@Component
+@Scope("prototype")
 @PageTitle("Hello World")
 @Route(value = "hello", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
