@@ -118,6 +118,12 @@ public abstract class VaadBoot implements ServletContextListener {
     protected void fixVariabili() {
 
         /**
+         * Nome identificativo minuscolo del progetto base vaadflow <br>
+         * Deve essere regolato in backend.boot.VaadBoot.fixVariabili() del progetto base <br>
+         */
+        VaadVar.projectVaadFlow = PROJECT_VAADFLOW;
+
+        /**
          * Lista dei moduli di menu da inserire nel Drawer del MainLayout per le gestione delle @Routes. <br>
          * Regolata dall'applicazione durante l'esecuzione del 'container startup' (non-UI logic) <br>
          * Usata da ALayoutService per conto di MainLayout allo start della UI-logic <br>

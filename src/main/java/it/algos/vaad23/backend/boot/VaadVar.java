@@ -34,6 +34,18 @@ public class VaadVar {
 
 
     /**
+     * Nome identificativo minuscolo del progetto base vaadflow <br>
+     * Deve essere regolato in backend.boot.VaadBoot.fixVariabili() del progetto base <br>
+     */
+    public static String projectVaadFlow;
+
+    /**
+     * Nome identificativo minuscolo del progetto corrente <br>
+     * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+     */
+    public static String projectCurrent;
+
+    /**
      * Nome identificativo minuscolo dell' applicazione nella directory dei projects Idea <br>
      * Usato come base per costruire i path delle varie directory <br>
      * Spesso coincide (non obbligatoriamente) con projectNameModulo <br>

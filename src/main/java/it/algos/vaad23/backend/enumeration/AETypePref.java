@@ -46,12 +46,18 @@ public enum AETypePref {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
-            if (obj instanceof Boolean) {
-                boolean bool = (boolean) obj;
+            if (obj instanceof Boolean bool) {
                 bytes = new byte[]{(byte) (bool ? 1 : 0)};
-            }// end of if cycle
+            }
+            if (obj instanceof String stringa) {
+                boolean bool = false;
+                if (stringa.equals("Vero") || stringa.equals("vero") || stringa.equals("True") | stringa.equals("true")) {
+                    bool = true;
+                }
+                bytes = new byte[]{(byte) (bool ? 1 : 0)};
+            }
             return bytes;
-        }// end of method
+        }
 
         @Override
         @SuppressWarnings("all")

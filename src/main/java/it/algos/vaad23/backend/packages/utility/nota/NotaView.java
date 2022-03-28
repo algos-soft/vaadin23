@@ -55,7 +55,7 @@ public class NotaView extends CrudView {
     public void fixPreferenze() {
         super.fixPreferenze();
 
-        this.splitLayout = true;
+        this.splitLayout = false;
         this.usaBottoneDeleteAll = true;
         this.usaBottoneFilter = true;
     }
@@ -68,6 +68,7 @@ public class NotaView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
         span("Appunti per sviluppi e @todo");
+        spanRosso("Al termine spuntarli e non cancellarli");
     }
 
     /**

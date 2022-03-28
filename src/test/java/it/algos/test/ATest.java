@@ -16,6 +16,7 @@ import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 
 import java.lang.reflect.*;
+import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -50,6 +51,10 @@ public abstract class ATest {
     protected static final String[] ARRAY_SHORT_STRING_DUE = {CONTENUTO_DUE};
 
     protected static final List<String> LIST_SHORT_STRING_DUE = new ArrayList(Arrays.asList(ARRAY_SHORT_STRING_DUE));
+
+    protected final static LocalDateTime LOCAL_DATE_TIME_UNO = LocalDateTime.of(2014, 10, 21, 7, 42);
+
+    protected final static LocalDateTime LOCAL_DATE_TIME_DUE = LocalDateTime.of(2014, 10, 5, 7, 4);
 
     public Logger slf4jLogger;
 

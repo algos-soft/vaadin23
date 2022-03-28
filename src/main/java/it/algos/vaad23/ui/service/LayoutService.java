@@ -3,6 +3,7 @@ package it.algos.vaad23.ui.service;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.dependency.*;
 import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.server.*;
 import com.vaadin.flow.spring.annotation.*;
@@ -38,13 +39,15 @@ public class LayoutService extends AbstractService {
         List<ListItem> listaItems = new ArrayList<>();
         ListItem item;
         String menuName;
+        VaadinIcon icon;
         String lineawesomeClassnames;
 
         if (VaadVar.menuRouteList != null && VaadVar.menuRouteList.size() > 0) {
             for (Class<? extends Component> clazz : VaadVar.menuRouteList) {
                 menuName = annotationService.getMenuName(clazz);
+                icon = annotationService.getMenuVaadinIcon(clazz);
                 lineawesomeClassnames = getLineawesomeClassnames(clazz);
-                item = getItem(menuName, lineawesomeClassnames, clazz);
+                item = getItem(menuName, icon, lineawesomeClassnames, clazz);
                 if (item != null) {
                     listaItems.add(item);
                 }
@@ -64,7 +67,7 @@ public class LayoutService extends AbstractService {
      *
      * @return item di menu del Drawer
      */
-    private ListItem getItem(final String menuTitle, final String iconClass, final Class<? extends Component> view) {
+    private ListItem getItem(final String menuTitle, final VaadinIcon icon, final String iconClass, final Class<? extends Component> view) {
         ListItem item = new ListItem();
         RouterLink link = new RouterLink();
 
@@ -84,7 +87,12 @@ public class LayoutService extends AbstractService {
         // Use Lumo classnames for various styling
         text.addClassNames("font-medium", "text-s");
 
-        link.add(new LineAwesomeIcon(iconClass), text);
+        if (icon != null) {
+            link.add(new LineAwesomeIcon(iconClass), text);
+        }
+        else {
+            link.add(new LineAwesomeIcon(iconClass), text);
+        }
         item.add(link);
 
         return item;

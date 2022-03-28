@@ -42,6 +42,12 @@ public class SimpleBoot extends VaadBoot {
         super.fixVariabili();
 
         /**
+         * Nome identificativo minuscolo del progetto corrente <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.projectCurrent = "simple";
+
+        /**
          * Classe da usare per gestire le versioni <br>
          * Di default FlowVers oppure possibile sottoclasse del progetto <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>

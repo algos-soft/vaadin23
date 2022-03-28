@@ -114,6 +114,13 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     /**
+     * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void fixAlert() {
+    }
+
+    /**
      * Logic configuration <br>
      * Qui vanno i collegamenti con la logica del backend <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
@@ -131,17 +138,17 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         gridCrud.getCrudFormFactory().setUseBeanValidation(true);
 
         // logic configuration
-        gridCrud.setFindAllOperation(() -> crudBackend.findAll());
-        gridCrud.setAddOperation(crudBackend::add);
-        gridCrud.setUpdateOperation(crudBackend::update);
-        gridCrud.setDeleteOperation(crudBackend::delete);
+        gridCrud.setFindAllOperation(() -> sincroFiltri());
+        gridCrud.setAddOperation(bean -> crudBackend.add(bean));
+        gridCrud.setUpdateOperation(bean -> crudBackend.update(bean));
+        gridCrud.setDeleteOperation(bean -> crudBackend.delete(bean));
 
-        //        gridCrud.setOperations(
-        //                () -> sincroFiltri(),
-        //                user -> crudBackend.add(user),
-        //                user -> crudBackend.update(user),
-        //                user -> crudBackend.delete(user)
-        //        );
+        //                gridCrud.setOperations(
+        //                        () -> sincroFiltri(),
+        //                        user -> crudBackend.add(user),
+        //                        user -> crudBackend.update(user),
+        //                        user -> crudBackend.delete(user)
+        //                );
 
         grid = gridCrud.getGrid();
         crudForm = gridCrud.getCrudFormFactory();
@@ -151,21 +158,6 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.add(gridCrud);
     }
 
-
-    /**
-     * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    public void fixAlert() {
-    }
-
-    //    /**
-    //     * Qui vanno i collegamenti con la logica del backend <br>
-    //     * logic configuration <br>
-    //     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-    //     */
-    //    protected void backendLogic() {
-    //    }
 
     /**
      * Regola la visibilità delle colonne della grid <br>

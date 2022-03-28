@@ -1,40 +1,120 @@
 package it.algos.vaad23.backend.packages.utility.preferenza;
 
-import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.grid.*;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.boot.*;
+import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
 import org.vaadin.crudui.crud.*;
+
+import java.util.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: sab, 26-mar-2022
- * Time: 14:02
- * <p>
+ * Date: dom, 27-mar-2022
+ * Time: 10:29
  */
 @PageTitle("Preferenze")
 @Route(value = "preferenza", layout = MainLayout.class)
-public class PreferenzaView extends CrudView {
+@AIView(lineawesomeClassnames = "wrench")
+public class PreferenzaView extends VerticalLayout implements AfterNavigationObserver {
 
+    @Autowired
+    protected ApplicationContext appContext;
 
-    private PreferenzaBackend backend;
+    protected Grid<Preferenza> grid;
+
+    protected List<Preferenza> items;
+
+    @Autowired
+    protected PreferenzaBackend backend;
+
+    @Autowired
+    protected HtmlService htmlService;
+
+    protected Button refreshButton;
+
+    protected Button addButton;
+
+    protected Button editButton;
+
+    protected Button deleteButton;
+
+    @Override
+    public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
+        this.fixAlert();
+        this.fixTop();
+        this.fixCrud();
+        this.fixColumns();
+        this.fixFields();
+        this.fixOrder();
+        this.fixAdditionalComponents();
+        this.addListeners();
+    }
 
     /**
-     * Costruttore @Autowired (facoltativo) <br>
-     * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
-     * Si usa un @Qualifier(), per specificare la classe che incrementa l'interfaccia repository <br>
-     * Si usa una costante statica, per essere sicuri di scriverla uguale a quella di xxxRepository <br>
-     * Regola il service specifico di persistenza dei dati e lo passa al costruttore della superclasse <br>
-     * Regola la entityClazz (final nella superclasse) associata a questa @Route view <br>
-     *
-     * @param entityBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
+     * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    public PreferenzaView(@Autowired final PreferenzaBackend entityBackend) {
-        super(entityBackend, Preferenza.class);
-        this.backend = entityBackend;
+    public void fixAlert() {
+        spanBlue("Preferenze registrate nel database mongoDB");
+        spanRosso("Mostrate solo le properties per questo programma con una sola company");
+        span(String.format("VaadFlow=true per le preferenze del programma base '%s'", VaadVar.projectVaadFlow));
+        span(String.format("VaadFlow=false per le preferenze del programma corrente '%s'", VaadVar.projectCurrent));
+        span("NeedRiavvio=true se la preferenza ha effetto solo dopo un riavvio del programma");
+    }
+
+    /**
+     * Costruisce un (eventuale) layout per bottoni di comando in testa alla grid <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public void fixTop() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setClassName("buttons");
+        layout.setPadding(false);
+        layout.setSpacing(true);
+        layout.setMargin(false);
+        layout.setClassName("confirm-dialog-buttons");
+
+        refreshButton = new Button();
+        refreshButton.getElement().setAttribute("theme", "secondary");
+        refreshButton.setIcon(new Icon(VaadinIcon.REFRESH));
+        layout.add(refreshButton);
+
+        addButton = new Button();
+        addButton.getElement().setAttribute("theme", "secondary");
+        addButton.setIcon(new Icon(VaadinIcon.PLUS));
+        layout.add(addButton);
+
+        editButton = new Button();
+        editButton.getElement().setAttribute("theme", "secondary");
+        editButton.setIcon(new Icon(VaadinIcon.PENCIL));
+        layout.add(editButton);
+
+        deleteButton = new Button();
+        deleteButton.getElement().setAttribute("theme", "secondary");
+        deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
+        layout.add(deleteButton);
+
+        //        annullaButton.setText(textAnnullaButton);
+        //        annullaButton.getElement().setAttribute("theme", "secondary");
+        //        annullaButton.addClickListener(e -> annullaHandler());
+        //        annullaButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
+        //        layout.add(annullaButton);
+
+        this.add(layout);
     }
 
     /**
@@ -42,51 +122,124 @@ public class PreferenzaView extends CrudView {
      * Qui vanno i collegamenti con la logica del backend <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    @Override
     protected void fixCrud() {
-        super.fixCrud();
+        // Create a listing component for a bean type
+        grid = new Grid<>(Preferenza.class, true);
 
-        if (VaadVar.usaCompany) {
-            crudForm.setVisibleProperties(CrudOperation.ADD, "id", "code", "descrizione", "vaadFlow", "needRiavvio", "usaCompany", "visibileAdmin");
-            crudForm.setVisibleProperties(CrudOperation.READ, "id", "code", "descrizione", "vaadFlow", "needRiavvio", "usaCompany", "visibileAdmin");
-            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "code", "descrizione", "vaadFlow", "needRiavvio", "usaCompany", "visibileAdmin");
-        }
-        else {
-            crudForm.setVisibleProperties(CrudOperation.ADD, "code", "descrizione", "vaadFlow", "needRiavvio", "descrizioneEstesa");
-            crudForm.setVisibleProperties(CrudOperation.READ, "code", "descrizione", "vaadFlow", "needRiavvio", "descrizioneEstesa");
-            crudForm.setVisibleProperties(CrudOperation.UPDATE, "code", "descrizione", "vaadFlow", "needRiavvio", "descrizioneEstesa");
-        }
+        // Pass all Preferenza objects to a grid from a Spring Data repository object
+        grid.setItems(backend.findAll());
+
+        // layout configuration
+        setSizeFull();
+        this.add(grid);
     }
 
     /**
      * Regola la visibilità delle colonne della grid <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    @Override
     public void fixColumns() {
-        super.fixColumns();
-
-        grid.setColumns("code", "descrizione", "vaadFlow", "needRiavvio");
-
-        String larCode = "12em";
-        String larDesc = "30em";
-        String larBool = "8em";
-
-        grid.getColumnByKey("code").setWidth(larCode).setFlexGrow(0);
-        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
-        grid.getColumnByKey("vaadFlow").setWidth(larBool).setFlexGrow(0).setHeader("Flow");
-        grid.getColumnByKey("needRiavvio").setWidth(larBool).setFlexGrow(0).setHeader("Riavvio");
+        // Sets columns
+        //        grid.setColumns("code","type","value","descrizione","vaadFlow","needRiavvio");
+        grid.setColumns("code", "type", "descrizione", "vaadFlow", "needRiavvio");
     }
 
     /**
      * Regola la visibilità dei fields del Form<br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    @Override
     public void fixFields() {
-        super.fixFields();
-
-        crudForm.setFieldType("descrizioneEstesa", TextArea.class);
     }
 
-}// end of crud @Route view class
+    /**
+     * Regola l'ordinamento della <grid <br>
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     */
+    public void fixOrder() {
+    }
+
+
+    /**
+     * Componenti aggiuntivi oltre quelli base <br>
+     * Tipicamente bottoni di selezione/filtro <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void fixAdditionalComponents() {
+    }
+
+    /**
+     * Aggiunge tutti i listeners ai bottoni di 'topPlaceholder' che sono stati creati SENZA listeners <br>
+     * <p>
+     * Chiamato da afterNavigation() <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void addListeners() {
+        // pass the row/item that the user double-clicked to method openDialog
+        grid.addItemClickListener(listener -> {
+            if (listener.getClickCount() == 2)
+                openDialog(listener.getItem());
+        });
+    }
+
+    public void openDialog(Preferenza entityBean) {
+        PreferenzaDialog<Preferenza> dialog = appContext.getBean(PreferenzaDialog.class, entityBean, CrudOperation.ADD);
+        dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
+    }
+
+
+    /**
+     * Primo ingresso dopo il click sul bottone <br>
+     */
+    protected void saveHandler(final Preferenza entityBean, final CrudOperation operation) {
+        grid.setItems(backend.findAll());
+    }
+
+    public AEntity deleteHandler(final Preferenza entityBean) {
+        //        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
+        return null;
+    }
+
+    public AEntity annullaHandler(final Preferenza entityBean) {
+        //        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
+        return null;
+    }
+
+    public Span getSpan(final String avviso) {
+        return htmlService.getSpanVerde(avviso);
+    }
+
+    public void spanBlue(final String message) {
+        span(new WrapSpan(message).color(AETypeColor.blu));
+    }
+
+    public void spanRosso(final String message) {
+        span(new WrapSpan(message).color(AETypeColor.rosso));
+    }
+
+    public void span(final String message) {
+        span(new WrapSpan(message));
+    }
+
+    public void span(WrapSpan wrap) {
+        Span span;
+
+        if (wrap.getColor() == null) {
+            wrap.color(AETypeColor.verde);
+        }
+        if (wrap.getWeight() == null) {
+            wrap.weight(AEFontWeight.bold);
+        }
+        if (wrap.getFontHeight() == null) {
+            wrap.fontHeight(AEFontHeight.px14);
+        }
+        if (wrap.getLineHeight() == null) {
+            wrap.lineHeight(AELineHeight.px2);
+        }
+
+        span = htmlService.getSpan(wrap);
+        if (span != null) {
+            this.add(span);
+        }
+    }
+
+}

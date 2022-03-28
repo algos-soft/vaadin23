@@ -75,6 +75,7 @@ public class LoggerView extends CrudView {
         span("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag");
         span("C) nella collection del database (facoltativo)");
         span("D) in una mail (facoltativo e di norma solo per 'error')");
+        spanRosso("Necessita di config.logback-spring.xml e attivazione in application.properties");
     }
 
     /**

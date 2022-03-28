@@ -67,6 +67,7 @@ public class VersioneView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
         span("Sviluppo, patch e update del programma. Sigla V iniziale per il programma base Vaadin23");
+        spanRosso("Solo hard coded. Non creabili e non modificabili");
     }
 
     /**

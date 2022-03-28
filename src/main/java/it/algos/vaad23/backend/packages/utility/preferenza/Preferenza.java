@@ -182,4 +182,5 @@ public class Preferenza extends AEntity {
         this.visibileAdmin = visibileAdmin;
     }
 
+
 }// end of crud entity class
