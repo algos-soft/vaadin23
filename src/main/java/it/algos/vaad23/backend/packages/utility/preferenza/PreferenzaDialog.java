@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.spring.annotation.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
@@ -73,7 +74,7 @@ public class PreferenzaDialog extends Dialog {
     protected Button deleteButton = new Button(textDeleteButton);
 
     //--collegamento tra i fields e la entityBean
-    protected Binder<Preferenza> binder;
+    protected BeanValidationBinder<Preferenza> binder;
 
     TextField code;
 
@@ -228,7 +229,15 @@ public class PreferenzaDialog extends Dialog {
             }
             case bool -> {
                 Checkbox boxField = new Checkbox("Value (boolean)");
+                boxField.setValue((boolean) type.getValue().bytesToObject(currentItem.getValue()));
                 valueLayout.add(boxField);
+            }
+
+            case integer -> {
+                TextField numberField = new TextField("Value (intero)");
+                //                Object alfa=type.getValue().bytesToObject(currentItem.getValue()) + VUOTA;
+                numberField.setValue(type.getValue().bytesToObject(currentItem.getValue()) + VUOTA);
+                valueLayout.add(numberField);
             }
             default -> valueLayout.add(new Label("Type non ancora gestito"));
         }
@@ -244,10 +253,18 @@ public class PreferenzaDialog extends Dialog {
                     currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
                 }
             }
-            //            case bool -> {
-            //                Checkbox boxField = new Checkbox("Value (boolean)");
-            //                valueLayout.add(boxField);
-            //            }
+            case bool -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof Checkbox checkField) {
+                    currentItem.setValue(type.getValue().objectToBytes(checkField.getValue()));
+                }
+            }
+            case integer -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof TextField textField) {
+                    currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
+                }
+            }
             default -> comp = null;
         }
     }
@@ -265,7 +282,7 @@ public class PreferenzaDialog extends Dialog {
      */
     protected void fixBody() {
         //--Crea un nuovo binder (vuoto) per questo Dialog e questa entityBean (currentItem)
-        binder = new Binder(currentItem.getClass());
+        binder = new BeanValidationBinder(currentItem.getClass());
 
         code = new TextField("Code");
         type = new ComboBox("Type");
@@ -343,6 +360,14 @@ public class PreferenzaDialog extends Dialog {
 
     public void saveHandler() {
         try {
+            BinderValidationStatus alfa = binder.validate();
+            if (binder.writeBeanIfValid(currentItem)) {
+                int a = 87;
+            }
+            else {
+                int b = 88;
+            }
+
             binder.writeBean(currentItem);
             sincroValueToModel();
         } catch (ValidationException error) {

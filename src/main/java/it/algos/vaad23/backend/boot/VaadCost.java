@@ -48,6 +48,8 @@ public class VaadCost {
 
     public static final String DUE_PUNTI = ":";
 
+    public static final String TRE_PUNTI = "...";
+
     public static final String SPAZIO = " ";
 
     public static final String DUE_PUNTI_SPAZIO = DUE_PUNTI + SPAZIO;

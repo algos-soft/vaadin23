@@ -10,6 +10,7 @@ import com.vaadin.flow.component.page.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.annotation.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -156,14 +157,13 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     public void fixColumns() {
         grid.addColumns("code", "type");
 
-        grid.addColumn(new ComponentRenderer<>(pref -> {
-
-            return switch (pref.getType()) {
-                case string -> new Label(pref.toString());
-                default -> new Label("");
-            };
-
-        })).setHeader("Value").setKey("value");
+        grid.addColumn(new ComponentRenderer<>(pref ->
+                switch (pref.getType()) {
+                    case string -> new Label(pref.getType().bytesToString(pref.getValue()));
+                    case bool -> (boolean) pref.getType().bytesToObject(pref.getValue()) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+                    case integer -> new Label(pref.getType().bytesToString(pref.getValue()));
+                    default -> new Label(TRE_PUNTI);
+                })).setHeader("Value").setKey("value");
 
         grid.addColumns("descrizione", "vaadFlow", "needRiavvio");
     }
