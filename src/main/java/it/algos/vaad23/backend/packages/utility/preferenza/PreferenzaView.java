@@ -1,10 +1,13 @@
 package it.algos.vaad23.backend.packages.utility.preferenza;
 
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.page.*;
+import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.boot.*;
@@ -52,8 +55,11 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
     protected Button deleteButton;
 
+    protected int width;
+
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
+        UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> fixBrowser(details));
         this.fixAlert();
         this.fixTop();
         this.fixCrud();
@@ -65,12 +71,19 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     }
 
     /**
+     *
+     */
+    public void fixBrowser(ExtendedClientDetails details) {
+        width = details.getBodyClientWidth();
+    }
+
+    /**
      * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void fixAlert() {
         spanBlue("Preferenze registrate nel database mongoDB");
-        spanRosso("Mostrate solo le properties per questo programma con una sola company");
+        spanRosso("Mostra solo le properties di un programma non multiCompany");
         span(String.format("VaadFlow=true per le preferenze del programma base '%s'", VaadVar.projectVaadFlow));
         span(String.format("VaadFlow=false per le preferenze del programma corrente '%s'", VaadVar.projectCurrent));
         span("NeedRiavvio=true se la preferenza ha effetto solo dopo un riavvio del programma");
@@ -91,11 +104,13 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         refreshButton = new Button();
         refreshButton.getElement().setAttribute("theme", "secondary");
         refreshButton.setIcon(new Icon(VaadinIcon.REFRESH));
+        refreshButton.addClickListener(e -> refresh());
         layout.add(refreshButton);
 
         addButton = new Button();
         addButton.getElement().setAttribute("theme", "secondary");
         addButton.setIcon(new Icon(VaadinIcon.PLUS));
+        addButton.addClickListener(e -> newItem());
         layout.add(addButton);
 
         editButton = new Button();
@@ -124,7 +139,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
      */
     protected void fixCrud() {
         // Create a listing component for a bean type
-        grid = new Grid<>(Preferenza.class, true);
+        grid = new Grid<>(Preferenza.class, false);
 
         // Pass all Preferenza objects to a grid from a Spring Data repository object
         grid.setItems(backend.findAll());
@@ -139,9 +154,18 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void fixColumns() {
-        // Sets columns
-        //        grid.setColumns("code","type","value","descrizione","vaadFlow","needRiavvio");
-        grid.setColumns("code", "type", "descrizione", "vaadFlow", "needRiavvio");
+        grid.addColumns("code", "type");
+
+        grid.addColumn(new ComponentRenderer<>(pref -> {
+
+            return switch (pref.getType()) {
+                case string -> new Label(pref.toString());
+                default -> new Label("");
+            };
+
+        })).setHeader("Value").setKey("value");
+
+        grid.addColumns("descrizione", "vaadFlow", "needRiavvio");
     }
 
     /**
@@ -181,11 +205,21 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         });
     }
 
-    public void openDialog(Preferenza entityBean) {
-        PreferenzaDialog<Preferenza> dialog = appContext.getBean(PreferenzaDialog.class, entityBean, CrudOperation.ADD);
+    public void newItem() {
+        Preferenza entityBean = new Preferenza();
+        entityBean.setType(AETypePref.string);
+        PreferenzaDialog dialog = appContext.getBean(PreferenzaDialog.class, entityBean, CrudOperation.ADD);
         dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
     }
 
+    public void openDialog(Preferenza entityBean) {
+        PreferenzaDialog dialog = appContext.getBean(PreferenzaDialog.class, entityBean, CrudOperation.UPDATE);
+        dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
+    }
+
+    protected void refresh() {
+        grid.setItems(backend.findAll());
+    }
 
     /**
      * Primo ingresso dopo il click sul bottone <br>
@@ -232,8 +266,14 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         if (wrap.getFontHeight() == null) {
             wrap.fontHeight(AEFontHeight.px14);
         }
+
         if (wrap.getLineHeight() == null) {
-            wrap.lineHeight(AELineHeight.px2);
+            if (width == 0 || width > 500) {
+                wrap.lineHeight(AELineHeight.px2);
+            }
+            else {
+                wrap.lineHeight(AELineHeight.normal);
+            }
         }
 
         span = htmlService.getSpan(wrap);

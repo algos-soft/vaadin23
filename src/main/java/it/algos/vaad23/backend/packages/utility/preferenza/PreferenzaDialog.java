@@ -2,6 +2,8 @@ package it.algos.vaad23.backend.packages.utility.preferenza;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.checkbox.*;
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.formlayout.*;
 import com.vaadin.flow.component.html.*;
@@ -10,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.spring.annotation.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
@@ -17,7 +20,6 @@ import org.springframework.context.annotation.Scope;
 import org.vaadin.crudui.crud.*;
 
 import javax.annotation.*;
-import java.io.*;
 import java.util.function.*;
 
 /**
@@ -29,7 +31,7 @@ import java.util.function.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
+public class PreferenzaDialog extends Dialog {
 
     protected final H2 titleField = new H2();
 
@@ -73,10 +75,19 @@ public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
     //--collegamento tra i fields e la entityBean
     protected Binder<Preferenza> binder;
 
-    TextField code = new TextField("Code");
+    TextField code;
 
-    //            ComboBox<AETypePref> type = new ComboBox("Type");
-    TextField descrizione = new TextField("Descrizione");
+    ComboBox<AETypePref> type;
+
+    TextField descrizione;
+
+    VerticalLayout valueLayout;
+
+    TextArea descrizioneEstesa;
+
+    Checkbox vaadFlow;
+
+    Checkbox needRiavvio;
 
     private Preferenza currentItem;
 
@@ -110,7 +121,6 @@ public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
     public PreferenzaDialog(Preferenza entityBean, CrudOperation operation) {
         this.currentItem = entityBean;
         this.operation = operation;
-
     }// end of constructor not @Autowired
 
     /**
@@ -129,6 +139,8 @@ public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
 
         //--Form placeholder standard per i campi
         this.add(getFormLayout());
+        //--Lasyout di value
+        fixValue();
         //--Corpo centrale del Dialog
         fixBody();
 
@@ -137,6 +149,9 @@ public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
 
         //--Barra placeholder dei bottoni, creati e regolati
         this.add(fixBottom());
+
+        //--Listener varii
+        this.fixListener();
     }
 
     /**
@@ -162,7 +177,15 @@ public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
      * Placeholder (eventuale, presente di default) <br>
      */
     protected Component fixHeader() {
-        return new H2("Nuova preferenza");
+        String tag = switch (operation) {
+            case READ -> "Mostra";
+            case ADD -> "Nuova";
+            case UPDATE -> "Modifica";
+            case DELETE -> "Elimina";
+            default -> "Edit";
+        };
+
+        return new H2(String.format("%s preferenza", tag));
     }
 
 
@@ -187,6 +210,48 @@ public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
         return div;
     }
 
+    protected void fixValue() {
+        valueLayout = new VerticalLayout();
+        valueLayout.setPadding(false);
+        valueLayout.setSpacing(true);
+        valueLayout.setMargin(false);
+    }
+
+    protected void sincroValueToPresentation() {
+        valueLayout.removeAll();
+
+        switch (type.getValue()) {
+            case string -> {
+                TextField textField = new TextField("Value (string)");
+                textField.setValue(type.getValue().bytesToString(currentItem.getValue()));
+                valueLayout.add(textField);
+            }
+            case bool -> {
+                Checkbox boxField = new Checkbox("Value (boolean)");
+                valueLayout.add(boxField);
+            }
+            default -> valueLayout.add(new Label("Type non ancora gestito"));
+        }
+    }
+
+    protected void sincroValueToModel() {
+        Component comp;
+
+        switch (type.getValue()) {
+            case string -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof TextField textField) {
+                    currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
+                }
+            }
+            //            case bool -> {
+            //                Checkbox boxField = new Checkbox("Value (boolean)");
+            //                valueLayout.add(boxField);
+            //            }
+            default -> comp = null;
+        }
+    }
+
     /**
      * Crea i fields
      * <p>
@@ -202,17 +267,25 @@ public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
         //--Crea un nuovo binder (vuoto) per questo Dialog e questa entityBean (currentItem)
         binder = new Binder(currentItem.getClass());
 
-        //        TextField code = new TextField("Code");
-        //        ComboBox<AETypePref> type = new ComboBox("Type");
-        //        TextField descrizione = new TextField("Descrizione");
+        code = new TextField("Code");
+        type = new ComboBox("Type");
+        type.setItems(AETypePref.values());
+        descrizione = new TextField("Descrizione");
+        descrizioneEstesa = new TextArea("Descrizione estesa");
+        vaadFlow = new Checkbox("Programma base vaadin23");
+        needRiavvio = new Checkbox("Riavvio necessario");
 
-        //        grid.setColumns("code","type","value","descrizione","vaadFlow","needRiavvio");
         binder.bindInstanceFields(this);
 
         // Updates the value in each bound field component
         binder.readBean(currentItem);
 
-        formLayout.add(code, descrizione);
+        // Update the value of preference
+        sincroValueToPresentation();
+
+        formLayout.add(code, type, descrizione, valueLayout, descrizioneEstesa, vaadFlow, needRiavvio);
+        formLayout.setColspan(descrizione, 2);
+        formLayout.setColspan(descrizioneEstesa, 2);
     }
 
 
@@ -263,10 +336,15 @@ public class PreferenzaDialog<Preferenza extends Serializable> extends Dialog {
         return layout;
     }
 
+    public void fixListener() {
+        type.addValueChangeListener(e -> sincroValueToPresentation());
+    }
+
 
     public void saveHandler() {
         try {
             binder.writeBean(currentItem);
+            sincroValueToModel();
         } catch (ValidationException error) {
             logger.error(error);
             return;
