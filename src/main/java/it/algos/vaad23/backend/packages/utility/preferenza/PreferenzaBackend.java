@@ -1,9 +1,12 @@
 package it.algos.vaad23.backend.packages.utility.preferenza;
 
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
+
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -42,5 +45,13 @@ public class PreferenzaBackend extends EntityBackend {
         this.repository = (PreferenzaRepository) crudRepository;
     }
 
+    public List<Preferenza> findByType(final AETypePref type) {
+        if (type != null) {
+            return repository.findByType(type);
+        }
+        else {
+            return repository.findAll();
+        }
+    }
 
 }// end of crud backend class

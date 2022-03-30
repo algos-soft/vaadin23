@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.packages.utility.preferenza;
 
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -36,5 +37,9 @@ public interface PreferenzaRepository extends MongoRepository<Preferenza, String
     <Preferenza extends AEntity> Preferenza save(Preferenza entity);
 
     void delete(Preferenza entity);
+
+    List<Preferenza> findByType(AETypePref type);
+
+    List<Preferenza> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypePref type);
 
 }// end of crud repository class

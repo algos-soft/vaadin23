@@ -24,9 +24,9 @@ import java.util.*;
 public class NotaView extends CrudView {
 
 
-    private ComboBox comboLivello;
+    private ComboBox<AENotaLevel> comboLivello;
 
-    private ComboBox comboTypeLog;
+    private ComboBox<AETypeLog> comboTypeLog;
 
     //--per eventuali metodi specifici
     private NotaBackend backend;
@@ -134,18 +134,18 @@ public class NotaView extends CrudView {
     protected void fixAdditionalComponents() {
         super.fixAdditionalComponents();
 
-        comboLivello = new ComboBox();
+        comboLivello = new ComboBox<>();
         comboLivello.setPlaceholder("Livello");
         comboLivello.setClearButtonVisible(true);
-        List items = AENotaLevel.getAllEnums();
+        List<AENotaLevel> items = AENotaLevel.getAllEnums();
         comboLivello.setItems(items);
         gridCrud.getCrudLayout().addFilterComponent(comboLivello);
         comboLivello.addValueChangeListener(event -> sincroFiltri());
 
-        comboTypeLog = new ComboBox();
+        comboTypeLog = new ComboBox<>();
         comboTypeLog.setPlaceholder("Type");
         comboTypeLog.setClearButtonVisible(true);
-        List items2 = AETypeLog.getAllEnums();
+        List<AETypeLog> items2 = AETypeLog.getAllEnums();
         comboTypeLog.setItems(items2);
         gridCrud.getCrudLayout().addFilterComponent(comboTypeLog);
         comboTypeLog.addValueChangeListener(event -> sincroFiltri());

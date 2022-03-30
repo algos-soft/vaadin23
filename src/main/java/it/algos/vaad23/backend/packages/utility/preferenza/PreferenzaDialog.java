@@ -4,17 +4,24 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.datepicker.*;
+import com.vaadin.flow.component.datetimepicker.*;
 import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.formlayout.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.component.timepicker.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
+import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -65,7 +72,7 @@ public class PreferenzaDialog extends Dialog {
 
     protected String textSaveButton = "Registra";
 
-    protected String textDeleteButton = "Delete";
+    protected String textDeleteButton = "Si, cancella";
 
     protected Button annullaButton = new Button(textAnnullaButton);
 
@@ -218,56 +225,6 @@ public class PreferenzaDialog extends Dialog {
         valueLayout.setMargin(false);
     }
 
-    protected void sincroValueToPresentation() {
-        valueLayout.removeAll();
-
-        switch (type.getValue()) {
-            case string -> {
-                TextField textField = new TextField("Value (string)");
-                textField.setValue(type.getValue().bytesToString(currentItem.getValue()));
-                valueLayout.add(textField);
-            }
-            case bool -> {
-                Checkbox boxField = new Checkbox("Value (boolean)");
-                boxField.setValue((boolean) type.getValue().bytesToObject(currentItem.getValue()));
-                valueLayout.add(boxField);
-            }
-
-            case integer -> {
-                TextField numberField = new TextField("Value (intero)");
-                //                Object alfa=type.getValue().bytesToObject(currentItem.getValue()) + VUOTA;
-                numberField.setValue(type.getValue().bytesToObject(currentItem.getValue()) + VUOTA);
-                valueLayout.add(numberField);
-            }
-            default -> valueLayout.add(new Label("Type non ancora gestito"));
-        }
-    }
-
-    protected void sincroValueToModel() {
-        Component comp;
-
-        switch (type.getValue()) {
-            case string -> {
-                comp = valueLayout.getComponentAt(0);
-                if (comp != null && comp instanceof TextField textField) {
-                    currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
-                }
-            }
-            case bool -> {
-                comp = valueLayout.getComponentAt(0);
-                if (comp != null && comp instanceof Checkbox checkField) {
-                    currentItem.setValue(type.getValue().objectToBytes(checkField.getValue()));
-                }
-            }
-            case integer -> {
-                comp = valueLayout.getComponentAt(0);
-                if (comp != null && comp instanceof TextField textField) {
-                    currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
-                }
-            }
-            default -> comp = null;
-        }
-    }
 
     /**
      * Crea i fields
@@ -285,12 +242,24 @@ public class PreferenzaDialog extends Dialog {
         binder = new BeanValidationBinder(currentItem.getClass());
 
         code = new TextField("Code");
+        code.setReadOnly(operation == CrudOperation.DELETE);
+
         type = new ComboBox("Type");
         type.setItems(AETypePref.values());
+        type.setRequired(true);
+        type.setReadOnly(operation == CrudOperation.DELETE || operation == CrudOperation.UPDATE);
+
         descrizione = new TextField("Descrizione");
+        descrizione.setReadOnly(operation == CrudOperation.DELETE);
+
         descrizioneEstesa = new TextArea("Descrizione estesa");
+        descrizioneEstesa.setReadOnly(operation == CrudOperation.DELETE);
+
         vaadFlow = new Checkbox("Programma base vaadin23");
+        vaadFlow.setReadOnly(operation == CrudOperation.DELETE);
+
         needRiavvio = new Checkbox("Riavvio necessario");
+        needRiavvio.setReadOnly(operation == CrudOperation.DELETE);
 
         binder.bindInstanceFields(this);
 
@@ -303,8 +272,125 @@ public class PreferenzaDialog extends Dialog {
         formLayout.add(code, type, descrizione, valueLayout, descrizioneEstesa, vaadFlow, needRiavvio);
         formLayout.setColspan(descrizione, 2);
         formLayout.setColspan(descrizioneEstesa, 2);
+
     }
 
+    protected void sincroValueToPresentation() {
+        valueLayout.removeAll();
+
+        if (type.getValue() == null) {
+            logger.warn(new WrapLog().exception(new AlgosException("Type senza valore")));
+            return;
+        }
+
+        switch (type.getValue()) {
+            case string -> {
+                TextField textField = new TextField("Value (string)");
+                textField.setRequired(true);
+                textField.setReadOnly(operation == CrudOperation.DELETE);
+                textField.setValue(type.getValue().bytesToString(currentItem.getValue()));
+                valueLayout.add(textField);
+            }
+            case bool -> {
+                Checkbox boxField = new Checkbox("Value (boolean)");
+                boxField.setValue((boolean) type.getValue().bytesToObject(currentItem.getValue()));
+                boxField.setReadOnly(operation == CrudOperation.DELETE);
+                valueLayout.add(boxField);
+            }
+
+            case integer -> {
+                TextField numberField = new TextField("Value (intero)");
+                numberField.setRequired(true);
+                if (operation != CrudOperation.ADD) {
+                    numberField.setValue(type.getValue().bytesToObject(currentItem.getValue()) + VUOTA);
+                    numberField.setReadOnly(operation == CrudOperation.DELETE);
+                }
+                valueLayout.add(numberField);
+            }
+            case localdate -> {
+                DatePicker pickerField = new DatePicker("Data (giorno)");
+                pickerField.setRequired(true);
+                pickerField.setReadOnly(operation == CrudOperation.DELETE);
+                valueLayout.add(pickerField);
+            }
+            case localtime -> {
+                TimePicker pickerField = new TimePicker("Time (orario)");
+                pickerField.setRequired(true);
+                pickerField.setReadOnly(operation == CrudOperation.DELETE);
+                valueLayout.add(pickerField);
+            }
+            case localdatetime -> {
+                DateTimePicker pickerField = new DateTimePicker("Data completa (giorno e orario)");
+                pickerField.setReadOnly(operation == CrudOperation.DELETE);
+                valueLayout.add(pickerField);
+            }
+            default -> valueLayout.add(new Label("Type non ancora gestito"));
+        }
+    }
+
+    protected boolean sincroValueToModel() {
+        boolean valido = false;
+        Component comp;
+
+        switch (type.getValue()) {
+            case string -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof TextField textField) {
+                    if (textService.isValid(textField.getValue())) {
+                        try {
+                            currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
+                            valido = true;
+                        } catch (Exception unErrore) {
+                            logger.error(unErrore);
+                        }
+                    }
+                    else {
+                        Avviso.show("Manca il valore").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                        logger.info(new WrapLog().exception(new AlgosException("Manca il valore della preferenza che non può essere vuoto")));
+                    }
+                }
+            }
+            case bool -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof Checkbox checkField) {
+                    currentItem.setValue(type.getValue().objectToBytes(checkField.getValue()));
+                    valido = true;
+                }
+            }
+            case integer -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof TextField textField) {
+                    currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
+                    valido = true;
+                }
+            }
+
+            case localdate -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof DatePicker textField) {
+                    currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
+                    valido = true;
+                }
+            }
+            case localtime -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof TimePicker textField) {
+                    currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
+                    valido = true;
+                }
+            }
+            case localdatetime -> {
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof DateTimePicker textField) {
+                    currentItem.setValue(type.getValue().objectToBytes(textField.getValue()));
+                    valido = true;
+                }
+            }
+            default -> Notification.show("Switch non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+
+        return valido;
+    }
 
     /**
      * Barra dei bottoni <br>
@@ -321,33 +407,31 @@ public class PreferenzaDialog extends Dialog {
         Label spazioVuotoEspandibile = new Label("");
 
         annullaButton.setText(textAnnullaButton);
-        annullaButton.getElement().setAttribute("theme", "secondary");
+        annullaButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "secondary" : "primary");
         annullaButton.addClickListener(e -> annullaHandler());
         annullaButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
+        annullaButton.addClickShortcut(Key.ARROW_LEFT, KeyModifier.CONTROL); //@todo non funziona
         layout.add(annullaButton);
 
-        layout.add(spazioVuotoEspandibile);
+        //        layout.add(spazioVuotoEspandibile);
 
         saveButton.setText(textSaveButton);
-        if (false) {
-            saveButton.getElement().setAttribute("theme", "secondary");
-        }
-        else {
-            saveButton.getElement().setAttribute("theme", "primary");
-        }
+        saveButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "primary" : "secondary");
         saveButton.addClickListener(e -> saveHandler());
         saveButton.setIcon(new Icon(VaadinIcon.CHECK));
+        saveButton.addClickShortcut(Key.ENTER);
         layout.add(saveButton);
 
         deleteButton.setText(textDeleteButton);
         deleteButton.getElement().setAttribute("theme", "error");
         deleteButton.addClickListener(e -> deleteHandler());
-        deleteButton.setIcon(new Icon(VaadinIcon.CHECK));
+        deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
         layout.add(deleteButton);
 
         layout.setFlexGrow(1, spazioVuotoEspandibile);
 
         //--Controlla la visibilità dei bottoni
+        saveButton.setVisible(operation == CrudOperation.ADD || operation == CrudOperation.UPDATE);
         deleteButton.setVisible(operation == CrudOperation.DELETE);
 
         return layout;
@@ -360,21 +444,23 @@ public class PreferenzaDialog extends Dialog {
 
     public void saveHandler() {
         try {
-            BinderValidationStatus alfa = binder.validate();
-            if (binder.writeBeanIfValid(currentItem)) {
-                int a = 87;
+            if (binder.writeBeanIfValid(currentItem) && sincroValueToModel()) {
+                binder.writeBean(currentItem);
             }
             else {
-                int b = 88;
+                logger.info(new WrapLog().exception(new AlgosException("binder non valido")));
+                return;
             }
-
-            binder.writeBean(currentItem);
-            sincroValueToModel();
         } catch (ValidationException error) {
             logger.error(error);
             return;
         }
         preferenzaBackend.update(currentItem);
+        switch (operation) {
+            case ADD -> Avviso.show2000("Registrata la preferenza").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            case UPDATE -> Avviso.show2000("Registrata la modifica").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            default -> Notification.show("Caso non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
 
         if (saveHandler != null) {
             saveHandler.accept(currentItem, operation);
@@ -390,6 +476,13 @@ public class PreferenzaDialog extends Dialog {
     }
 
     public void annullaHandler() {
+        switch (operation) {
+            case ADD -> Avviso.show2000("Preferenza non registrata").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            case READ -> Avviso.show2000("Preferenza letta").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            case UPDATE -> Avviso.show2000("Preferenza non modificata").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            case DELETE -> Avviso.show2000("Preferenza non cancellata").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            default -> Notification.show("Caso non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
         if (annullaHandler != null) {
             annullaHandler.accept(currentItem);
         }

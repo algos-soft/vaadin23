@@ -20,7 +20,7 @@ public class Preferenza extends AEntity {
     /**
      * codice di riferimento (obbligatorio, unico)
      */
-    @NotBlank()
+    @NotEmpty()
     //    @Size(min = 3)
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
     public String code;
@@ -81,7 +81,7 @@ public class Preferenza extends AEntity {
     /**
      * descrizione (obbligatoria)
      */
-    @NotBlank()
+    @NotEmpty()
     //    @Size(min = 5)
     //    @AIField(type = AETypeField.text, widthEM = 24)
     //    @AIColumn(widthEM = 24, flexGrow = true)

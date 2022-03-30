@@ -25,7 +25,7 @@ import java.util.*;
 @Route(value = TAG_VERSIONE, layout = MainLayout.class)
 public class VersioneView extends CrudView {
 
-    private ComboBox comboTypeVers;
+    private ComboBox<AETypeVers> comboTypeVers;
 
     //--per eventuali metodi specifici
     private VersioneBackend backend;
@@ -55,7 +55,6 @@ public class VersioneView extends CrudView {
     public void fixPreferenze() {
         super.fixPreferenze();
 
-        this.splitLayout = true;
         this.usaBottoneFilter = true;
     }
 
@@ -158,7 +157,7 @@ public class VersioneView extends CrudView {
         comboTypeVers = new ComboBox();
         comboTypeVers.setPlaceholder("Type");
         comboTypeVers.setClearButtonVisible(true);
-        List items2 = AETypeVers.getAllEnums();
+        List<AETypeVers> items2 = AETypeVers.getAllEnums();
         comboTypeVers.setItems(items2);
         gridCrud.getCrudLayout().addFilterComponent(comboTypeVers);
         comboTypeVers.addValueChangeListener(event -> sincroFiltri());
@@ -178,7 +177,7 @@ public class VersioneView extends CrudView {
         }
 
         if (comboTypeVers != null) {
-            type = (AETypeVers) comboTypeVers.getValue();
+            type = comboTypeVers.getValue();
         }
 
         if (usaBottoneFilter) {

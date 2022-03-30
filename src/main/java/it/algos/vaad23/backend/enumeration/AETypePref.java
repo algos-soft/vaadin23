@@ -3,11 +3,13 @@ package it.algos.vaad23.backend.enumeration;
 
 import com.google.common.primitives.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.interfaces.*;
 
 import java.nio.*;
 import java.nio.charset.*;
 import java.time.*;
 import java.time.format.*;
+import java.util.*;
 
 /**
  * Created by gac on 30 lug 2016. <br>
@@ -15,15 +17,15 @@ import java.time.format.*;
  * Codifica e decodifica specifiche per ogni tipologia. <br>
  * Usato sempre il charset di caratteri UTF-8 <br>
  */
-public enum AETypePref {
+public enum AETypePref implements AIPref {
     string("string") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
-            if (obj instanceof String) {
-                String stringa = (String) obj;
+            if (obj instanceof String stringa) {
+                //                String stringa = (String) obj;
                 bytes = stringa.getBytes(Charset.forName("UTF-8"));
-            }// end of if cycle
+            }
             return bytes;
         }
 
@@ -32,9 +34,9 @@ public enum AETypePref {
             String obj = "";
             if (bytes != null) {
                 obj = new String(bytes, Charset.forName("UTF-8"));
-            }// end of if cycle
+            }
             return obj;
-        }// end of method
+        }
 
         @Override
         public String bytesToString(byte[] bytes) {
@@ -63,15 +65,15 @@ public enum AETypePref {
         @SuppressWarnings("all")
         public Boolean bytesToObject(byte[] bytes) {
             Object obj = null;
-            if (bytes.length > 0) {
+            if (bytes != null && bytes.length > 0) {
                 byte b = bytes[0];
                 obj = new Boolean(b == (byte) 0b00000001);
             }
             else {
                 obj = new Boolean(false);
-            }// end of if/else cycle
+            }
             return (Boolean) obj;
-        }// end of method
+        }
 
         @Override
         public String bytesToString(byte[] bytes) {
@@ -86,19 +88,19 @@ public enum AETypePref {
             if (obj instanceof Integer) {
                 int num = (Integer) obj;
                 bytes = intToByteArray(num);
-            }// end of if cycle
+            }
             if (obj instanceof String) {
                 bytes = intToByteArray(new Integer((String) obj));
-            }// end of if cycle
+            }
 
             return bytes;
-        }// end of method
+        }
 
 
         @Override
         public Integer bytesToObject(byte[] bytes) {
             return byteArrayToInt(bytes);
-        }// end of method
+        }
 
 
         @Override
@@ -114,18 +116,18 @@ public enum AETypePref {
             if (obj instanceof Long) {
                 long num = (Long) obj;
                 bytes = longToByteArray(num);
-            }// end of if cycle
+            }
             if (obj instanceof String) {
                 bytes = longToByteArray(new Long((String) obj));
-            }// end of if cycle
+            }
 
             return bytes;
-        }// end of method
+        }
 
         @Override
         public Long bytesToObject(byte[] bytes) {
             return byteArrayToLong(bytes);
-        }// end of method
+        }
 
         @Override
         public String bytesToString(byte[] bytes) {
@@ -144,9 +146,9 @@ public enum AETypePref {
                 data = (LocalDate) obj;
                 giorni = data.toEpochDay();
                 bytes = Longs.toByteArray(giorni);
-            }// end of if cycle
+            }
             return bytes;
-        }// end of method
+        }
 
 
         @Override
@@ -157,10 +159,10 @@ public enum AETypePref {
             if (bytes != null && bytes.length > 0) {
                 giorni = Longs.fromByteArray(bytes);
                 data = LocalDate.ofEpochDay(giorni);
-            }// end of if cycle
+            }
 
             return data;
-        }// end of method
+        }
 
         @Override
         public String bytesToString(byte[] bytes) {
@@ -181,9 +183,9 @@ public enum AETypePref {
                 //                long millis = LibDate.getLongSecs((LocalDateTime) obj);
                 //                long millis = ((LocalDateTime) obj).;
                 bytes = Longs.toByteArray(millis);
-            }// end of if cycle
+            }
             return bytes;
-        }// end of method
+        }
 
 
         @Override
@@ -195,10 +197,10 @@ public enum AETypePref {
             if (bytes != null && bytes.length > 0) {
                 millis = Longs.fromByteArray(bytes);
                 data = bytes.length > 0 ? LocalDateTime.ofEpochSecond(millis, 0, ZoneOffset.UTC) : null;
-            }// end of if cycle
+            }
 
             return data;
-        }// end of method
+        }
 
         @Override
         public String bytesToString(byte[] bytes) {
@@ -214,9 +216,9 @@ public enum AETypePref {
                 LocalTime time = (LocalTime) obj;
                 long millis = time.toNanoOfDay();
                 bytes = Longs.toByteArray(millis);
-            }// end of if cycle
+            }
             return bytes;
-        }// end of method
+        }
 
         @Override
         public LocalTime bytesToObject(byte[] bytes) {
@@ -226,10 +228,10 @@ public enum AETypePref {
             if (bytes != null && bytes.length > 0) {
                 millis = Longs.fromByteArray(bytes);
                 time = bytes.length > 0 ? LocalTime.ofNanoOfDay(millis) : null;
-            }// end of if cycle
+            }
 
             return time;
-        }// end of method
+        }
 
         @Override
         public String bytesToString(byte[] bytes) {
@@ -244,9 +246,9 @@ public enum AETypePref {
             if (obj instanceof String) {
                 String stringa = (String) obj;
                 bytes = stringa.getBytes(Charset.forName("UTF-8"));
-            }// end of if cycle
+            }
             return bytes;
-        }// end of method
+        }
 
 
         @Override
@@ -254,9 +256,9 @@ public enum AETypePref {
             String obj = "";
             if (bytes != null) {
                 obj = new String(bytes, Charset.forName("UTF-8"));
-            }// end of if cycle
+            }
             return obj;
-        }// end of method
+        }
 
         @Override
         public String bytesToString(byte[] bytes) {
@@ -271,9 +273,9 @@ public enum AETypePref {
             if (obj instanceof String) {
                 String stringa = (String) obj;
                 bytes = stringa.getBytes(Charset.forName("UTF-8"));
-            }// end of if cycle
+            }
             return bytes;
-        }// end of method
+        }
 
 
         @Override
@@ -281,9 +283,9 @@ public enum AETypePref {
             String obj = "";
             if (bytes != null) {
                 obj = new String(bytes, Charset.forName("UTF-8"));
-            }// end of if cycle
+            }
             return obj;
-        }// end of method
+        }
 
         @Override
         public String bytesToString(byte[] bytes) {
@@ -320,9 +322,9 @@ public enum AETypePref {
             if (obj instanceof String) {
                 String stringa = (String) obj;
                 bytes = stringa.getBytes(Charset.forName("UTF-8"));
-            }// end of if cycle
+            }
             return bytes;
-        }// end of method
+        }
 
 
         @Override
@@ -330,9 +332,9 @@ public enum AETypePref {
             String obj = VUOTA;
             if (bytes != null) {
                 obj = new String(bytes, Charset.forName("UTF-8"));
-            }// end of if cycle
+            }
             return obj.toUpperCase();
-        }// end of method
+        }
     },// end of single enumeration
 
     ;
@@ -504,4 +506,27 @@ public enum AETypePref {
         return getNome();
     }// end of method
 
+    public static List<AETypePref> getAllEnums() {
+        return Arrays.stream(values()).toList();
+    }
+
+    /**
+     * Stringa di valori (text) da usare per memorizzare la preferenza <br>
+     * La stringa è composta da tutti i valori separati da virgola <br>
+     * Poi, separato da punto e virgola viene il valore selezionato di default <br>
+     *
+     * @return stringa di valori e valore di default
+     */
+    @Override
+    public String getPref() {
+        StringBuffer buffer = new StringBuffer();
+
+        getAllEnums().forEach(enumeration -> buffer.append(enumeration.name() + VIRGOLA));
+
+        buffer.delete(buffer.length() - 1, buffer.length());
+        buffer.append(PUNTO_VIRGOLA);
+        buffer.append(name());
+
+        return buffer.toString();
+    }
 }// end of enumeration class

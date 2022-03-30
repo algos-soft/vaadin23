@@ -2,12 +2,15 @@ package it.algos.vaad23.backend.packages.utility.preferenza;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.page.*;
 import com.vaadin.flow.data.renderer.*;
+import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -16,6 +19,7 @@ import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
+import it.algos.vaad23.ui.dialog.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
@@ -42,6 +46,8 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
     protected List<Preferenza> items;
 
+    protected ComboBox<AETypePref> comboTypePref;
+
     @Autowired
     protected PreferenzaBackend backend;
 
@@ -67,7 +73,6 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         this.fixColumns();
         this.fixFields();
         this.fixOrder();
-        this.fixAdditionalComponents();
         this.addListeners();
     }
 
@@ -117,18 +122,24 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         editButton = new Button();
         editButton.getElement().setAttribute("theme", "secondary");
         editButton.setIcon(new Icon(VaadinIcon.PENCIL));
+        editButton.addClickListener(e -> updateItem());
+        editButton.setEnabled(false);
         layout.add(editButton);
 
         deleteButton = new Button();
         deleteButton.getElement().setAttribute("theme", "secondary");
         deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
+        deleteButton.addClickListener(e -> deleteItem());
+        deleteButton.setEnabled(false);
         layout.add(deleteButton);
 
-        //        annullaButton.setText(textAnnullaButton);
-        //        annullaButton.getElement().setAttribute("theme", "secondary");
-        //        annullaButton.addClickListener(e -> annullaHandler());
-        //        annullaButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
-        //        layout.add(annullaButton);
+        comboTypePref = new ComboBox<>();
+        comboTypePref.setPlaceholder("Type");
+        comboTypePref.setClearButtonVisible(true);
+        List<AETypePref> items2 = AETypePref.getAllEnums();
+        comboTypePref.setItems(items2);
+        comboTypePref.addValueChangeListener(event -> sincroFiltri());
+        layout.add(comboTypePref);
 
         this.add(layout);
     }
@@ -145,6 +156,14 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         // Pass all Preferenza objects to a grid from a Spring Data repository object
         grid.setItems(backend.findAll());
 
+        // The row-stripes theme produces a background color for every other row.
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+
+        // switch to single select mode
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+
+        grid.addSelectionListener(event -> sincroSelection(event));
+
         // layout configuration
         setSizeFull();
         this.add(grid);
@@ -159,13 +178,30 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
         grid.addColumn(new ComponentRenderer<>(pref ->
                 switch (pref.getType()) {
-                    case string -> new Label(pref.getType().bytesToString(pref.getValue()));
+                    case string, integer, localdate, localtime, localdatetime -> new Label(pref.getType().bytesToString(pref.getValue()));
                     case bool -> (boolean) pref.getType().bytesToObject(pref.getValue()) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
-                    case integer -> new Label(pref.getType().bytesToString(pref.getValue()));
                     default -> new Label(TRE_PUNTI);
                 })).setHeader("Value").setKey("value");
 
-        grid.addColumns("descrizione", "vaadFlow", "needRiavvio");
+        grid.addColumns("descrizione");
+
+        String larCode = "9em";
+        String larType = "9em";
+        String larValue = "10em";
+        String larDesc = "30em";
+        String larBool = "6em";
+
+        grid.getColumnByKey("code").setWidth(larCode).setFlexGrow(0);
+        grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
+        grid.getColumnByKey("value").setWidth(larValue).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
+        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
+        //        grid.getColumnByKey("vaadFlow").setWidth(larBool).setFlexGrow(0).setHeader("Vaad23");
+        //        grid.getColumnByKey("needRiavvio").setWidth(larBool).setFlexGrow(0).setHeader("Riavvio");
+
+        grid.addColumn(new ComponentRenderer<>(pref -> (boolean) AETypePref.bool.bytesToObject(pref.getValue()) ? VaadinIcon.CHECK.create() :
+                VaadinIcon.CLOSE.create())).setHeader("Vaad23").setKey("vaadFlow").setWidth(larBool).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(new ComponentRenderer<>(pref -> (boolean) AETypePref.bool.bytesToObject(pref.getValue()) ? VaadinIcon.CHECK.create() :
+                VaadinIcon.CLOSE.create())).setHeader("Riavvio").setKey("needRiavvio").setWidth(larBool).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
     }
 
     /**
@@ -184,14 +220,6 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
 
     /**
-     * Componenti aggiuntivi oltre quelli base <br>
-     * Tipicamente bottoni di selezione/filtro <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    protected void fixAdditionalComponents() {
-    }
-
-    /**
      * Aggiunge tutti i listeners ai bottoni di 'topPlaceholder' che sono stati creati SENZA listeners <br>
      * <p>
      * Chiamato da afterNavigation() <br>
@@ -201,7 +229,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         // pass the row/item that the user double-clicked to method openDialog
         grid.addItemClickListener(listener -> {
             if (listener.getClickCount() == 2)
-                openDialog(listener.getItem());
+                updateItem(listener.getItem());
         });
     }
 
@@ -212,13 +240,49 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
     }
 
-    public void openDialog(Preferenza entityBean) {
+    public void updateItem() {
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            updateItem((Preferenza) entityBean.get());
+        }
+    }
+
+    public void updateItem(Preferenza entityBean) {
         PreferenzaDialog dialog = appContext.getBean(PreferenzaDialog.class, entityBean, CrudOperation.UPDATE);
         dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
     }
 
+    public void deleteItem() {
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            PreferenzaDialog dialog = appContext.getBean(PreferenzaDialog.class, entityBean.get(), CrudOperation.DELETE);
+            dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
+        }
+    }
+
+    protected void sincroFiltri() {
+        List<Preferenza> items = null;
+        AETypePref type;
+
+        if (comboTypePref != null) {
+            type = comboTypePref.getValue();
+            items = backend.findByType(type);
+        }
+
+        if (items != null) {
+            grid.setItems(items);
+        }
+    }
+
+    protected void sincroSelection(SelectionEvent event) {
+        boolean singoloSelezionato = event.getAllSelectedItems().size() == 1;
+        editButton.setEnabled(singoloSelezionato);
+        deleteButton.setEnabled(singoloSelezionato);
+    }
+
     protected void refresh() {
         grid.setItems(backend.findAll());
+        Avviso.show("Refreshed view").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
     }
 
     /**
@@ -237,6 +301,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         //        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
         return null;
     }
+
 
     public Span getSpan(final String avviso) {
         return htmlService.getSpanVerde(avviso);
