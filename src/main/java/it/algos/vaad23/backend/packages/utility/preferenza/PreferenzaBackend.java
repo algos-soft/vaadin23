@@ -45,12 +45,61 @@ public class PreferenzaBackend extends EntityBackend {
         this.repository = (PreferenzaRepository) crudRepository;
     }
 
-    public List<Preferenza> findByType(final AETypePref type) {
+    public boolean existsById(final String idKey) {
+        return repository.existsById(idKey);
+    }
+
+    public boolean existsByCode(final String code) {
+        return findByCode(code) != null;
+    }
+
+
+    public Preferenza findByKey(final String key) {
+        Object alfa = repository.findById(key);
+        List<Preferenza> lista = repository.findByCodeContainingIgnoreCase(key);
+        if (lista != null && lista.size() == 1) {
+            return lista.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public Preferenza findByCode(final String code) {
+        List<Preferenza> lista = findAllByCode(code);
+        if (lista != null && lista.size() == 1) {
+            return lista.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
+
+    public List<Preferenza> findAllByCode(final String code) {
+        return repository.findAllByCode(code);
+    }
+
+    public List<Preferenza> findAllByType(final AETypePref type) {
         if (type != null) {
             return repository.findByType(type);
         }
         else {
             return repository.findAll();
+        }
+    }
+
+    public List<Preferenza> findAllByCodeAndType(final String code, final AETypePref type) {
+        if (type == null) {
+            return repository.findByCodeContainingIgnoreCase(code);
+        }
+        else {
+            if (textService.isValid(code)) {
+                return repository.findByCodeContainingIgnoreCaseAndType(code, type);
+            }
+            else {
+                return repository.findByType(type);
+            }
         }
     }
 

@@ -9,13 +9,14 @@ import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.page.*;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.renderer.*;
 import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.server.*;
 import it.algos.vaad23.backend.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
-import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -39,12 +40,18 @@ import java.util.*;
 @AIView(lineawesomeClassnames = "wrench")
 public class PreferenzaView extends VerticalLayout implements AfterNavigationObserver {
 
+    private static final String COLOR_VERO = "#9FE2BF";
+
+    private static final String COLOR_FALSO = "#FF7F50";
+
     @Autowired
     protected ApplicationContext appContext;
 
     protected Grid<Preferenza> grid;
 
     protected List<Preferenza> items;
+
+    protected TextField filter;
 
     protected ComboBox<AETypePref> comboTypePref;
 
@@ -53,6 +60,12 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
     @Autowired
     protected HtmlService htmlService;
+
+    @Autowired
+    protected LogService logger;
+
+    @Autowired
+    protected VaadPref vaadPref;
 
     protected Button refreshButton;
 
@@ -66,6 +79,8 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
+        WebBrowser browser = VaadinSession.getCurrent().getBrowser();
+        int a = 87;
         UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> fixBrowser(details));
         this.fixAlert();
         this.fixTop();
@@ -93,6 +108,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         span(String.format("VaadFlow=true per le preferenze del programma base '%s'", VaadVar.projectVaadFlow));
         span(String.format("VaadFlow=false per le preferenze del programma corrente '%s'", VaadVar.projectCurrent));
         span("NeedRiavvio=true se la preferenza ha effetto solo dopo un riavvio del programma");
+        spanRosso("Refresh ripristina nel database i valori di default annullando le successive modifiche");
     }
 
     /**
@@ -108,7 +124,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         layout.setClassName("confirm-dialog-buttons");
 
         refreshButton = new Button();
-        refreshButton.getElement().setAttribute("theme", "secondary");
+        refreshButton.getElement().setAttribute("theme", "error");
         refreshButton.setIcon(new Icon(VaadinIcon.REFRESH));
         refreshButton.addClickListener(e -> refresh());
         layout.add(refreshButton);
@@ -117,7 +133,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         addButton.getElement().setAttribute("theme", "secondary");
         addButton.setIcon(new Icon(VaadinIcon.PLUS));
         addButton.addClickListener(e -> newItem());
-        layout.add(addButton);
+        //        layout.add(addButton);
 
         editButton = new Button();
         editButton.getElement().setAttribute("theme", "secondary");
@@ -132,6 +148,12 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         deleteButton.addClickListener(e -> deleteItem());
         deleteButton.setEnabled(false);
         layout.add(deleteButton);
+
+        filter = new TextField();
+        filter.setPlaceholder("Filter by code");
+        filter.setClearButtonVisible(true);
+        filter.addValueChangeListener(event -> sincroFiltri());
+        layout.add(filter);
 
         comboTypePref = new ComboBox<>();
         comboTypePref.setPlaceholder("Type");
@@ -178,8 +200,18 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
 
         grid.addColumn(new ComponentRenderer<>(pref ->
                 switch (pref.getType()) {
-                    case string, integer, localdate, localtime, localdatetime -> new Label(pref.getType().bytesToString(pref.getValue()));
-                    case bool -> (boolean) pref.getType().bytesToObject(pref.getValue()) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+                    case string, integer, localdate, localtime, localdatetime -> {
+                        Label label = new Label(pref.getType().bytesToString(pref.getValue()));
+                        label.getElement().getStyle().set("color", pref.getType().getColor());
+                        label.getElement().getStyle().set("fontWeight", "bold");
+                        yield label;
+                    }
+                    case bool -> {
+                        boolean vero = (boolean) pref.getType().bytesToObject(pref.getValue());
+                        Icon icona = vero ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+                        icona.setColor(vero ? COLOR_VERO : COLOR_FALSO);
+                        yield icona;
+                    }
                     default -> new Label(TRE_PUNTI);
                 })).setHeader("Value").setKey("value");
 
@@ -195,13 +227,18 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
         grid.getColumnByKey("value").setWidth(larValue).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
         grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
-        //        grid.getColumnByKey("vaadFlow").setWidth(larBool).setFlexGrow(0).setHeader("Vaad23");
-        //        grid.getColumnByKey("needRiavvio").setWidth(larBool).setFlexGrow(0).setHeader("Riavvio");
 
-        grid.addColumn(new ComponentRenderer<>(pref -> (boolean) AETypePref.bool.bytesToObject(pref.getValue()) ? VaadinIcon.CHECK.create() :
-                VaadinIcon.CLOSE.create())).setHeader("Vaad23").setKey("vaadFlow").setWidth(larBool).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
-        grid.addColumn(new ComponentRenderer<>(pref -> (boolean) AETypePref.bool.bytesToObject(pref.getValue()) ? VaadinIcon.CHECK.create() :
-                VaadinIcon.CLOSE.create())).setHeader("Riavvio").setKey("needRiavvio").setWidth(larBool).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(new ComponentRenderer<>(pref -> {
+            Icon icona = pref.vaadFlow ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+            icona.setColor(pref.vaadFlow ? COLOR_VERO : COLOR_FALSO);
+            return icona;
+        })).setHeader("Vaad23").setKey("vaadFlow").setWidth(larBool).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(new ComponentRenderer<>(pref -> {
+            Icon icona = pref.needRiavvio ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+            icona.setColor(pref.needRiavvio ? COLOR_VERO : COLOR_FALSO);
+            return icona;
+        })).setHeader("Riavvio").setKey("needRiavvio").setWidth(larBool).setFlexGrow(0).setTextAlign(ColumnTextAlign.CENTER);
+
     }
 
     /**
@@ -261,14 +298,10 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     }
 
     protected void sincroFiltri() {
-        List<Preferenza> items = null;
-        AETypePref type;
+        String textSearch = filter != null ? filter.getValue() : VUOTA;
+        AETypePref type = comboTypePref != null ? comboTypePref.getValue() : null;
 
-        if (comboTypePref != null) {
-            type = comboTypePref.getValue();
-            items = backend.findByType(type);
-        }
-
+        items = backend.findAllByCodeAndType(textSearch, type);
         if (items != null) {
             grid.setItems(items);
         }
@@ -281,6 +314,13 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     }
 
     protected void refresh() {
+        //        appContext.getBean(DialogDelete.class, "tutta la collection").open(this::refreshAll);
+        appContext.getBean(DialogRefreshPreferenza.class).open(this::refreshAll);
+    }
+
+    protected void refreshAll() {
+        backend.deleteAll();
+        vaadPref.inizia();
         grid.setItems(backend.findAll());
         Avviso.show("Refreshed view").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
     }
@@ -292,14 +332,14 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
         grid.setItems(backend.findAll());
     }
 
-    public AEntity deleteHandler(final Preferenza entityBean) {
-        //        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
-        return null;
+    public void deleteHandler(final Preferenza entityBean) {
+        backend.delete(entityBean);
+        grid.setItems(backend.findAll());
+        Avviso.show(String.format("%s successfully deleted", entityBean.code)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     }
 
-    public AEntity annullaHandler(final Preferenza entityBean) {
+    public void annullaHandler(final Preferenza entityBean) {
         //        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
-        return null;
     }
 
 
@@ -329,15 +369,20 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
             wrap.weight(AEFontWeight.bold);
         }
         if (wrap.getFontHeight() == null) {
-            wrap.fontHeight(AEFontHeight.px14);
+            if (width == 0 || width > 500) {
+                wrap.fontHeight(AEFontHeight.em9);
+            }
+            else {
+                wrap.fontHeight(AEFontHeight.em7);
+            }
         }
 
         if (wrap.getLineHeight() == null) {
             if (width == 0 || width > 500) {
-                wrap.lineHeight(AELineHeight.px2);
+                wrap.lineHeight(AELineHeight.em3);
             }
             else {
-                wrap.lineHeight(AELineHeight.normal);
+                wrap.lineHeight(AELineHeight.em12);
             }
         }
 

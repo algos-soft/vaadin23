@@ -18,7 +18,7 @@ import java.util.*;
  * Usato sempre il charset di caratteri UTF-8 <br>
  */
 public enum AETypePref implements AIPref {
-    string("string") {
+    string("string", "Blue") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -44,7 +44,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    bool("bool") {
+    bool("bool", "black") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -81,7 +81,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    integer("int") {
+    integer("int", "Green") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -109,7 +109,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    lungo("long") {
+    lungo("long", "black") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -135,7 +135,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    localdate("data") {
+    localdate("data", "Olive") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -170,7 +170,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    localdatetime("datatime") {
+    localdatetime("datatime", "Fuchsia") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -208,7 +208,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    localtime("time") {
+    localtime("time", "Aqua") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -239,7 +239,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    email("email") {
+    email("email", "black") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -266,7 +266,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    enumeration("enum") {
+    enumeration("enum", "black") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -293,7 +293,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    image("image") {
+    image("image", "black") {
         //@todo RIMETTERE
         //        @Override
         //        public byte[] objectToBytes(Object obj) {
@@ -315,7 +315,7 @@ public enum AETypePref implements AIPref {
         //        }// end of method
     },// end of single enumeration
 
-    icona("icona") {
+    icona("icona", "black") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -378,9 +378,12 @@ public enum AETypePref implements AIPref {
     //    private static ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
     private String nome;
 
+    private String color;
 
-    AETypePref(String nome) {
+
+    AETypePref(final String nome, final String color) {
         this.setNome(nome);
+        this.color = color;
     }// fine del costruttore
 
 
@@ -425,6 +428,9 @@ public enum AETypePref implements AIPref {
         return buffer.getLong();
     }// end of static method
 
+    public static List<AETypePref> getAllEnums() {
+        return Arrays.stream(values()).toList();
+    }
 
     /**
      * Converte un valore Object in ByteArray per questa preferenza.
@@ -437,7 +443,6 @@ public enum AETypePref implements AIPref {
     public byte[] objectToBytes(Object obj) {
         return null;
     }// end of method
-
 
     /**
      * Converte un byte[] in Object del tipo adatto per questa preferenza.
@@ -463,7 +468,6 @@ public enum AETypePref implements AIPref {
         return bytesToObject(bytes).toString();
     }
 
-
     /**
      * Writes a value in the storage for this type of preference
      * Sovrascritto
@@ -473,7 +477,6 @@ public enum AETypePref implements AIPref {
     public void put(Object value) {
     }// end of method
 
-
     /**
      * Retrieves the value of this preference's type
      * Sovrascritto
@@ -482,16 +485,13 @@ public enum AETypePref implements AIPref {
         return null;
     }// end of method
 
-
     public String getNome() {
         return nome;
     }// end of getter method
 
-
     public void setNome(String nome) {
         this.nome = nome;
     }//end of setter method
-
 
     /**
      * Returns the name of this enum constant, as contained in the
@@ -506,8 +506,8 @@ public enum AETypePref implements AIPref {
         return getNome();
     }// end of method
 
-    public static List<AETypePref> getAllEnums() {
-        return Arrays.stream(values()).toList();
+    public String getColor() {
+        return color;
     }
 
     /**

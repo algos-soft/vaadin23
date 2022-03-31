@@ -1,11 +1,13 @@
 package it.algos.vaad23.ui.views;
 
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.page.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -76,6 +78,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     Class entityClazz;
 
+    protected int width;
 
     public CrudView(EntityBackend crudBackend, Class entityClazz) {
         this.crudBackend = crudBackend;
@@ -91,6 +94,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      */
     @Override
     public void afterNavigation(AfterNavigationEvent beforeEnterEvent) {
+        UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> fixBrowser(details));
         this.fixPreferenze();
         this.fixAlert();
         this.fixCrud();
@@ -101,6 +105,12 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.addListeners();
     }
 
+    /**
+     *
+     */
+    public void fixBrowser(ExtendedClientDetails details) {
+        width = details.getBodyClientWidth();
+    }
 
     /**
      * Preferenze usate da questa view <br>
@@ -299,10 +309,20 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             wrap.weight(AEFontWeight.bold);
         }
         if (wrap.getFontHeight() == null) {
-            wrap.fontHeight(AEFontHeight.px14);
+            if (width == 0 || width > 500) {
+                wrap.fontHeight(AEFontHeight.em9);
+            }
+            else {
+                wrap.fontHeight(AEFontHeight.em7);
+            }
         }
         if (wrap.getLineHeight() == null) {
-            wrap.lineHeight(AELineHeight.px2);
+            if (width == 0 || width > 500) {
+                wrap.lineHeight(AELineHeight.em3);
+            }
+            else {
+                wrap.lineHeight(AELineHeight.em12);
+            }
         }
 
         span = htmlService.getSpan(wrap);

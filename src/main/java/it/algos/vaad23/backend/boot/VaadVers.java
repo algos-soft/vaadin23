@@ -116,7 +116,7 @@ public class VaadVers implements AIVers {
 
 
     /**
-     * Inserimento di una versione del progetto base VaadFlow14 <br>
+     * Inserimento di una versione del progetto base Vaadin23 <br>
      * Controlla che la entity non esista già <br>
      * Ordine messo in automatico (progressivo) <br>
      */

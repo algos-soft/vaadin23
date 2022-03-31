@@ -68,7 +68,7 @@ public class LoggerBackend extends EntityBackend {
         }
 
         entity.livello = livello;
-        entity.type = type;
+        entity.type = type != null ? type : AETypeLog.system;
         entity.evento = LocalDateTime.now();
         entity.descrizione = textService.isValid(message) ? message : null;
         entity.company = textService.isValid(companySigla) ? companySigla : null;

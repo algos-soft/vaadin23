@@ -1,6 +1,7 @@
 package it.algos.vaad23.ui.dialog;
 
 import com.vaadin.flow.component.notification.*;
+import it.algos.vaad23.backend.enumeration.*;
 
 /**
  * Project vaadin23
@@ -12,6 +13,11 @@ import com.vaadin.flow.component.notification.*;
 public class Avviso {
 
     public static Notification show(String text) {
+        int durata = Pref.durataAvviso.getInt();
+        return Notification.show(text, durata > 0 ? durata : 2000, Notification.Position.BOTTOM_START);
+    }
+
+    public static Notification show1000(String text) {
         return Notification.show(text, 1000, Notification.Position.BOTTOM_START);
     }
 

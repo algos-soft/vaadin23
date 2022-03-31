@@ -189,7 +189,7 @@ public class PreferenzaDialog extends Dialog {
             case READ -> "Mostra";
             case ADD -> "Nuova";
             case UPDATE -> "Modifica";
-            case DELETE -> "Elimina";
+            case DELETE -> "Cancella";
             default -> "Edit";
         };
 
@@ -469,8 +469,9 @@ public class PreferenzaDialog extends Dialog {
     }
 
     public void deleteHandler() {
+        Preferenza item = currentItem;
         if (deleteHandler != null) {
-            deleteHandler.accept(currentItem);
+            deleteHandler.accept(item);
         }
         close();
     }

@@ -38,8 +38,12 @@ public interface PreferenzaRepository extends MongoRepository<Preferenza, String
 
     void delete(Preferenza entity);
 
+    List<Preferenza> findAllByCode(String code);
+
+    List<Preferenza> findByCodeContainingIgnoreCase(String code);
+
     List<Preferenza> findByType(AETypePref type);
 
-    List<Preferenza> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypePref type);
+    List<Preferenza> findByCodeContainingIgnoreCaseAndType(String code, AETypePref type);
 
 }// end of crud repository class

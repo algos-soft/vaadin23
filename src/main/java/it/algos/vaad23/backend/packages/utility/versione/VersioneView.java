@@ -101,7 +101,7 @@ public class VersioneView extends CrudView {
 
         grid.setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
 
-        String larId = "3em";
+        String larId = "4em";
         String larType = "8em";
         String larTitolo = "11em";
         String larDesc = "30em";
@@ -154,7 +154,7 @@ public class VersioneView extends CrudView {
     protected void fixAdditionalComponents() {
         super.fixAdditionalComponents();
 
-        comboTypeVers = new ComboBox();
+        comboTypeVers = new ComboBox<>();
         comboTypeVers.setPlaceholder("Type");
         comboTypeVers.setClearButtonVisible(true);
         List<AETypeVers> items2 = AETypeVers.getAllEnums();
@@ -166,14 +166,14 @@ public class VersioneView extends CrudView {
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
-    protected List sincroFiltri() {
-        List items = null;
+    protected List<Versione> sincroFiltri() {
+        List<Versione> items = null;
         String textSearch = VUOTA;
         AETypeVers type = null;
 
         if (usaBottoneFilter && filter != null) {
-            textSearch = filter != null ? filter.getValue() : VUOTA;
-            items = backend.findByDescrizione(textSearch);
+            textSearch = filter.getValue();
+            items = (List<Versione>) backend.findByDescrizione(textSearch);
         }
 
         if (comboTypeVers != null) {
