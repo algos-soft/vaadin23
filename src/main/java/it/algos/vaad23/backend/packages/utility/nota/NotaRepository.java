@@ -1,14 +1,11 @@
 package it.algos.vaad23.backend.packages.utility.nota;
 
-import com.vaadin.flow.spring.annotation.*;
-import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.beans.factory.config.*;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+import javax.validation.constraints.*;
 import java.util.*;
 
 /**
@@ -18,25 +15,27 @@ import java.util.*;
  * Date: ven, 18-mar-2022
  * Time: 06:55
  * <p>
- * Estende la l'interfaccia MongoRepository col casting alla Entity relativa di questa repository <br>
- * <br>
- * Annotated with @SpringComponent (obbligatorio) <br>
- * Annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (obbligatorio) <br>
+ * Estende l'interfaccia MongoRepository col casting alla Entity relativa di questa repository <br>
+ * <p>
+ * Annotated with @Repository (obbligatorio) <br>
  * Annotated with @Qualifier (obbligatorio) per permettere a Spring di istanziare la classe specifica <br>
+ * Eventualmente usare una costante di VaadCost come @Qualifier sia qui che nella corrispondente classe xxxBackend <br>
  */
-@SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-@Qualifier("Nota")
 @Repository
+@Qualifier("Nota")
 public interface NotaRepository extends MongoRepository<Nota, String> {
 
 
+    @Override
     List<Nota> findAll();
 
-    <Nota extends AEntity> Nota insert(Nota entity);
+    @Override
+    Nota insert(Nota entity);
 
-    <Nota extends AEntity> Nota save(Nota entity);
+    @Override
+    Nota save(@NotNull Nota entity);
 
+    @Override
     void delete(Nota entity);
 
 

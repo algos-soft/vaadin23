@@ -18,10 +18,15 @@ import java.util.*;
  * Date: ven, 18-mar-2022
  * Time: 06:55
  * <p>
+ * Vista iniziale e principale di un package <br>
+ *
+ * @Route chiamata dal menu generale <br>
+ * Presenta la Grid <br>
+ * Su richiesta apre un Dialogo per gestire la singola entity <br>
  */
 @PageTitle("Note")
 @Route(value = "nota", layout = MainLayout.class)
-public class NotaView extends CrudView {
+public class NotaView extends CrudViewOld {
 
 
     private ComboBox<AENotaLevel> comboLivello;

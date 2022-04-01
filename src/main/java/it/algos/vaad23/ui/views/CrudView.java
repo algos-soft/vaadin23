@@ -5,32 +5,34 @@ import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
-import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
-import com.vaadin.flow.component.page.*;
-import com.vaadin.flow.component.textfield.*;
+import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
-import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
-import org.vaadin.crudui.crud.impl.*;
-import org.vaadin.crudui.form.*;
-import org.vaadin.crudui.layout.impl.*;
+import org.springframework.context.annotation.Scope;
 
 import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: dom, 20-mar-2022
- * Time: 11:05
+ * Date: ven, 01-apr-2022
+ * Time: 06:41
  */
+@SpringComponent
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public abstract class CrudView extends VerticalLayout implements AfterNavigationObserver {
 
     /**
@@ -47,8 +49,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    public LogService logger;
-
+    public HtmlService htmlService;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -56,35 +57,89 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    protected HtmlService htmlService;
+    public LogService logger;
 
     protected EntityBackend crudBackend;
 
-    protected GridCrud gridCrud;
+    protected Class entityClazz;
 
-    protected Button buttonDeleteAll;
-
-    protected TextField filter;
-
-    protected boolean usaBottoneDeleteAll;
-
-    protected boolean usaBottoneFilter;
-
-    protected Grid grid;
-
-    protected CrudFormFactory crudForm;
-
-    protected boolean splitLayout;
-
-    Class entityClazz;
+    protected HorizontalLayout topPlaceHolder;
 
     protected int width;
 
-    public CrudView(EntityBackend crudBackend, Class entityClazz) {
+    /**
+     * Flag di preferenza per la cancellazione della colonna ID. Di default true. <br>
+     */
+    protected boolean cancellaColonnaKeyId;
+
+    /**
+     * Flag di preferenza per avere un ordine prestabilito per le colonne. Di default false. <br>
+     */
+    protected boolean riordinaColonne;
+
+    protected List<String> listaNomiColonne;
+
+    /**
+     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     */
+    protected boolean usaBottoneRefresh;
+
+    protected Button buttonRefresh;
+
+
+    /**
+     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     */
+    protected boolean usaBottoneReset;
+
+    protected Button buttonReset;
+
+
+    /**
+     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     */
+    protected boolean usaBottoneDeleteAll;
+
+    protected Button buttonDeleteAll;
+
+
+    /**
+     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     */
+    protected boolean usaBottoneNew;
+
+    protected Button buttonNew;
+
+    /**
+     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     */
+    protected boolean usaBottoneEdit;
+
+    protected Button buttonEdit;
+
+    /**
+     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     */
+    protected boolean usaBottoneDelete;
+
+    protected Button buttonDelete;
+
+    /**
+     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     */
+    protected boolean usaBottoneExport;
+
+    protected Button buttonExport;
+
+    protected Grid<AEntity> grid;
+
+    private Function<String, Grid.Column<AEntity>> getColonna = name -> grid.getColumnByKey(name);
+
+
+    public CrudView(final EntityBackend crudBackend, final Class entityClazz) {
         this.crudBackend = crudBackend;
         this.entityClazz = entityClazz;
     }
-
 
     /**
      * Qui va tutta la logica della view <br>
@@ -94,36 +149,47 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      */
     @Override
     public void afterNavigation(AfterNavigationEvent beforeEnterEvent) {
-        UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> fixBrowser(details));
+        //--Preferenze usate da questa 'logica'
         this.fixPreferenze();
+
+        //--Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
         this.fixAlert();
-        this.fixCrud();
-        this.fixColumns();
-        this.fixFields();
-        this.fixOrder();
-        this.fixAdditionalComponents();
-        this.addListeners();
+
+        //--Costruisce un layout (obbligatorio per la List) per i bottoni di comando della view al Top <br>
+        //--Eventualmente i bottoni potrebbero andare su due righe <br>
+        this.fixTopLayout();
+
+        //--Corpo principale della Grid/Form (obbligatorio) <br>
+        this.fixBodyLayout();
+
+        //--Aggiunge i listener ai vari oggetti <br>
+        this.fixListener();
     }
 
     /**
-     *
-     */
-    public void fixBrowser(ExtendedClientDetails details) {
-        width = details.getBodyClientWidth();
-    }
-
-    /**
-     * Preferenze usate da questa view <br>
-     * Primo metodo chiamato dopo AfterNavigationEvent <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     * Preferenze usate da questa 'logica' <br>
+     * Metodo chiamato da CrudView.afterNavigation() <br>
+     * Primo metodo chiamato dopo init() (implicito del costruttore) e postConstruct() (facoltativo) <br>
+     * Puo essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixPreferenze() {
-        this.splitLayout = false;
-        this.usaBottoneDeleteAll = false;
-        this.usaBottoneFilter = false;
+        //--Larghezza del browser utilizzato in questa sessione <br>
+        UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> width = details.getBodyClientWidth());
+
+        riordinaColonne = false;
+        listaNomiColonne = new ArrayList<>();
+        cancellaColonnaKeyId = true;
+        usaBottoneRefresh = false;
+        usaBottoneReset = false;
+        usaBottoneDeleteAll = false;
+        usaBottoneNew = false;
+        usaBottoneEdit = false;
+        usaBottoneDelete = false;
+        usaBottoneExport = false;
     }
 
     /**
+     * Metodo chiamato da CrudView.afterNavigation() <br>
      * Costruisce un (eventuale) layout per informazioni aggiuntive come header della view <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
@@ -131,175 +197,243 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     /**
-     * Logic configuration <br>
-     * Qui vanno i collegamenti con la logica del backend <br>
+     * Costruisce un layout per i componenti al Top della view <br>
+     * I componenti possono essere (nell'ordine):
+     * Bottoni standard (solo icone) Reset, New, Edit, Delete, ecc.. <br>
+     * SearchField per il filtro testuale di ricerca <br>
+     * ComboBox e CheckBox di filtro <br>
+     * Bottoni specifici non standard <br>
+     * <p>
+     * Metodo chiamato da CrudView.afterNavigation() <br>
+     * Costruisce tutti i componenti in metodi che possono essere sovrascritti <br>
+     * Inserisce la istanza in topPlaceHolder della view <br>
+     * Aggiunge tutti i listeners dei bottoni, searchField, comboBox, checkBox <br>
+     * <p>
+     * Non può essere sovrascritto <br>
+     */
+    private void fixTopLayout() {
+        this.topPlaceHolder = new HorizontalLayout();
+        topPlaceHolder.setClassName("buttons");
+        topPlaceHolder.setPadding(false);
+        topPlaceHolder.setSpacing(true);
+        topPlaceHolder.setMargin(false);
+        topPlaceHolder.setClassName("confirm-dialog-buttons");
+
+        this.fixBottoniTopStandard();
+        this.fixFiltri();
+        this.fixBottoniTopSpecifici();
+        this.add(topPlaceHolder);
+    }
+
+    /**
+     * Bottoni standard (solo icone) Reset, New, Edit, Delete, ecc.. <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    protected void fixCrud() {
-        // crud instance
-        if (splitLayout) {
-            gridCrud = new GridCrud<>(entityClazz, new HorizontalSplitCrudLayout());
+    protected void fixBottoniTopStandard() {
+        if (usaBottoneRefresh) {
+            buttonRefresh = new Button();
+            buttonRefresh.getElement().setAttribute("theme", "secondary");
+            buttonRefresh.getElement().setProperty("title", "Refresh: ricarica dal database i valori della finestra");
+            buttonRefresh.setIcon(new Icon(VaadinIcon.REFRESH));
+            topPlaceHolder.add(buttonRefresh);
         }
-        else {
-            gridCrud = new GridCrud<>(entityClazz);
+
+        //--ha senso solo per le entity che estendono AREntity con la property 'reset'
+        if (usaBottoneReset && AREntity.class.isAssignableFrom(entityClazz)) {
+            buttonReset = new Button();
+            buttonReset.getElement().setAttribute("theme", "error");
+            buttonReset.getElement().setProperty("title", "Reset: ripristina nel database i valori di default annullando le eventuali modifiche apportate successivamente");
+            buttonReset.setIcon(new Icon(VaadinIcon.REFRESH));
+            topPlaceHolder.add(buttonReset);
         }
 
-        // grid configuration
-        gridCrud.getCrudFormFactory().setUseBeanValidation(true);
+        if (usaBottoneDeleteAll) {
+            buttonDeleteAll = new Button();
+            buttonDeleteAll.getElement().setAttribute("theme", "error");
+            buttonDeleteAll.getElement().setProperty("title", "Delete: cancella completamente tutta la collezione");
+            buttonDeleteAll.setIcon(new Icon(VaadinIcon.REFRESH));
+            topPlaceHolder.add(buttonDeleteAll);
+            //            buttonDeleteAll.addClickListener(event -> openConfirmDeleteAll());
+        }
 
-        // logic configuration
-        gridCrud.setFindAllOperation(() -> sincroFiltri());
-        gridCrud.setAddOperation(bean -> crudBackend.add(bean));
-        gridCrud.setUpdateOperation(bean -> crudBackend.update(bean));
-        gridCrud.setDeleteOperation(bean -> crudBackend.delete(bean));
+        if (usaBottoneNew) {
+            buttonNew = new Button();
+            buttonNew.getElement().setAttribute("theme", "secondary");
+            buttonNew.getElement().setProperty("title", "Add: aggiunge un elemento alla collezione");
+            buttonNew.setIcon(new Icon(VaadinIcon.PLUS));
+            buttonNew.setEnabled(true);
+            topPlaceHolder.add(buttonNew);
+            buttonNew.addClickListener(event -> newItem());
+        }
 
-        //                gridCrud.setOperations(
-        //                        () -> sincroFiltri(),
-        //                        user -> crudBackend.add(user),
-        //                        user -> crudBackend.update(user),
-        //                        user -> crudBackend.delete(user)
-        //                );
+        if (usaBottoneEdit) {
+            buttonEdit = new Button();
+            buttonEdit.getElement().setAttribute("theme", "secondary");
+            buttonEdit.getElement().setProperty("title", "Update: modifica l'elemento selezionato");
+            buttonEdit.setIcon(new Icon(VaadinIcon.PENCIL));
+            buttonEdit.setEnabled(false);
+            buttonEdit.addClickListener(e -> updateItem());
+            topPlaceHolder.add(buttonEdit);
+        }
 
-        grid = gridCrud.getGrid();
-        crudForm = gridCrud.getCrudFormFactory();
+        if (usaBottoneDelete) {
+            buttonDelete = new Button();
+            buttonDelete.getElement().setAttribute("theme", "error");
+            buttonDelete.getElement().setProperty("title", "Delete: cancella l'elemento selezionato");
+            buttonDelete.setIcon(new Icon(VaadinIcon.TRASH));
+            buttonDelete.setEnabled(false);
+            buttonDelete.addClickListener(e -> deleteItem());
+            topPlaceHolder.add(buttonDelete);
+        }
+
+        if (usaBottoneExport) {
+        }
+    }
+
+    protected void fixFiltri() {
+    }
+
+    protected void fixBottoniTopSpecifici() {
+    }
+
+    /**
+     * Costruisce il corpo principale (obbligatorio) della Grid <br>
+     * <p>
+     * Metodo chiamato da CrudView.afterNavigation() <br>
+     * Costruisce un' istanza dedicata con la Grid <br>
+     */
+    protected void fixBodyLayout() {
+        // Create a listing component for a bean type
+        grid = new Grid(entityClazz, true);
+
+        // Regola numero e ordine delle colonne
+        this.fixColumns();
+
+        // Pass all objects to a grid from a Spring Data repository object
+        grid.setItems(crudBackend.findAll());
+
+        // The row-stripes theme produces a background color for every other row.
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+
+        // switch to single select mode
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+
+        // sincronizzazione dei bottoni Edit e Delete
+        grid.addSelectionListener(event -> sincroSelection(event));
 
         // layout configuration
         setSizeFull();
-        this.add(gridCrud);
+        this.add(grid);
     }
 
-
     /**
-     * Regola la visibilità delle colonne della grid <br>
+     * Elimina la colonna 'keyID' -> 'id' costruita in automatico <br>
+     * Le colonne sono state costruite in automatico senza ordine garantito <br>
+     * Riordina le colonne secondo una lista prestabilita <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    public void fixColumns() {
-    }
-
-    /**
-     * Regola la visibilità dei fields del Form<br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    public void fixFields() {
-    }
-
-    /**
-     * Regola l'ordinamento della <grid <br>
-     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
-     */
-    public void fixOrder() {
-    }
-
-
-    /**
-     * Componenti aggiuntivi oltre quelli base <br>
-     * Tipicamente bottoni di selezione/filtro <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    protected void fixAdditionalComponents() {
-        if (usaBottoneDeleteAll) {
-            buttonDeleteAll = new Button();
-            buttonDeleteAll.setIcon(VaadinIcon.TRASH.create());
-            buttonDeleteAll.setText("Delete All");
-            buttonDeleteAll.getElement().setAttribute("theme", "error");
-            gridCrud.getCrudLayout().addFilterComponent(buttonDeleteAll);
-            buttonDeleteAll.addClickListener(event -> openConfirmDeleteAll());
-        }
-
-        if (usaBottoneFilter) {
-            filter = new TextField();
-            filter.setPlaceholder("Filter by descrizione");
-            filter.setClearButtonVisible(true);
-            gridCrud.getCrudLayout().addFilterComponent(filter);
-            filter.addValueChangeListener(event -> gridCrud.refreshGrid());
-        }
-    }
-
-    /**
-     * Aggiunge tutti i listeners ai bottoni di 'topPlaceholder' che sono stati creati SENZA listeners <br>
-     * <p>
-     * Chiamato da afterNavigation() <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    protected void addListeners() {
-    }
-
-    /**
-     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
-     */
-    protected List sincroFiltri() {
-        List items = null;
-        String textSearch;
-
-        if (usaBottoneFilter && filter != null) {
-            textSearch = filter != null ? filter.getValue() : VUOTA;
-            items = crudBackend.findByDescrizione(textSearch);
-        }
-
-        if (items != null) {
-            gridCrud.getGrid().setItems(items);
-        }
-
-        return items;
-    }
-
-
-    /**
-     * Opens the confirmation dialog before deleting all items. <br>
-     * <p>
-     * The dialog will display the given title and message(s), then call <br>
-     * Può essere sovrascritto dalla classe specifica se servono avvisi diversi <br>
-     */
-    protected final void openConfirmDeleteAll() {
-        appContext.getBean(DialogDelete.class, "tutta la collection").open(this::deleteAll);
-    }
-
-    /**
-     * Cancellazione effettiva (dopo dialogo di conferma) di tutte le entities della collezione. <br>
-     * Rimanda al service specifico <br>
-     * Azzera gli items <br>
-     * Ridisegna la GUI <br>
-     */
-    public void deleteAll() {
-        if (crudBackend.countAll() > 0) {
+    protected void fixColumns() {
+        if (cancellaColonnaKeyId) {
             try {
-                crudBackend.deleteAll();
+                grid.removeColumnByKey(FIELD_NAME_ID_SENZA);
             } catch (Exception unErrore) {
-                Notification.show("Non sono riuscito a cancellare la collection").addThemeVariants(NotificationVariant.LUMO_ERROR);
-                logger.error(unErrore);
+                logger.error(new WrapLog().exception(unErrore).usaDb().message("Non ho indicato correttamente la colonna 'id' "));
                 return;
             }
-            gridCrud.refreshGrid();
-            Notification.show("Cancellata tutta la collection").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         }
-        else {
-            Notification.show("La collection era già vuota").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+
+        //--cambia solo l'ordine di presentazione delle colonne. Ha senso solo se sono state costruite in automatico.
+        //--tutte le caratteristiche delle colonne create in automatico rimangono immutate
+        //--se servono caratteristiche particolari per una colonna o va creata manualmente o va recuperata e modificata
+        if (riordinaColonne && listaNomiColonne.size() > 0) {
+            try {
+                grid.setColumnOrder(listaNomiColonne.stream().map(getColonna).collect(Collectors.toList()));
+            } catch (Exception unErrore) {
+                logger.error(new WrapLog().exception(unErrore).usaDb());
+            }
         }
     }
 
     /**
-     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     * Aggiunge alcuni listeners alla Grid <br>
+     * Aggiunge alcuni listeners eventualmente non aggiunti ai bottoni, comboBox <br>
+     * <p>
+     * Metodo chiamato da CrudView.afterNavigation() <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    protected void delete() {
+    protected void fixListener() {
+        // pass the row/item that the user double-clicked to method updateItem
+        if (Pref.doubleClick.is()) {
+            grid.addItemDoubleClickListener(listener -> updateItem(listener.getItem()));
+        }
+    }
+
+    protected void sincroSelection(SelectionEvent event) {
+        boolean singoloSelezionato = event.getAllSelectedItems().size() == 1;
+        buttonEdit.setEnabled(singoloSelezionato);
+        buttonDelete.setEnabled(singoloSelezionato);
+    }
+
+    /**
+     * Apre un dialogo di creazione <br>
+     * Proveniente da un click sul bottone New della Top Bar <br>
+     * Sempre attivo <br>
+     * Passa al dialogo gli handler per annullare e creare <br>
+     */
+    public void newItem() {
+    }
+
+    /**
+     * Apre un dialogo di editing <br>
+     * Proveniente da un click sul bottone Edit della Top Bar <br>
+     * Attivo solo se è selezionata una e una sola riga <br>
+     * Passa al dialogo gli handler per annullare e modificare <br>
+     */
+    public void updateItem() {
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            updateItem((AEntity) entityBean.get());
+        }
+    }
+
+    /**
+     * Apre un dialogo di editing <br>
+     * Proveniente da un doppio click su una riga della Grid <br>
+     * Passa al dialogo gli handler per annullare e modificare <br>
+     */
+    public void updateItem(AEntity entityBean) {
+    }
+
+    /**
+     * Apre un dialogo di cancellazione<br>
+     * Proveniente da un click sul bottone Delete della Top Bar <br>
+     * Attivo solo se è selezionata una e una sola riga <br>
+     * Passa al dialogo gli handler per annullare e cancellare <br>
+     */
+    public void deleteItem() {
     }
 
     public Span getSpan(final String avviso) {
         return htmlService.getSpanVerde(avviso);
     }
 
-    public void spanBlue(final String message) {
-        span(new WrapSpan(message).color(AETypeColor.blu));
+    public void addSpanVerde(final String message) {
+        addSpan(new WrapSpan(message).color(AETypeColor.verde));
     }
 
-    public void spanRosso(final String message) {
-        span(new WrapSpan(message).color(AETypeColor.rosso));
+    public void addSpanBlue(final String message) {
+        addSpan(new WrapSpan(message).color(AETypeColor.blu));
     }
 
-    public void span(final String message) {
-        span(new WrapSpan(message));
+    public void addSpanRosso(final String message) {
+        addSpan(new WrapSpan(message).color(AETypeColor.rosso));
     }
 
-    public void span(WrapSpan wrap) {
+    public void addSpan(final String message) {
+        addSpan(new WrapSpan(message));
+    }
+
+    public void addSpan(WrapSpan wrap) {
         Span span;
 
         if (wrap.getColor() == null) {

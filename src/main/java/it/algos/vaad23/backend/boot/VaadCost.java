@@ -251,4 +251,24 @@ public class VaadCost {
 
     public static final String FALSO = "false";
 
+
+    /**
+     * Nomi delle properties.
+     */
+    public final static String FIELD_NAME_ID_SENZA = "id";
+
+    public final static String FIELD_NAME_ID_CON = "_id";
+
+    public final static String FIELD_NAME_ID_LINK = ".$id";
+
+    public final static String FIELD_NAME_ORDINE = "ordine";
+
+    public final static String FIELD_NAME_CODE = "code";
+
+    public final static String FIELD_NAME_DESCRIZIONE = "descrizione";
+
+    public final static String FIELD_NAME_RESET = "reset";
+
+    public final static String FIELD_NAME_COMPANY = "company";
+
 }

@@ -20,18 +20,15 @@ import java.util.*;
  * Garantisce i metodi di collegamento per accedere al database <br>
  * Non mantiene lo stato di una istanza entityBean <br>
  * Mantiene lo stato della entityClazz <br>
- * NOT annotated with @SpringComponent (inutile, esiste già @Service) <br>
- * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, esiste già @Service) <br>
+ * Annotated with @Service (obbligatorio) <br>
  */
 @Service
-@Qualifier("Nota") //@todo Qualifier da sostituire (eventualmente) con costante da registrare su VaadCost 
-//@AIScript(sovraScrivibile = true)
 public class NotaBackend extends EntityBackend {
 
     private NotaRepository repository;
 
     /**
-     * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
+     * Costruttore @Autowired (facoltativo) con @Qualifier (obbligatorio) <br>
      * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
      * Si usa un @Qualifier(), per specificare la classe che incrementa l'interfaccia repository <br>
      * Si usa una costante statica, per essere sicuri di scriverla uguale a quella di xxxRepository <br>

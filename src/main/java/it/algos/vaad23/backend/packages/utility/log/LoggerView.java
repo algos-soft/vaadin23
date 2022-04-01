@@ -25,7 +25,7 @@ import java.util.*;
  */
 @PageTitle("Logger")
 @Route(value = "logger", layout = MainLayout.class)
-public class LoggerView extends CrudView {
+public class LoggerView extends CrudViewOld {
 
     private ComboBox comboLivello;
 
@@ -86,7 +86,7 @@ public class LoggerView extends CrudView {
         super.fixCrud();
 
         gridCrud.setAddOperationVisible(false);
-        gridCrud.setUpdateOperationVisible(false);
+        gridCrud.setUpdateOperationVisible(true);
         gridCrud.setDeleteOperationVisible(false);
     }
 

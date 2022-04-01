@@ -58,6 +58,12 @@ public class WrapLog {
         return this;
     }
 
+    public WrapLog exception(Exception exception) {
+        this.exception = new AlgosException(exception);
+        this.usaStackTrace = true;
+        return this;
+    }
+
     public WrapLog exception(AlgosException exception) {
         this.exception = exception;
         this.usaStackTrace = true;
@@ -111,7 +117,7 @@ public class WrapLog {
         messageDB = messageErrore;
         if (messageSpecifico != null && messageSpecifico.length() > 0) {
             messageDB += SEP;
-            messageDB += messageErrore;
+            messageDB += messageSpecifico;
         }
 
         return messageDB;

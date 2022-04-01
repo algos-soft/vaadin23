@@ -80,7 +80,6 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     @Override
     public void afterNavigation(AfterNavigationEvent afterNavigationEvent) {
         WebBrowser browser = VaadinSession.getCurrent().getBrowser();
-        int a = 87;
         UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> fixBrowser(details));
         this.fixAlert();
         this.fixTop();
@@ -326,7 +325,7 @@ public class PreferenzaView extends VerticalLayout implements AfterNavigationObs
     }
 
     /**
-     * Primo ingresso dopo il click sul bottone <br>
+     * Primo ingresso dopo il click sul bottone del dialogo <br>
      */
     protected void saveHandler(final Preferenza entityBean, final CrudOperation operation) {
         grid.setItems(backend.findAll());

@@ -20,6 +20,7 @@ import java.util.*;
  */
 public enum Pref {
     debug("debug", AETypePref.bool, false, "Flag generale di debug") {},
+    doubleClick("doubleClick", AETypePref.bool, true, "Doppio click abilitato nelle righe della Grid") {},
     durataAvviso("durataAvviso", AETypePref.integer, 2000, "Durata in millisecondi dell'avviso a video") {},
     ;
 
