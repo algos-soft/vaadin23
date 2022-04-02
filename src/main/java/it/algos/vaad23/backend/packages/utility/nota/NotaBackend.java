@@ -23,7 +23,7 @@ import java.util.*;
  * Annotated with @Service (obbligatorio) <br>
  */
 @Service
-public class NotaBackend extends EntityBackend {
+public class NotaBackend extends CrudBackend {
 
     private NotaRepository repository;
 

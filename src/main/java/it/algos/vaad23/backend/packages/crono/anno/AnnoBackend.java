@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.crono.mese;
+package it.algos.vaad23.backend.packages.crono.anno;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.logic.*;
@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
+
 /**
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: gio, 31-mar-2022
- * Time: 18:41
+ * Date: sab, 02-apr-2022
+ * Time: 11:28
  * <p>
  * Service di una entityClazz specifica e di un package <br>
  * Garantisce i metodi di collegamento per accedere al database <br>
@@ -21,11 +22,9 @@ import org.springframework.stereotype.*;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, esiste già @Service) <br>
  */
 @Service
-@Qualifier("Mese") //@todo Qualifier da sostituire (eventualmente) con costante da registrare su VaadCost 
-//@AIScript(sovraScrivibile = true)
-public class MeseBackend extends CrudBackend {
+public class AnnoBackend extends CrudBackend {
 
-    private MeseRepository repository;
+    private AnnoRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -38,10 +37,11 @@ public class MeseBackend extends CrudBackend {
      * @param crudRepository per la persistenza dei dati
      */
     //@todo registrare eventualmente come costante in VaadCost il valore del Qualifier
-    public MeseBackend(@Autowired @Qualifier("Mese") final MongoRepository crudRepository) {
-        super(crudRepository, Mese.class);
-        this.repository = (MeseRepository) crudRepository;
+    public AnnoBackend(@Autowired @Qualifier("Anno") final MongoRepository crudRepository) {
+        super(crudRepository, Anno.class);
+        this.repository = (AnnoRepository) crudRepository;
     }
+
 
     /**
      * Creazione in memoria di una nuova entity che NON viene salvata <br>
@@ -50,7 +50,7 @@ public class MeseBackend extends CrudBackend {
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Mese newEntity() {
+    public Anno newEntity() {
         return newEntity(0, VUOTA, VUOTA);
     }
 
@@ -66,8 +66,8 @@ public class MeseBackend extends CrudBackend {
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public Mese newEntity(final int ordine, final String code, final String descrizione) {
-        return Mese.builder()
+    public Anno newEntity(final int ordine, final String code, final String descrizione) {
+        return Anno.builder()
                 .ordine(ordine)
                 .code(textService.isValid(code) ? code : null)
                 .descrizione(textService.isValid(descrizione) ? descrizione : null)

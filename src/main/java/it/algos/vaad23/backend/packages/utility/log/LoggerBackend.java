@@ -28,7 +28,7 @@ import java.util.*;
 @Service
 @Qualifier("Logger") //@todo Qualifier da sostituire (eventualmente) con costante da registrare su VaadCost
 //@AIScript(sovraScrivibile = true)
-public class LoggerBackend extends EntityBackend {
+public class LoggerBackend extends CrudBackend {
 
     private LoggerRepository repository;
 

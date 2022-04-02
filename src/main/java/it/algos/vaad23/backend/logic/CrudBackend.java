@@ -21,7 +21,7 @@ import java.util.*;
  * Se la sottoclasse xxxService non esiste (non è indispensabile), usa la classe generica GenericService; i metodi esistono ma occorre un
  * cast in uscita <br>
  */
-public abstract class EntityBackend extends AbstractService {
+public abstract class CrudBackend extends AbstractService {
 
     /**
      * The Entity Class  (obbligatoria sempre e final)
@@ -54,7 +54,7 @@ public abstract class EntityBackend extends AbstractService {
      * Se ci sono DUE o più costruttori, va in errore <br>
      * Se ci sono DUE costruttori, di cui uno senza parametri, inietta quello senza parametri <br>
      */
-    public EntityBackend(final MongoRepository crudRepository, final Class<? extends AEntity> entityClazz) {
+    public CrudBackend(final MongoRepository crudRepository, final Class<? extends AEntity> entityClazz) {
         this.crudRepository = crudRepository;
         this.entityClazz = entityClazz;
     }// end of constructor with @Autowired

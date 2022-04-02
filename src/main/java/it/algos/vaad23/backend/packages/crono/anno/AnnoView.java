@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.crono.mese;
+package it.algos.vaad23.backend.packages.crono.anno;
 
 import com.vaadin.flow.router.*;
 import it.algos.vaad23.ui.views.*;
@@ -10,20 +10,25 @@ import java.util.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: gio, 31-mar-2022
- * Time: 18:41
+ * Date: sab, 02-apr-2022
+ * Time: 11:28
  * <p>
+ * Vista iniziale e principale di un package <br>
+ *
+ * @Route chiamata dal menu generale <br>
+ * Presenta la Grid <br>
+ * Su richiesta apre un Dialogo per gestire la singola entity <br>
  */
-@PageTitle("Mesi")
-@Route(value = "mese", layout = MainLayout.class)
-public class MeseView extends CrudView {
+@PageTitle("Anni")
+@Route(value = "anno", layout = MainLayout.class)
+public class AnnoView extends CrudView {
 
 
     //--per eventuali metodi specifici
-    private MeseBackend meseBackend;
+    private AnnoBackend backend;
 
     //--per eventuali metodi specifici
-    private MeseDialog meseDialog;
+    private AnnoDialog meseDialog;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -33,9 +38,9 @@ public class MeseView extends CrudView {
      *
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
-    public MeseView(@Autowired final MeseBackend crudBackend) {
-        super(crudBackend, Mese.class);
-        this.meseBackend = crudBackend;
+    public AnnoView(@Autowired final AnnoBackend crudBackend) {
+        super(crudBackend, Anno.class);
+        this.backend = crudBackend;
     }
 
     /**
@@ -57,7 +62,7 @@ public class MeseView extends CrudView {
         super.usaBottoneEdit = true;
         super.usaBottoneDelete = true;
 
-        super.dialogClazz = MeseDialog.class;
+        super.dialogClazz = AnnoDialog.class;
     }
 
     /**
@@ -67,7 +72,6 @@ public class MeseView extends CrudView {
     @Override
     public void fixAlert() {
         super.fixAlert();
-
         addSpanVerde("Prova di colori");
     }
 

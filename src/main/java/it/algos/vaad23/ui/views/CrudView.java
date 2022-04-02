@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
+import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
@@ -15,10 +16,12 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
+import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.Scope;
+import org.vaadin.crudui.crud.*;
 
 import java.util.*;
 import java.util.function.*;
@@ -59,7 +62,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     @Autowired
     public LogService logger;
 
-    protected EntityBackend crudBackend;
+    protected CrudBackend crudBackend;
+
+    protected CrudDialog crudDialog;
 
     protected Class entityClazz;
 
@@ -77,7 +82,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      */
     protected boolean riordinaColonne;
 
-    protected List<String> listaNomiColonne;
+    protected List<String> colonne;
+
+    protected List<String> fields;
 
     /**
      * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
@@ -131,12 +138,19 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected Button buttonExport;
 
+    /**
+     * Flag di preferenza per la classe di dialogo. Di default CrudDialog. <br>
+     */
+    protected Class<?> dialogClazz = CrudDialog.class;
+
+    protected CrudDialog dialog;
+
     protected Grid<AEntity> grid;
 
     private Function<String, Grid.Column<AEntity>> getColonna = name -> grid.getColumnByKey(name);
 
 
-    public CrudView(final EntityBackend crudBackend, final Class entityClazz) {
+    public CrudView(final CrudBackend crudBackend, final Class entityClazz) {
         this.crudBackend = crudBackend;
         this.entityClazz = entityClazz;
     }
@@ -177,7 +191,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> width = details.getBodyClientWidth());
 
         riordinaColonne = false;
-        listaNomiColonne = new ArrayList<>();
+        colonne = new ArrayList<>();
+        fields = new ArrayList<>();
         cancellaColonnaKeyId = true;
         usaBottoneRefresh = false;
         usaBottoneReset = false;
@@ -345,9 +360,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         //--cambia solo l'ordine di presentazione delle colonne. Ha senso solo se sono state costruite in automatico.
         //--tutte le caratteristiche delle colonne create in automatico rimangono immutate
         //--se servono caratteristiche particolari per una colonna o va creata manualmente o va recuperata e modificata
-        if (riordinaColonne && listaNomiColonne.size() > 0) {
+        if (riordinaColonne && colonne.size() > 0) {
             try {
-                grid.setColumnOrder(listaNomiColonne.stream().map(getColonna).collect(Collectors.toList()));
+                grid.setColumnOrder(colonne.stream().map(getColonna).collect(Collectors.toList()));
             } catch (Exception unErrore) {
                 logger.error(new WrapLog().exception(unErrore).usaDb());
             }
@@ -381,6 +396,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Passa al dialogo gli handler per annullare e creare <br>
      */
     public void newItem() {
+        dialog = (CrudDialog) appContext.getBean(dialogClazz, crudBackend.newEntity(), CrudOperation.ADD, crudBackend);
+        dialog.open(this::saveHandler, this::annullaHandler);
     }
 
     /**
@@ -400,8 +417,12 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Apre un dialogo di editing <br>
      * Proveniente da un doppio click su una riga della Grid <br>
      * Passa al dialogo gli handler per annullare e modificare <br>
+     *
+     * @param entityBeanDaRegistrare (nuova o esistente)
      */
-    public void updateItem(AEntity entityBean) {
+    public void updateItem(AEntity entityBeanDaRegistrare) {
+        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend);
+        dialog.open(this::saveHandler, this::annullaHandler);
     }
 
     /**
@@ -411,6 +432,28 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Passa al dialogo gli handler per annullare e cancellare <br>
      */
     public void deleteItem() {
+        Optional entityBean = grid.getSelectedItems().stream().findFirst();
+        if (entityBean.isPresent()) {
+            dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBean.get(), CrudOperation.DELETE, crudBackend);
+            dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
+        }
+    }
+
+    /**
+     * Primo ingresso dopo il click sul bottone del dialogo <br>
+     */
+    protected void saveHandler(final AEntity entityBean, final CrudOperation operation) {
+        grid.setItems(crudBackend.findAll());
+    }
+
+    public void deleteHandler(final AEntity entityBean) {
+        crudBackend.delete(entityBean);
+        grid.setItems(crudBackend.findAll());
+        Avviso.show(String.format("%s successfully deleted", entityBean)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
+    public void annullaHandler(final AEntity entityBean) {
+        //        Notification.show(entityBean + " successfully deleted.", 3000, Notification.Position.BOTTOM_START);
     }
 
     public Span getSpan(final String avviso) {
@@ -465,4 +508,4 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         }
     }
 
-}
+}// end of crud abstract @Route view class

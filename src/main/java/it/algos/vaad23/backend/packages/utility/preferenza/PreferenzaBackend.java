@@ -25,7 +25,7 @@ import java.util.*;
 @Service
 @Qualifier("Preferenza") //@todo Qualifier da sostituire (eventualmente) con costante da registrare su VaadCost 
 //@AIScript(sovraScrivibile = true)
-public class PreferenzaBackend extends EntityBackend {
+public class PreferenzaBackend extends CrudBackend {
 
     private PreferenzaRepository repository;
 

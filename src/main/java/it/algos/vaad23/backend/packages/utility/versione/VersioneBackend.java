@@ -28,7 +28,7 @@ import java.util.*;
 @Service
 @Qualifier(TAG_VERSIONE)
 //@AIScript(sovraScrivibile = true)
-public class VersioneBackend extends EntityBackend {
+public class VersioneBackend extends CrudBackend {
 
     private VersioneRepository repository;
 

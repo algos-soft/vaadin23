@@ -58,7 +58,7 @@ public abstract class CrudViewOld extends VerticalLayout implements AfterNavigat
     @Autowired
     protected HtmlService htmlService;
 
-    protected EntityBackend crudBackend;
+    protected CrudBackend crudBackend;
 
     protected GridCrud gridCrud;
 
@@ -80,7 +80,7 @@ public abstract class CrudViewOld extends VerticalLayout implements AfterNavigat
 
     protected int width;
 
-    public CrudViewOld(EntityBackend crudBackend, Class entityClazz) {
+    public CrudViewOld(CrudBackend crudBackend, Class entityClazz) {
         this.crudBackend = crudBackend;
         this.entityClazz = entityClazz;
     }

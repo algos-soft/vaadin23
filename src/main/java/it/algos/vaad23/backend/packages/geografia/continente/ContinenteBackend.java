@@ -26,7 +26,7 @@ import java.util.*;
 @Service
 @Qualifier(TAG_CONTINENTE)
 //@AIScript(sovraScrivibile = true)
-public class ContinenteBackend extends EntityBackend {
+public class ContinenteBackend extends CrudBackend {
 
     private ContinenteRepository repository;
 

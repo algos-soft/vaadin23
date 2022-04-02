@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.crono.mese;
+package it.algos.vaad23.backend.packages.crono.anno;
 
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.spring.annotation.*;
@@ -12,12 +12,13 @@ import org.vaadin.crudui.crud.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: ven, 01-apr-2022
- * Time: 15:08
+ * Date: sab, 02-apr-2022
+ * Time: 11:28
+ * <p>
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class MeseDialog extends CrudDialog {
+public class AnnoDialog extends CrudDialog {
 
     //--I fields devono essere class variable e non local variable
     private TextField code;
@@ -25,6 +26,17 @@ public class MeseDialog extends CrudDialog {
     //--I fields devono essere class variable e non local variable
     private TextField descrizione;
 
+
+    /**
+     * Constructor not @Autowired. <br>
+     * Non utilizzato e non necessario <br>
+     * In the newest Spring release, it’s constructor does not need to be annotated with @Autowired annotation <br>
+     * Se c'è un SOLO costruttore questo diventa automaticamente @Autowired e IntelliJ Idea 'segna' in rosso i
+     * parametri <br>
+     * Per evitare il bug (solo visivo), aggiungo un costruttore senza parametri <br>
+     */
+    public AnnoDialog() {
+    }// end of second constructor not @Autowired
 
     /**
      * Costruttore con parametri <br>
@@ -35,7 +47,7 @@ public class MeseDialog extends CrudDialog {
      * @param operation   The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
-    public MeseDialog(final Mese entityBean, final CrudOperation operation, final CrudBackend crudBackend) {
+    public AnnoDialog(final Anno entityBean, final CrudOperation operation, final CrudBackend crudBackend) {
         super(entityBean, operation, crudBackend);
     }// end of constructor not @Autowired
 

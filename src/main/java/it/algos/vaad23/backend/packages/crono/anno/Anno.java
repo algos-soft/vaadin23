@@ -1,5 +1,6 @@
-package it.algos.vaad23.backend.packages.crono.mese;
+package it.algos.vaad23.backend.packages.crono.anno;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
@@ -10,8 +11,8 @@ import javax.validation.constraints.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: gio, 31-mar-2022
- * Time: 18:41
+ * Date: sab, 02-apr-2022
+ * Time: 11:28
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
@@ -21,7 +22,7 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @Builder()
 @EqualsAndHashCode(callSuper = false)
-public class Mese extends AEntity {
+public class Anno extends AEntity {
 
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
     public int ordine;
@@ -34,7 +35,7 @@ public class Mese extends AEntity {
 
     @Override
     public String toString() {
-        return code;
+        return VUOTA;
     }
 
 }// end of crud entity class
