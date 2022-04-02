@@ -2,7 +2,6 @@ package it.algos.vaad23.backend.boot;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.packages.utility.nota.*;
 import it.algos.vaad23.backend.packages.utility.preferenza.*;
@@ -194,7 +193,6 @@ public abstract class VaadBoot implements ServletContextListener {
         VaadVar.menuRouteList.add(NotaView.class);
         VaadVar.menuRouteList.add(LoggerView.class);
         VaadVar.menuRouteList.add(PreferenzaView.class);
-        VaadVar.menuRouteList.add(MeseView.class);
     }
 
     /**

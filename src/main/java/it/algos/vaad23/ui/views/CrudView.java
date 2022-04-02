@@ -396,7 +396,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Passa al dialogo gli handler per annullare e creare <br>
      */
     public void newItem() {
-        dialog = (CrudDialog) appContext.getBean(dialogClazz, crudBackend.newEntity(), CrudOperation.ADD, crudBackend);
+        dialog = (CrudDialog) appContext.getBean(dialogClazz, crudBackend.newEntity(), CrudOperation.ADD, crudBackend, fields);
         dialog.open(this::saveHandler, this::annullaHandler);
     }
 
@@ -421,7 +421,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * @param entityBeanDaRegistrare (nuova o esistente)
      */
     public void updateItem(AEntity entityBeanDaRegistrare) {
-        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend);
+        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, fields);
         dialog.open(this::saveHandler, this::annullaHandler);
     }
 
@@ -434,7 +434,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     public void deleteItem() {
         Optional entityBean = grid.getSelectedItems().stream().findFirst();
         if (entityBean.isPresent()) {
-            dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBean.get(), CrudOperation.DELETE, crudBackend);
+            dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBean.get(), CrudOperation.DELETE, crudBackend, fields);
             dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
         }
     }

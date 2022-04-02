@@ -8,6 +8,7 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Scope;
 import org.vaadin.crudui.crud.*;
 
 import javax.annotation.*;
+import java.util.*;
 import java.util.function.*;
 
 /**
@@ -81,6 +83,8 @@ public class CrudDialog extends Dialog {
 
     protected CrudOperation operation;
 
+    protected List<String> fields;
+
     /**
      * Constructor not @Autowired. <br>
      * Non utilizzato e non necessario <br>
@@ -100,11 +104,13 @@ public class CrudDialog extends Dialog {
      * @param entityBean  The item to edit; it may be an existing or a newly created instance
      * @param operation   The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
+     * @param fields      da costruire in automatico
      */
-    public CrudDialog(final AEntity entityBean, final CrudOperation operation, final CrudBackend crudBackend) {
+    public CrudDialog(final AEntity entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List<String> fields) {
         this.currentItem = entityBean;
         this.operation = operation;
         this.crudBackend = crudBackend;
+        this.fields = fields;
     }// end of constructor not @Autowired
 
 
@@ -183,9 +189,17 @@ public class CrudDialog extends Dialog {
      * Inizializza le properties grafiche (caption, visible, editable, width, ecc)
      * Aggiunge i fields al binder
      * Aggiunge eventuali fields specifici direttamente al layout grafico (senza binder e senza fieldMap)
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void fixBody() {
+        TextField field;
+
+        for (String key : fields) {
+            field = new TextField(key);
+            formLayout.add(field);
+            binder.forField(field).bind(key);
+        }
+
     }
 
 
