@@ -1,10 +1,12 @@
 package it.algos.vaad23.backend.service;
 
+import com.vaadin.flow.component.notification.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.wrapper.*;
+import it.algos.vaad23.ui.dialog.*;
 import org.slf4j.Logger;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
@@ -394,10 +396,12 @@ public class LogService extends AbstractService {
     }
 
     public String warn(final WrapLog wrap) {
+        Avviso.show("Warning").addThemeVariants(NotificationVariant.LUMO_ERROR);
         return logBase(AELogLevel.warn, wrap);
     }
 
     public String error(final WrapLog wrap) {
+        Avviso.show("Errore").addThemeVariants(NotificationVariant.LUMO_ERROR);
         return logBase(AELogLevel.error, wrap);
     }
 
@@ -453,7 +457,7 @@ public class LogService extends AbstractService {
             message = DUE_PUNTI_SPAZIO + message;
             //--Se forzo con WrapLog().message() un messaggio diverso da quello generato dall'errore, li mostra entrambi
             //--Quello forzato in testa e quello generato dall'errore in coda
-            if (!wrap.getMessage().equals(wrap.getException().getMessage())) {
+            if (wrap.getMessage() != null && !wrap.getMessage().equals(wrap.getException().getMessage())) {
                 message += SPAZIO + wrap.getException().getMessage();
             }
         }

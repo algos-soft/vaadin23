@@ -86,8 +86,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected List<String> fields;
 
+
     /**
-     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     * Flag di preferenza per l' utilizzo del bottone. Di default true. <br>
      */
     protected boolean usaBottoneRefresh;
 
@@ -97,35 +98,27 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     /**
      * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
      */
-    protected boolean usaBottoneReset;
+    protected boolean usaBottoneDeleteReset;
 
-    protected Button buttonReset;
-
-
-    /**
-     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
-     */
-    protected boolean usaBottoneDeleteAll;
-
-    protected Button buttonDeleteAll;
+    protected Button buttonDeleteReset;
 
 
     /**
-     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     * Flag di preferenza per l' utilizzo del bottone. Di default new. <br>
      */
     protected boolean usaBottoneNew;
 
     protected Button buttonNew;
 
     /**
-     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     * Flag di preferenza per l' utilizzo del bottone. Di default true. <br>
      */
     protected boolean usaBottoneEdit;
 
     protected Button buttonEdit;
 
     /**
-     * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
+     * Flag di preferenza per l' utilizzo del bottone. Di default true. <br>
      */
     protected boolean usaBottoneDelete;
 
@@ -190,16 +183,15 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         //--Larghezza del browser utilizzato in questa sessione <br>
         UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> width = details.getBodyClientWidth());
 
-        riordinaColonne = false;
+        riordinaColonne = true;
         colonne = new ArrayList<>();
         fields = new ArrayList<>();
         cancellaColonnaKeyId = true;
-        usaBottoneRefresh = false;
-        usaBottoneReset = false;
-        usaBottoneDeleteAll = false;
-        usaBottoneNew = false;
-        usaBottoneEdit = false;
-        usaBottoneDelete = false;
+        usaBottoneRefresh = true;
+        usaBottoneDeleteReset = false;
+        usaBottoneNew = true;
+        usaBottoneEdit = true;
+        usaBottoneDelete = true;
         usaBottoneExport = false;
     }
 
@@ -250,26 +242,34 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             buttonRefresh.getElement().setAttribute("theme", "secondary");
             buttonRefresh.getElement().setProperty("title", "Refresh: ricarica dal database i valori della finestra");
             buttonRefresh.setIcon(new Icon(VaadinIcon.REFRESH));
+            buttonRefresh.addClickListener(event -> refresh());
             topPlaceHolder.add(buttonRefresh);
         }
 
-        //--ha senso solo per le entity che estendono AREntity con la property 'reset'
-        if (usaBottoneReset && AREntity.class.isAssignableFrom(entityClazz)) {
-            buttonReset = new Button();
-            buttonReset.getElement().setAttribute("theme", "error");
-            buttonReset.getElement().setProperty("title", "Reset: ripristina nel database i valori di default annullando le eventuali modifiche apportate successivamente");
-            buttonReset.setIcon(new Icon(VaadinIcon.REFRESH));
-            topPlaceHolder.add(buttonReset);
+        if (usaBottoneDeleteReset) {
+            buttonDeleteReset = new Button();
+            buttonDeleteReset.getElement().setAttribute("theme", "error");
+            //--ha senso solo per le entity che estendono AREntity con la property 'reset'
+            if (AREntity.class.isAssignableFrom(entityClazz)) {
+                buttonDeleteReset.getElement().setProperty("title", "Reset: ripristina nel database i valori di default annullando le eventuali modifiche apportate successivamente");
+                buttonDeleteReset.addClickListener(event -> reset());
+            }
+            else {
+                buttonDeleteReset.getElement().setProperty("title", "Delete: cancella tutta la collection");
+                buttonDeleteReset.addClickListener(event -> deleteAll());
+            }
+            buttonDeleteReset.setIcon(new Icon(VaadinIcon.REFRESH));
+            topPlaceHolder.add(buttonDeleteReset);
         }
 
-        if (usaBottoneDeleteAll) {
-            buttonDeleteAll = new Button();
-            buttonDeleteAll.getElement().setAttribute("theme", "error");
-            buttonDeleteAll.getElement().setProperty("title", "Delete: cancella completamente tutta la collezione");
-            buttonDeleteAll.setIcon(new Icon(VaadinIcon.REFRESH));
-            topPlaceHolder.add(buttonDeleteAll);
-            //            buttonDeleteAll.addClickListener(event -> openConfirmDeleteAll());
-        }
+        //        if (usaBottoneDeleteAll) {
+        //            buttonDeleteAll = new Button();
+        //            buttonDeleteAll.getElement().setAttribute("theme", "error");
+        //            buttonDeleteAll.getElement().setProperty("title", "Delete: cancella completamente tutta la collezione");
+        //            buttonDeleteAll.setIcon(new Icon(VaadinIcon.REFRESH));
+        //            buttonDeleteAll.addClickListener(event -> reset());
+        //            topPlaceHolder.add(buttonDeleteAll);
+        //        }
 
         if (usaBottoneNew) {
             buttonNew = new Button();
@@ -277,8 +277,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             buttonNew.getElement().setProperty("title", "Add: aggiunge un elemento alla collezione");
             buttonNew.setIcon(new Icon(VaadinIcon.PLUS));
             buttonNew.setEnabled(true);
-            topPlaceHolder.add(buttonNew);
             buttonNew.addClickListener(event -> newItem());
+            topPlaceHolder.add(buttonNew);
         }
 
         if (usaBottoneEdit) {
@@ -389,6 +389,31 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         buttonDelete.setEnabled(singoloSelezionato);
     }
 
+    protected void refresh() {
+        grid.setItems(crudBackend.findAll());
+    }
+
+    protected void reset() {
+        appContext.getBean(DialogDeleteAll.class).open(this::resetEsegue);
+    }
+
+    protected void deleteAll() {
+        appContext.getBean(DialogDeleteAll.class).open(this::deleteEsegue);
+    }
+
+    protected void resetEsegue() {
+        if (crudBackend.reset()) {
+            grid.setItems(crudBackend.findAll());
+            Avviso.show("Reset all").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        }
+    }
+
+    protected void deleteEsegue() {
+        crudBackend.deleteAll();
+        grid.setItems(crudBackend.findAll());
+        Avviso.show("Delete all").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    }
+
     /**
      * Apre un dialogo di creazione <br>
      * Proveniente da un click sul bottone New della Top Bar <br>
@@ -438,6 +463,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
         }
     }
+
 
     /**
      * Primo ingresso dopo il click sul bottone del dialogo <br>

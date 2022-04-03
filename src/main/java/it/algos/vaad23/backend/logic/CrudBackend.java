@@ -101,12 +101,14 @@ public abstract class CrudBackend extends AbstractService {
         }
     }
 
-    public void deleteAll() {
+    public boolean deleteAll() {
         try {
             crudRepository.deleteAll();
         } catch (Exception unErrore) {
             logger.error(unErrore);
         }
+
+        return crudRepository.count() == 0;
     }
 
     public int countAll() {
@@ -125,7 +127,15 @@ public abstract class CrudBackend extends AbstractService {
         return null;
     }
 
-    public void reset() {
+    /**
+     * Creazione di alcuni dati iniziali <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista <br>
+     * La collezione viene svuotata <br>
+     * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public boolean reset() {
+        return this.deleteAll();
     }
 
 }

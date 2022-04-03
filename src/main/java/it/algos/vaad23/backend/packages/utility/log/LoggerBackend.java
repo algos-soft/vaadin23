@@ -51,6 +51,7 @@ public class LoggerBackend extends CrudBackend {
 
     public void crea(final AELogLevel livello, final WrapLog wrap) {
         Logger entity = new Logger();
+        Logger entitySaved = null;
         AETypeLog type = wrap.getType();
         String message = wrap.getMessageDB();
         String companySigla = wrap.getCompanySigla();
@@ -78,8 +79,11 @@ public class LoggerBackend extends CrudBackend {
         entity.metodo = textService.isValid(metodo) ? metodo : null;
         entity.linea = linea;
 
+        //        if (textService.isEmpty(entity.descrizione)) {
+        //        }
+
         try {
-            this.add(entity);
+            entitySaved = (Logger) this.add(entity);
         } catch (Exception unErrore) {
             //            logger.error(unErrore);
             System.out.println("errore");

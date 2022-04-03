@@ -73,7 +73,15 @@ public class AlgosException extends Exception {
     }
 
     public String getMessage() {
-        return getCause() != null ? getCause().getMessage() : message;
+        if (getCause() != null && getCause() instanceof Exception eccezione) {
+            if (eccezione.getMessage() != null) {
+                return eccezione.getMessage();
+            }
+            else {
+                return eccezione.toString();
+            }
+        }
+        return message;
     }
 
     /**

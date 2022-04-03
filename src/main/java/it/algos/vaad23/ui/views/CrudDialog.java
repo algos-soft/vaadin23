@@ -194,12 +194,15 @@ public class CrudDialog extends Dialog {
     protected void fixBody() {
         TextField field;
 
-        for (String key : fields) {
-            field = new TextField(key);
-            formLayout.add(field);
-            binder.forField(field).bind(key);
+        try {
+            for (String key : fields) {
+                field = new TextField(key);
+                formLayout.add(field);
+                binder.forField(field).bind(key);
+            }
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
         }
-
     }
 
 
@@ -207,10 +210,18 @@ public class CrudDialog extends Dialog {
      * Legge la entityBean e inserisce nella UI i valori di eventuali fields NON associati al binder
      */
     protected void fixBinder() {
-        binder.bindInstanceFields(this);
+        try {
+            binder.bindInstanceFields(this);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+        }
 
         // Updates the value in each bound field component
-        binder.readBean(currentItem);
+        try {
+            binder.readBean(currentItem);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+        }
     }
 
     /**

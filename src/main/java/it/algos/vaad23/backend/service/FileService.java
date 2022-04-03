@@ -1402,7 +1402,7 @@ public class FileService extends AbstractService {
 
             testo = textService.levaCoda(testo, aCapo);
         } catch (Exception unErrore) {
-            logger.error(AETypeLog.file, unErrore);
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb().type(AETypeLog.file));
         }
 
         return testo;
