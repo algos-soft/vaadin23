@@ -1,7 +1,7 @@
 package it.algos.vaad23.backend.annotation;
 
-import static it.algos.vaadflow14.backend.application.FlowCost.*;
-import it.algos.vaadflow14.backend.enumeration.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 
 import java.lang.annotation.*;
 
@@ -298,7 +298,7 @@ public @interface AIField {
      *
      * @return the field type
      */
-    AETypeNum typeNum() default AETypeNum.positiviOnly;
+    //    AETypeNum typeNum() default AETypeNum.positiviOnly;
 
 
     /**
@@ -307,7 +307,7 @@ public @interface AIField {
      *
      * @return the field type
      */
-    AETypeBoolField typeBool() default AETypeBoolField.checkBox;
+    //    AETypeBoolField typeBool() default AETypeBoolField.checkBox;
 
 
     /**
@@ -324,7 +324,7 @@ public @interface AIField {
      *
      * @return the type
      */
-    AETypeData typeData() default AETypeData.standard;
+    //    AETypeData typeData() default AETypeData.standard;
 
     /**
      * Valore iniziale (text) di un combo

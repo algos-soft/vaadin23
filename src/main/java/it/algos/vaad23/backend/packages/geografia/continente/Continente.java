@@ -2,6 +2,7 @@ package it.algos.vaad23.backend.packages.geografia.continente;
 
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
 
@@ -25,13 +26,15 @@ import javax.validation.constraints.*;
 public class Continente extends AREntity {
 
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
-    @AIField(type = EAFieldType.integer, widthEM = 3)
+    @AIField(type = AETypeField.integer)
     public int ordine;
 
     @NotBlank()
     @Indexed(unique = true, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.text)
     public String nome;
 
+    @AIField(type = AETypeField.booleano)
     public boolean abitato;
 
     @Override

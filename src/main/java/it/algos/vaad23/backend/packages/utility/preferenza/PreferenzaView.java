@@ -40,9 +40,6 @@ import java.util.*;
 @AIView(lineawesomeClassnames = "wrench")
 public class PreferenzaView extends VerticalLayout implements AfterNavigationObserver {
 
-    private static final String COLOR_VERO = "#9FE2BF";
-
-    private static final String COLOR_FALSO = "#FF7F50";
 
     @Autowired
     protected ApplicationContext appContext;

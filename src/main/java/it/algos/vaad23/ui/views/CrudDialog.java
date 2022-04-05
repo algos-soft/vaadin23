@@ -2,6 +2,7 @@ package it.algos.vaad23.ui.views;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.formlayout.*;
 import com.vaadin.flow.component.html.*;
@@ -12,6 +13,7 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.service.*;
@@ -52,6 +54,14 @@ public class CrudDialog extends Dialog {
      */
     @Autowired
     public TextService textService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public AnnotationService annotationService;
 
     @Autowired
     public LogService logger;
@@ -192,11 +202,19 @@ public class CrudDialog extends Dialog {
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void fixBody() {
-        TextField field;
+        AETypeField type;
+        AbstractSinglePropertyField field;
 
         try {
             for (String key : fields) {
-                field = new TextField(key);
+                type = annotationService.getFormType(currentItem.getClass(), key);
+                field = switch (type) {
+                    case text -> new TextField(key);
+                    case integer -> new IntegerField(key);
+                    case booleano -> new Checkbox(key);
+                    default -> new TextField(key);
+                };
+
                 formLayout.add(field);
                 binder.forField(field).bind(key);
             }
@@ -336,10 +354,10 @@ public class CrudDialog extends Dialog {
 
     public void annullaHandler() {
         switch (operation) {
-            case ADD -> Avviso.show("Mese non registrato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            case READ -> Avviso.show("Mese letto").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            case UPDATE -> Avviso.show("Mese non modificato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
-            case DELETE -> Avviso.show("Mese non cancellato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            case ADD -> Avviso.show("Non registrato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            case READ -> Avviso.show("Letto").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            case UPDATE -> Avviso.show("Non modificato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            case DELETE -> Avviso.show("Non cancellato").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
             default -> Notification.show("Caso non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
         if (annullaHandler != null) {

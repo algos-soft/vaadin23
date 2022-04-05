@@ -52,10 +52,11 @@ public class ContinenteView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.colonne = Arrays.asList("ordine", "nome", "abitato");
-        super.fields = Arrays.asList("ordine", "nome", "abitato");
+        super.gridPropertyNamesList = Arrays.asList("ordine", "nome", "abitato");
+        super.formPropertyNamesList = Arrays.asList("ordine", "nome", "abitato");
         super.usaBottoneDeleteReset = true;
-
+        super.usaBottoneNew = false;
+        super.autoCreateColumns = false;
         super.dialogClazz = ContinenteDialog.class;
     }
 

@@ -1,6 +1,7 @@
 package it.algos.vaad23.backend.service;
 
-import it.algos.vaad23.backend.exception.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
@@ -28,6 +29,7 @@ import java.lang.reflect.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ReflectionService extends AbstractService {
 
+
     /**
      * Field statico di una classe generica. <br>
      *
@@ -36,8 +38,18 @@ public class ReflectionService extends AbstractService {
      *
      * @return the field
      */
-    public Field getField(final Class<?> genericClazz, final String publicFieldName) throws AlgosException {
-        return null;
+    public Field getField(final Class<?> genericClazz, final String publicFieldName) {
+        Field field = null;
+        String propertyName = publicFieldName;
+
+        try {
+            propertyName = propertyName.replaceAll(FIELD_NAME_ID_CON, FIELD_NAME_ID_SENZA);
+            field = genericClazz.getField(propertyName);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(unErrore).usaDb());
+        }
+
+        return field;
     }
 
 }

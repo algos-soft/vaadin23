@@ -5,6 +5,7 @@ import com.vaadin.flow.router.*;
 import it.algos.vaad23.backend.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import org.hibernate.validator.constraints.*;
 import org.springframework.beans.factory.annotation.*;
@@ -197,21 +198,52 @@ public class AnnotationService extends AbstractService {
             //@todo lanciare un errore nei log/logger
         }
 
-        // controlla che il parametro in ingresso sia di una delle due classi previste
-        //        if (entityViewClazz != null && AEntity.class.isAssignableFrom(entityViewClazz)) {
-        //            annotation = getAIViewEntity((Class<? extends AEntity>) entityViewClazz);
-        //            return annotation;
-        //        }
-
-        // controlla che il parametro in ingresso sia di una delle due classi previste
-        //        if (entityViewClazz != null && VerticalLayout.class.isAssignableFrom(entityViewClazz)) {
-        //            annotation = getAIViewView((Class<? extends AView>) entityViewClazz);
-        //            return annotation;
-        //        }
-
         return entityViewClazz.getAnnotation(AIView.class);
     }
 
+
+    /**
+     * Get the annotation Algos AIField. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre l'interfaccia
+     *
+     * @return the specific annotation
+     */
+    public AIField getAIField(final Field reflectionJavaField) {
+        return reflectionJavaField != null ? reflectionJavaField.getAnnotation(AIField.class) : null;
+    }
+
+    /**
+     * Get the annotation Algos AIField. <br>
+     *
+     * @param entityClazz the class of type AEntity
+     * @param fieldName   the property name
+     *
+     * @return the specific annotation
+     */
+    public AIField getAIField(final Class<? extends AEntity> entityClazz, final String fieldName) {
+        AIField annotation = null;
+        Field reflectionJavaField;
+
+        // Controlla che il parametro in ingresso non sia nullo
+        if (entityClazz == null) {
+            return null;
+        }
+
+        // Controlla che il parametro in ingresso non sia nullo
+        if (textService.isEmpty(fieldName)) {
+            return null;
+        }
+
+        try {
+            reflectionJavaField = entityClazz.getDeclaredField(fieldName);
+            annotation = getAIField(reflectionJavaField);
+        } catch (Exception unErrore) {
+            logger.error(unErrore);
+        }
+
+        return annotation;
+    }
 
     //==========================================================================
     // @Route
@@ -381,6 +413,74 @@ public class AnnotationService extends AbstractService {
     public String getLineawesomeClassnames(final Class<?> clazz) {
         AIView annotation = this.getAIView(clazz);
         return annotation != null ? annotation.lineawesomeClassnames() : DEFAULT_ICON_NAME;
+    }
+
+    //==========================================================================
+    // @AIField
+    //==========================================================================
+
+    /**
+     * Get the type (field) of the property.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the type for the specific field
+     */
+    public AETypeField getFormType(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        Field reflectionJavaField = reflectionService.getField(entityClazz, publicFieldName);
+        return reflectionJavaField != null ? getFormType(reflectionJavaField) : AETypeField.text;
+    }
+
+    /**
+     * Get the widthEM of the property.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the width of the field expressed in em
+     */
+    public String getWidth(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        String width = VUOTA;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+        String tag = "em";
+
+        if (annotation != null && annotation.widthEM() > 0) {
+            width = annotation.widthEM() + tag;
+        }
+
+        if (width.equals(VUOTA) || width.equals(tag)) {
+            width = getFormType(entityClazz, publicFieldName).getWidthField() + tag;
+        }
+
+        return width;
+    }
+
+    /**
+     * Get the type (field) of the property.
+     *
+     * @param reflectionJavaField di riferimento
+     *
+     * @return the type for the specific field
+     */
+    public AETypeField getFormType(final Field reflectionJavaField) {
+        AETypeField type;
+        AETypeField standard = AETypeField.text;
+        AIField annotation;
+
+        if (reflectionJavaField == null) {
+            return null;
+        }
+
+        annotation = this.getAIField(reflectionJavaField);
+        if (annotation != null) {
+            type = annotation.type();
+        }
+        else {
+            type = standard;
+        }
+
+        return type;
     }
 
 

@@ -271,4 +271,8 @@ public class VaadCost {
 
     public final static String FIELD_NAME_COMPANY = "company";
 
+    public final static String COLOR_VERO = "#9FE2BF";
+
+    public final static String COLOR_FALSO = "#FF7F50";
+
 }

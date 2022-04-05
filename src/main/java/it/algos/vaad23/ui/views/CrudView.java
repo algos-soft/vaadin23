@@ -62,6 +62,30 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     @Autowired
     public LogService logger;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ReflectionService reflectionService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public TextService textService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ColumnService columnService;
+
     protected CrudBackend crudBackend;
 
     protected CrudDialog crudDialog;
@@ -70,7 +94,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected HorizontalLayout topPlaceHolder;
 
-    protected int width;
+    protected int browserWidth;
 
     /**
      * Flag di preferenza per la cancellazione della colonna ID. Di default true. <br>
@@ -78,13 +102,18 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     protected boolean cancellaColonnaKeyId;
 
     /**
+     * Flag di preferenza per la creazione automatica delle colonne. Di default true. <br>
+     */
+    protected boolean autoCreateColumns;
+
+    /**
      * Flag di preferenza per avere un ordine prestabilito per le colonne. Di default false. <br>
      */
     protected boolean riordinaColonne;
 
-    protected List<String> colonne;
+    protected List<String> gridPropertyNamesList;
 
-    protected List<String> fields;
+    protected List<String> formPropertyNamesList;
 
 
     /**
@@ -181,12 +210,13 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      */
     protected void fixPreferenze() {
         //--Larghezza del browser utilizzato in questa sessione <br>
-        UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> width = details.getBodyClientWidth());
+        UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> browserWidth = details.getBodyClientWidth());
 
         riordinaColonne = true;
-        colonne = new ArrayList<>();
-        fields = new ArrayList<>();
+        gridPropertyNamesList = new ArrayList<>();
+        formPropertyNamesList = new ArrayList<>();
         cancellaColonnaKeyId = true;
+        autoCreateColumns = true;
         usaBottoneRefresh = true;
         usaBottoneDeleteReset = false;
         usaBottoneNew = true;
@@ -319,10 +349,15 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      */
     protected void fixBodyLayout() {
         // Create a listing component for a bean type
-        grid = new Grid(entityClazz, true);
+        grid = new Grid(entityClazz, autoCreateColumns);
 
-        // Regola numero e ordine delle colonne
-        this.fixColumns();
+        // Crea/regola le colonne
+        if (autoCreateColumns) {
+            this.fixColumnsAutomaticlallyCreated();
+        }
+        else {
+            this.addColumnsOneByOne();
+        }
 
         // Pass all objects to a grid from a Spring Data repository object
         grid.setItems(crudBackend.findAll());
@@ -341,13 +376,16 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.add(grid);
     }
 
+
     /**
-     * Elimina la colonna 'keyID' -> 'id' costruita in automatico <br>
-     * Le colonne sono state costruite in automatico senza ordine garantito <br>
+     * autoCreateColumns=true <br>
+     * Crea le colonne normali indicate in this.colonne <br>
+     * Elimina la colonna 'keyID' -> 'id' se costruita in automatico con autoCreateColumns=true <br>
+     * Le colonne costruite in automatico sono senza ordine garantito <br>
      * Riordina le colonne secondo una lista prestabilita <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    protected void fixColumns() {
+    protected void fixColumnsAutomaticlallyCreated() {
         if (cancellaColonnaKeyId) {
             try {
                 grid.removeColumnByKey(FIELD_NAME_ID_SENZA);
@@ -360,13 +398,22 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         //--cambia solo l'ordine di presentazione delle colonne. Ha senso solo se sono state costruite in automatico.
         //--tutte le caratteristiche delle colonne create in automatico rimangono immutate
         //--se servono caratteristiche particolari per una colonna o va creata manualmente o va recuperata e modificata
-        if (riordinaColonne && colonne.size() > 0) {
+        if (riordinaColonne && gridPropertyNamesList.size() > 0) {
             try {
-                grid.setColumnOrder(colonne.stream().map(getColonna).collect(Collectors.toList()));
+                grid.setColumnOrder(gridPropertyNamesList.stream().map(getColonna).collect(Collectors.toList()));
             } catch (Exception unErrore) {
                 logger.error(new WrapLog().exception(unErrore).usaDb());
             }
         }
+    }
+
+    /**
+     * autoCreateColumns=false <br>
+     * Crea le colonne normali indicate in this.colonne <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    protected void addColumnsOneByOne() {
+        columnService.addColumnsOneByOne(grid, entityClazz, gridPropertyNamesList);
     }
 
     /**
@@ -421,7 +468,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Passa al dialogo gli handler per annullare e creare <br>
      */
     public void newItem() {
-        dialog = (CrudDialog) appContext.getBean(dialogClazz, crudBackend.newEntity(), CrudOperation.ADD, crudBackend, fields);
+        dialog = (CrudDialog) appContext.getBean(dialogClazz, crudBackend.newEntity(), CrudOperation.ADD, crudBackend, formPropertyNamesList);
         dialog.open(this::saveHandler, this::annullaHandler);
     }
 
@@ -446,7 +493,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * @param entityBeanDaRegistrare (nuova o esistente)
      */
     public void updateItem(AEntity entityBeanDaRegistrare) {
-        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, fields);
+        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
         dialog.open(this::saveHandler, this::annullaHandler);
     }
 
@@ -459,7 +506,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     public void deleteItem() {
         Optional entityBean = grid.getSelectedItems().stream().findFirst();
         if (entityBean.isPresent()) {
-            dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBean.get(), CrudOperation.DELETE, crudBackend, fields);
+            dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBean.get(), CrudOperation.DELETE, crudBackend, formPropertyNamesList);
             dialog.open(this::saveHandler, this::deleteHandler, this::annullaHandler);
         }
     }
@@ -512,7 +559,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             wrap.weight(AEFontWeight.bold);
         }
         if (wrap.getFontHeight() == null) {
-            if (width == 0 || width > 500) {
+            if (browserWidth == 0 || browserWidth > 500) {
                 wrap.fontHeight(AEFontHeight.em9);
             }
             else {
@@ -520,7 +567,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             }
         }
         if (wrap.getLineHeight() == null) {
-            if (width == 0 || width > 500) {
+            if (browserWidth == 0 || browserWidth > 500) {
                 wrap.lineHeight(AELineHeight.em3);
             }
             else {
