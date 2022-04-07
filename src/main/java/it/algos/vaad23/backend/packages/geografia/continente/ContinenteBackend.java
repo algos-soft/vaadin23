@@ -106,8 +106,7 @@ public class ContinenteBackend extends CrudBackend {
         boolean status = super.reset();
 
         if (status) {
-            nomeFile = "continenti";
-            mappa = resourceService.leggeMappaConfigSenzaTitoli(nomeFile);
+            mappa = resourceService.leggeMappaConfig(nomeFile);
             if (mappa != null) {
                 for (String key : mappa.keySet()) {
                     riga = mappa.get(key);

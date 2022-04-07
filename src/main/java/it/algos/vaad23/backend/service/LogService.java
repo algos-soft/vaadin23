@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.service;
 
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.notification.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -396,12 +397,16 @@ public class LogService extends AbstractService {
     }
 
     public String warn(final WrapLog wrap) {
-        Avviso.show("Warning").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        if (UI.getCurrent() != null) {
+            Avviso.show("Warning").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
         return logBase(AELogLevel.warn, wrap);
     }
 
     public String error(final WrapLog wrap) {
-        Avviso.show("Errore").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        if (UI.getCurrent() != null) {
+            Avviso.show("Errore").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
         return logBase(AELogLevel.error, wrap);
     }
 

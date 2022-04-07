@@ -44,7 +44,7 @@ public abstract class CrudBackend extends AbstractService {
     @Autowired
     public TextService textService;
 
-    protected MongoRepository crudRepository;
+    public MongoRepository crudRepository;
 
 
     /**

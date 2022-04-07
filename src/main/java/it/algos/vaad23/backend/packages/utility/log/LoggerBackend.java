@@ -30,7 +30,7 @@ import java.util.*;
 //@AIScript(sovraScrivibile = true)
 public class LoggerBackend extends CrudBackend {
 
-    private LoggerRepository repository;
+    public LoggerRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>

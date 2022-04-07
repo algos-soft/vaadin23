@@ -52,6 +52,8 @@ public class VaadCost {
 
     public static final String SPAZIO = " ";
 
+    public static final String UNDERSCORE = "_";
+
     public static final String DUE_PUNTI_SPAZIO = DUE_PUNTI + SPAZIO;
 
     public static final String DOPPIO_SPAZIO = SPAZIO + SPAZIO;
@@ -79,6 +81,9 @@ public class VaadCost {
     public static final String REGEX_PIPE = "\\|";
 
     public static final String RETURN = "\n";
+
+    //--codifica dei caratteri
+    public static final String INPUT = "UTF8";
 
     public static final String SORT_SPRING_ASC = "ASC";
 
@@ -124,7 +129,6 @@ public class VaadCost {
 
     public static final String KEY_MAPPA_LAST_MODIFICA = "lastModifica";
 
-
     /**
      * The constant ROUTE_NAME.
      */
@@ -141,7 +145,6 @@ public class VaadCost {
     public static final String ROUTE_NAME_GENERIC_LIST = "list";
 
     public static final String ROUTE_NAME_GENERIC_FORM = "form";
-
 
     public static final String SWITCH = "Switch - caso non definito";
 
@@ -164,7 +167,6 @@ public class VaadCost {
      * tag per le doppie graffe di chiusura
      */
     public static final String DOPPIE_GRAFFE_END = GRAFFA_END + GRAFFA_END;
-
 
     //--chiavi mappa eventi
     public static final String JSON_SUCCESS = "Success";
@@ -211,7 +213,6 @@ public class VaadCost {
 
     public static final String PARAGRAFO_SUB = UGUALE_SEMPLICE + UGUALE_SEMPLICE + UGUALE_SEMPLICE;
 
-
     /**
      * tag '@Qualifier'
      */
@@ -251,7 +252,6 @@ public class VaadCost {
 
     public static final String FALSO = "false";
 
-
     /**
      * Nomi delle properties.
      */
@@ -274,5 +274,9 @@ public class VaadCost {
     public final static String COLOR_VERO = "#9FE2BF";
 
     public final static String COLOR_FALSO = "#FF7F50";
+
+    public final static String TAG_INIZIALE = "http://";
+
+    public final static String TAG_INIZIALE_SECURE = "https://";
 
 }

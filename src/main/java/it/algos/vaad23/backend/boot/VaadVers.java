@@ -103,6 +103,10 @@ public class VaadVers implements AIVers {
             this.crea(k, AETypeVers.addition, "Alert colorati in testa alle view");
         }
 
+        //--new package
+        if (installa(++k)) {
+            this.crea(k, AETypeVers.addition, "Preferenze 'base' (string, int, boolean) funzionanti");
+        }
 
     }
 

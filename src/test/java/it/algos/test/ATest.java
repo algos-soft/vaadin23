@@ -13,7 +13,6 @@ import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.*;
 
 import java.lang.reflect.*;
 import java.time.*;
@@ -96,6 +95,10 @@ public abstract class ATest {
 
     protected double ottenutoDouble = 0;
 
+    protected AIResult previstoRisultato;
+
+    protected AIResult ottenutoRisultato;
+
     protected Span span;
 
     protected Class clazz;
@@ -140,6 +143,8 @@ public abstract class ATest {
 
     protected StreamResource streamResource;
 
+    protected long inizio;
+
     @InjectMocks
     protected TextService textService;
 
@@ -173,11 +178,15 @@ public abstract class ATest {
     @InjectMocks
     protected HtmlService htmlService;
 
-    @Autowired
+    @InjectMocks
     protected LoggerBackend loggerBackend;
 
     @InjectMocks
     protected UtilityService utilityService;
+
+    @InjectMocks
+    protected WebService webService;
+
 
     //--tag
     //--esiste nella enumeration
@@ -256,6 +265,8 @@ public abstract class ATest {
         assertNotNull(resourceService);
         assertNotNull(utilityService);
         assertNotNull(htmlService);
+        assertNotNull(webService);
+        assertNotNull(loggerBackend);
     }
 
 
@@ -279,10 +290,13 @@ public abstract class ATest {
         arrayService.logger = logService;
         logService.utilityService = utilityService;
         logService.slf4jLogger = slf4jLogger;
-        logService.loggerBackend = loggerBackend;
         utilityService.fileService = fileService;
         utilityService.textService = textService;
         htmlService.textService = textService;
+        loggerBackend.fileService = fileService;
+        loggerBackend.textService = textService;
+        resourceService.webService = webService;
+        resourceService.logger = logService;
     }
 
     /**
@@ -330,6 +344,7 @@ public abstract class ATest {
         bytes = null;
         streamResource = null;
         span = null;
+        inizio = System.currentTimeMillis();
     }
 
 
@@ -404,14 +419,14 @@ public abstract class ATest {
         }
     }
 
-    protected void printVuota(List<String> lista) {
+    protected void printVuota(List<String> lista, String message) {
         System.out.println(VUOTA);
-        print(lista);
+        print(lista, message);
     }
 
-    protected void print(List<String> lista) {
+    protected void print(List<String> lista, String message) {
         if (lista != null && lista.size() > 0) {
-            System.out.println(String.format("Ci sono %d elementi nella lista", lista.size()));
+            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size(), message));
         }
         else {
             System.out.println("La lista è vuota");
@@ -425,14 +440,23 @@ public abstract class ATest {
     }
 
 
-    protected void printMappa(Map<String, List<String>> mappa) {
+    protected void printMappa(Map<String, List<String>> mappa, String message) {
         List<String> lista;
+
         if (arrayService.isAllValid(mappa)) {
+            System.out.println(VUOTA);
+            System.out.println(String.format("Ci sono %d elementi %s", mappa.size(), message));
+            System.out.println(VUOTA);
             for (String key : mappa.keySet()) {
                 lista = mappa.get(key);
-                System.out.println(VUOTA);
                 if (arrayService.isAllValid(lista)) {
-                    printVuota(lista);
+                    System.out.print(key);
+                    System.out.print(FORWARD);
+                    for (String value : lista) {
+                        System.out.print(value);
+                        System.out.print(VIRGOLA);
+                    }
+                    System.out.println(VUOTA);
                 }
             }
         }
@@ -445,6 +469,10 @@ public abstract class ATest {
     protected void printSpan(Span span) {
         System.out.println(span != null ? span.getElement().toString() : VUOTA);
         System.out.println(VUOTA);
+    }
+
+    protected String getTime() {
+        return dateService.deltaTextEsatto(inizio);
     }
 
 }

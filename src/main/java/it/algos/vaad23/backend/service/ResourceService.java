@@ -4,6 +4,9 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.server.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
+import static it.algos.vaad23.backend.service.FileService.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.*;
 import org.springframework.beans.factory.config.*;
@@ -44,7 +47,7 @@ public class ResourceService extends AbstractService {
      *
      * @return testo completo grezzo del file
      */
-    public String leggeConfig(String simpleNameFileToBeRead) {
+    public String leggeConfig(final String simpleNameFileToBeRead) {
         String tag = "config";
         return fileService.leggeFile(tag + File.separator + simpleNameFileToBeRead);
     }
@@ -57,7 +60,7 @@ public class ResourceService extends AbstractService {
      *
      * @return lista di righe grezze
      */
-    public List<String> leggeListaConfig(String simpleNameFileToBeRead) {
+    public List<String> leggeListaConfig(final String simpleNameFileToBeRead) {
         return leggeListaConfig(simpleNameFileToBeRead, true);
     }
 
@@ -71,9 +74,22 @@ public class ResourceService extends AbstractService {
      *
      * @return lista di righe grezze
      */
-    public List<String> leggeListaConfig(String simpleNameFileToBeRead, boolean compresiTitoli) {
-        List<String> listaRighe = null;
+    public List<String> leggeListaConfig(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
         String rawText = leggeConfig(simpleNameFileToBeRead);
+        return leggeLista(rawText, compresiTitoli);
+    }
+
+    /**
+     * Legge una lista di righe di risorse <br>
+     * La prima riga contiene i titoli
+     *
+     * @param rawText        testo grezzo del file
+     * @param compresiTitoli parte dalla prima riga, altrimenti dalla seconda
+     *
+     * @return lista di righe grezze
+     */
+    private List<String> leggeLista(final String rawText, final boolean compresiTitoli) {
+        List<String> listaRighe = null;
         String[] righe;
 
         if (textService.isValid(rawText)) {
@@ -105,12 +121,65 @@ public class ResourceService extends AbstractService {
      *
      * @param simpleNameFileToBeRead nome del file senza path e senza directory
      *
-     * @return lista di titoli più le righe grezze
+     * @return mappa dei titoli più le righe grezze
      */
-    public Map<String, List<String>> leggeMappaConfigConTitoli(String simpleNameFileToBeRead) {
+    public Map<String, List<String>> leggeMappaConfig(final String simpleNameFileToBeRead) {
+        return leggeMappaConfig(simpleNameFileToBeRead, true);
+    }
+
+    /**
+     * Legge una mappa di risorse da {project directory}/config/ <br>
+     * La mappa NON contiene i titoli
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     * @param compresiTitoli         parte dalla prima riga, altrimenti dalla seconda
+     *
+     * @return mappa dei titoli più le righe grezze
+     */
+    public Map<String, List<String>> leggeMappaConfig(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
+        String rawText = leggeConfig(simpleNameFileToBeRead);
+        return leggeMappa(rawText, compresiTitoli);
+    }
+
+
+    /**
+     * Legge una mappa di risorse da {project directory}/config/ <br>
+     * La prima riga contiene i titoli
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return mappa dei titoli più le righe grezze
+     */
+    public Map<String, List<String>> leggeMappaServer(final String simpleNameFileToBeRead) {
+        return leggeMappaServer(simpleNameFileToBeRead, true);
+    }
+
+    /**
+     * Legge una mappa di risorse da {project directory}/config/ <br>
+     * La mappa NON contiene i titoli
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     * @param compresiTitoli         parte dalla prima riga, altrimenti dalla seconda
+     *
+     * @return mappa dei titoli più le righe grezze
+     */
+    public Map<String, List<String>> leggeMappaServer(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
+        String rawText = leggeServer(simpleNameFileToBeRead);
+        return leggeMappa(rawText, compresiTitoli);
+    }
+
+    /**
+     * Legge una mappa di risorse <br>
+     * La prima riga contiene i titoli
+     *
+     * @param rawText        testo grezzo del file
+     * @param compresiTitoli parte dalla prima riga, altrimenti dalla seconda
+     *
+     * @return mappa delle righe grezze con eventualmente i titoli
+     */
+    private Map<String, List<String>> leggeMappa(final String rawText, final boolean compresiTitoli) {
         Map<String, List<String>> mappa = null;
         List<String> listaParti;
-        String rawText = leggeConfig(simpleNameFileToBeRead);
         String[] righe;
         String[] parti;
 
@@ -132,22 +201,17 @@ public class ResourceService extends AbstractService {
             }
         }
 
-        return mappa;
-    }
+        if (mappa != null) {
+            if (!compresiTitoli) {
+                if (mappa.containsKey("id")) {
+                    mappa.remove("id");
+                }
+                else {
+                    logger.error(new WrapLog().exception(new AlgosException("Manca la riga chiave dei titoli")).usaDb());
+                }
+            }
+        }
 
-    /**
-     * Legge una mappa di risorse da {project directory}/config/ <br>
-     * La mappa NON contiene i titoli
-     *
-     * @param simpleNameFileToBeRead nome del file senza path e senza directory
-     *
-     * @return lista delle sole righe grezze
-     */
-    public Map<String, List<String>> leggeMappaConfigSenzaTitoli(String simpleNameFileToBeRead) {
-        Map<String, List<String>> mappa = leggeMappaConfigConTitoli(simpleNameFileToBeRead);
-
-        String firstKey = String.valueOf(mappa.keySet().toArray()[0]);
-        mappa.remove(firstKey);
         return mappa;
     }
 
@@ -158,7 +222,7 @@ public class ResourceService extends AbstractService {
      *
      * @return testo completo grezzo del file
      */
-    public String leggeFrontend(String simpleNameFileToBeRead) {
+    public String leggeFrontend(final String simpleNameFileToBeRead) {
         String tag = "frontend";
         return fileService.leggeFile(tag + File.separator + simpleNameFileToBeRead);
     }
@@ -171,9 +235,15 @@ public class ResourceService extends AbstractService {
      *
      * @return testo completo grezzo del file
      */
-    public String leggeMetaInf(String simpleNameFileToBeRead) {
+    public String leggeMetaInf(final String simpleNameFileToBeRead) {
+        String path = simpleNameFileToBeRead;
         String tag = "src/main/resources/META-INF/resources";
-        return fileService.leggeFile(tag + File.separator + simpleNameFileToBeRead);
+
+        if (simpleNameFileToBeRead != null && !simpleNameFileToBeRead.startsWith(tag)) {
+            path = tag + File.separator + simpleNameFileToBeRead;
+        }
+
+        return fileService.leggeFile(path);
     }
 
 
@@ -184,12 +254,48 @@ public class ResourceService extends AbstractService {
      *
      * @return testo grezzo del file
      */
-    public String leggeRisorsa(String nameFileToBeRead) {
+    public String leggeRisorsa(final String nameFileToBeRead) {
         //        File filePath = new File("config" + File.separator + nameFileToBeRead);
         File filePath = new File("META-INF.resources" + File.separator + nameFileToBeRead);
         return fileService.leggeFile(filePath.getAbsolutePath());
     }
 
+    /**
+     * Legge un file dal server <br>
+     *
+     * @param nameFileToBeRead nome del file
+     *
+     * @return testo grezzo del file
+     */
+    public String leggeServer(final String nameFileToBeRead) {
+        return webService.leggeWebTxt(WebService.URL_BASE_VAADIN23 + nameFileToBeRead);
+    }
+
+    /**
+     * Legge una lista di righe di risorse dal server <br>
+     * La prima riga contiene i titoli
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     *
+     * @return lista di righe grezze
+     */
+    public List<String> leggeListaServer(final String simpleNameFileToBeRead) {
+        return leggeListaServer(simpleNameFileToBeRead, true);
+    }
+
+    /**
+     * Legge una lista di righe di risorse dal server <br>
+     * La prima riga contiene i titoli
+     *
+     * @param simpleNameFileToBeRead nome del file senza path e senza directory
+     * @param compresiTitoli         parte dalla prima riga, altrimenti dalla seconda
+     *
+     * @return lista di righe grezze
+     */
+    public List<String> leggeListaServer(final String simpleNameFileToBeRead, final boolean compresiTitoli) {
+        String rawText = leggeServer(simpleNameFileToBeRead);
+        return leggeLista(rawText, compresiTitoli);
+    }
 
     /**
      * Costruisce un file di risorse, partendo dal nome semplice <br>
@@ -199,7 +305,7 @@ public class ResourceService extends AbstractService {
      *
      * @return bytes
      */
-    public File getFile(String simpleNameFileToBeRead) {
+    public File getFile(final String simpleNameFileToBeRead) {
         File resourceFile = null;
         String pathResourceFileName = VUOTA;
 
@@ -228,16 +334,20 @@ public class ResourceService extends AbstractService {
      *
      * @return bytes
      */
-    public byte[] getBytes(String simpleResourceFileName) {
+    public byte[] getBytes(final String simpleResourceFileName) {
         byte[] bytes = null;
         File resourceFile = getFile(simpleResourceFileName);
 
-        if (resourceFile.exists() && resourceFile.isFile()) {
+        if (resourceFile != null && resourceFile.exists() && resourceFile.isFile()) {
             try {
                 bytes = FileUtils.readFileToByteArray(resourceFile);
             } catch (Exception unErrore) {
-                logger.warn(unErrore);
+                logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb().type(AETypeLog.resources));
             }
+        }
+        else {
+            logger.error(new WrapLog().exception(new AlgosException(NON_ESISTE_FILE)).usaDb().type(AETypeLog.resources));
+            return bytes;
         }
 
         return bytes;
@@ -251,7 +361,7 @@ public class ResourceService extends AbstractService {
      *
      * @return image
      */
-    public Image getImageFromBytes(byte[] bytes) {
+    public Image getImageFromBytes(final byte[] bytes) {
         Image image = null;
         StreamResource resource;
 
@@ -260,7 +370,7 @@ public class ResourceService extends AbstractService {
                 resource = new StreamResource("manca.jpg", () -> new ByteArrayInputStream(bytes));
                 image = new Image(resource, "manca");
             } catch (Exception unErrore) {
-                logger.error(AETypeLog.resource, unErrore);
+                logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb().type(AETypeLog.resources));
             }
         }
 
@@ -277,7 +387,7 @@ public class ResourceService extends AbstractService {
      *
      * @return image
      */
-    public Image getImageFromFile(String simpleResourceFileName) {
+    public Image getImageFromFile(final String simpleResourceFileName) {
         Image image = null;
         byte[] bytes = getBytes(simpleResourceFileName);
 
@@ -297,7 +407,7 @@ public class ResourceService extends AbstractService {
      *
      * @return image
      */
-    public Image getImageFromMongo(String mongoValue) {
+    public Image getImageFromMongo(final String mongoValue) {
         Image image = null;
         byte[] bytes = Base64.decodeBase64(mongoValue);
 
@@ -309,12 +419,12 @@ public class ResourceService extends AbstractService {
     }
 
 
-    public Image getImagePng(String simpleResourceFileName) {
+    public Image getImagePng(final String simpleResourceFileName) {
         return getImageFromFile(simpleResourceFileName + PUNTO + "png");
     }
 
 
-    public Image getBandieraFromFile(String simpleResourceFileName) {
+    public Image getBandieraFromFile(final String simpleResourceFileName) {
         Image image = getImagePng("bandiere/" + simpleResourceFileName.toLowerCase());
 
         if (image != null) {
@@ -326,7 +436,7 @@ public class ResourceService extends AbstractService {
     }
 
 
-    public Image getBandieraFromMongo(String mongoValue) {
+    public Image getBandieraFromMongo(final String mongoValue) {
         Image image = getImageFromMongo(mongoValue);
 
         if (image != null) {
@@ -345,7 +455,7 @@ public class ResourceService extends AbstractService {
      *
      * @return valore codificato
      */
-    public String getSrc(String simpleResourceFileName) {
+    public String getSrc(final String simpleResourceFileName) {
         String bytesCodificati = VUOTA;
         byte[] bytes = getBytes(simpleResourceFileName);
 
@@ -364,7 +474,7 @@ public class ResourceService extends AbstractService {
      *
      * @return valore codificato
      */
-    public String getSrcBandieraPng(String simpleResourceFileNameWithoutSuffix) {
+    public String getSrcBandieraPng(final String simpleResourceFileNameWithoutSuffix) {
         return getSrc("bandiere/" + simpleResourceFileNameWithoutSuffix.toLowerCase() + PUNTO + "png");
     }
 
@@ -378,7 +488,7 @@ public class ResourceService extends AbstractService {
      *
      * @return lista di mappe di valori
      */
-    public List<LinkedHashMap<String, String>> leggeMappaCSV(String pathFileToBeRead) {
+    public List<LinkedHashMap<String, String>> leggeMappaCSV(final String pathFileToBeRead) {
         return fileService.leggeMappaCSV(pathFileToBeRead);
     }
 

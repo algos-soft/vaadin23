@@ -6,6 +6,8 @@ import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.data.renderer.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -61,35 +63,40 @@ public class ColumnService extends AbstractService {
     public void crea(final Grid grid, Class<? extends AEntity> entityClazz, final String propertyName) {
         Grid.Column<AEntity> colonna = null;
         String width = annotationService.getWidth(entityClazz, propertyName);
+        AETypeField type = annotationService.getFormType(entityClazz, propertyName);
 
         colonna = grid.addColumn(new ComponentRenderer<>(entity -> {
             Field field = null;
-            String testo = VUOTA;
+            String message;
+            Icon icona;
+
             try {
                 field = reflectionService.getField(entityClazz, propertyName);
             } catch (Exception unErrore) {
                 logger.error(new WrapLog().exception(unErrore).usaDb());
             }
-
             try {
-                if (field.get(entity) instanceof String) {
-                    testo = (String) field.get(entity);
-                }
-                if (field.get(entity) instanceof Integer) {
-                    testo = field.get(entity) + "";
-                }
-                if (field.get(entity) instanceof Boolean) {
-                    Icon icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
-                    icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);
-                    return icona;
-                }
+                return switch (type) {
+                    case text -> new Label((String) field.get(entity));
+                    case integer -> new Label(field.get(entity) + VUOTA);
+                    case booleano -> {
+                        icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+                        icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);
+                        yield icona;
+                    }
+                    default -> {
+                        message = String.format("Default Switch, manca il case %s", type);
+                        logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+                        yield VaadinIcon.ALARM.create();
+                    }
+                };
             } catch (Exception unErrore) {
                 logger.error(new WrapLog().exception(unErrore).usaDb());
             }
+            return null;
+        }));//end of lambda expressions and anonymous inner class
 
-            return new Label(testo);
-        })).setWidth(width).setFlexGrow(0).setSortable(true).setHeader(textService.primaMaiuscola(propertyName));
-        //end of lambda expressions and anonymous inner class
+        colonna.setWidth(width).setFlexGrow(0).setSortable(true).setHeader(textService.primaMaiuscola(propertyName));
     }
 
 

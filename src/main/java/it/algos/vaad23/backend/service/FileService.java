@@ -53,6 +53,8 @@ public class FileService extends AbstractService {
 
     public static final String NON_E_FILE = "Non è un file";
 
+    public static final String DIRECTORY_NOT_FILE = "Directory e non file";
+
     public static final String NON_CREATO_FILE = "Il file non è stato creato";
 
     public static final String NON_COPIATO_FILE = "Il file non è stato copiato";
@@ -91,7 +93,7 @@ public class FileService extends AbstractService {
      *
      * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
      */
-    public boolean isEsisteDirectory(File directoryToBeChecked) {
+    public boolean isEsisteDirectory(final File directoryToBeChecked) {
         return isEsisteDirectoryStr(directoryToBeChecked).equals(VUOTA);
     }
 
@@ -112,14 +114,17 @@ public class FileService extends AbstractService {
      */
     public String isEsisteDirectoryStr(File directoryToBeChecked) {
         if (directoryToBeChecked == null) {
+            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
             return PARAMETRO_NULLO;
         }
 
         if (textService.isEmpty(directoryToBeChecked.getName())) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
             return PATH_NULLO;
         }
 
         if (!directoryToBeChecked.getPath().equals(directoryToBeChecked.getAbsolutePath())) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
             return PATH_NOT_ABSOLUTE;
         }
 
@@ -128,10 +133,12 @@ public class FileService extends AbstractService {
                 return VUOTA;
             }
             else {
+                logger.error(new WrapLog().exception(new AlgosException(NON_E_DIRECTORY)).usaDb().type(AETypeLog.file));
                 return NON_E_DIRECTORY;
             }
         }
         else {
+            logger.error(new WrapLog().exception(new AlgosException(NON_ESISTE_DIRECTORY)).usaDb().type(AETypeLog.file));
             return NON_ESISTE_DIRECTORY;
         }
     }
@@ -202,7 +209,7 @@ public class FileService extends AbstractService {
      *
      * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
      */
-    public boolean isEsisteDirectory(String absolutePathDirectoryToBeChecked) {
+    public boolean isEsisteDirectory(final String absolutePathDirectoryToBeChecked) {
         return isEsisteDirectoryStr(absolutePathDirectoryToBeChecked).equals(VUOTA);
     }
 
@@ -222,12 +229,14 @@ public class FileService extends AbstractService {
      *
      * @return testo di errore, vuoto se la directory esiste
      */
-    public String isEsisteDirectoryStr(String absolutePathDirectoryToBeChecked) {
+    public String isEsisteDirectoryStr(final String absolutePathDirectoryToBeChecked) {
         if (textService.isEmpty(absolutePathDirectoryToBeChecked)) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
             return PATH_NULLO;
         }
 
-        if (this.isNotSlash(absolutePathDirectoryToBeChecked)) {
+        if (this.isNotSlashIniziale(absolutePathDirectoryToBeChecked)) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
             return PATH_NOT_ABSOLUTE;
         }
 
@@ -249,7 +258,7 @@ public class FileService extends AbstractService {
      *
      * @return true se il file esiste, false se non sono rispettate le condizioni della richiesta
      */
-    public boolean isEsisteFile(File fileToBeChecked) {
+    public boolean isEsisteFile(final File fileToBeChecked) {
         return isEsisteFileStr(fileToBeChecked).equals(VUOTA);
     }
 
@@ -268,7 +277,7 @@ public class FileService extends AbstractService {
      *
      * @return true se il file esiste, false se non sono rispettate le condizioni della richiesta
      */
-    public boolean isEsisteFile(String pathDirectoryToBeChecked, String fileName) {
+    public boolean isEsisteFile(final String pathDirectoryToBeChecked, final String fileName) {
         return isEsisteFile(pathDirectoryToBeChecked + SLASH + fileName);
     }
 
@@ -286,7 +295,7 @@ public class FileService extends AbstractService {
      *
      * @return true se il file esiste, false se non sono rispettate le condizioni della richiesta
      */
-    public boolean isEsisteFile(String absolutePathFileWithSuffixToBeChecked) {
+    public boolean isEsisteFile(final String absolutePathFileWithSuffixToBeChecked) {
         return isEsisteFileStr(absolutePathFileWithSuffixToBeChecked).equals(VUOTA);
     }
 
@@ -308,20 +317,28 @@ public class FileService extends AbstractService {
         String risposta = VUOTA;
 
         if (textService.isEmpty(absolutePathFileWithSuffixToBeChecked)) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
             return PATH_NULLO;
         }
 
-        if (this.isNotSlash(absolutePathFileWithSuffixToBeChecked)) {
+        if (this.isNotSlashIniziale(absolutePathFileWithSuffixToBeChecked)) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
             return PATH_NOT_ABSOLUTE;
+        }
+        if (this.isSlashFinale(absolutePathFileWithSuffixToBeChecked)) {
+            logger.error(new WrapLog().exception(new AlgosException(DIRECTORY_NOT_FILE)).usaDb().type(AETypeLog.file));
+            return DIRECTORY_NOT_FILE;
         }
 
         risposta = isEsisteFileStr(new File(absolutePathFileWithSuffixToBeChecked));
         if (!risposta.equals(VUOTA)) {
             if (isEsisteDirectory(new File(absolutePathFileWithSuffixToBeChecked))) {
+                logger.error(new WrapLog().exception(new AlgosException(NON_E_FILE)).usaDb().type(AETypeLog.file));
                 return NON_E_FILE;
             }
 
             if (this.isNotSuffix(absolutePathFileWithSuffixToBeChecked)) {
+                logger.error(new WrapLog().exception(new AlgosException(PATH_SENZA_SUFFIX)).usaDb().type(AETypeLog.file));
                 return PATH_SENZA_SUFFIX;
             }
         }
@@ -346,14 +363,17 @@ public class FileService extends AbstractService {
      */
     public String isEsisteFileStr(File fileToBeChecked) {
         if (fileToBeChecked == null) {
+            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
             return PARAMETRO_NULLO;
         }
 
         if (textService.isEmpty(fileToBeChecked.getName())) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
             return PATH_NULLO;
         }
 
         if (!fileToBeChecked.getPath().equals(fileToBeChecked.getAbsolutePath())) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
             return PATH_NOT_ABSOLUTE;
         }
 
@@ -362,15 +382,18 @@ public class FileService extends AbstractService {
                 return VUOTA;
             }
             else {
+                logger.error(new WrapLog().exception(new AlgosException(NON_E_FILE)).usaDb().type(AETypeLog.file));
                 return NON_E_FILE;
             }
         }
         else {
             if (this.isNotSuffix(fileToBeChecked.getAbsolutePath())) {
+                logger.error(new WrapLog().exception(new AlgosException(PATH_SENZA_SUFFIX)).usaDb().type(AETypeLog.file));
                 return PATH_SENZA_SUFFIX;
             }
 
             if (!fileToBeChecked.exists()) {
+                logger.error(new WrapLog().exception(new AlgosException(NON_ESISTE_FILE)).usaDb().type(AETypeLog.file));
                 return NON_ESISTE_FILE;
             }
 
@@ -1418,7 +1441,7 @@ public class FileService extends AbstractService {
      *
      * @return lista di liste di valori, senza titoli
      */
-    public List<List<String>> leggeListaCSV(String pathFileToBeRead) {
+    public List<List<String>> leggeListaCSV(final String pathFileToBeRead) {
         return leggeListaCSV(pathFileToBeRead, VIRGOLA, CAPO);
     }
 
@@ -1434,7 +1457,7 @@ public class FileService extends AbstractService {
      *
      * @return lista di liste di valori, senza titoli
      */
-    public List<List<String>> leggeListaCSV(String pathFileToBeRead, String sepColonna, String sepRiga) {
+    public List<List<String>> leggeListaCSV(final String pathFileToBeRead, final String sepColonna, final String sepRiga) {
         List<List<String>> lista = new ArrayList<>();
         List<String> riga = null;
         String[] righe;
@@ -1474,7 +1497,7 @@ public class FileService extends AbstractService {
      *
      * @return lista di mappe di valori
      */
-    public List<LinkedHashMap<String, String>> leggeMappaCSV(String pathFileToBeRead) {
+    public List<LinkedHashMap<String, String>> leggeMappaCSV(final String pathFileToBeRead) {
         return leggeMappaCSV(pathFileToBeRead, VIRGOLA, CAPO);
     }
 
@@ -1490,7 +1513,7 @@ public class FileService extends AbstractService {
      *
      * @return lista di mappe di valori
      */
-    public List<LinkedHashMap<String, String>> leggeMappaCSV(String pathFileToBeRead, String sepColonna, String sepRiga) {
+    public List<LinkedHashMap<String, String>> leggeMappaCSV(final String pathFileToBeRead, final String sepColonna, final String sepRiga) {
         List<LinkedHashMap<String, String>> lista = new ArrayList<>();
         LinkedHashMap<String, String> mappa = null;
         String[] righe;
@@ -1530,7 +1553,7 @@ public class FileService extends AbstractService {
      *
      * @param pathDirectoryToBeScanned nome completo della directory
      */
-    public List<String> getSubDirectoriesAbsolutePathName(String pathDirectoryToBeScanned) {
+    public List<String> getSubDirectoriesAbsolutePathName(final String pathDirectoryToBeScanned) {
         List<String> subDirectoryName = new ArrayList<>();
         List<File> subDirectory = getSubDirectories(pathDirectoryToBeScanned);
 
@@ -1549,7 +1572,7 @@ public class FileService extends AbstractService {
      *
      * @param pathDirectoryToBeScanned nome completo della directory
      */
-    public List<String> getSubDirectoriesName(String pathDirectoryToBeScanned) {
+    public List<String> getSubDirectoriesName(final String pathDirectoryToBeScanned) {
         List<String> subDirectoryName = new ArrayList<>();
         List<File> subDirectory = getSubDirectories(pathDirectoryToBeScanned);
 
@@ -1568,7 +1591,7 @@ public class FileService extends AbstractService {
      *
      * @param pathDirectoryToBeScanned nome completo della directory
      */
-    public List<String> getSubDirectoriesName(File fileSorgente) {
+    public List<String> getSubDirectoriesName(final File fileSorgente) {
         List<String> subDirectoryName = new ArrayList<>();
         List<File> subDirectory = getSubDirectories(fileSorgente);
 
@@ -1587,7 +1610,7 @@ public class FileService extends AbstractService {
      *
      * @param pathDirectoryToBeScanned nome completo della directory
      */
-    public List<File> getSubDirectories(String pathDirectoryToBeScanned) {
+    public List<File> getSubDirectories(final String pathDirectoryToBeScanned) {
         return getSubDirectories(new File(pathDirectoryToBeScanned));
     }
 
@@ -1599,7 +1622,7 @@ public class FileService extends AbstractService {
      *
      * @return lista di sub-directory SENZA files
      */
-    public List<File> getSubDirectories(File directoryToBeScanned) {
+    public List<File> getSubDirectories(final File directoryToBeScanned) {
         List<File> subDirectory = new ArrayList<>();
         File[] allFiles = null;
 
@@ -1629,7 +1652,7 @@ public class FileService extends AbstractService {
      *
      * @return lista di sub-directory SENZA files
      */
-    public List<File> getSubSubDirectories(String pathDirectoryToBeScanned, String dirInterna) {
+    public List<File> getSubSubDirectories(final String pathDirectoryToBeScanned, final String dirInterna) {
         return getSubSubDirectories(new File(pathDirectoryToBeScanned), dirInterna);
     }
 
@@ -1642,7 +1665,7 @@ public class FileService extends AbstractService {
      *
      * @return lista di sub-directory SENZA files
      */
-    public List<File> getSubSubDirectories(File directoryToBeScanned, String dirInterna) {
+    public List<File> getSubSubDirectories(final File directoryToBeScanned, String dirInterna) {
         String subDir = directoryToBeScanned.getAbsolutePath();
 
         if (subDir.endsWith(SLASH)) {
@@ -1668,7 +1691,7 @@ public class FileService extends AbstractService {
      *
      * @return true se esiste
      */
-    public boolean isEsisteSubDirectory(File directoryToBeScanned, String dirInterna) {
+    public boolean isEsisteSubDirectory(final File directoryToBeScanned, final String dirInterna) {
         return isEsisteDirectory(directoryToBeScanned.getAbsolutePath() + SLASH + dirInterna);
     }
 
@@ -1681,7 +1704,7 @@ public class FileService extends AbstractService {
      *
      * @return true se è piena
      */
-    public boolean isPienaSubDirectory(File directoryToBeScanned, String dirInterna) {
+    public boolean isPienaSubDirectory(final File directoryToBeScanned, final String dirInterna) {
         return arrayService.isAllValid(getSubSubDirectories(directoryToBeScanned, dirInterna));
     }
 
@@ -1694,7 +1717,7 @@ public class FileService extends AbstractService {
      *
      * @return true se è vuota
      */
-    public boolean isVuotaSubDirectory(File directoryToBeScanned, String dirInterna) {
+    public boolean isVuotaSubDirectory(final File directoryToBeScanned, final String dirInterna) {
         return arrayService.isEmpty(getSubSubDirectories(directoryToBeScanned, dirInterna));
     }
 
@@ -2366,14 +2389,14 @@ public class FileService extends AbstractService {
 
 
     /**
-     * Controlla se il primo carattere della stringa passata come parametro è uno 'slash' <br>
+     * Controlla se il primo carattere della stringa passata come parametro è quello previsto <br>
      *
      * @param testoIngresso          da elaborare
      * @param primoCarattereExpected da controllare
      *
      * @return true se il primo carattere NON è uno quello previsto
      */
-    public boolean isNotCarattere(String testoIngresso, String primoCarattereExpected) {
+    public boolean isNotPrimoCarattere(final String testoIngresso, final String primoCarattereExpected) {
         boolean status = true;
         String primoCarattereEffettivo;
 
@@ -2381,6 +2404,28 @@ public class FileService extends AbstractService {
             primoCarattereEffettivo = testoIngresso.substring(0, 1);
             if (primoCarattereEffettivo.equals(primoCarattereExpected)) {
                 status = false;
+            }
+        }
+
+        return status;
+    }
+
+    /**
+     * Controlla se l'ultimo carattere della stringa passata come parametro è quello previsto <br>
+     *
+     * @param testoIngresso           da elaborare
+     * @param ultimoCarattereExpected da controllare
+     *
+     * @return true se l'ultimo carattere è quello previsto
+     */
+    public boolean isUltimoCarattere(final String testoIngresso, final String ultimoCarattereExpected) {
+        boolean status = false;
+        String ultimoCarattereEffettivo;
+
+        if (textService.isValid(testoIngresso)) {
+            ultimoCarattereEffettivo = testoIngresso.substring(testoIngresso.length() - 1);
+            if (ultimoCarattereEffettivo.equals(ultimoCarattereExpected)) {
+                status = true;
             }
         }
 
@@ -2395,8 +2440,19 @@ public class FileService extends AbstractService {
      *
      * @return true se NON è uno 'slash'
      */
-    public boolean isNotSlash(String testoIngresso) {
-        return isNotCarattere(testoIngresso, SLASH);
+    public boolean isNotSlashIniziale(final String testoIngresso) {
+        return isNotPrimoCarattere(testoIngresso, SLASH);
+    }
+
+    /**
+     * Controlla se l'ultimo carattere della stringa passata come parametro è uno 'slash' <br>
+     *
+     * @param testoIngresso da elaborare
+     *
+     * @return true se NON è uno 'slash'
+     */
+    public boolean isSlashFinale(final String testoIngresso) {
+        return isUltimoCarattere(testoIngresso, SLASH);
     }
 
 
