@@ -108,6 +108,9 @@ public class VaadVers implements AIVers {
             this.crea(k, AETypeVers.addition, "Preferenze 'base' (string, int, boolean) funzionanti");
         }
 
+        if (installa(++k)) {
+            this.crea(k, AETypeVers.addition, "Risorse CSV recuperabili dal server algos");
+        }
     }
 
     /**

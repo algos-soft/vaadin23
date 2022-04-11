@@ -1,4 +1,4 @@
-package it.algos.vaad23.wizard.enumeration;
+package it.algos.vaad23.backend.enumeration;
 
 /**
  * Project vaadwiki14

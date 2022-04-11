@@ -445,10 +445,10 @@ public class LogService extends AbstractService {
         typeText = type != null ? textService.fixSizeQuadre(type.getTag(), PAD_TYPE) : VUOTA;//@todo da sistemare
 
         //--1) Inserimento fisso iniziale del type merceologico - se manca di default usa 'system'
-        message = textService.isValid(typeText) ? typeText + SEP : VUOTA;
+        message = textService.isValid(typeText) ? typeText : VUOTA;
 
         //--2) Messaggio fisso della descrizione
-        message += wrap.getMessage();
+        message += textService.isValid(wrap.getMessage()) ? SEP + wrap.getMessage() : VUOTA;
 
         //--3) Inserimento opzionale dei dati (company, user, IP) se multiCompany
         if (wrap.isMultiCompany()) {

@@ -6,7 +6,6 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
-import it.algos.vaad23.wizard.enumeration.*;
 import org.apache.commons.io.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -113,6 +112,8 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file esiste
      */
     public String isEsisteDirectoryStr(File directoryToBeChecked) {
+        String message;
+
         if (directoryToBeChecked == null) {
             logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
             return PARAMETRO_NULLO;
@@ -124,21 +125,26 @@ public class FileService extends AbstractService {
         }
 
         if (!directoryToBeChecked.getPath().equals(directoryToBeChecked.getAbsolutePath())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
+            //            message = String.format("Il primo carattere del path di %s NON è uno '/' (slash)", directoryToBeChecked.getAbsolutePath());
+            //            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
             return PATH_NOT_ABSOLUTE;
         }
 
         if (directoryToBeChecked.exists()) {
             if (directoryToBeChecked.isDirectory()) {
+                //                message = String.format("Trovata la directory %s", directoryToBeChecked.getAbsolutePath());
+                //                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
                 return VUOTA;
             }
             else {
-                logger.error(new WrapLog().exception(new AlgosException(NON_E_DIRECTORY)).usaDb().type(AETypeLog.file));
+                //                message = String.format("%s non è una directory", directoryToBeChecked.getAbsolutePath());
+                //                logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
                 return NON_E_DIRECTORY;
             }
         }
         else {
-            logger.error(new WrapLog().exception(new AlgosException(NON_ESISTE_DIRECTORY)).usaDb().type(AETypeLog.file));
+            //            message = String.format("La directory %s non esiste", directoryToBeChecked.getAbsolutePath());
+            //            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
             return NON_ESISTE_DIRECTORY;
         }
     }
@@ -362,6 +368,7 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file esiste
      */
     public String isEsisteFileStr(File fileToBeChecked) {
+        String message;
         if (fileToBeChecked == null) {
             logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
             return PARAMETRO_NULLO;
@@ -393,7 +400,8 @@ public class FileService extends AbstractService {
             }
 
             if (!fileToBeChecked.exists()) {
-                logger.error(new WrapLog().exception(new AlgosException(NON_ESISTE_FILE)).usaDb().type(AETypeLog.file));
+                //                message = String.format("Il file %s non esiste", fileToBeChecked);
+                //                logger.info(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
                 return NON_ESISTE_FILE;
             }
 
@@ -679,6 +687,7 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file è stato creato
      */
     public String deleteFileStr(File fileToBeDeleted) {
+        String message;
 
         if (fileToBeDeleted == null) {
             return PARAMETRO_NULLO;
@@ -693,10 +702,14 @@ public class FileService extends AbstractService {
         }
 
         if (this.isNotSuffix(fileToBeDeleted.getAbsolutePath())) {
+            message = String.format("Manca il 'suffix' terminale nel file %s", fileToBeDeleted.getAbsolutePath());
+            logger.warn(AETypeLog.file, new AlgosException(message));
             return PATH_SENZA_SUFFIX;
         }
 
         if (!fileToBeDeleted.exists()) {
+            message = String.format("Il file %s non esiste", fileToBeDeleted.getAbsolutePath());
+            logger.warn(AETypeLog.file, new AlgosException(message));
             return NON_ESISTE_FILE;
         }
 
@@ -704,6 +717,8 @@ public class FileService extends AbstractService {
             return VUOTA;
         }
         else {
+            message = String.format("Non sono riuscito a cancellare il file %s", fileToBeDeleted.getAbsolutePath());
+            logger.warn(AETypeLog.file, new AlgosException(message));
             return NON_CANCELLATO_FILE;
         }
 
@@ -778,6 +793,7 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se la directory è stata cancellata
      */
     public String deleteDirectoryStr(File directoryToBeDeleted) {
+        String message;
         if (directoryToBeDeleted == null) {
             return PARAMETRO_NULLO;
         }
@@ -791,6 +807,8 @@ public class FileService extends AbstractService {
         }
 
         if (!directoryToBeDeleted.exists()) {
+            message = String.format("La directory %s non esiste", directoryToBeDeleted.getAbsolutePath());
+            logger.warn(AETypeLog.file, new AlgosException(message));
             return NON_ESISTE_DIRECTORY;
         }
 
@@ -1282,13 +1300,27 @@ public class FileService extends AbstractService {
 
     /**
      * Scrive un file
-     * Se non esiste, non fa nulla
+     * Se non esiste, lo crea
      *
      * @param pathFileToBeWritten nome completo del file
      * @param text                contenuto del file
      */
     public AIResult scriveNewFile(String pathFileToBeWritten, String text) {
-        return scriveFile(pathFileToBeWritten, text, false);
+        AIResult result;
+        String message;
+
+        if (isEsisteFile(pathFileToBeWritten)) {
+            message = String.format("Il file: %s esisteva già e non è stato modificato", pathFileToBeWritten);
+            result = AResult.errato(message);
+        }
+        else {
+            creaFileStr(pathFileToBeWritten);
+            sovraScriveFile(pathFileToBeWritten, text);
+            message = String.format("Il file: %s non esisteva ed è stato creato", pathFileToBeWritten);
+            result = AResult.valido(message);
+        }
+
+        return result;
     }
 
 
@@ -1692,7 +1724,12 @@ public class FileService extends AbstractService {
      * @return true se esiste
      */
     public boolean isEsisteSubDirectory(final File directoryToBeScanned, final String dirInterna) {
-        return isEsisteDirectory(directoryToBeScanned.getAbsolutePath() + SLASH + dirInterna);
+        if (directoryToBeScanned.getAbsolutePath().endsWith(SLASH)) {
+            return isEsisteDirectory(directoryToBeScanned.getAbsolutePath() + dirInterna);
+        }
+        else {
+            return isEsisteDirectory(directoryToBeScanned.getAbsolutePath() + SLASH + dirInterna);
+        }
     }
 
 
@@ -2022,11 +2059,11 @@ public class FileService extends AbstractService {
      *
      * @param pathDirectoryToBeScanned nome completo della directory
      */
-    public List<File> getAllProjects(String pathDirectoryToBeScanned) {
+    public List<File> getAllProjects(final String pathDirectoryToBeScanned) {
         List<File> listaProjects = null;
         List<File> listaDirectory = getSubDirectories(new File(pathDirectoryToBeScanned));
 
-        if (listaDirectory != null) {
+        if (listaDirectory != null && listaDirectory.size() > 0) {
             listaProjects = new ArrayList<>();
 
             for (File file : listaDirectory) {
@@ -2166,9 +2203,7 @@ public class FileService extends AbstractService {
         String pathPackage = VUOTA;
 
         pathPackage += System.getProperty("user.dir") + SLASH;
-        pathPackage += AEWizCost.dirModulo.get();
         pathPackage += nomeModulo + SLASH;
-        pathPackage += AEWizCost.dirPackages.get();
 
         return getAllSubPathFiles(pathPackage);
     }
@@ -2180,9 +2215,8 @@ public class FileService extends AbstractService {
      */
     public List<String> getPathAllPackageFiles() throws AlgosException {
         List<String> lista = new ArrayList<>();
-        String nomeModulo;
+        String nomeModulo = VUOTA;
 
-        nomeModulo = AEWizCost.nameVaadFlow14Lower.get();
         if (textService.isEmpty(nomeModulo)) {
             logger.error(new AlgosException("Manca il nome del modulo"));
         }
@@ -2262,7 +2296,6 @@ public class FileService extends AbstractService {
     public List<String> getCanonicalAllPackageFiles() throws AlgosException {
         List<String> lista = new ArrayList<>();
 
-        lista.addAll(getCanonicalModuloPackageFiles(AEWizCost.nameVaadFlow14Lower.get()));
         lista.addAll(getCanonicalModuloPackageFiles(VaadVar.projectNameModulo));
 
         return lista;

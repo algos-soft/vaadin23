@@ -30,6 +30,8 @@ public class WrapSpan {
 
     private AELineHeight lineHeight;
 
+    private AEFontStyle style;
+
     public WrapSpan() {
     }
 
@@ -62,6 +64,11 @@ public class WrapSpan {
         return this;
     }
 
+    public WrapSpan style(AEFontStyle style) {
+        this.style = style;
+        return this;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -80,6 +87,10 @@ public class WrapSpan {
 
     public AELineHeight getLineHeight() {
         return lineHeight;
+    }
+
+    public AEFontStyle getStyle() {
+        return style;
     }
 
 }

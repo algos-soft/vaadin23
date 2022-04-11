@@ -7,6 +7,7 @@ import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.packages.utility.nota.*;
 import it.algos.vaad23.backend.packages.utility.preferenza.*;
 import it.algos.vaad23.backend.packages.utility.versione.*;
+import it.algos.vaad23.wizard.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.context.event.*;
@@ -190,6 +191,7 @@ public abstract class VaadBoot implements ServletContextListener {
         //        VaadVar.menuRouteList.add(AddressFormView.class);
         //        VaadVar.menuRouteList.add(CarrelloFormView.class);
         //        VaadVar.menuRouteList.add(ContinenteView.class);
+        VaadVar.menuRouteList.add(WizardView.class);
         VaadVar.menuRouteList.add(VersioneView.class);
         VaadVar.menuRouteList.add(NotaView.class);
         VaadVar.menuRouteList.add(LoggerView.class);

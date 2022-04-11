@@ -118,7 +118,7 @@ public abstract class WizCost {
 
     public static final String TITOLO_START_PROGETTO = "Inizializzazione progetto";
 
-    public static final String TITOLO_NUOVO_PROGETTO = "Creazione di un nuovo progetto";
+    public static final String TITOLO_NUOVO_PROGETTO = "Nuovo progetto";
 
     public static final String TITOLO_MODIFICA_PROGETTO = "Modifica di un progetto esistente";
 

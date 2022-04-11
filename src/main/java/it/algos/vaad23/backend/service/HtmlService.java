@@ -46,6 +46,7 @@ public class HtmlService extends AbstractService {
         AEFontWeight weight;
         AEFontHeight fontHeight;
         AELineHeight lineHeight;
+        AEFontStyle style;
 
         if (wrap == null) {
             return span;
@@ -76,6 +77,11 @@ public class HtmlService extends AbstractService {
         lineHeight = wrap.getLineHeight();
         if (lineHeight != null) {
             span.getElement().getStyle().set(AELineHeight.HTML, lineHeight.getTag());
+        }
+
+        style = wrap.getStyle();
+        if (style != null) {
+            span.getElement().getStyle().set(AEFontStyle.HTML, style.getTag());
         }
 
         return span;

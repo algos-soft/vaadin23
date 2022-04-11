@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- Project from https://start.vaadin.com/project/773c53c2-9250-452b-9e69-bf0a2cf871bd -->
     <groupId>it.algos</groupId>
-    <artifactId>vaadin23</artifactId>
-    <name>vaadin23</name>
+    <artifactId>@PROJECT@</artifactId>
+    <name>@PROJECT@</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

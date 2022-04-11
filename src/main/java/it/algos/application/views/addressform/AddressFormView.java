@@ -3,6 +3,7 @@ package it.algos.application.views.addressform;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.dependency.*;
 import com.vaadin.flow.component.formlayout.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.notification.*;
@@ -10,23 +11,31 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.router.*;
+import com.vaadin.flow.spring.annotation.*;
 import it.algos.application.data.entity.*;
 import it.algos.application.data.service.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.ui.views.*;
 
+@SpringComponent
 @PageTitle("Address Form")
 @Route(value = "address-form", layout = MainLayout.class)
+@CssImport("./styles/shared-styles.css")
 @AIView(menuName = "indirizzo")
 public class AddressFormView extends Div {
 
     private TextField street = new TextField("Street address");
+
     private TextField postalCode = new TextField("Postal code");
+
     private TextField city = new TextField("City");
+
     private ComboBox<String> state = new ComboBox<>("State");
+
     private ComboBox<String> country = new ComboBox<>("Country");
 
     private Button cancel = new Button("Cancel");
+
     private Button save = new Button("Save");
 
     private Binder<SampleAddress> binder = new Binder<>(SampleAddress.class);

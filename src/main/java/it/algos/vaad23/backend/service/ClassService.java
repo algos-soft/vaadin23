@@ -100,4 +100,16 @@ public class ClassService extends AbstractService {
         return listClazz;
     }
 
+    public String getProjectName() {
+        String projectName;
+        String pathCurrent = System.getProperty("user.dir") + SLASH;
+        projectName = fileService.estraeDirectoryFinale(pathCurrent);
+
+        if (projectName.endsWith(SLASH)) {
+            projectName = textService.levaCoda(projectName, SLASH);
+        }
+
+        return projectName;
+    }
+
 }

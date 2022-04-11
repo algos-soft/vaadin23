@@ -106,7 +106,7 @@ public class ContinenteBackend extends CrudBackend {
         boolean status = super.reset();
 
         if (status) {
-            mappa = resourceService.leggeMappaConfig(nomeFile);
+            mappa = resourceService.leggeMappaServer(nomeFile, false);
             if (mappa != null) {
                 for (String key : mappa.keySet()) {
                     riga = mappa.get(key);
