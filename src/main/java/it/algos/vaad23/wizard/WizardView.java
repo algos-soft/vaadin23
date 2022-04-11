@@ -86,12 +86,16 @@ public class WizardView extends VerticalLayout {
         //--spazio per distanziare i paragrafi
         this.add(new H3());
 
-        this.paragrafoNewPackage();
+        //        this.paragrafoNewPackage();
+
+        if (!projectBaseFlow) {
+            paragrafoFeedBackWizard();
+        }
+
     }
 
     public boolean isProjectBaseFlow() {
         String srcVaadin23 = System.getProperty("user.dir");
-        //        destNewProject = pathNewProject + SLASH;
         String newProject = fileService.estraeClasseFinaleSenzaJava(srcVaadin23).toLowerCase();
 
         return newProject.equals(PROJECT_VAADFLOW);
@@ -157,6 +161,34 @@ public class WizardView extends VerticalLayout {
 
     private void elaboraUpdateProject(final String pathNewProject) {
         appContext.getBean(WizElaboraNewProject.class).esegue(pathNewProject);
+    }
+
+    public void paragrafoFeedBackWizard() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(false);
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        H3 paragrafo = new H3(WizCost.TITOLO_FEEDBACK_PROGETTO);
+        paragrafo.getElement().getStyle().set("color", "blue");
+        this.add(paragrafo);
+
+        layout.add(new Label("Ricopia su Vaadin23 la directory 'wizard' di questo progetto"));
+
+        Button bottone = new Button(String.format("Send back to %s", PROJECT_VAADFLOW));
+        bottone.getElement().setAttribute("theme", "primary");
+        bottone.addClickListener(event -> openFeedBack());
+
+        layout.add(bottone);
+        this.add(layout);
+        this.add(new H2());
+    }
+
+    private void openFeedBack() {
+        appContext.getBean(WizDialogFeedBack.class).open(this::elaboraFeedBack);
+    }
+
+    private void elaboraFeedBack(final String pathNewProject) {
+        appContext.getBean(WizElaboraFeedBack.class).esegue();
     }
 
     public void paragrafoNewPackage() {

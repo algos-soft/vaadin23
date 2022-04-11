@@ -124,7 +124,7 @@ public abstract class WizCost {
 
     public static final String TITOLO_MODIFICA_MODULO = "Modifica di un modulo esistente";
 
-    public static final String TITOLO_MODIFICA_QUESTO_PROGETTO = "Modifica del progetto";
+    public static final String TITOLO_MODIFICA_QUESTO_PROGETTO = "Modifica progetto";
 
     public static final String TITOLO_NEW_PACKAGE = "Nuovo package";
 

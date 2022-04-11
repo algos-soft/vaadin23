@@ -9,6 +9,6 @@ package it.algos.vaad23.wizard.scripts;
  */
 public interface WizRecipient {
 
-    void esegue();
+     void esegue();
 
 }

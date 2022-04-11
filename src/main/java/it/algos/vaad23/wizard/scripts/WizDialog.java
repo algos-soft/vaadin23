@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.*;
 
 import javax.annotation.*;
 import java.io.*;
+import java.util.function.*;
 
 
 /**
@@ -101,6 +102,7 @@ public abstract class WizDialog extends Dialog {
     @Autowired
     protected FileService fileService;
 
+
     //    protected LinkedHashMap<String, Checkbox> mappaCheckboxOld;
     //
     //    protected LinkedHashMap<String, WizBox> mappaWizBox;
@@ -114,6 +116,10 @@ public abstract class WizDialog extends Dialog {
     protected Button confirmButton;
 
     protected Button cancelButton;
+
+    protected Consumer<String> confirmHandler;
+
+    protected Consumer annullaHandler;
 
     //    protected Button buttonForzaDirectory;
     //
@@ -259,12 +265,12 @@ public abstract class WizDialog extends Dialog {
      * updateProject
      * newPackage
      * updatePackage
-     * Spazzola la Enumeration e regola a 'true' i chekBox secondo il flag 'isAcceso' <br>
+     * Spazzola la Enumeration e regola a 'true' i checkBox secondo il flag 'isAcceso' <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void creaCheckBoxLayout() {
-        checkBoxLayout = fixSezione("Flags di regolazione");
-        this.add(checkBoxLayout);
+        //        checkBoxLayout = fixSezione("Flags di regolazione");
+        //        this.add(checkBoxLayout);
         //        mappaWizBox = new LinkedHashMap<>();
     }
 

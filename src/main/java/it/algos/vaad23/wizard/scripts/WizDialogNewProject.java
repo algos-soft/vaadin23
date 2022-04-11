@@ -29,9 +29,6 @@ public class WizDialogNewProject extends WizDialog {
 
     private static final String LABEL_COMBO_DUE = "Tutti i progetti esistenti (nella directory IdeaProjects)";
 
-    protected Consumer<String> confirmHandler;
-
-    protected Consumer annullaHandler;
 
     private HorizontalLayout spanConferma;
 
@@ -121,8 +118,6 @@ public class WizDialogNewProject extends WizDialog {
         }
     }
 
-    protected void creaCheckBoxLayout() {
-    }
 
     @Override
     protected void creaBottomLayout() {
@@ -178,82 +173,5 @@ public class WizDialogNewProject extends WizDialog {
             confirmHandler.accept(fieldComboProgettiNuovi.getValue().getPath());
         }
     }
-
-    /**
-     * Chiamato alla dismissione del dialogo <br>
-     * <p>
-     * Recupera il nome del progetto selezionato dal combobox <br>
-     * Inserisce il valore base di nameTargetProjectUpper <br>
-     * <p>
-     * Elabora, con AEWizCost.set() tutti i valori 'derivati' di AEWizCost <br>
-     * Regola i flag acceso=true/false della Enumeration AEWizCost <br>
-     * Verranno usati da: <br>
-     * WizElaboraNewProject, WizElaboraUpdateProject,WizElaboraNewPackage, WizElaboraUpdatePackage <br>
-     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
-     */
-    @Override
-    protected boolean regolaAEWizCost() {
-        File pathProjectFile;
-        String pathProject = VUOTA;
-        String projectNameUpper = VUOTA;
-
-        //        //--recupera il nome del progetto selezionato dal combobox (obbligatorio)
-        //        pathProjectFile = fieldComboProgettiNuovi != null ? fieldComboProgettiNuovi.getValue() : null;
-        //        if (pathProjectFile == null || text.isEmpty(pathProjectFile.getAbsolutePath())) {
-        //            return false;
-        //        }
-        //
-        //        //--inserisce il path completo del progetto selezionato nella Enumeration
-        //        //--dal path completo deriva il valore di directory/modulo -> nameTargetProjectModulo
-        //        //--mentre il nome (maiuscolo) del progetto deve essere inserito -> nameTargetProjectUpper
-        //        //--perché potrebbe essere diverso (Es. vaadwiki -> Wiki)
-        //        pathProject = pathProjectFile.getAbsolutePath() + SLASH;
-        //
-        //        //--recupera il nome (maiuscolo) del progetto presente nel textEditField (obbligatorio)
-        //        projectNameUpper = fieldProjectNameUpper != null ? text.primaMaiuscola(fieldProjectNameUpper.getValue()) : null;
-        //
-        //        //--recupera i flag selezionati a video
-        //        for (AEWizCost aeCost : wizService.getAll()) {
-        //            if (mappaWizBox != null && mappaWizBox.get(aeCost.name()) != null) {
-        //                aeCost.setAcceso(mappaWizBox.get(aeCost.name()).is());
-        //            }
-        //        }
-        //
-        //        //--regola il flag per far costruire il modulo base
-        //        AEWizCost.pathTargetProjectModulo.setAcceso(true);
-        //
-        //        //--regola i flags per far costruire il modulo specifico
-        //        AEModulo.fileMain.setAcceso(true);
-        //        AEModulo.fileCost.setAcceso(true);
-        //        AEModulo.fileBoot.setAcceso(true);
-        //        AEModulo.fileData.setAcceso(true);
-        //
-        //        //--inserisce un valore fondamentale di nameTargetProjectModulo che DI NORMA è uguale a nameTargetProjectUpper
-        //        AEWizCost.nameTargetProjectModulo.setValue(text.primaMinuscola(projectNameUpper));
-        //
-        //        //--inserisce i valori fondamentali (3) e poi regola tutti i valori automatici derivati
-        return super.fixValoriInseriti(pathProject, projectNameUpper, VUOTA);
-    }
-
-    /**
-     * Chiamato alla dismissione del dialogo <br>
-     * Resetta i valori regolabili della Enumeration AEDir <br>
-     * Elabora tutti i valori della Enumeration AEDir dipendenti dal nome del progetto <br>
-     * Verranno usati da WizElaboraNewProject e WizElaboraUpdateProject <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    protected boolean regolaAEDir() {
-        boolean status = true;
-        String projectName;
-        super.regolaAEDir();
-
-        //        if (fieldComboProgettiNuovi != null && fieldComboProgettiNuovi.getValue() != null) {
-        //            projectName = fieldComboProgettiNuovi.getValue().getName();
-        //            status = status && AEDir.modificaProjectAll(projectName);
-        //        }
-
-        return status;
-    }
-
 
 }
