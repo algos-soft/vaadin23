@@ -15,38 +15,38 @@ import java.util.*;
  */
 public enum AEWizProject {
 
-    config("Directory CONFIG di risorse on-line esterne al JAR (VaadFlow)", true, "config", AECopy.dirAddingOnly),
+    config("Directory CONFIG di risorse on-line esterne al JAR (VaadFlow)", false, "config", AECopy.dirAddingOnly),
 
-    documentation("Directory DOC di documentazione (VaadFlow)", true, "doc", AECopy.dirAddingOnly),
+    documentation("Directory DOC di documentazione (VaadFlow)", false, "doc", AECopy.dirAddingOnly),
 
-    frontend("Directory FRONTEND del Client (VaadFlow)", true, "frontend", AECopy.dirAddingOnly),
+    frontend("Directory FRONTEND del Client (VaadFlow)", false, "frontend", AECopy.dirAddingOnly),
 
-    links("Directory LINKS a siti web utili (VaadFlow)", true, "links", AECopy.dirAddingOnly),
+    links("Directory LINKS a siti web utili (VaadFlow)", false, "links", AECopy.dirAddingOnly),
 
-    snippets("Directory SNIPPETS di codice suggerito (VaadFlow)", true, "snippets", AECopy.dirAddingOnly),
+    snippets("Directory SNIPPETS di codice suggerito (VaadFlow)", false, "snippets", AECopy.dirAddingOnly),
 
-    flow("Directory BASE di VaadFlow (Wizard compreso)", true, "src/main/java/it/algos/vaad23", AECopy.dirAddingOnly),
+    flow("Directory BASE di VaadFlow (Wizard compreso)", false, "src/main/java/it/algos/vaad23", AECopy.dirAddingOnly),
 
-    projectNew("Directory modulo del nuovo progetto (...)", true, VUOTA, AECopy.dirAddingOnly),
+    projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
 
-    resources("Directory RESOURCES (VaadFlow)", true, "src/main/resources", AECopy.dirAddingOnly),
+    resources("Directory RESOURCES (VaadFlow)", false, "src/main/resources", AECopy.dirAddingOnly),
 
-    property("File application.PROPERTIES (sources)", true, "src/main/resources/application.properties",
+    property("File application.PROPERTIES (sources)", false, "src/main/resources/application.properties",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "properties"
     ),
 
-    banner("File BANNER di SpringBoot (sources)", true, "src/main/resources/banner.txt", AECopy.sourceSovrascriveSempreAncheSeEsiste,
+    banner("File BANNER di SpringBoot (sources)", false, "src/main/resources/banner.txt", AECopy.sourceSovrascriveSempreAncheSeEsiste,
             "banner"
     ),
 
-    git("File GIT di esclusione (sources)", true, ".gitignore", AECopy.sourceSovrascriveSempreAncheSeEsiste, "git"),
+    git("File GIT di esclusione (sources)", false, ".gitignore", AECopy.sourceSovrascriveSempreAncheSeEsiste, "git"),
 
-    pom("File POM.xml di Maven (sources)", true, "pom.xml", AECopy.sourceSovrascriveSempreAncheSeEsiste, "pom"),
+    pom("File POM.xml di Maven (sources)", false, "pom.xml", AECopy.sourceSovrascriveSempreAncheSeEsiste, "pom"),
 
-    read("File README con note di testo (sources)", true, "README.md", AECopy.sourceSovrascriveSempreAncheSeEsiste, "readme"),
+    read("File README con note di testo (sources)", false, "README.md", AECopy.sourceSovrascriveSempreAncheSeEsiste, "readme"),
 
     test("Directory Test (VaadFlow)", false, "src/test/java/it/algos", AECopy.dirAddingOnly),
-    application("Main class java", true, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
+    application("Main class java", false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),
 
@@ -83,13 +83,16 @@ public enum AEWizProject {
         return Arrays.stream(values()).toList();
     }
 
+    public static List<AEWizProject> getAllNewProject() {
+        ArrayList<AEWizProject> lista = new ArrayList<>();
+        lista.add(AEWizProject.config);
+        lista.add(AEWizProject.projectNew);
+        lista.add(AEWizProject.pom);
+        lista.add(AEWizProject.application);
 
-    public static List<String> getAllStringValues() {
-        List<String> listaValues = new ArrayList<>();
-
-        getAllEnums().forEach(font -> listaValues.add(font.toString()));
-        return listaValues;
+        return lista;
     }
+
 
     /**
      * Ripristina il valore di default <br>

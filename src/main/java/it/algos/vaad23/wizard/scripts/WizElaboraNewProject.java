@@ -9,6 +9,8 @@ import it.algos.vaad23.wizard.enumeration.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
+import java.util.*;
+
 
 /**
  * Project vaadflow
@@ -35,6 +37,7 @@ public class WizElaboraNewProject extends WizElabora {
 
     private String newProject;
 
+
     public void esegue(final String pathNewProject) {
         String message;
         srcVaadin23 = System.getProperty("user.dir") + SLASH;
@@ -47,17 +50,12 @@ public class WizElaboraNewProject extends WizElabora {
         AEToken.targetProject.set(newProject);
         AEToken.targetProjectUpper.set(textService.primaMaiuscola(newProject));
 
-        for (AEWizProject wiz : AEWizProject.getAllEnums()) {
-            if (wiz.is()) {
-                switch (wiz.getCopy().getType()) {
-                    case directory -> directory(wiz);
-                    case file -> file(wiz);
-                    case source -> source(wiz);
-                }
-            }
-            else {
-                message = String.format("New project: %s%snon abilitato", textService.primaMinuscola(wiz.getCaption()), FORWARD);
-                logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
+        List alfa = AEWizProject.getAllNewProject();
+        for (AEWizProject wiz : AEWizProject.getAllNewProject()) {
+            switch (wiz.getCopy().getType()) {
+                case directory -> directory(wiz);
+                case file -> file(wiz);
+                case source -> source(wiz);
             }
         }
 
@@ -69,6 +67,7 @@ public class WizElaboraNewProject extends WizElabora {
             }
         }
     }
+
 
     public void directory(final AEWizProject wiz) {
         String message;

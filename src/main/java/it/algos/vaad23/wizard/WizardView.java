@@ -86,7 +86,7 @@ public class WizardView extends VerticalLayout {
         //--spazio per distanziare i paragrafi
         this.add(new H3());
 
-        //        this.paragrafoNewPackage();
+//        this.paragrafoNewPackage();
 
         if (!projectBaseFlow) {
             paragrafoFeedBackWizard();
@@ -156,7 +156,7 @@ public class WizardView extends VerticalLayout {
     }
 
     private void openUpdateProject() {
-        appContext.getBean(WizDialogNewProject.class).open(this::elaboraUpdateProject);
+        appContext.getBean(WizDialogUpdateProject.class).open(this::elaboraUpdateProject);
     }
 
     private void elaboraUpdateProject(final String pathNewProject) {

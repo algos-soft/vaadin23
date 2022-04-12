@@ -6,6 +6,7 @@ import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
+import static it.algos.vaad23.wizard.scripts.WizCost.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
@@ -44,7 +45,7 @@ public class WizDialogNewProject extends WizDialog {
     @Override
     protected void creaTopLayout() {
         String message;
-        topLayout = fixSezione("Nuovo progetto", "green");
+        topLayout = fixSezione(TITOLO_NUOVO_PROGETTO, "green");
         this.add(topLayout);
 
         message = "Creazione di un nuovo project. Devi prima creare un new project IntelliJIdea (minuscolo).";
@@ -84,8 +85,8 @@ public class WizDialogNewProject extends WizDialog {
         String message;
         String pathDirectory = System.getProperty("user.dir");
         pathDirectory = fileService.findPathDirectory(pathDirectory, "operativi");
-        //        List<File> progetti = fileService.getEmptyProjects(pathDirectory);
-        List<File> progetti = fileService.getAllProjects(pathDirectory);
+        List<File> progetti = fileService.getEmptyProjects(pathDirectory);
+        //        List<File> progetti = fileService.getAllProjects(pathDirectory);
 
         fieldComboProgettiNuovi = new ComboBox<>();
         fieldComboProgettiNuovi.setRequired(true);

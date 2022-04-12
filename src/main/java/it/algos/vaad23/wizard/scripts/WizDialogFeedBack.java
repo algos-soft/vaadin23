@@ -68,7 +68,6 @@ public class WizDialogFeedBack extends WizDialog {
 
         super.open();
     }
-
     /**
      * Esce dal dialogo con due possibilità (a seconda del flag) <br>
      * 1) annulla <br>

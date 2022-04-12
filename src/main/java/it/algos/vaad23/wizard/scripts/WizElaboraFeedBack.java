@@ -49,15 +49,28 @@ public class WizElaboraFeedBack extends WizElabora {
             fileService.copyDirectory(AECopy.dirAddingOnly, srcWizard, destWizard);
         }
         else {
-            int add = 87;
+            int add = 87888888;
         }
 
-        //        String destPath = destNewProject + wiz.getCopyDest();
+        //        //        String destPath = destNewProject + wiz.getCopyDest();
+        //        //
+        //        //        fileService.copyDirectory(wiz.getCopy(), srcPath, destPath);
+        //        //        message = String.format("New project: %s%s%s", textService.primaMinuscola(wiz.getCaption()), FORWARD, wiz.getCopy().getDescrizione());
+        //        //        logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
         //
-        //        fileService.copyDirectory(wiz.getCopy(), srcPath, destPath);
-        //        message = String.format("New project: %s%s%s", textService.primaMinuscola(wiz.getCaption()), FORWARD, wiz.getCopy().getDescrizione());
-        //        logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-
+        //        for (AEWizProject wiz : AEWizProject.getAllEnums()) {
+        //            if (wiz.is()) {
+        //                switch (AEWizProject.getAllNewProject()) {
+        //                    case directory -> directory(wiz);
+        //                    case file -> file(wiz);
+        //                    case source -> source(wiz);
+        //                }
+        //            }
+        //            else {
+        //                message = String.format("New project: %s%snon abilitato", textService.primaMinuscola(wiz.getCaption()), FORWARD);
+        //                logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
+        //            }
+        //        }
     }
 
 }
