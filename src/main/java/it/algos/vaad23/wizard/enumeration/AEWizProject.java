@@ -25,7 +25,7 @@ public enum AEWizProject {
 
     snippets("Directory SNIPPETS di codice suggerito (VaadFlow)", false, "snippets", AECopy.dirAddingOnly),
 
-    flow("Directory BASE di VaadFlow (Wizard compreso)", false, "src/main/java/it/algos/vaad23", AECopy.dirAddingOnly),
+    flow("Directory BASE Vaadin23 (Wizard compreso)", false, "src/main/java/it/algos/vaad23", AECopy.dirAddingOnly),
 
     projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
 
@@ -86,9 +86,12 @@ public enum AEWizProject {
     public static List<AEWizProject> getAllNewProject() {
         ArrayList<AEWizProject> lista = new ArrayList<>();
         lista.add(AEWizProject.config);
-        lista.add(AEWizProject.projectNew);
+        lista.add(AEWizProject.frontend);
+        lista.add(AEWizProject.flow);
         lista.add(AEWizProject.pom);
         lista.add(AEWizProject.application);
+        lista.add(AEWizProject.resources);
+        lista.add(AEWizProject.property);
 
         return lista;
     }

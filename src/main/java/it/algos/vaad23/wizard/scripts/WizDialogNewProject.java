@@ -30,6 +30,8 @@ public class WizDialogNewProject extends WizDialog {
 
     private static final String LABEL_COMBO_DUE = "Tutti i progetti esistenti (nella directory IdeaProjects)";
 
+    //    private static final String  = "Tutti i progetti esistenti (nella directory IdeaProjects)";
+
 
     private HorizontalLayout spanConferma;
 
@@ -82,20 +84,24 @@ public class WizDialogNewProject extends WizDialog {
         selezioneLayout = fixSezione("Selezione...");
         this.add(selezioneLayout);
 
+        List<File> progetti;
         String message;
         String pathDirectory = System.getProperty("user.dir");
-        pathDirectory = fileService.findPathDirectory(pathDirectory, "operativi");
-        List<File> progetti = fileService.getEmptyProjects(pathDirectory);
-        //        List<File> progetti = fileService.getAllProjects(pathDirectory);
 
         fieldComboProgettiNuovi = new ComboBox<>();
         fieldComboProgettiNuovi.setRequired(true);
         fieldComboProgettiNuovi.setClearButtonVisible(true);
-        // Choose which property from Department is the presentation value
         fieldComboProgettiNuovi.setItemLabelGenerator(File::getName);
         fieldComboProgettiNuovi.setWidth("24em");
         fieldComboProgettiNuovi.setAllowCustomValue(false);
         fieldComboProgettiNuovi.setLabel(LABEL_COMBO_UNO);
+
+        pathDirectory = fileService.findPathDirectory(pathDirectory, "operativi");
+        progetti = fileService.getEmptyProjects(pathDirectory);
+        if (progetti == null || progetti.size() == 0) {
+            progetti = fileService.getAllProjects(pathDirectory);
+            fieldComboProgettiNuovi.setLabel(LABEL_COMBO_DUE);
+        }
 
         fieldComboProgettiNuovi.setItems(progetti);
         if (progetti.size() == 1) {

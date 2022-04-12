@@ -6,7 +6,9 @@ import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
+import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.security.*;
+import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.ui.service.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -27,6 +29,14 @@ public class MainLayout extends AppLayout {
      */
     @Autowired
     private LayoutService layoutService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public TextService textService;
 
     private H1 viewTitle;
 
@@ -72,7 +82,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
-        H2 appName = new H2("vaadin23");
+        H2 appName = new H2(textService.primaMaiuscola(VaadVar.projectCurrent));
         appName.addClassNames("flex", "items-center", "h-xl", "m-0", "px-m", "text-m");
 
         com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
