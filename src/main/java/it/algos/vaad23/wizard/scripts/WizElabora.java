@@ -1,6 +1,9 @@
 package it.algos.vaad23.wizard.scripts;
 
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 
 /**
@@ -35,6 +38,50 @@ public abstract class WizElabora {
      */
     @Autowired
     public FileService fileService;
+
+
+    public void file(final AECopy copy, final String destPath, final String sourceText) {
+        String message;
+        AIResult result;
+        boolean esiste = fileService.isEsisteFile(destPath);
+
+        switch (copy) {
+            case sourceSovrascriveSempreAncheSeEsiste -> {
+                result = fileService.scriveFile(destPath, sourceText, true);
+                if (result.isValido()) {
+                    if (esiste) {
+                        message = String.format("Il file %s esisteva già ed è stato modificato", destPath);
+                        logger.info(new WrapLog().type(AETypeLog.wizard).message(message));
+                    }
+                    else {
+                        message = String.format("Il file %s non esisteva ed è stato creato", destPath);
+                        logger.info(new WrapLog().type(AETypeLog.wizard).message(message));
+                    }
+                }
+                else {
+                    logger.warn(new WrapLog().type(AETypeLog.wizard).message(result.getMessage()));
+                }
+            }
+            case sourceCheckFlagSeEsiste -> {}
+            case sourceSoloSeNonEsiste -> {
+                if (esiste) {
+                    message = String.format("Il file %s esisteva già e non è stato modificato", destPath);
+                    logger.info(new WrapLog().type(AETypeLog.wizard).message(message));
+                }
+                else {
+                    result = fileService.scriveNewFile(destPath, sourceText);
+                    if (result.isValido()) {
+                        message = String.format("Il file %s non esisteva ed è stato creato", destPath);
+                        logger.info(new WrapLog().type(AETypeLog.wizard).message(message));
+                    }
+                    else {
+                        logger.warn(new WrapLog().type(AETypeLog.wizard).message(result.getMessage()));
+                    }
+                }
+            }
+            default -> {}
+        }
+    }
 
 
 }

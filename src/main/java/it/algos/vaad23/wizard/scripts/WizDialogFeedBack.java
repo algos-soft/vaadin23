@@ -21,6 +21,7 @@ import java.util.function.*;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class WizDialogFeedBack extends WizDialog {
+    private Consumer<Boolean> confirmHandler;
 
     public WizDialogFeedBack() {
         super();
@@ -62,12 +63,13 @@ public class WizDialogFeedBack extends WizDialog {
     /**
      * Apertura del dialogo <br>
      */
-    public void open(final Consumer<String> confirmHandler) {
+    public void open(final Consumer<Boolean> confirmHandler) {
         this.confirmHandler = confirmHandler;
         this.getElement().getStyle().set("background-color", "#ffffff");
 
         super.open();
     }
+
     /**
      * Esce dal dialogo con due possibilità (a seconda del flag) <br>
      * 1) annulla <br>
@@ -76,7 +78,7 @@ public class WizDialogFeedBack extends WizDialog {
     protected void esceDalDialogo(boolean esegue) {
         this.close();
         if (esegue) {
-            confirmHandler.accept(VUOTA);
+            confirmHandler.accept(true);
         }
     }
 

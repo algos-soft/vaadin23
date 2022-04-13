@@ -32,8 +32,8 @@ public class WizDialogNewProject extends WizDialog {
 
     //    private static final String  = "Tutti i progetti esistenti (nella directory IdeaProjects)";
 
+    private Consumer<String> confirmHandler;
 
-    private HorizontalLayout spanConferma;
 
     public WizDialogNewProject() {
         super();
@@ -61,15 +61,6 @@ public class WizDialogNewProject extends WizDialog {
 
         message = "Nel terminale del nuovo progetto run: npm install";
         topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold).color(AETypeColor.rosso)));
-
-        //        message = "Aggiungi il nuovo progetto alla enumeration AEProgetto.";
-        //        topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold).color(AETypeColor.rosso)));
-        //
-        //        message = "Per i nuovi progetti directory/modulo coincidono col nome del progetto.";
-        //        topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold).color(AETypeColor.blu)));
-        //
-        //        message = "Possono essere differenziati nella enumeration AEProgetto.";
-        //        topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold).color(AETypeColor.blu)));
     }
 
 

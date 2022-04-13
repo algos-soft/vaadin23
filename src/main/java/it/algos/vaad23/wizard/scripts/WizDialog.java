@@ -117,7 +117,6 @@ public abstract class WizDialog extends Dialog {
 
     protected Button cancelButton;
 
-    protected Consumer<String> confirmHandler;
 
     protected Consumer annullaHandler;
 
@@ -157,6 +156,7 @@ public abstract class WizDialog extends Dialog {
     //    protected ComboBox<String> fieldComboPackages;
     //
     //    protected String nomeModulo;
+    protected HorizontalLayout spanConferma;
 
     /**
      * Regolazioni grafiche

@@ -1,6 +1,7 @@
 package it.algos.vaad23.wizard;
 
 import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.dependency.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 
 import javax.annotation.*;
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -159,8 +161,8 @@ public class WizardView extends VerticalLayout {
         appContext.getBean(WizDialogUpdateProject.class).open(this::elaboraUpdateProject);
     }
 
-    private void elaboraUpdateProject(final String pathNewProject) {
-        appContext.getBean(WizElaboraNewProject.class).esegue(pathNewProject);
+    private void elaboraUpdateProject(final LinkedHashMap<String, Checkbox> mappaCheckbox) {
+        appContext.getBean(WizElaboraUpdateProject.class).esegue(mappaCheckbox);
     }
 
     public void paragrafoFeedBackWizard() {
@@ -187,7 +189,7 @@ public class WizardView extends VerticalLayout {
         appContext.getBean(WizDialogFeedBack.class).open(this::elaboraFeedBack);
     }
 
-    private void elaboraFeedBack(final String pathNewProject) {
+    private void elaboraFeedBack(final boolean nonUsato) {
         appContext.getBean(WizElaboraFeedBack.class).esegue();
     }
 

@@ -49,7 +49,9 @@ public enum AEWizProject {
     application("Main class java", false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),
-
+    boot("xxxBoot con fixMenuRoutes()", true, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Boot.java",
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "boot"
+    ),
     ;
 
 
@@ -92,6 +94,7 @@ public enum AEWizProject {
         lista.add(AEWizProject.application);
         lista.add(AEWizProject.resources);
         lista.add(AEWizProject.property);
+        lista.add(AEWizProject.boot);
 
         return lista;
     }
