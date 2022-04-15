@@ -1,31 +1,31 @@
-# Può essere sovrascritto sul server
+# Puï¿½ essere sovrascritto sul server
 # @AIScript(sovraScrivibile = false)
 
 # Porta (modificabile)
 server.port=${PORT:8080}
 
 # versione di vaadin
-vaadin.version=23.0.4
+vaadin.version=23.0.5
 
 # versione del framework
-algos.vaadflow.version=1.0
+algos.vaadin23.version=1.0
 
 # data del framework
-algos.vaadflow.version.date=@TODAY@
-algos.vaadflow.version.date.anno=@TODAYANNO@
-algos.vaadflow.version.date.mese=@TODAYMESE@
-algos.vaadflow.version.date.giorno=@TODAYGIORNO@
+algos.vaadin23.version.date=@TODAY@
+algos.vaadin23.version.date.anno=@TODAYANNO@
+algos.vaadin23.version.date.mese=@TODAYMESE@
+algos.vaadin23.version.date.giorno=@TODAYGIORNO@
 
 # versione del progetto
-algos.@PROJECTLOWER@.version=0.1
-algos.@PROJECTLOWER@.version.date=@TODAY@
-algos.@PROJECTLOWER@.version.date.anno=@TODAYANNO@
-algos.@PROJECTLOWER@.version.date.mese=@TODAYMESE@
-algos.@PROJECTLOWER@.version.date.giorno=@TODAYGIORNO@
+algos.@PROJECT@.version=0.1
+algos.@PROJECT@.version.date=@TODAY@
+algos.@PROJECT@.version.date.anno=@TODAYANNO@
+algos.@PROJECT@.version.date.mese=@TODAYMESE@
+algos.@PROJECT@.version.date.giorno=@TODAYGIORNO@
 
 # Launch the default browser when starting the application in development mode
 vaadin.launch-browser=true
-spring.data.mongodb.database=@PROJECTLOWER@
+spring.data.mongodb.database=@PROJECT@
 
 server.compression.enabled=true
 server.compression.mime-types=application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
@@ -38,10 +38,10 @@ wiredTigerCacheSizeGB = 4
 # spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 
 # Ensure application is run in Vaadin 14/npm mode
-# Cioè usa npm e la directory node_modules per preparare javascript del client
+# Cioï¿½ usa npm e la directory node_modules per preparare javascript del client
 vaadin.compatibilityMode=false
 # Ensure application is run in Vaadin 15/npm mode
-# Cioè usa pnpm per ottimizzare la preparazione del webpack
+# Cioï¿½ usa pnpm per ottimizzare la preparazione del webpack
 vaadin.pnpm.enable=true
 logging.level.org.atmosphere = warn
 

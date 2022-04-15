@@ -1,8 +1,10 @@
 package it.algos.vaad23.wizard.scripts;
 
 import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.spring.annotation.*;
+import static it.algos.vaad23.backend.boot.VaadCost.PROJECT_VAADFLOW;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -26,11 +28,10 @@ import java.util.function.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class WizDialogNewProject extends WizDialog {
 
-    private static final String LABEL_COMBO_UNO = "Progetti vuoti esistenti (nella directory IdeaProjects)";
+    private static final String LABEL_COMBO_UNO = "Progetti vuoti esistenti (directory IdeaProjects.operativi)";
 
-    private static final String LABEL_COMBO_DUE = "Tutti i progetti esistenti (nella directory IdeaProjects)";
+    private static final String LABEL_COMBO_DUE = "Tutti i progetti esistenti (directory IdeaProjects.operativi)";
 
-    //    private static final String  = "Tutti i progetti esistenti (nella directory IdeaProjects)";
 
     private Consumer<String> confirmHandler;
 
@@ -56,11 +57,12 @@ public class WizDialogNewProject extends WizDialog {
         message = "Di tipo 'MAVEN' senza selezionare archetype. Rimane il POM vuoto, ma verrà sovrascritto.";
         topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold)));
 
-        message = "Seleziona il progetto dalla lista sottostante.";
-        topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold).color(AETypeColor.rosso)));
+        H3 titoloH3 = new H3(textService.primaMaiuscola(TITOLO_MODIFICA_PROGETTO));
+        titoloH3.getElement().getStyle().set("color", "blue");
+        topLayout.add(titoloH3);
 
-        message = "Nel terminale del nuovo progetto run: npm install";
-        topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold).color(AETypeColor.rosso)));
+        message = "Modifica di un project esistente. Sostituisce completamente il modulo 'vaad23'.";
+        topLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold)));
     }
 
 
@@ -75,19 +77,22 @@ public class WizDialogNewProject extends WizDialog {
         selezioneLayout = fixSezione("Selezione...");
         this.add(selezioneLayout);
 
-        List<File> progetti;
         String message;
+        message = "Seleziona il progetto dalla lista sottostante.";
+        selezioneLayout.add(htmlService.getSpan(new WrapSpan().message(message).weight(AEFontWeight.bold).color(AETypeColor.rosso)));
+
+        List<File> progetti;
         String pathDirectory = System.getProperty("user.dir");
 
         fieldComboProgettiNuovi = new ComboBox<>();
         fieldComboProgettiNuovi.setRequired(true);
         fieldComboProgettiNuovi.setClearButtonVisible(true);
         fieldComboProgettiNuovi.setItemLabelGenerator(File::getName);
-        fieldComboProgettiNuovi.setWidth("24em");
+        fieldComboProgettiNuovi.setWidth("25em");
         fieldComboProgettiNuovi.setAllowCustomValue(false);
         fieldComboProgettiNuovi.setLabel(LABEL_COMBO_UNO);
 
-        pathDirectory = fileService.findPathDirectory(pathDirectory, "operativi");
+        pathDirectory = fileService.findPathDirectory(pathDirectory, PROJECT_VAADFLOW);
         progetti = fileService.getEmptyProjects(pathDirectory);
         if (progetti == null || progetti.size() == 0) {
             progetti = fileService.getAllProjects(pathDirectory);
@@ -141,7 +146,7 @@ public class WizDialogNewProject extends WizDialog {
         confirmButton.setEnabled(progettoSelezionato);
 
         spanConferma.removeAll();
-        message = String.format("Confermando viene creato un 'modulo' vaadin23 nel progetto %s", project);
+        message = String.format("Confermando viene creato/aggiornato il modulo 'vaad23' nel progetto '%s'", project);
         if (progettoSelezionato) {
             spanConferma.add(htmlService.getSpan(new WrapSpan().message(message).color(AETypeColor.rosso)));
         }

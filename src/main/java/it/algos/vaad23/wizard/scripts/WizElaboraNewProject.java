@@ -28,24 +28,15 @@ public class WizElaboraNewProject extends WizElabora {
 
     public static final String VAADIN_MODULE = "vaad23";
 
-    private String srcVaadin23;
 
-    private String destNewProject;
-
-    private String newProject;
-
-
-    public void esegue(final String pathNewProject) {
+    public void esegue(final String pathNewUpdateProject) {
         String message;
+        progettoEsistente = fileService.isContieneProgettoValido(pathNewUpdateProject);
         srcVaadin23 = System.getProperty("user.dir") + SLASH;
-        destNewProject = pathNewProject + SLASH;
-        newProject = fileService.estraeDirectoryFinaleSenzaSlash(destNewProject).toLowerCase();
-        logger.info(new WrapLog().type(AETypeLog.spazio));
+        destNewProject = pathNewUpdateProject + SLASH;
+        newUpdateProject = fileService.estraeDirectoryFinaleSenzaSlash(destNewProject).toLowerCase();
 
-        AEToken.reset();
-        AEToken.setCrono();
-        AEToken.targetProject.set(newProject);
-        AEToken.targetProjectUpper.set(textService.primaMaiuscola(newProject));
+        super.esegue();
 
         for (AEWizProject wiz : AEWizProject.getAllNewProject()) {
             switch (wiz.getCopy().getType()) {
@@ -56,41 +47,13 @@ public class WizElaboraNewProject extends WizElabora {
         }
 
         //--elimina la directory 'sources' che deve restare unicamente nel progetto 'vaadin23' e non nei derivati
-        if (AEWizProject.flow.is()) {
-            if (fileService.deleteDirectory(destNewProject + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX)) {
-                message = String.format("Cancellata la directory 'sources' nel progetto %s", newProject);
-                logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-            }
+        if (fileService.deleteDirectory(destNewProject + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX)) {
+            message = String.format("Delete: cancellata la directory 'sources' dal progetto %s", newUpdateProject);
+            logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
+        }
+        else {
+            message = String.format("Non sono riuscito a cancellare la directory 'sources' dal progetto %s", newUpdateProject);
+            logger.warn(new WrapLog().message(message).type(AETypeLog.wizard));
         }
     }
-
-
-    public void directory(final AEWizProject wiz) {
-        String message;
-        String srcPath = srcVaadin23 + wiz.getCopyDest();
-        String destPath = destNewProject + wiz.getCopyDest();
-
-        fileService.copyDirectory(wiz.getCopy(), srcPath, destPath);
-        message = String.format("New project: %s%s%s", textService.primaMinuscola(wiz.getCaption()), FORWARD, wiz.getCopy().getDescrizione());
-        logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-    }
-
-    public void file(final AEWizProject wiz) {
-    }
-
-
-    public void source(final AEWizProject wiz) {
-        String dest = wiz.getCopyDest();
-        String nomeFile = wiz.getFileSource();
-        String sorcePath = srcVaadin23 + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX + nomeFile;
-        sorcePath += sorcePath.endsWith(TXT_SUFFIX) ? VUOTA : TXT_SUFFIX;
-        String sourceText = fileService.leggeFile(sorcePath);
-        sourceText = AEToken.replaceAll(sourceText);
-        String destPath = destNewProject + dest;
-        destPath = AEToken.replaceAll(destPath);
-        file(wiz.getCopy(), destPath, sourceText);
-        fileService.scriveFile(destPath, sourceText, false);
-    }
-
-
 }

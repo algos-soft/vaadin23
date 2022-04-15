@@ -15,37 +15,37 @@ import java.util.*;
  */
 public enum AEWizProject {
 
-    config("Directory CONFIG di risorse on-line esterne al JAR (VaadFlow)", false, "config", AECopy.dirAddingOnly),
+    config("Directory CONFIG di risorse on-line esterne al JAR (vaadin23)", true, "config", AECopy.dirAddingOnly),
 
-    documentation("Directory DOC di documentazione (VaadFlow)", false, "doc", AECopy.dirAddingOnly),
+    documentation("Directory DOC di documentazione (vaadin23)", true, "doc", AECopy.dirAddingOnly),
 
-    frontend("Directory FRONTEND del Client (VaadFlow)", false, "frontend", AECopy.dirAddingOnly),
+    frontend("Directory FRONTEND del Client (vaadin23) [need riavvio]", false, "frontend", AECopy.dirAddingOnly),
 
-    links("Directory LINKS a siti web utili (VaadFlow)", false, "links", AECopy.dirAddingOnly),
+    links("Directory LINKS a siti web utili (vaadin23)", true, "links", AECopy.dirAddingOnly),
 
-    snippets("Directory SNIPPETS di codice suggerito (VaadFlow)", false, "snippets", AECopy.dirAddingOnly),
+    snippets("Directory SNIPPETS di codice suggerito (vaadin23)", true, "snippets", AECopy.dirAddingOnly),
 
-    flow("Directory BASE Vaadin23 (Wizard compreso)", false, "src/main/java/it/algos/vaad23", AECopy.dirAddingOnly),
+    flow("Directory BASE Vaad23 (Wizard compreso)", false, "src/main/java/it/algos/vaad23", AECopy.dirDeletingAll),
 
-    projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
+    //    projectNew("Directory modulo del nuovo progetto (...)", false, VUOTA, AECopy.dirAddingOnly),
 
-    resources("Directory RESOURCES (VaadFlow)", false, "src/main/resources", AECopy.dirAddingOnly),
+    resources("Directory RESOURCES (vaadin23)", false, "src/main/resources", AECopy.dirAddingOnly),
 
     property("File application.PROPERTIES (sources)", false, "src/main/resources/application.properties",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "properties"
     ),
 
-    banner("File BANNER di SpringBoot (sources)", false, "src/main/resources/banner.txt", AECopy.sourceSovrascriveSempreAncheSeEsiste,
+    banner("File BANNER di SpringBoot (sources) [need riavvio]", false, "src/main/resources/banner.txt", AECopy.sourceSovrascriveSempreAncheSeEsiste,
             "banner"
     ),
 
-    git("File GIT di esclusione (sources)", false, ".gitignore", AECopy.sourceSovrascriveSempreAncheSeEsiste, "git"),
+    git("File GIT di esclusione (sources)", true, ".gitignore", AECopy.sourceSoloSeNonEsiste, "git"),
 
     pom("File POM.xml di Maven (sources)", false, "pom.xml", AECopy.sourceSovrascriveSempreAncheSeEsiste, "pom"),
 
-    read("File README con note di testo (sources)", false, "README.md", AECopy.sourceSovrascriveSempreAncheSeEsiste, "readme"),
+    read("File README con note di testo (sources)", true, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
-    test("Directory Test (VaadFlow)", false, "src/test/java/it/algos", AECopy.dirAddingOnly),
+    test("Directory Test (vaadin23)", false, "src/test/java/it/algos", AECopy.dirAddingOnly),
     application("Main class java", false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),

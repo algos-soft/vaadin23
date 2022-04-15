@@ -19,6 +19,9 @@ public enum AEToken {
     user("USER"),
     targetProject("PROJECT"),
     targetProjectUpper("PROJECTUPPER"),
+
+    targetProjectAllUpper("PROJECTALLUPPER"),
+
     today("TODAY"),
     todayAnno("TODAYANNO"),
     todayMese("TODAYMESE"),

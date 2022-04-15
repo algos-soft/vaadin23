@@ -88,7 +88,7 @@ public class WizardView extends VerticalLayout {
         //--spazio per distanziare i paragrafi
         this.add(new H3());
 
-//        this.paragrafoNewPackage();
+        //        this.paragrafoNewPackage();
 
         if (!projectBaseFlow) {
             paragrafoFeedBackWizard();
@@ -115,12 +115,12 @@ public class WizardView extends VerticalLayout {
         layout.setMargin(false);
         layout.setPadding(false);
         layout.setSpacing(false);
-        H3 paragrafo = new H3(WizCost.TITOLO_NUOVO_PROGETTO);
+        H3 paragrafo = new H3(String.format("%s%s%s", WizCost.TITOLO_NUOVO_PROGETTO, SLASH, WizCost.TITOLO_MODIFICA_PROGETTO));
         paragrafo.getElement().getStyle().set("color", "blue");
 
         layout.add(new Label("Crea un nuovo project IntelliJIdea, nella directory 'IdeaProjects'."));
 
-        Button bottone = new Button("New project");
+        Button bottone = new Button("New/Update project");
         bottone.getElement().setAttribute("theme", "primary");
         bottone.addClickListener(event -> openNewProject());
 
@@ -133,8 +133,8 @@ public class WizardView extends VerticalLayout {
         appContext.getBean(WizDialogNewProject.class).open(this::elaboraNewProject);
     }
 
-    private void elaboraNewProject(final String pathNewProject) {
-        appContext.getBean(WizElaboraNewProject.class).esegue(pathNewProject);
+    private void elaboraNewProject(final String pathNewUpdateProject) {
+        appContext.getBean(WizElaboraNewProject.class).esegue(pathNewUpdateProject);
     }
 
 

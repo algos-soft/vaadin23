@@ -1355,17 +1355,14 @@ public class FileService extends AbstractService {
                 }
             }
             case fileSovrascriveSempreAncheSeEsiste, sourceSovrascriveSempreAncheSeEsiste -> {
-                sovraScriveFile(pathFileToBeWritten, testo);
-
                 if (isEsisteFile(pathFileToBeWritten)) {
                     message = String.format("Il file '%s' esisteva già ma è stato modificato", path);
-                    result = AResult.valido(message);
                 }
                 else {
-                    sovraScriveFile(pathFileToBeWritten, testo);
                     message = String.format("Il file '%s' non esisteva ed è stato creato", path);
-                    result = AResult.valido(message);
                 }
+                sovraScriveFile(pathFileToBeWritten, testo);
+                result = AResult.valido(message);
             }
             default -> {
             }
@@ -1386,24 +1383,23 @@ public class FileService extends AbstractService {
         File fileToBeWritten;
         FileWriter fileWriter = null;
 
-        if (isEsisteFile(pathFileToBeWritten)) {
-            fileToBeWritten = new File(pathFileToBeWritten);
+        fileToBeWritten = new File(pathFileToBeWritten);
+        creaDirectoryParentAndFile(fileToBeWritten);
+
+        try {
+            fileWriter = new FileWriter(fileToBeWritten);
+            fileWriter.write(text);
+            fileWriter.flush();
+            status = true;
+        } catch (Exception unErrore) {
+            int a = 87;
+        } finally {
             try {
-                fileWriter = new FileWriter(fileToBeWritten);
-                fileWriter.write(text);
-                fileWriter.flush();
-                status = true;
-            } catch (Exception unErrore) {
-            } finally {
-                try {
-                    if (fileWriter != null) {
-                        fileWriter.close();
-                    }
-                } catch (Exception unErrore) {
+                if (fileWriter != null) {
+                    fileWriter.close();
                 }
+            } catch (Exception unErrore) {
             }
-        }
-        else {
         }
 
         return status;
@@ -2482,6 +2478,7 @@ public class FileService extends AbstractService {
         String tagPatchProperties = ".properties";
         String tagPatchGitIgnore = ".gitignore";
         String tagPatchJava = ".java";
+        String tagPatchMd = ".md";
 
         if (textService.isValid(testoIngresso)) {
             max = testoIngresso.length();
@@ -2500,6 +2497,10 @@ public class FileService extends AbstractService {
         }
 
         if (testoIngresso.endsWith(tagPatchJava)) {
+            status = false;
+        }
+
+        if (testoIngresso.endsWith(tagPatchMd)) {
             status = false;
         }
 
