@@ -137,7 +137,7 @@ public abstract class VaadBoot implements ServletContextListener {
          * Di default FlowData oppure possibile sottoclasse del progetto <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() <br>
          */
-        //        VaadVar.dataClazz = FlowData.class;
+        VaadVar.dataClazz = VaadData.class;
 
         /**
          * Classe da usare per gestire le versioni <br>

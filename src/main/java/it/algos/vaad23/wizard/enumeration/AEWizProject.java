@@ -35,22 +35,28 @@ public enum AEWizProject {
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "properties"
     ),
 
-    banner("File BANNER di SpringBoot (sources) [need riavvio]", false, "src/main/resources/banner.txt", AECopy.sourceSovrascriveSempreAncheSeEsiste,
+    banner("File BANNER di SpringBoot (sources) [need riavvio]", false, "src/main/resources/banner.txt", AECopy.sourceSoloSeNonEsiste,
             "banner"
     ),
 
-    git("File GIT di esclusione (sources)", true, ".gitignore", AECopy.sourceSoloSeNonEsiste, "git"),
+    git("File GIT di esclusione (sources)", false, ".gitignore", AECopy.sourceSoloSeNonEsiste, "git"),
 
     pom("File POM.xml di Maven (sources)", false, "pom.xml", AECopy.sourceSovrascriveSempreAncheSeEsiste, "pom"),
 
-    read("File README con note di testo (sources)", true, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
+    read("File README con note di testo (sources)", false, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
     test("Directory Test (vaadin23)", false, "src/test/java/it/algos", AECopy.dirAddingOnly),
     application("Main class java", false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),
-    boot("xxxBoot con fixMenuRoutes()", true, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Boot.java",
+    boot("xxxBoot: con fixMenuRoutes()", true, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Boot.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "boot"
+    ),
+    cost("xxxCost: costanti statiche del programma", true, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Cost.java",
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "cost"
+    ),
+    vers("xxxVers: versioni specifiche del programma", true, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Vers.java",
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "vers"
     ),
     ;
 
