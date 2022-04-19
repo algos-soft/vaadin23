@@ -63,6 +63,8 @@ public class MainLayout extends AppLayout {
 
 
     private void createHeader() {
+        HorizontalLayout header;
+        Button logout;
         DrawerToggle toggle = new DrawerToggle();
         toggle.addClassName("text-secondary");
         toggle.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
@@ -71,9 +73,14 @@ public class MainLayout extends AppLayout {
         viewTitle = new H1();
         viewTitle.addClassNames("m-0", "text-l");
 
-        Button logout = new Button("Log out", e -> securityService.logout());
+        if (VaadVar.usaSecurity) {
+            logout = new Button("Log out", e -> securityService.logout());
+            header = new HorizontalLayout(toggle, viewTitle, logout);
+        }
+        else {
+            header = new HorizontalLayout(toggle, viewTitle);
+        }
 
-        HorizontalLayout header = new HorizontalLayout(toggle, viewTitle, logout);
         header.addClassNames("bg-base", "border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-center", "w-full");
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(viewTitle);
