@@ -84,6 +84,10 @@ public enum AETypeLog implements AIType {
                 .orElse(null);
     }
 
+    @Override
+    public List<AETypeLog> getAll() {
+        return Arrays.stream(values()).toList();
+    }
 
     @Override
     public String getTag() {

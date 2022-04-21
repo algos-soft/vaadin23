@@ -54,6 +54,11 @@ public enum AELogLevel implements AIType, AIPref {
     }
 
     @Override
+    public List<AELogLevel> getAll() {
+        return Arrays.stream(values()).toList();
+    }
+
+    @Override
     public String getTag() {
         return tag;
     }

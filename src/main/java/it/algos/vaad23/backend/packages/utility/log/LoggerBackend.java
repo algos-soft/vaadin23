@@ -74,7 +74,7 @@ public class LoggerBackend extends CrudBackend {
         entity.descrizione = textService.isValid(message) ? message : null;
         entity.company = textService.isValid(companySigla) ? companySigla : null;
         entity.user = textService.isValid(userName) ? userName : null;
-        entity.address = textService.isValid(addressIP) ? addressIP : null;
+//        entity.address = textService.isValid(addressIP) ? addressIP : null;
         entity.classe = textService.isValid(classe) ? classe : null;
         entity.metodo = textService.isValid(metodo) ? metodo : null;
         entity.linea = linea;
@@ -96,15 +96,15 @@ public class LoggerBackend extends CrudBackend {
 
     public List<Logger> findByDescrizioneAndLivelloAndType(final String value, final AELogLevel level, final AETypeLog type) {
         if (level != null && type != null) {
-            return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndType(value, level, type);
+            return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndTypeOrderByEventoDesc(value, level, type);
         }
         if (level != null) {
-            return repository.findByDescrizioneContainingIgnoreCaseAndLivello(value, level);
+            return repository.findByDescrizioneContainingIgnoreCaseAndLivelloOrderByEventoDesc(value, level);
         }
         if (type != null) {
-            return repository.findByDescrizioneContainingIgnoreCaseAndType(value, type);
+            return repository.findByDescrizioneContainingIgnoreCaseAndTypeOrderByEventoDesc(value, type);
         }
-        return repository.findByDescrizioneContainingIgnoreCase(value);
+        return repository.findByDescrizioneContainingIgnoreCaseOrderByEventoDesc(value);
     }
 
 }// end of crud backend class

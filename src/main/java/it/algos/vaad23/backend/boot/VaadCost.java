@@ -5,6 +5,8 @@ import com.vaadin.flow.spring.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
+import java.util.*;
+
 /**
  * Project vaadin23
  * Created by Algos
@@ -277,8 +279,24 @@ public class VaadCost {
 
     public final static String COLOR_FALSO = "#FF7F50";
 
+    public final static String COLOR_BLUE = "blue";
+
     public final static String TAG_INIZIALE = "http://";
 
     public final static String TAG_INIZIALE_SECURE = "https://";
+
+    public static final String PROPERTY_SERIAL = "serialVersionUID";
+
+    public static final String PROPERTY_CREAZIONE = "creazione";
+
+    public static final String PROPERTY_MODIFICA = "modifica";
+
+    public static final String PROPERTY_NOTE = "note";
+
+    public static final List<String> ESCLUSI_SEMPRE = Arrays.asList(PROPERTY_SERIAL);
+
+    public static final List<String> ESCLUSI_ALL = Arrays.asList(PROPERTY_SERIAL, PROPERTY_NOTE, PROPERTY_CREAZIONE, PROPERTY_MODIFICA);
+
+    public static final String TAG_NOTA = "nota";
 
 }

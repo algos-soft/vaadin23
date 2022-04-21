@@ -110,3 +110,13 @@ String result = new StringBuilder()
   .subject("Congratulations on recent promotion")
   .body("Yours truly, Donald")
   .build();
+
+
+        if (WamEntity.class.isAssignableFrom(entityClass)||Milite.class.isAssignableFrom(entityClass)) {
+            codice
+        }// end of if cycle
+
+Label emailStatus = new Label();
+emailStatus.getStyle().set("color", "Red");
+
+@Email, @NotEmpty, @NotBlank, @Positive, @PositiveOrZero, @Negative, @NegativeOrZero, @PastOrPresent and @FutureOrPresent

@@ -2,8 +2,11 @@ package it.algos.vaad23.backend.logic;
 
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 
 import java.util.*;
@@ -81,6 +84,40 @@ public abstract class CrudBackend extends AbstractService {
 
     public List findAll() {
         return crudRepository.findAll();
+    }
+
+    /**
+     * Controlla l'esistenza della property <br>
+     * La lista funziona anche se la property del sort è errata <br>
+     * Ma ovviamente il sort non viene effettuato <br>
+     */
+    public List findAll(Sort sort) {
+        boolean esiste;
+        Sort.Order order;
+        String property;
+        String message;
+
+        if (sort == null) {
+            return crudRepository.findAll();
+        }
+        else {
+            if (sort.stream().count() == 1) {
+                order = sort.stream().toList().get(0);
+                property = order.getProperty();
+                esiste = reflectionService.isEsiste(entityClazz, property);
+                if (esiste) {
+                    return crudRepository.findAll(sort);
+                }
+                else {
+                    message = String.format("Non esiste la property %s per l'ordinamento della classe %s", property, entityClazz.getSimpleName());
+                    logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+                    return crudRepository.findAll();
+                }
+            }
+            else {
+                return crudRepository.findAll(sort);
+            }
+        }
     }
 
     public AEntity add(Object objEntity) {

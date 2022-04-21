@@ -38,6 +38,11 @@ public enum AEFontStyle implements AIType {
     }
 
     @Override
+    public List<AEFontStyle> getAll() {
+        return Arrays.stream(values()).toList();
+    }
+
+    @Override
     public String getTag() {
         return tag;
     }

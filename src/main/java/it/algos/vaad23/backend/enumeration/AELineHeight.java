@@ -74,6 +74,10 @@ public enum AELineHeight implements AIType, AIPref {
                 .orElse(null);
     }
 
+    @Override
+    public List<AELineHeight> getAll() {
+        return Arrays.stream(values()).toList();
+    }
 
     @Override
     public String getTag() {

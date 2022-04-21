@@ -450,7 +450,7 @@ public class AnnotationService extends AbstractService {
         }
 
         if (width.equals(VUOTA) || width.equals(tag)) {
-            width = getFormType(entityClazz, publicFieldName).getWidthField() + tag;
+            width = getFormType(entityClazz, publicFieldName).getWidthColumn() + tag;
         }
 
         return width;
@@ -483,5 +483,128 @@ public class AnnotationService extends AbstractService {
         return type;
     }
 
+    /**
+     * Check if the field can grow <br>.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the field can grow
+     */
+    public boolean isFlexGrow(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        boolean isFlexGrow = false;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            isFlexGrow = annotation.flexGrow();
+        }
+
+        return isFlexGrow;
+    }
+
+    /**
+     * Check if the field has focus <br>.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the field has focus
+     */
+    public boolean hasFocus(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        boolean isFocus = false;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            isFocus = annotation.focus();
+        }
+
+        return isFocus;
+    }
+
+    /**
+     * Get the widthEM of the property.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the width of the field expressed in em
+     */
+    public String getHeader(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        String header = VUOTA;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            header = annotation.header();
+        }
+
+        if (textService.isEmpty(header)) {
+            header = publicFieldName;
+        }
+
+        return header;
+    }
+
+    /**
+     * Get the class of the property.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the class
+     */
+    @SuppressWarnings("all")
+    public Class getEnumClass(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        Class enumClazz = null;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            enumClazz = annotation.enumClazz();
+        }
+
+        return enumClazz == Object.class ? null : enumClazz;
+    }
+
+    /**
+     * Get the icon of the property.
+     * Default a VaadinIcon.YOUTUBE che sicuramente non voglio usare e posso quindi escluderlo
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the icon of the field
+     */
+    public VaadinIcon getHeaderIcon(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        VaadinIcon icon = null;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            icon = annotation.headerIcon();
+            icon = (icon == VaadinIcon.YOUTUBE) ? null : icon;
+        }
+        else {
+            icon = null;
+        }
+
+        return icon;
+    }
+
+    /**
+     * Get the color of the property.
+     *
+     * @param entityClazz     the class of type AEntity
+     * @param publicFieldName the property name
+     *
+     * @return the color of the icon
+     */
+    public String getHeaderIconColor(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        String color = VUOTA;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            color = annotation.headerIconColor();
+        }
+
+        return textService.isValid(color) ? color : COLOR_BLUE;
+    }
 
 }

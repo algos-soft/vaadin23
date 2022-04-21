@@ -1,10 +1,14 @@
 package it.algos.vaad23.backend.packages.utility.nota;
 
-import static it.algos.vaad23.backend.boot.VaadCost.*;
+import com.vaadin.flow.component.icon.*;
+import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
+import lombok.*;
 
+import javax.validation.constraints.*;
 import java.time.*;
+import java.time.format.*;
 
 /**
  * Project vaadin23
@@ -15,71 +19,36 @@ import java.time.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+//Lombok
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder()
+@EqualsAndHashCode(callSuper = false)
 public class Nota extends AEntity {
 
+    @AIField(type = AETypeField.enumeration, enumClazz = AENotaLevel.class)
     public AENotaLevel livello;
 
+    @AIField(type = AETypeField.enumeration, enumClazz = AETypeLog.class)
     public AETypeLog type;
 
+    @AIField(type = AETypeField.localDate)
     public LocalDate inizio;
 
+    @NotEmpty
+    @AIField(type = AETypeField.text, flexGrow = true, focus = true)
     public String descrizione;
 
+    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.CHECK)
     public boolean fatto;
 
+    @AIField(type = AETypeField.localDate)
     public LocalDate fine;
 
     @Override
     public String toString() {
-        return VUOTA;
-    }
-
-    public AENotaLevel getLivello() {
-        return livello;
-    }
-
-    public void setLivello(AENotaLevel livello) {
-        this.livello = livello;
-    }
-
-    public AETypeLog getType() {
-        return type;
-    }
-
-    public void setType(AETypeLog type) {
-        this.type = type;
-    }
-
-    public LocalDate getInizio() {
-        return inizio;
-    }
-
-    public void setInizio(LocalDate inizio) {
-        this.inizio = inizio;
-    }
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public boolean isFatto() {
-        return fatto;
-    }
-
-    public void setFatto(boolean fatto) {
-        this.fatto = fatto;
-    }
-
-    public LocalDate getFine() {
-        return fine;
-    }
-
-    public void setFine(LocalDate fine) {
-        this.fine = fine;
+        return DateTimeFormatter.ofPattern("d-MMM-yy").format(inizio);
     }
 
 }// end of crud entity class

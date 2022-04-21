@@ -175,10 +175,7 @@ public abstract class VaadBoot implements ServletContextListener {
 
     /**
      * Aggiunge al menu le @Route (view) standard e specifiche <br>
-     * <p>
      * Questa classe viene invocata PRIMA della chiamata del browser <br>
-     * Se NON usa la security, le @Route vengono create solo qui <br>
-     * Se USA la security, le @Route vengono sovrascritte all' apertura del browser nella classe AUserDetailsService <br>
      * <p>
      * Nella sottoclasse che invoca questo metodo, aggiunge le @Route (view) specifiche dell' applicazione <br>
      * Le @Route vengono aggiunte ad una Lista statica mantenuta in VaadVar <br>

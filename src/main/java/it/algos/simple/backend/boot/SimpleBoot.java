@@ -74,4 +74,9 @@ public class SimpleBoot extends VaadBoot {
         this.versInstance = versInstance;
     }
 
+    @Override
+    protected void fixMenuRoutes() {
+        super.fixMenuRoutes();
+    }
+
 }

@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.annotation;
 
+import com.vaadin.flow.component.icon.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 
@@ -107,6 +108,14 @@ public @interface AIField {
      * @return the string
      */
     String caption() default VUOTA;
+
+    /**
+     * (Optional) The visible header of the column.
+     * Defaults to the property or field name.
+     *
+     * @return the string
+     */
+    String header() default VUOTA;
 
 
     /**
@@ -300,7 +309,6 @@ public @interface AIField {
      */
     //    AETypeNum typeNum() default AETypeNum.positiviOnly;
 
-
     /**
      * (Optional) The type of the boolean type.
      * Defaults to the checkBox type.
@@ -341,5 +349,37 @@ public @interface AIField {
      * @return the boolean
      */
     boolean enabled() default true;
+
+    /**
+     * (Optional) Flag per la colonna espandibile
+     * Defaults to false.
+     *
+     * @return the boolean
+     */
+    boolean flexGrow() default false;
+
+    /**
+     * (Optional) header icon
+     * Defaults to false.
+     *
+     * @return the vaadin icon
+     */
+    VaadinIcon headerIcon() default VaadinIcon.YOUTUBE;
+
+    /**
+     * (Optional) header icon size
+     * Defaults to 20.
+     *
+     * @return the int
+     */
+    int headerIconSizePX() default 20;
+
+    /**
+     * (Optional) header icon color
+     * Defaults to blue.
+     *
+     * @return the string
+     */
+    String headerIconColor() default COLOR_BLUE;
 
 }

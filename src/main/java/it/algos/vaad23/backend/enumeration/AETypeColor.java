@@ -55,6 +55,10 @@ public enum AETypeColor implements AIType {
                 .orElse(null);
     }
 
+    @Override
+    public List<AETypeColor> getAll() {
+        return Arrays.stream(values()).toList();
+    }
 
     @Override
     public String getTag() {

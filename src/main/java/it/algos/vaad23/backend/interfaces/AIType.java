@@ -1,5 +1,7 @@
 package it.algos.vaad23.backend.interfaces;
 
+import java.util.*;
+
 /**
  * Project vaadflow14
  * Created by Algos
@@ -10,6 +12,8 @@ package it.algos.vaad23.backend.interfaces;
 public interface AIType {
 
     String getTag();
+
+    List getAll();
 
 }// end of interface
 

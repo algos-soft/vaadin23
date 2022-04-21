@@ -1,18 +1,14 @@
 package it.algos.vaad23.backend.packages.utility.log;
 
 import com.vaadin.flow.component.combobox.*;
-import com.vaadin.flow.component.grid.*;
-import com.vaadin.flow.component.textfield.*;
-import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
-import org.vaadin.crudui.crud.*;
+import org.springframework.data.domain.*;
 
-import java.time.format.*;
 import java.util.*;
 
 /**
@@ -25,11 +21,10 @@ import java.util.*;
  */
 @PageTitle("Logger")
 @Route(value = "logger", layout = MainLayout.class)
-public class LoggerView extends CrudViewOld {
+public class LoggerView extends CrudView {
 
-    private ComboBox comboLivello;
+    private ComboBox<AELogLevel> comboLivello;
 
-    private ComboBox comboTypeLog;
 
     //--per eventuali metodi specifici
     private LoggerBackend backend;
@@ -58,8 +53,18 @@ public class LoggerView extends CrudViewOld {
     public void fixPreferenze() {
         super.fixPreferenze();
 
-        this.usaBottoneDeleteAll = true;
-        this.usaBottoneFilter = true;
+        if (VaadVar.usaCompany) {
+            super.gridPropertyNamesList = Arrays.asList("livello", "type", "evento", "descrizione", "company", "user", "classe", "metodo", "linea");
+        }
+        else {
+            super.gridPropertyNamesList = Arrays.asList("livello", "type", "evento", "descrizione", "classe", "metodo", "linea");
+        }
+        super.sortOrder = Sort.by(Sort.Direction.DESC, "evento");
+        super.usaBottoneDeleteReset = true;
+        super.usaBottoneFilter = true;
+        super.usaBottoneNew = false;
+        super.usaBottoneEdit = false;
+        super.usaBottoneDelete = false;
     }
 
     /**
@@ -70,96 +75,18 @@ public class LoggerView extends CrudViewOld {
     public void fixAlert() {
         super.fixAlert();
 
-        spanBlue("Diverse modalità di 'uscita' dei logs, regolate da flag:");
-        span("A) nella cartella di log (sempre)");
-        span("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag");
-        span("C) nella collection del database (facoltativo)");
-        span("D) in una mail (facoltativo e di norma solo per 'error')");
-        spanRosso("Necessita di config.logback-spring.xml e attivazione in application.properties");
-    }
-
-    /**
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    protected void fixCrud() {
-        super.fixCrud();
-
-        gridCrud.setAddOperationVisible(false);
-        gridCrud.setUpdateOperationVisible(true);
-        gridCrud.setDeleteOperationVisible(false);
+        addSpanBlue("Diverse modalità di 'uscita' dei logs, regolate da flag:");
+        addSpanVerde("A) nella cartella di log (sempre)");
+        addSpanVerde("B) nella finestra del terminale - sempre in debug - mai in produzione - regolato da flag");
+        addSpanVerde("C) nella collection del database (facoltativo)");
+        addSpanVerde("D) in una mail (facoltativo e di norma solo per 'error')");
+        addSpanRosso("Necessita di config.logback-spring.xml e attivazione in application.properties");
     }
 
 
-    /**
-     * Regola la visibilità delle colonne della grid <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
     @Override
-    public void fixColumns() {
-        super.fixColumns();
-
-        grid.setColumns("livello", "type", "descrizione", "company", "user", "classe", "metodo", "linea");
-
-        String larLevel = "5em";
-        String larType = "9em";
-        String larEvento = "15em";
-        String larDesc = "30em";
-        String larCompany = "8em";
-        String larClasse = "12em";
-        String larMetodo = "12em";
-        String larLinea = "5em";
-
-        grid.getColumnByKey("livello").setWidth(larLevel).setFlexGrow(0).setHeader("#");
-        grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0);
-        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
-        grid.getColumnByKey("company").setWidth(larCompany).setFlexGrow(0).setVisible(VaadVar.usaCompany);
-        grid.getColumnByKey("user").setWidth(larCompany).setFlexGrow(0).setVisible(VaadVar.usaCompany);
-        grid.getColumnByKey("classe").setWidth(larClasse).setFlexGrow(0);
-        grid.getColumnByKey("metodo").setWidth(larMetodo).setFlexGrow(0);
-        grid.getColumnByKey("linea").setHeader("Riga").setWidth(larLinea).setFlexGrow(0);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yy HH:mm:ss");
-        grid.addColumn(bean -> formatter.format(((Logger) bean).getEvento())).setKey("evento").setHeader("Evento").setWidth(larEvento).setFlexGrow(0);
-    }
-
-    /**
-     * Regola la visibilità dei fields del Form<br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public void fixFields() {
-        super.fixFields();
-
-        if (VaadVar.usaCompany) {
-            crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "descrizione", "company", "user", "classe", "metodo", "linea", "evento");
-            crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "company", "user", "classe", "metodo", "linea", "evento");
-        }
-        else {
-            crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "descrizione", "classe", "metodo", "linea", "evento");
-            crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "classe", "metodo", "linea", "evento");
-        }
-
-        crudForm.setFieldType("descrizione", TextArea.class);
-
-        //        crudForm.setFieldProvider("evento", logger -> {
-        //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yy HH:mm:ss");
-        //            TextField field = new TextField("Evento");
-        //            field.setValue(((Logger) logger).evento.format(formatter));
-        //            return field;
-        //        });
-    }
-
-    /**
-     * Regola l'ordinamento della <grid <br>
-     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
-     */
-    @Override
-    public void fixOrder() {
-        Grid.Column column = grid.getColumnByKey("evento");
-        List<GridSortOrder> lista = new ArrayList<>();
-        lista.add(new GridSortOrder(column, SortDirection.DESCENDING));
-        gridCrud.getGrid().sort(lista);
+    protected void addColumnsOneByOne() {
+        columnService.addColumnsOneByOne(grid, entityClazz, gridPropertyNamesList);
     }
 
     /**
@@ -167,26 +94,17 @@ public class LoggerView extends CrudViewOld {
      * Tipicamente bottoni di selezione/filtro <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    protected void fixAdditionalComponents() {
-        super.fixAdditionalComponents();
+    @Override
+    protected void fixBottoniTopSpecifici() {
+        super.fixBottoniTopSpecifici();
 
         comboLivello = new ComboBox();
         comboLivello.setPlaceholder("Livello");
         comboLivello.setClearButtonVisible(true);
-        List items = AELogLevel.getAllEnums();
-        comboLivello.setItems(items);
-        gridCrud.getCrudLayout().addFilterComponent(comboLivello);
+        comboLivello.setItems(AELogLevel.getAllEnums());
         comboLivello.addValueChangeListener(event -> sincroFiltri());
-
-        comboTypeLog = new ComboBox();
-        comboTypeLog.setPlaceholder("Type");
-        comboTypeLog.setClearButtonVisible(true);
-        List items2 = AETypeLog.getAllEnums();
-        comboTypeLog.setItems(items2);
-        gridCrud.getCrudLayout().addFilterComponent(comboTypeLog);
-        comboTypeLog.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(comboLivello);
     }
-
 
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
@@ -203,11 +121,11 @@ public class LoggerView extends CrudViewOld {
         }
 
         if (comboLivello != null) {
-            level = (AELogLevel) comboLivello.getValue();
+            level = comboLivello.getValue();
         }
 
         if (comboTypeLog != null) {
-            type = (AETypeLog) comboTypeLog.getValue();
+            type = comboTypeLog.getValue();
         }
 
         if (usaBottoneFilter) {
@@ -215,7 +133,7 @@ public class LoggerView extends CrudViewOld {
         }
 
         if (items != null) {
-            gridCrud.getGrid().setItems(items);
+            grid.setItems(items);
         }
 
         return items;

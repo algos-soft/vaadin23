@@ -43,7 +43,7 @@ public class ContinenteDialog extends CrudDialog {
     /**
      * Costruttore con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * L'istanza DEVE essere creata con appContext.getBean(PreferenzaDialog.class, operation, itemSaver, itemDeleter, itemAnnulla); <br>
+     * L'istanza DEVE essere creata con appContext.getBean(CrudDialog.class, operation, itemSaver, itemDeleter, itemAnnulla); <br>
      *
      * @param entityBean  The item to edit; it may be an existing or a newly created instance
      * @param operation   The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)

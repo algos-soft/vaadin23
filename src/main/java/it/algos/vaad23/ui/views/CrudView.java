@@ -2,11 +2,13 @@ package it.algos.vaad23.ui.views;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
 import com.vaadin.flow.component.notification.*;
 import com.vaadin.flow.component.orderedlayout.*;
+import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.spring.annotation.*;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
 import java.util.*;
@@ -123,6 +126,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected Button buttonRefresh;
 
+    protected boolean usaBottoneFilter;
+
+    protected TextField filter;
 
     /**
      * Flag di preferenza per l' utilizzo del bottone. Di default false. <br>
@@ -169,6 +175,10 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected Grid<AEntity> grid;
 
+    protected Sort sortOrder;
+
+    protected ComboBox<AETypeLog> comboTypeLog;
+
     private Function<String, Grid.Column<AEntity>> getColonna = name -> grid.getColumnByKey(name);
 
 
@@ -212,12 +222,13 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         //--Larghezza del browser utilizzato in questa sessione <br>
         UI.getCurrent().getPage().retrieveExtendedClientDetails(details -> browserWidth = details.getBodyClientWidth());
 
+        sortOrder = Sort.by(Sort.Direction.ASC, FIELD_NAME_ID_SENZA);
         riordinaColonne = true;
         gridPropertyNamesList = new ArrayList<>();
         formPropertyNamesList = new ArrayList<>();
         cancellaColonnaKeyId = true;
-        autoCreateColumns = true;
-        usaBottoneRefresh = true;
+        autoCreateColumns = false;
+        usaBottoneRefresh = false;
         usaBottoneDeleteReset = false;
         usaBottoneNew = true;
         usaBottoneEdit = true;
@@ -338,7 +349,18 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     protected void fixFiltri() {
     }
 
+    /**
+     * Componenti aggiuntivi oltre quelli base <br>
+     * Tipicamente bottoni di selezione/filtro <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
     protected void fixBottoniTopSpecifici() {
+        comboTypeLog = new ComboBox<>();
+        comboTypeLog.setPlaceholder("Type");
+        comboTypeLog.setClearButtonVisible(true);
+        comboTypeLog.setItems(AETypeLog.getAllEnums());
+        comboTypeLog.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(comboTypeLog);
     }
 
     /**
@@ -353,14 +375,14 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
         // Crea/regola le colonne
         if (autoCreateColumns) {
-            this.fixColumnsAutomaticlallyCreated();
+            this.fixColumnsAutomaticallyCreated();
         }
         else {
             this.addColumnsOneByOne();
         }
 
         // Pass all objects to a grid from a Spring Data repository object
-        grid.setItems(crudBackend.findAll());
+        grid.setItems(crudBackend.findAll(sortOrder));
 
         // The row-stripes theme produces a background color for every other row.
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
@@ -385,7 +407,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Riordina le colonne secondo una lista prestabilita <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    protected void fixColumnsAutomaticlallyCreated() {
+    protected void fixColumnsAutomaticallyCreated() {
         if (cancellaColonnaKeyId) {
             try {
                 grid.removeColumnByKey(FIELD_NAME_ID_SENZA);
@@ -430,6 +452,22 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         }
     }
 
+    protected List sincroFiltri() {
+        List items = null;
+        String textSearch;
+
+        if (usaBottoneFilter && filter != null) {
+            textSearch = filter != null ? filter.getValue() : VUOTA;
+            items = crudBackend.findByDescrizione(textSearch);
+        }
+
+        if (items != null) {
+            grid.setItems(items);
+        }
+
+        return items;
+    }
+
     protected void sincroSelection(SelectionEvent event) {
         boolean singoloSelezionato = event.getAllSelectedItems().size() == 1;
         buttonEdit.setEnabled(singoloSelezionato);
@@ -437,7 +475,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     protected void refresh() {
-        grid.setItems(crudBackend.findAll());
+        grid.setItems(crudBackend.findAll(sortOrder));
     }
 
     protected void reset() {
@@ -450,14 +488,14 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected void resetEsegue() {
         if (crudBackend.reset()) {
-            grid.setItems(crudBackend.findAll());
+            grid.setItems(crudBackend.findAll(sortOrder));
             Avviso.show("Reset all").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         }
     }
 
     protected void deleteEsegue() {
         crudBackend.deleteAll();
-        grid.setItems(crudBackend.findAll());
+        grid.setItems(crudBackend.findAll(sortOrder));
         Avviso.show("Delete all").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     }
 
@@ -516,12 +554,12 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Primo ingresso dopo il click sul bottone del dialogo <br>
      */
     protected void saveHandler(final AEntity entityBean, final CrudOperation operation) {
-        grid.setItems(crudBackend.findAll());
+        grid.setItems(crudBackend.findAll(sortOrder));
     }
 
     public void deleteHandler(final AEntity entityBean) {
         crudBackend.delete(entityBean);
-        grid.setItems(crudBackend.findAll());
+        grid.setItems(crudBackend.findAll(sortOrder));
         Avviso.show(String.format("%s successfully deleted", entityBean)).addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     }
 

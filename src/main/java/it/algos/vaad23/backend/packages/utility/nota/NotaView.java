@@ -1,13 +1,12 @@
 package it.algos.vaad23.backend.packages.utility.nota;
 
 import com.vaadin.flow.component.combobox.*;
-import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
-import org.vaadin.crudui.crud.*;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -25,13 +24,11 @@ import java.util.*;
  * Su richiesta apre un Dialogo per gestire la singola entity <br>
  */
 @PageTitle("Note")
-@Route(value = "nota", layout = MainLayout.class)
-public class NotaView extends CrudViewOld {
+@Route(value = TAG_NOTA, layout = MainLayout.class)
+public class NotaView extends CrudView {
 
 
     private ComboBox<AENotaLevel> comboLivello;
-
-    private ComboBox<AETypeLog> comboTypeLog;
 
     //--per eventuali metodi specifici
     private NotaBackend backend;
@@ -60,8 +57,10 @@ public class NotaView extends CrudViewOld {
     public void fixPreferenze() {
         super.fixPreferenze();
 
-        this.splitLayout = false;
-        this.usaBottoneDeleteAll = true;
+        super.gridPropertyNamesList = Arrays.asList("livello", "type", "inizio", "descrizione", "fatto", "fine");
+        super.formPropertyNamesList = Arrays.asList("livello", "type", "descrizione", "fatto", "fine");
+        super.sortOrder = Sort.by(Sort.Direction.DESC, "inizio");
+        this.usaBottoneDeleteReset = true;
         this.usaBottoneFilter = true;
     }
 
@@ -72,62 +71,13 @@ public class NotaView extends CrudViewOld {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        span("Appunti per sviluppi e @todo");
-        spanRosso("Al termine spuntarli e non cancellarli");
+        addSpanVerde("Appunti per sviluppo e @todo");
+        addSpanRosso("Al termine spuntarli e non cancellarli");
     }
 
-    /**
-     * Logic configuration <br>
-     * Qui vanno i collegamenti con la logica del backend <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
     @Override
-    protected void fixCrud() {
-        super.fixCrud();
-
-        gridCrud.setSavedMessage("Nota salvata");
-        gridCrud.setDeletedMessage("Nota cancellata");
-
-        crudForm.setVisibleProperties(CrudOperation.ADD, "livello", "type", "descrizione");
-        crudForm.setVisibleProperties(CrudOperation.READ, "livello", "type", "inizio", "fine", "descrizione", "fatto");
-        crudForm.setVisibleProperties(CrudOperation.UPDATE, "livello", "type", "descrizione", "fatto");
-        crudForm.setVisibleProperties(CrudOperation.DELETE, "livello", "type", "inizio", "descrizione", "fatto", "fine");
-    }
-
-
-    /**
-     * Regola la visibilità delle colonne della grid <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public void fixColumns() {
-        super.fixColumns();
-
-        grid.setColumns("livello", "type", "inizio", "descrizione", "fatto", "fine");
-
-        String larLevel = "9em";
-        String larType = "9em";
-        String larData = "9em";
-        String larDesc = "30em";
-        String larBool = "8em";
-
-        grid.getColumnByKey("livello").setWidth(larLevel).setFlexGrow(0);
-        grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0);
-        grid.getColumnByKey("inizio").setWidth(larData).setFlexGrow(0);
-        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
-        grid.getColumnByKey("fatto").setWidth(larBool).setFlexGrow(0);
-        grid.getColumnByKey("fine").setWidth(larData).setFlexGrow(0);
-    }
-
-    /**
-     * Regola la visibilità dei fields del Form<br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public void fixFields() {
-        super.fixFields();
-
-        crudForm.setFieldType("descrizione", TextArea.class);
+    protected void addColumnsOneByOne() {
+        columnService.addColumnsOneByOne(grid, entityClazz, gridPropertyNamesList);
     }
 
 
@@ -136,24 +86,16 @@ public class NotaView extends CrudViewOld {
      * Tipicamente bottoni di selezione/filtro <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    protected void fixAdditionalComponents() {
-        super.fixAdditionalComponents();
+    @Override
+    protected void fixBottoniTopSpecifici() {
+        super.fixBottoniTopSpecifici();
 
         comboLivello = new ComboBox<>();
         comboLivello.setPlaceholder("Livello");
         comboLivello.setClearButtonVisible(true);
-        List<AENotaLevel> items = AENotaLevel.getAllEnums();
-        comboLivello.setItems(items);
-        gridCrud.getCrudLayout().addFilterComponent(comboLivello);
+        comboLivello.setItems(AENotaLevel.getAllEnums());
         comboLivello.addValueChangeListener(event -> sincroFiltri());
-
-        comboTypeLog = new ComboBox<>();
-        comboTypeLog.setPlaceholder("Type");
-        comboTypeLog.setClearButtonVisible(true);
-        List<AETypeLog> items2 = AETypeLog.getAllEnums();
-        comboTypeLog.setItems(items2);
-        gridCrud.getCrudLayout().addFilterComponent(comboTypeLog);
-        comboTypeLog.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(comboLivello);
     }
 
 
@@ -172,11 +114,11 @@ public class NotaView extends CrudViewOld {
         }
 
         if (comboLivello != null) {
-            level = (AENotaLevel) comboLivello.getValue();
+            level = comboLivello.getValue();
         }
 
         if (comboTypeLog != null) {
-            type = (AETypeLog) comboTypeLog.getValue();
+            type = comboTypeLog.getValue();
         }
 
         if (usaBottoneFilter) {
@@ -184,11 +126,22 @@ public class NotaView extends CrudViewOld {
         }
 
         if (items != null) {
-            gridCrud.getGrid().setItems(items);
+            grid.setItems(items);
         }
 
         return items;
     }
 
+    @Override
+    public void newItem() {
+        super.formPropertyNamesList = Arrays.asList("livello", "type", "descrizione");
+        super.newItem();
+    }
+
+    @Override
+    public void updateItem() {
+        super.formPropertyNamesList = Arrays.asList("livello", "type", "descrizione", "fatto");
+        super.updateItem();
+    }
 
 }// end of crud @Route view class

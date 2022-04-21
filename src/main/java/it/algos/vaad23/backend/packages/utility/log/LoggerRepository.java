@@ -1,11 +1,7 @@
 package it.algos.vaad23.backend.packages.utility.log;
 
-import com.vaadin.flow.spring.annotation.*;
-import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.beans.factory.config.*;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -24,26 +20,28 @@ import java.util.*;
  * Annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (obbligatorio) <br>
  * Annotated with @Qualifier (obbligatorio) per permettere a Spring di istanziare la classe specifica <br>
  */
-@SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-@Qualifier("Logger")
 @Repository
+@Qualifier("Logger")
 public interface LoggerRepository extends MongoRepository<Logger, String> {
 
+    @Override
     List<Logger> findAll();
 
-    <Logger extends AEntity> Logger insert(Logger entity);
+    @Override
+    Logger insert(Logger entity);
 
-    <Logger extends AEntity> Logger save(Logger entity);
+    @Override
+    Logger save(Logger entity);
 
+    @Override
     void delete(Logger entity);
 
-    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivello(String descrizione, AELogLevel level);
+    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivelloOrderByEventoDesc(String descrizione, AELogLevel level);
 
-    List<Logger> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypeLog type);
+    List<Logger> findByDescrizioneContainingIgnoreCaseAndTypeOrderByEventoDesc(String descrizione, AETypeLog type);
 
-    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivelloAndType(String descrizione, AELogLevel level, AETypeLog type);
+    List<Logger> findByDescrizioneContainingIgnoreCaseAndLivelloAndTypeOrderByEventoDesc(String descrizione, AELogLevel level, AETypeLog type);
 
-    List<Logger> findByDescrizioneContainingIgnoreCase(String descrizione);
+    List<Logger> findByDescrizioneContainingIgnoreCaseOrderByEventoDesc(String descrizione);
 
 }// end of crud repository class

@@ -73,4 +73,19 @@ public class @PROJECTUPPER@Boot extends VaadBoot {
         this.versInstance = versInstance;
     }
 
+
+    /**
+     * Aggiunge al menu le @Route (view) standard e specifiche <br>
+     * Questa classe viene invocata PRIMA della chiamata del browser <br>
+     * <p>
+     * Nella sottoclasse che invoca questo metodo, aggiunge le @Route (view) specifiche dell' applicazione <br>
+     * Le @Route vengono aggiunte ad una Lista statica mantenuta in VaadVar <br>
+     * Verranno lette da MainLayout la prima volta che il browser 'chiama' una view <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixMenuRoutes() {
+        super.fixMenuRoutes();
+    }
+
 }

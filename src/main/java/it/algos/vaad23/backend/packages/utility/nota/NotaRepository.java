@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.utility.nota;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
@@ -22,7 +23,7 @@ import java.util.*;
  * Eventualmente usare una costante di VaadCost come @Qualifier sia qui che nella corrispondente classe xxxBackend <br>
  */
 @Repository
-@Qualifier("Nota")
+@Qualifier(TAG_NOTA)
 public interface NotaRepository extends MongoRepository<Nota, String> {
 
 
@@ -39,18 +40,18 @@ public interface NotaRepository extends MongoRepository<Nota, String> {
     void delete(Nota entity);
 
 
-    List<Nota> findByDescrizioneContainingIgnoreCase(String descrizione);
+    List<Nota> findByDescrizioneContainingIgnoreCaseOrderByInizioDesc(String descrizione);
 
-    List<Nota> findByLivello(AENotaLevel level);
+    List<Nota> findByLivelloOrderByInizioDesc(AENotaLevel level);
 
-    List<Nota> findByType(AETypeLog type);
+    List<Nota> findByTypeOrderByInizioDesc(AETypeLog type);
 
-    List<Nota> findByLivelloAndType(AENotaLevel level, AETypeLog type);
+    List<Nota> findByLivelloAndTypeOrderByInizioDesc(AENotaLevel level, AETypeLog type);
 
-    List<Nota> findByDescrizioneContainingIgnoreCaseAndLivello(String descrizione, AENotaLevel level);
+    List<Nota> findByDescrizioneContainingIgnoreCaseAndLivelloOrderByInizioDesc(String descrizione, AENotaLevel level);
 
-    List<Nota> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypeLog type);
+    List<Nota> findByDescrizioneContainingIgnoreCaseAndTypeOrderByInizioDesc(String descrizione, AETypeLog type);
 
-    List<Nota> findByDescrizioneContainingIgnoreCaseAndLivelloAndType(String descrizione, AENotaLevel level, AETypeLog type);
+    List<Nota> findByDescrizioneContainingIgnoreCaseAndLivelloAndTypeOrderByInizioDesc(String descrizione, AENotaLevel level, AETypeLog type);
 
 }// end of crud repository class

@@ -12,10 +12,10 @@ public enum AETypeField {
     lungo(5, 8),
     doppio(5, 8),
     booleano(5, 4),
-    localDateTime(9, 0),
-    localDate(8, 0),
-    localTime(6, 0),
-    timestamp(6, 0),
+    localDateTime(12, 12),
+    localDate(8, 8),
+    localTime(6, 6),
+    timestamp(6, 6),
     mappa(0, 14),
 
     //    meseShort(6, 0, AETypeData.meseShort),
@@ -30,7 +30,7 @@ public enum AETypeField {
     //
     //    weekLong(6, 0, AETypeData.weekShort),
 
-    preferenza(6, 0),
+    preferenza(6, 6),
 
     //    noBinder,
     //    calculatedTxt,
@@ -44,7 +44,7 @@ public enum AETypeField {
     //    multicombo,
     //    combolinkato,
 
-    enumeration(8, 0),
+    enumeration(8, 8),
     gridShowOnly(0, 20),
 
     //    dateNotEnabled,

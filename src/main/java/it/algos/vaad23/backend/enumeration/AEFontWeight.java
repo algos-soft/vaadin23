@@ -63,10 +63,15 @@ public enum AEFontWeight implements AIType {
                 .orElse(null);
     }
 
+    @Override
+    public List<AEFontWeight> getAll() {
+        return Arrays.stream(values()).toList();
+    }
 
     @Override
     public String getTag() {
         return tag;
     }
+
 
 }

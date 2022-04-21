@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.utility.nota;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
 import org.springframework.beans.factory.annotation.*;
@@ -37,25 +38,56 @@ public class NotaBackend extends CrudBackend {
      *
      * @param crudRepository per la persistenza dei dati
      */
-    //@todo registrare eventualmente come costante in VaadCost il valore del Qualifier
-    public NotaBackend(@Autowired @Qualifier("Nota") final MongoRepository crudRepository) {
+    public NotaBackend(@Autowired @Qualifier(TAG_NOTA) final MongoRepository crudRepository) {
         super(crudRepository, Nota.class);
         this.repository = (NotaRepository) crudRepository;
     }
 
-    @Override
-    public Nota add(Object objEntity) {
-        if (objEntity instanceof Nota notaEntity) {
-            notaEntity.inizio = LocalDate.now();
-            notaEntity.livello = notaEntity.livello != null ? notaEntity.livello : AENotaLevel.normale;
-            notaEntity.type = notaEntity.type != null ? notaEntity.type : AETypeLog.system;
 
-            return (Nota) crudRepository.insert(notaEntity);
-        }
-        else {
-            return null;
-        }
+    /**
+     * Creazione in memoria di una nuova entity che NON viene salvata <br>
+     * Usa il @Builder di Lombok <br>
+     * Eventuali regolazioni iniziali delle property <br>
+     *
+     * @return la nuova entity appena creata (non salvata)
+     */
+    public Nota newEntity() {
+        return newEntity(null, null, VUOTA);
     }
+
+    /**
+     * Creazione in memoria di una nuova entity che NON viene salvata <br>
+     * Usa il @Builder di Lombok <br>
+     * Eventuali regolazioni iniziali delle property <br>
+     *
+     * @param livello     di importanza o rilevanza della nota
+     * @param type        merceologico della nota
+     * @param descrizione dettagliata della nota
+     *
+     * @return la nuova entity appena creata (non salvata)
+     */
+    public Nota newEntity(final AENotaLevel livello, final AETypeLog type, final String descrizione) {
+        return Nota.builder()
+                .livello(livello != null ? livello : AENotaLevel.normale)
+                .type(type != null ? type : AETypeLog.system)
+                .inizio(LocalDate.now())
+                .descrizione(textService.isValid(descrizione) ? descrizione : null)
+                .build();
+    }
+
+    //    @Override
+    //    public Nota add(Object objEntity) {
+    //        if (objEntity instanceof Nota notaEntity) {
+    //            notaEntity.inizio = LocalDate.now();
+    //            notaEntity.livello = notaEntity.livello != null ? notaEntity.livello : AENotaLevel.normale;
+    //            notaEntity.type = notaEntity.type != null ? notaEntity.type : AETypeLog.system;
+    //
+    //            return (Nota) crudRepository.insert(notaEntity);
+    //        }
+    //        else {
+    //            return null;
+    //        }
+    //    }
 
     @Override
     public Nota update(Object objEntity) {
@@ -75,39 +107,39 @@ public class NotaBackend extends CrudBackend {
     }
 
     public List<Nota> findByDescrizione(final String value) {
-        return repository.findByDescrizioneContainingIgnoreCase(value);
+        return repository.findByDescrizioneContainingIgnoreCaseOrderByInizioDesc(value);
     }
 
     public List<Nota> findByLevel(final AENotaLevel level) {
-        return repository.findByLivello(level);
+        return repository.findByLivelloOrderByInizioDesc(level);
     }
 
     public List<Nota> findByType(final AETypeLog type) {
-        return repository.findByType(type);
+        return repository.findByTypeOrderByInizioDesc(type);
     }
 
     public List<Nota> findByLivelloAndType(final AENotaLevel level, final AETypeLog type) {
         if (level == null) {
-            return repository.findByType(type);
+            return repository.findByTypeOrderByInizioDesc(type);
         }
         if (type == null) {
-            return repository.findByLivello(level);
+            return repository.findByLivelloOrderByInizioDesc(level);
         }
-        return repository.findByLivelloAndType(level, type);
+        return repository.findByLivelloAndTypeOrderByInizioDesc(level, type);
     }
 
     @Override
     public List<Nota> findByDescrizioneAndLivelloAndType(final String value, final AENotaLevel level, final AETypeLog type) {
         if (level != null && type != null) {
-            return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndType(value, level, type);
+            return repository.findByDescrizioneContainingIgnoreCaseAndLivelloAndTypeOrderByInizioDesc(value, level, type);
         }
         if (level != null) {
-            return repository.findByDescrizioneContainingIgnoreCaseAndLivello(value, level);
+            return repository.findByDescrizioneContainingIgnoreCaseAndLivelloOrderByInizioDesc(value, level);
         }
         if (type != null) {
-            return repository.findByDescrizioneContainingIgnoreCaseAndType(value, type);
+            return repository.findByDescrizioneContainingIgnoreCaseAndTypeOrderByInizioDesc(value, type);
         }
-        return repository.findByDescrizioneContainingIgnoreCase(value);
+        return repository.findByDescrizioneContainingIgnoreCaseOrderByInizioDesc(value);
     }
 
 }// end of crud backend class

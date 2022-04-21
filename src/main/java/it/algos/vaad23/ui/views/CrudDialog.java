@@ -3,6 +3,7 @@ package it.algos.vaad23.ui.views;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.checkbox.*;
+import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.component.dialog.*;
 import com.vaadin.flow.component.formlayout.*;
 import com.vaadin.flow.component.html.*;
@@ -22,6 +23,7 @@ import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 import org.vaadin.crudui.crud.*;
 
 import javax.annotation.*;
@@ -36,6 +38,7 @@ import java.util.function.*;
  * Time: 07:39
  */
 @SpringComponent
+@Primary
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class CrudDialog extends Dialog {
 
@@ -62,6 +65,14 @@ public class CrudDialog extends Dialog {
      */
     @Autowired
     public AnnotationService annotationService;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ReflectionService reflectionService;
 
     @Autowired
     public LogService logger;
@@ -95,6 +106,9 @@ public class CrudDialog extends Dialog {
 
     protected List<String> fields;
 
+    protected boolean usaUnaSolaColonna = true;
+
+
     /**
      * Constructor not @Autowired. <br>
      * Non utilizzato e non necessario <br>
@@ -109,7 +123,7 @@ public class CrudDialog extends Dialog {
     /**
      * Costruttore con parametri <br>
      * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
-     * L'istanza DEVE essere creata con appContext.getBean(PreferenzaDialog.class, operation, itemSaver, itemDeleter, itemAnnulla); <br>
+     * L'istanza DEVE essere creata con appContext.getBean(CrudDialog.class, operation, itemSaver, itemDeleter, itemAnnulla); <br>
      *
      * @param entityBean  The item to edit; it may be an existing or a newly created instance
      * @param operation   The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
@@ -117,10 +131,26 @@ public class CrudDialog extends Dialog {
      * @param fields      da costruire in automatico
      */
     public CrudDialog(final AEntity entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List<String> fields) {
+        this(entityBean, operation, crudBackend, fields, true);
+    }// end of constructor not @Autowired
+
+    /**
+     * Costruttore con parametri <br>
+     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
+     * L'istanza DEVE essere creata con appContext.getBean(CrudDialog.class, operation, itemSaver, itemDeleter, itemAnnulla); <br>
+     *
+     * @param entityBean        The item to edit; it may be an existing or a newly created instance
+     * @param operation         The operation being performed on the item (addNew, edit, editNoDelete, editDaLink, showOnly)
+     * @param crudBackend       service specifico per la businessLogic e il collegamento con la persistenza dei dati
+     * @param fields            da costruire in automatico
+     * @param usaUnaSolaColonna di default=true
+     */
+    public CrudDialog(final AEntity entityBean, final CrudOperation operation, final CrudBackend crudBackend, final List<String> fields, final boolean usaUnaSolaColonna) {
         this.currentItem = entityBean;
         this.operation = operation;
         this.crudBackend = crudBackend;
         this.fields = fields;
+        this.usaUnaSolaColonna = usaUnaSolaColonna;
     }// end of constructor not @Autowired
 
 
@@ -179,12 +209,18 @@ public class CrudDialog extends Dialog {
      * Normalmente colonna doppia <br>
      */
     protected Div getFormLayout() {
-        formLayout.setResponsiveSteps(
-                // Use one column by default
-                new FormLayout.ResponsiveStep("0", 1),
-                // Use two columns, if layout's width exceeds 500px
-                new FormLayout.ResponsiveStep("500px", 2)
-        );
+        // Use one column by default
+        if (usaUnaSolaColonna) {
+            formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));
+        }
+        else {
+            formLayout.setResponsiveSteps(
+                    // Use one column by default
+                    new FormLayout.ResponsiveStep("0", 1),
+                    // Use two columns, if layout's width exceeds 500px
+                    new FormLayout.ResponsiveStep("500px", 2)
+            );
+        }
 
         formLayout.addClassName("no-padding");
         Div div = new Div(formLayout);
@@ -204,19 +240,42 @@ public class CrudDialog extends Dialog {
     protected void fixBody() {
         AETypeField type;
         AbstractSinglePropertyField field;
+        Class enumClazz;
+        boolean hasFocus = false;
 
         try {
             for (String key : fields) {
                 type = annotationService.getFormType(currentItem.getClass(), key);
+                hasFocus = annotationService.hasFocus(currentItem.getClass(), key);
+
                 field = switch (type) {
                     case text -> new TextField(key);
                     case integer -> new IntegerField(key);
                     case booleano -> new Checkbox(key);
+                    case enumeration -> {
+                        ComboBox combo = new ComboBox(key);
+                        try {
+                            enumClazz = annotationService.getEnumClass(currentItem.getClass(), key);
+                            Object[] elementi = enumClazz.getEnumConstants();
+                            List enumObjects;
+                            if (elementi != null) {
+                                enumObjects = Arrays.asList(elementi);
+                                combo.setItems(enumObjects);
+                            }
+                        } catch (Exception unErrore) {
+                            logger.error(new WrapLog().exception(unErrore).usaDb());
+                        }
+                        yield combo;
+                    }
                     default -> new TextField(key);
                 };
 
                 formLayout.add(field);
                 binder.forField(field).bind(key);
+                if (hasFocus && field instanceof TextField textField) {
+                    textField.focus();
+                    textField.setAutoselect(true);
+                }
             }
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(unErrore).usaDb());
@@ -260,14 +319,12 @@ public class CrudDialog extends Dialog {
         annullaButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "secondary" : "primary");
         annullaButton.addClickListener(e -> annullaHandler());
         annullaButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
-        annullaButton.addClickShortcut(Key.ARROW_LEFT, KeyModifier.CONTROL); //@todo non funziona
         layout.add(annullaButton);
 
         saveButton.setText(textSaveButton);
         saveButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "primary" : "secondary");
         saveButton.addClickListener(e -> saveHandler());
         saveButton.setIcon(new Icon(VaadinIcon.CHECK));
-        saveButton.addClickShortcut(Key.ENTER);
         layout.add(saveButton);
 
         if (operation == CrudOperation.DELETE) {
@@ -276,6 +333,18 @@ public class CrudDialog extends Dialog {
             deleteButton.addClickListener(e -> deleteHandler());
             deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
             layout.add(deleteButton);
+        }
+
+        switch (operation) {
+            case READ -> {}
+            case ADD -> {
+                annullaButton.addClickShortcut(Key.ARROW_LEFT, KeyModifier.META);
+                saveButton.addClickShortcut(Key.ENTER);
+            }
+            case UPDATE -> {
+                annullaButton.addClickShortcut(Key.ENTER);
+            }
+            case DELETE -> {}
         }
 
         layout.setFlexGrow(1, spazioVuotoEspandibile);

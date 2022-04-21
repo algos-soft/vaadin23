@@ -67,6 +67,10 @@ public enum AEFontHeight implements AIType, AIPref {
                 .orElse(null);
     }
 
+    @Override
+    public List<AEFontHeight> getAll() {
+        return Arrays.stream(values()).toList();
+    }
 
     @Override
     public String getTag() {
