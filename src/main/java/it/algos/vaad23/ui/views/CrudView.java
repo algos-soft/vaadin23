@@ -292,12 +292,15 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
             buttonDeleteReset.getElement().setAttribute("theme", "error");
             //--ha senso solo per le entity che estendono AREntity con la property 'reset'
             if (AREntity.class.isAssignableFrom(entityClazz)) {
-                buttonDeleteReset.getElement().setProperty("title", "Reset: ripristina nel database i valori di default annullando le eventuali modifiche apportate successivamente");
+                buttonDeleteReset.getElement().setProperty("title", "Reset: ripristina nel database i valori di default annullando le " +
+                        "eventuali modifiche apportate successivamente\nShortcut SHIFT+R");
                 buttonDeleteReset.addClickListener(event -> reset());
+                buttonDeleteReset.addClickShortcut(Key.KEY_R, KeyModifier.SHIFT);
             }
             else {
-                buttonDeleteReset.getElement().setProperty("title", "Delete: cancella tutta la collection");
+                buttonDeleteReset.getElement().setProperty("title", "Delete: cancella tutta la collection\nShortcut SHIFT+D");
                 buttonDeleteReset.addClickListener(event -> deleteAll());
+                buttonDeleteReset.addClickShortcut(Key.KEY_D, KeyModifier.SHIFT);
             }
             buttonDeleteReset.setIcon(new Icon(VaadinIcon.REFRESH));
             topPlaceHolder.add(buttonDeleteReset);
@@ -360,6 +363,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     protected void fixBottoniTopSpecifici() {
         comboTypeLog = new ComboBox<>();
         comboTypeLog.setPlaceholder("Type");
+        comboTypeLog.getElement().setProperty("title", "Filtro di selezione");
         comboTypeLog.setClearButtonVisible(true);
         comboTypeLog.setItems(AETypeLog.getAllEnums());
         comboTypeLog.addValueChangeListener(event -> sincroFiltri());
@@ -473,8 +477,18 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected void sincroSelection(SelectionEvent event) {
         boolean singoloSelezionato = event.getAllSelectedItems().size() == 1;
-        buttonEdit.setEnabled(singoloSelezionato);
-        buttonDelete.setEnabled(singoloSelezionato);
+        if (buttonDeleteReset != null) {
+            buttonDeleteReset.setEnabled(!singoloSelezionato);
+        }
+        if (buttonNew != null) {
+            buttonNew.setEnabled(!singoloSelezionato);
+        }
+        if (buttonEdit != null) {
+            buttonEdit.setEnabled(singoloSelezionato);
+        }
+        if (buttonDelete != null) {
+            buttonDelete.setEnabled(singoloSelezionato);
+        }
     }
 
     protected void refresh() {

@@ -37,16 +37,16 @@ public interface VersioneRepository extends MongoRepository<Versione, String> {
     @Override
     void delete(Versione entity);
 
-    Versione findFirstByTitoloAndDescrizione(String titolo, String descrizione);
+    Versione findFirstByTitoloAndDescrizioneOrderByOrdineAsc(String titolo, String descrizione);
 
-    List<Versione> findFirstVersioneByTitoloIsNotNullOrderByOrdineDesc();
+    List<Versione> findFirstVersioneByTitoloIsNotNullOrderByOrdineAsc();
 
-    List<Versione> findByIdRegexOrderByOrdineDesc(String idKey);
+    List<Versione> findByIdRegexOrderByOrdineAsc(String idKey);
 
-    List<Versione> findByDescrizioneContainingIgnoreCase(String descrizione);
+    List<Versione> findByDescrizioneContainingIgnoreCaseOrderByOrdineAsc(String descrizione);
 
-    List<Versione> findByType(AETypeVers type);
+    List<Versione> findByTypeOrderByOrdineAsc(AETypeVers type);
 
-    List<Versione> findByDescrizioneContainingIgnoreCaseAndType(String descrizione, AETypeVers type);
+    List<Versione> findByDescrizioneContainingIgnoreCaseAndTypeOrderByOrdineAsc(String descrizione, AETypeVers type);
 
 }// end of crud repository class

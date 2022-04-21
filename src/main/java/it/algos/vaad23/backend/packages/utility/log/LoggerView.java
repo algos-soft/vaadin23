@@ -54,10 +54,10 @@ public class LoggerView extends CrudView {
         super.fixPreferenze();
 
         if (VaadVar.usaCompany) {
-            super.gridPropertyNamesList = Arrays.asList("livello", "type", "evento", "descrizione", "company", "user", "classe", "metodo", "linea");
+            super.gridPropertyNamesList = Arrays.asList("type", "livello", "evento", "descrizione", "company", "user", "classe", "metodo", "linea");
         }
         else {
-            super.gridPropertyNamesList = Arrays.asList("livello", "type", "evento", "descrizione", "classe", "metodo", "linea");
+            super.gridPropertyNamesList = Arrays.asList("type", "livello", "evento", "descrizione", "classe", "metodo", "linea");
         }
         super.sortOrder = Sort.by(Sort.Direction.DESC, "evento");
         super.usaBottoneDeleteReset = true;
@@ -101,6 +101,7 @@ public class LoggerView extends CrudView {
 
         comboLivello = new ComboBox();
         comboLivello.setPlaceholder("Livello");
+        comboLivello.getElement().setProperty("title", "Filtro di selezione");
         comboLivello.setClearButtonVisible(true);
         comboLivello.setItems(AELogLevel.getAllEnums());
         comboLivello.addValueChangeListener(event -> sincroFiltri());

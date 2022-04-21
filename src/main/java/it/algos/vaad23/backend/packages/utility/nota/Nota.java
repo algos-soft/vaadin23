@@ -27,11 +27,11 @@ import java.time.format.*;
 @EqualsAndHashCode(callSuper = false)
 public class Nota extends AEntity {
 
-    @AIField(type = AETypeField.enumeration, enumClazz = AENotaLevel.class)
-    public AENotaLevel livello;
-
     @AIField(type = AETypeField.enumeration, enumClazz = AETypeLog.class)
     public AETypeLog type;
+
+    @AIField(type = AETypeField.enumeration, enumClazz = AENotaLevel.class)
+    public AENotaLevel livello;
 
     @AIField(type = AETypeField.localDate)
     public LocalDate inizio;

@@ -1,8 +1,9 @@
 package it.algos.vaad23.backend.packages.utility.versione;
 
+import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
-import org.springframework.data.mongodb.core.index.*;
+import lombok.*;
 
 import java.time.*;
 
@@ -16,94 +17,46 @@ import java.time.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+//Lombok
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder()
+@EqualsAndHashCode(callSuper = false)
 public class Versione extends AEntity {
 
-    @Indexed(unique = true, direction = IndexDirection.DESCENDING)
+    @AIField(type = AETypeField.integer)
     public int ordine;
 
+    @AIField(type = AETypeField.text)
+    public String code;
+
+    @AIField(type = AETypeField.enumeration, enumClazz = AETypeVers.class)
     public AETypeVers type;
 
+    @AIField(type = AETypeField.doppio)
     public double release;
 
+    @AIField(type = AETypeField.text)
     public String titolo;
 
+    @AIField(type = AETypeField.localDate)
     public LocalDate giorno;
 
+    @AIField(type = AETypeField.text, flexGrow = true)
     public String descrizione;
 
+    @AIField(type = AETypeField.text)
     public String company;
 
+    @AIField(type = AETypeField.booleano)
     public boolean vaadin23;
 
 
     @Override
     public String toString() {
-        return "";
-    }
-
-    public int getOrdine() {
-        return ordine;
-    }
-
-    public void setOrdine(int ordine) {
-        this.ordine = ordine;
-    }
-
-    public AETypeVers getType() {
-        return type;
-    }
-
-    public void setType(AETypeVers type) {
-        this.type = type;
-    }
-
-    public double getRelease() {
-        return release;
-    }
-
-    public void setRelease(double release) {
-        this.release = release;
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
-    public String getTitolo() {
-        return titolo;
-    }
-
-    public void setTitolo(String titolo) {
-        this.titolo = titolo;
-    }
-
-    public LocalDate getGiorno() {
-        return giorno;
-    }
-
-    public void setGiorno(LocalDate giorno) {
-        this.giorno = giorno;
-    }
-
-
-    public String getDescrizione() {
         return descrizione;
     }
 
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public boolean isVaadin23() {
-        return vaadin23;
-    }
-
-    public void setVaadin23(boolean vaadin23) {
-        this.vaadin23 = vaadin23;
-    }
 
 }// end of crud entity class

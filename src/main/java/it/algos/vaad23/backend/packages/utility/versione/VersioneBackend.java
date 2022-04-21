@@ -27,7 +27,6 @@ import java.util.*;
  */
 @Service
 @Qualifier(TAG_VERSIONE)
-//@AIScript(sovraScrivibile = true)
 public class VersioneBackend extends CrudBackend {
 
     private VersioneRepository repository;
@@ -79,7 +78,7 @@ public class VersioneBackend extends CrudBackend {
         Versione versione = null;
 
         try {
-            listaDiUnSoloElemento = repository.findFirstVersioneByTitoloIsNotNullOrderByOrdineDesc();
+            listaDiUnSoloElemento = repository.findFirstVersioneByTitoloIsNotNullOrderByOrdineAsc();
         } catch (Exception unErrore) {
             logger.error(unErrore);
             return nextOrdine;
@@ -101,7 +100,7 @@ public class VersioneBackend extends CrudBackend {
         Versione versione = null;
 
         try {
-            versione = repository.findFirstByTitoloAndDescrizione(titolo, descrizione);
+            versione = repository.findFirstByTitoloAndDescrizioneOrderByOrdineAsc(titolo, descrizione);
         } catch (Exception unErrore) {
             logger.error(unErrore);
         }
@@ -153,7 +152,7 @@ public class VersioneBackend extends CrudBackend {
         String idKey = "0";
 
         if (newOrdine == 0) {
-            lista = repository.findByIdRegexOrderByOrdineDesc(sigla);
+            lista = repository.findByIdRegexOrderByOrdineAsc(sigla);
             if (lista != null && lista.size() > 0) {
                 idKey = lista.get(0).getId();
                 idKey = idKey.substring(1);
@@ -173,18 +172,18 @@ public class VersioneBackend extends CrudBackend {
     }
 
     public List<Versione> findByDescrizioneContainingIgnoreCase(final String value) {
-        return repository.findByDescrizioneContainingIgnoreCase(value);
+        return repository.findByDescrizioneContainingIgnoreCaseOrderByOrdineAsc(value);
     }
 
     public List<Versione> findByType(final AETypeVers type) {
-        return repository.findByType(type);
+        return repository.findByTypeOrderByOrdineAsc(type);
     }
 
     public List<Versione> findByDescrizioneAndType(final String value, final AETypeVers type) {
         if (type != null) {
-            return repository.findByDescrizioneContainingIgnoreCaseAndType(value, type);
+            return repository.findByDescrizioneContainingIgnoreCaseAndTypeOrderByOrdineAsc(value, type);
         }
-        return repository.findByDescrizioneContainingIgnoreCase(value);
+        return repository.findByDescrizioneContainingIgnoreCaseOrderByOrdineAsc(value);
     }
 
 

@@ -26,7 +26,6 @@ import java.time.format.*;
 @EqualsAndHashCode(callSuper = false)
 public class Logger extends AEntity {
 
-
     @AIField(type = AETypeField.enumeration)
     public AELogLevel livello;
 

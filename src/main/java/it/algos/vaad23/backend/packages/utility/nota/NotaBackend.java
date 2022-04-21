@@ -60,34 +60,21 @@ public class NotaBackend extends CrudBackend {
      * Usa il @Builder di Lombok <br>
      * Eventuali regolazioni iniziali delle property <br>
      *
-     * @param livello     di importanza o rilevanza della nota
      * @param type        merceologico della nota
+     * @param livello     di importanza o rilevanza della nota
      * @param descrizione dettagliata della nota
      *
      * @return la nuova entity appena creata (non salvata)
      */
-    public Nota newEntity(final AENotaLevel livello, final AETypeLog type, final String descrizione) {
+    public Nota newEntity(final AETypeLog type, final AENotaLevel livello, final String descrizione) {
         return Nota.builder()
-                .livello(livello != null ? livello : AENotaLevel.normale)
                 .type(type != null ? type : AETypeLog.system)
+                .livello(livello != null ? livello : AENotaLevel.normale)
                 .inizio(LocalDate.now())
                 .descrizione(textService.isValid(descrizione) ? descrizione : null)
                 .build();
     }
 
-    //    @Override
-    //    public Nota add(Object objEntity) {
-    //        if (objEntity instanceof Nota notaEntity) {
-    //            notaEntity.inizio = LocalDate.now();
-    //            notaEntity.livello = notaEntity.livello != null ? notaEntity.livello : AENotaLevel.normale;
-    //            notaEntity.type = notaEntity.type != null ? notaEntity.type : AETypeLog.system;
-    //
-    //            return (Nota) crudRepository.insert(notaEntity);
-    //        }
-    //        else {
-    //            return null;
-    //        }
-    //    }
 
     @Override
     public Nota update(Object objEntity) {

@@ -57,8 +57,8 @@ public class NotaView extends CrudView {
     public void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("livello", "type", "inizio", "descrizione", "fatto", "fine");
-        super.formPropertyNamesList = Arrays.asList("livello", "type", "descrizione", "fatto", "fine");
+        super.gridPropertyNamesList = Arrays.asList("type", "livello", "inizio", "descrizione", "fatto", "fine");
+        super.formPropertyNamesList = Arrays.asList("type", "livello", "descrizione", "fatto", "fine");
         super.sortOrder = Sort.by(Sort.Direction.DESC, "inizio");
         this.usaBottoneDeleteReset = true;
         this.usaBottoneFilter = true;
@@ -71,6 +71,7 @@ public class NotaView extends CrudView {
     @Override
     public void fixAlert() {
         super.fixAlert();
+
         addSpanVerde("Appunti per sviluppo e @todo");
         addSpanRosso("Al termine spuntarli e non cancellarli");
     }
@@ -92,6 +93,7 @@ public class NotaView extends CrudView {
 
         comboLivello = new ComboBox<>();
         comboLivello.setPlaceholder("Livello");
+        comboLivello.getElement().setProperty("title", "Filtro di selezione");
         comboLivello.setClearButtonVisible(true);
         comboLivello.setItems(AENotaLevel.getAllEnums());
         comboLivello.addValueChangeListener(event -> sincroFiltri());
@@ -134,13 +136,13 @@ public class NotaView extends CrudView {
 
     @Override
     public void newItem() {
-        super.formPropertyNamesList = Arrays.asList("livello", "type", "descrizione");
+        super.formPropertyNamesList = Arrays.asList("type", "livello", "descrizione");
         super.newItem();
     }
 
     @Override
     public void updateItem() {
-        super.formPropertyNamesList = Arrays.asList("livello", "type", "descrizione", "fatto");
+        super.formPropertyNamesList = Arrays.asList("type", "livello", "descrizione", "fatto");
         super.updateItem();
     }
 

@@ -1,16 +1,13 @@
 package it.algos.vaad23.backend.packages.utility.versione;
 
 import com.vaadin.flow.component.combobox.*;
-import com.vaadin.flow.component.grid.*;
-import com.vaadin.flow.component.textfield.*;
-import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.ui.views.*;
 import org.springframework.beans.factory.annotation.*;
-import org.vaadin.crudui.crud.*;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -23,7 +20,7 @@ import java.util.*;
  */
 @PageTitle("Versioni")
 @Route(value = TAG_VERSIONE, layout = MainLayout.class)
-public class VersioneView extends CrudViewOld {
+public class VersioneView extends CrudView {
 
     private ComboBox<AETypeVers> comboTypeVers;
 
@@ -55,7 +52,20 @@ public class VersioneView extends CrudViewOld {
     public void fixPreferenze() {
         super.fixPreferenze();
 
-        this.usaBottoneFilter = true;
+        if (VaadVar.usaCompany) {
+            super.gridPropertyNamesList = Arrays.asList("code", "type", "titolo", "descrizione", "company", "vaadin23");
+            super.formPropertyNamesList = Arrays.asList("code", "type", "titolo", "descrizione", "company", "vaadin23");
+        }
+        else {
+            super.gridPropertyNamesList = Arrays.asList("code", "type", "titolo", "descrizione", "vaadin23");
+            super.formPropertyNamesList = Arrays.asList("code", "type", "titolo", "descrizione", "vaadin23");
+        }
+        super.sortOrder = Sort.by(Sort.Direction.ASC, "ordine");
+        super.usaBottoneDeleteReset = false;
+        super.usaBottoneFilter = true;
+        super.usaBottoneNew = false;
+        super.usaBottoneEdit = false;
+        super.usaBottoneDelete = false;
     }
 
     /**
@@ -65,84 +75,14 @@ public class VersioneView extends CrudViewOld {
     @Override
     public void fixAlert() {
         super.fixAlert();
-        span("Sviluppo, patch e update del programma. Sigla V iniziale per il programma base Vaadin23");
-        spanRosso("Solo hard coded. Non creabili e non modificabili");
+
+        addSpanVerde("Sviluppo, patch e update del programma. Sigla V iniziale per il programma base Vaadin23");
+        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
     }
 
-    /**
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
     @Override
-    protected void fixCrud() {
-        super.fixCrud();
-
-        gridCrud.setAddOperationVisible(false);
-        gridCrud.setUpdateOperationVisible(false);
-        gridCrud.setDeleteOperationVisible(false);
-
-        if (VaadVar.usaCompany) {
-            crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "company", "vaadin23");
-            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "company", "vaadin23");
-        }
-        else {
-            crudForm.setVisibleProperties(CrudOperation.READ, "id", "type", "titolo", "descrizione", "vaadin23");
-            crudForm.setVisibleProperties(CrudOperation.UPDATE, "id", "type", "titolo", "descrizione", "vaadin23");
-        }
-    }
-
-
-    /**
-     * Regola la visibilità delle colonne della grid <br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public void fixColumns() {
-        super.fixColumns();
-
-        grid.setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
-
-        String larId = "4em";
-        String larType = "8em";
-        String larTitolo = "11em";
-        String larDesc = "30em";
-        String larCompany = "8em";
-
-        grid.getColumnByKey("id").setWidth(larId).setFlexGrow(0);
-        grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0);
-        grid.getColumnByKey("titolo").setWidth(larTitolo).setFlexGrow(0);
-        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
-        grid.getColumnByKey("company").setWidth(larCompany).setFlexGrow(0);
-        grid.getColumnByKey("vaadin23").setVisible(false);
-        grid.getColumnByKey("ordine").setVisible(false);
-
-        if (!VaadVar.usaCompany) {
-            grid.getColumnByKey("company").setVisible(false);
-        }
-    }
-
-    /**
-     * Regola la visibilità dei fields del Form<br>
-     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
-     */
-    @Override
-    public void fixFields() {
-        super.fixFields();
-
-        crudForm.setFieldType("descrizione", TextArea.class);
-    }
-
-    /**
-     * Regola l'ordinamento della <grid <br>
-     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
-     */
-    @Override
-    public void fixOrder() {
-        Grid.Column columnVaad = grid.getColumnByKey("vaadin23");
-        Grid.Column columnOrd = grid.getColumnByKey("ordine");
-        List<GridSortOrder> lista = new ArrayList<>();
-        lista.add(new GridSortOrder(columnVaad, SortDirection.DESCENDING));
-        lista.add(new GridSortOrder(columnOrd, SortDirection.ASCENDING));
-        gridCrud.getGrid().sort(lista);
+    protected void addColumnsOneByOne() {
+        columnService.addColumnsOneByOne(grid, entityClazz, gridPropertyNamesList);
     }
 
 
@@ -151,29 +91,100 @@ public class VersioneView extends CrudViewOld {
      * Tipicamente bottoni di selezione/filtro <br>
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
-    protected void fixAdditionalComponents() {
-        super.fixAdditionalComponents();
+    @Override
+    protected void fixBottoniTopSpecifici() {
+        super.fixBottoniTopSpecifici();
 
         comboTypeVers = new ComboBox<>();
-        comboTypeVers.setPlaceholder("Type");
+        comboTypeVers.setPlaceholder("Livello");
+        comboTypeVers.getElement().setProperty("title", "Filtro di selezione");
         comboTypeVers.setClearButtonVisible(true);
-        List<AETypeVers> items2 = AETypeVers.getAllEnums();
-        comboTypeVers.setItems(items2);
-        gridCrud.getCrudLayout().addFilterComponent(comboTypeVers);
+        comboTypeVers.setItems(AETypeVers.getAllEnums());
         comboTypeVers.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(comboTypeVers);
     }
+
+    //    /**
+    //     * Regola la visibilità delle colonne della grid <br>
+    //     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    //     */
+    //    public void fixColumns() {
+    //        super.fixColumns();
+    //
+    //        grid.setColumns("id", "type", "titolo", "descrizione", "company", "vaadin23", "ordine");
+    //
+    //        String larId = "4em";
+    //        String larType = "8em";
+    //        String larTitolo = "11em";
+    //        String larDesc = "30em";
+    //        String larCompany = "8em";
+    //
+    //        grid.getColumnByKey("id").setWidth(larId).setFlexGrow(0);
+    //        grid.getColumnByKey("type").setWidth(larType).setFlexGrow(0);
+    //        grid.getColumnByKey("titolo").setWidth(larTitolo).setFlexGrow(0);
+    //        grid.getColumnByKey("descrizione").setWidth(larDesc).setFlexGrow(1);
+    //        grid.getColumnByKey("company").setWidth(larCompany).setFlexGrow(0);
+    //        grid.getColumnByKey("vaadin23").setVisible(false);
+    //        grid.getColumnByKey("ordine").setVisible(false);
+    //
+    //        if (!VaadVar.usaCompany) {
+    //            grid.getColumnByKey("company").setVisible(false);
+    //        }
+    //    }
+    //
+    //    /**
+    //     * Regola la visibilità dei fields del Form<br>
+    //     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    //     */
+    //    @Override
+    //    public void fixFields() {
+    //        super.fixFields();
+    //
+    //        crudForm.setFieldType("descrizione", TextArea.class);
+    //    }
+
+    //    /**
+    //     * Regola l'ordinamento della <grid <br>
+    //     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+    //     */
+    //    @Override
+    //    public void fixOrder() {
+    //        Grid.Column columnVaad = grid.getColumnByKey("vaadin23");
+    //        Grid.Column columnOrd = grid.getColumnByKey("ordine");
+    //        List<GridSortOrder> lista = new ArrayList<>();
+    //        lista.add(new GridSortOrder(columnVaad, SortDirection.DESCENDING));
+    //        lista.add(new GridSortOrder(columnOrd, SortDirection.ASCENDING));
+    //        gridCrud.getGrid().sort(lista);
+    //    }
+
+    //    /**
+    //     * Componenti aggiuntivi oltre quelli base <br>
+    //     * Tipicamente bottoni di selezione/filtro <br>
+    //     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+    //     */
+    //    protected void fixAdditionalComponents() {
+    //        super.fixAdditionalComponents();
+    //
+    //        comboTypeVers = new ComboBox<>();
+    //        comboTypeVers.setPlaceholder("Type");
+    //        comboTypeVers.setClearButtonVisible(true);
+    //        List<AETypeVers> items2 = AETypeVers.getAllEnums();
+    //        comboTypeVers.setItems(items2);
+    //        gridCrud.getCrudLayout().addFilterComponent(comboTypeVers);
+    //        comboTypeVers.addValueChangeListener(event -> sincroFiltri());
+    //    }
 
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected List<Versione> sincroFiltri() {
-        List<Versione> items = null;
+        List items = null;
         String textSearch = VUOTA;
         AETypeVers type = null;
 
         if (usaBottoneFilter && filter != null) {
             textSearch = filter.getValue();
-            items = (List<Versione>) backend.findByDescrizione(textSearch);
+            items = backend.findByDescrizione(textSearch);
         }
 
         if (comboTypeVers != null) {
@@ -185,7 +196,7 @@ public class VersioneView extends CrudViewOld {
         }
 
         if (items != null) {
-            gridCrud.getGrid().setItems(items);
+            grid.setItems(items);
         }
 
         return items;
