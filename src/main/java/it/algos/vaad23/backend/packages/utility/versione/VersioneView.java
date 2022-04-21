@@ -96,7 +96,7 @@ public class VersioneView extends CrudView {
         super.fixBottoniTopSpecifici();
 
         comboTypeVers = new ComboBox<>();
-        comboTypeVers.setPlaceholder("Livello");
+        comboTypeVers.setPlaceholder("Type");
         comboTypeVers.getElement().setProperty("title", "Filtro di selezione");
         comboTypeVers.setClearButtonVisible(true);
         comboTypeVers.setItems(AETypeVers.getAllEnums());

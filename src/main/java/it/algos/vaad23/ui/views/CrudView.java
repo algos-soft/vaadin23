@@ -166,6 +166,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected Button buttonExport;
 
+    protected boolean usaComboType;
+
     /**
      * Flag di preferenza per la classe di dialogo. Di default CrudDialog. <br>
      */
@@ -234,6 +236,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         usaBottoneEdit = true;
         usaBottoneDelete = true;
         usaBottoneExport = false;
+        usaComboType = false;
     }
 
     /**
@@ -361,13 +364,15 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     protected void fixBottoniTopSpecifici() {
-        comboTypeLog = new ComboBox<>();
-        comboTypeLog.setPlaceholder("Type");
-        comboTypeLog.getElement().setProperty("title", "Filtro di selezione");
-        comboTypeLog.setClearButtonVisible(true);
-        comboTypeLog.setItems(AETypeLog.getAllEnums());
-        comboTypeLog.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(comboTypeLog);
+        if (usaComboType) {
+            comboTypeLog = new ComboBox<>();
+            comboTypeLog.setPlaceholder("Type");
+            comboTypeLog.getElement().setProperty("title", "Filtro di selezione");
+            comboTypeLog.setClearButtonVisible(true);
+            comboTypeLog.setItems(AETypeLog.getAllEnums());
+            comboTypeLog.addValueChangeListener(event -> sincroFiltri());
+            topPlaceHolder.add(comboTypeLog);
+        }
     }
 
     /**

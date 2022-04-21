@@ -118,7 +118,7 @@ public class VaadVers implements AIVers {
      * Controlla in base alla sigla iniziale del progetto e al numero progressivo <br>
      */
     public boolean installa(final int k) {
-        return backend.isMancaByKeyUnica(codeProject, k);
+        return backend.isMancaByCode(codeProject, k);
     }
 
 

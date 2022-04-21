@@ -39,7 +39,11 @@ public interface VersioneRepository extends MongoRepository<Versione, String> {
 
     Versione findFirstByTitoloAndDescrizioneOrderByOrdineAsc(String titolo, String descrizione);
 
-    List<Versione> findFirstVersioneByTitoloIsNotNullOrderByOrdineAsc();
+    Versione findFirstByCode(String code);
+
+    Versione findFirstByCodeIsNotNullOrderByOrdineDesc();
+
+    //    List<Versione> findFirstByCodeIsNotNullOrderByOrdineDesc();
 
     List<Versione> findByIdRegexOrderByOrdineAsc(String idKey);
 

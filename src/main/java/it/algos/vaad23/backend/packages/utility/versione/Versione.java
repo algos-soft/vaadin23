@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.utility.versione;
 
+import com.vaadin.flow.component.icon.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -28,7 +29,7 @@ public class Versione extends AEntity {
     @AIField(type = AETypeField.integer)
     public int ordine;
 
-    @AIField(type = AETypeField.text)
+    @AIField(type = AETypeField.text, widthEM = 6)
     public String code;
 
     @AIField(type = AETypeField.enumeration, enumClazz = AETypeVers.class)
@@ -37,7 +38,7 @@ public class Versione extends AEntity {
     @AIField(type = AETypeField.doppio)
     public double release;
 
-    @AIField(type = AETypeField.text)
+    @AIField(type = AETypeField.text, widthEM = 12)
     public String titolo;
 
     @AIField(type = AETypeField.localDate)
@@ -49,7 +50,7 @@ public class Versione extends AEntity {
     @AIField(type = AETypeField.text)
     public String company;
 
-    @AIField(type = AETypeField.booleano)
+    @AIField(type = AETypeField.booleano, headerIcon = VaadinIcon.FACTORY)
     public boolean vaadin23;
 
 

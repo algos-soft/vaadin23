@@ -46,54 +46,106 @@ public class VersioneBackend extends CrudBackend {
         this.repository = (VersioneRepository) crudRepository;
     }
 
-
-    /**
-     * Ordine messo in automatico (progressivo) <br>
-     */
     public void crea(final String key, final AETypeVers type, final String descrizione, final String company, final boolean riferitoVaadin23) {
-        Versione versione = new Versione();
-        String tag = " del ";
-
-        versione.id = key;
-        versione.ordine = this.nextOrdine();
-        versione.type = type;
-        versione.release = riferitoVaadin23 ? VaadVar.vaadin23Version : VaadVar.projectVersion;
-        versione.titolo = String.format("%s%s%s", versione.release, tag, dateService.get());
-        versione.giorno = LocalDate.now();
-        versione.descrizione = textService.isValid(descrizione) ? descrizione : null;
-        ;
-        versione.company = textService.isValid(company) ? company : null;
-        versione.vaadin23 = riferitoVaadin23;
-
-        try {
-            this.add(versione);
-        } catch (Exception unErrore) {
-            logger.error(unErrore);
-        }
+        Versione versione = newEntity(key, type, descrizione, company, riferitoVaadin23);
+        repository.insert(versione);
     }
 
+    /**
+     * Creazione in memoria di una nuova entity che NON viene salvata <br>
+     * Usa il @Builder di Lombok <br>
+     * Eventuali regolazioni iniziali delle property <br>
+     *
+     * @return la nuova entity appena creata (non salvata)
+     */
+    public Versione newEntity() {
+        return newEntity(VUOTA, null, VUOTA, VUOTA, true);
+    }
+
+
+    /**
+     * Creazione in memoria di una nuova entity che NON viene salvata <br>
+     * Usa il @Builder di Lombok <br>
+     * Eventuali regolazioni iniziali delle property <br>
+     * Ordine messo in automatico (progressivo) <br>
+     *
+     * @param code             identificativo della versione
+     * @param type             merceologico del type
+     * @param descrizione      dettagliata della versione
+     * @param company          se versione specifica in caso di multiCompany
+     * @param riferitoVaadin23 se versione relativa al programma base vaadin23
+     *
+     * @return la nuova entity appena creata (non salvata)
+     */
+    public Versione newEntity(
+            final String code,
+            final AETypeVers type,
+            final String descrizione,
+            final String company,
+            boolean riferitoVaadin23) {
+        String tag = " del ";
+        double release = riferitoVaadin23 ? VaadVar.vaadin23Version : VaadVar.projectVersion;
+
+        return Versione.builder()
+                .ordine(nextOrdine())
+                .code(textService.isValid(code) ? code : null)
+                .type(type != null ? type : AETypeVers.addition)
+                .release(release)
+                .titolo(String.format("%s%s%s", release, tag, dateService.get()))
+                .giorno(LocalDate.now())
+                .descrizione(textService.isValid(descrizione) ? descrizione : null)
+                .company(textService.isValid(company) ? company : null)
+                .vaadin23(riferitoVaadin23)
+                .build();
+    }
+
+    //    /**
+    //     * Ordine messo in automatico (progressivo) <br>
+    //     */
+    //    public void crea(final String key, final AETypeVers type, final String descrizione, final String company, final boolean riferitoVaadin23) {
+    //        Versione versione = new Versione();
+    //        String tag = " del ";
+    //
+    //        versione.id = key;
+    //        versione.ordine = this.nextOrdine();
+    //        versione.type = type;
+    //        versione.release = riferitoVaadin23 ? VaadVar.vaadin23Version : VaadVar.projectVersion;
+    //        versione.titolo = String.format("%s%s%s", versione.release, tag, dateService.get());
+    //        versione.giorno = LocalDate.now();
+    //        versione.descrizione = textService.isValid(descrizione) ? descrizione : null;
+    //        ;
+    //        versione.company = textService.isValid(company) ? company : null;
+    //        versione.vaadin23 = riferitoVaadin23;
+    //
+    //        try {
+    //            this.add(versione);
+    //        } catch (Exception unErrore) {
+    //            logger.error(unErrore);
+    //        }
+    //    }
+
     public int nextOrdine() {
-        int nextOrdine = 1;
-        List<Versione> listaDiUnSoloElemento = null;
-        Versione versione = null;
+        //        int nextOrdine = 1;
+        //        List<Versione> listaDiUnSoloElemento = null;
+        Versione versione = repository.findFirstByCodeIsNotNullOrderByOrdineDesc();
 
-        try {
-            listaDiUnSoloElemento = repository.findFirstVersioneByTitoloIsNotNullOrderByOrdineAsc();
-        } catch (Exception unErrore) {
-            logger.error(unErrore);
-            return nextOrdine;
-        }
+        //        try {
+        //            listaDiUnSoloElemento = repository.findFirstVersioneByTitoloIsNotNullOrderByOrdineAsc();
+        //        } catch (Exception unErrore) {
+        //            logger.error(unErrore);
+        //            return nextOrdine;
+        //        }
+        //
+        //        if (listaDiUnSoloElemento != null && listaDiUnSoloElemento.size() == 1) {
+        //            versione = listaDiUnSoloElemento.get(0);
+        //        }
 
-        if (listaDiUnSoloElemento != null && listaDiUnSoloElemento.size() == 1) {
-            versione = listaDiUnSoloElemento.get(0);
-        }
+        //        if (versione != null) {
+        //            nextOrdine = versione.getOrdine();
+        //            nextOrdine = nextOrdine + 1;
+        //        }
 
-        if (versione != null) {
-            nextOrdine = versione.getOrdine();
-            nextOrdine = nextOrdine + 1;
-        }
-
-        return nextOrdine;
+        return versione != null ? versione.getOrdine() + 1 : 1;
     }
 
     public boolean isEsiste(final String titolo, final String descrizione) {
@@ -116,8 +168,8 @@ public class VersioneBackend extends CrudBackend {
      *
      * @return true se trovata
      */
-    public boolean isMancaByKeyUnica(final String sigla, final int newOrdine) {
-        return findByKeyUnica(getIdKey(sigla, newOrdine)) == null;
+    public boolean isMancaByCode(final String sigla, final int newOrdine) {
+        return findByCode(getIdKey(sigla, newOrdine)) == null;
     }
 
     /**
@@ -127,15 +179,8 @@ public class VersioneBackend extends CrudBackend {
      *
      * @return istanza della Entity, null se non trovata
      */
-    public Versione findByKeyUnica(final String keyCode) {
-        Versione entity = null;
-        Object optional = repository.findById(keyCode);
-
-        if (((Optional) optional).isPresent()) {
-            entity = (Versione) ((Optional) optional).get();
-        }
-
-        return entity;
+    public Versione findByCode(final String keyCode) {
+        return repository.findFirstByCode(keyCode);
     }
 
     /**
