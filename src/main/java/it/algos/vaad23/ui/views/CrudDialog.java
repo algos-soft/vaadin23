@@ -316,6 +316,7 @@ public class CrudDialog extends Dialog {
         Label spazioVuotoEspandibile = new Label("");
 
         annullaButton.setText(textAnnullaButton);
+//        annullaButton.getElement().setProperty("title", "Shortcut SHIFT");
         annullaButton.getElement().setAttribute("theme", operation == CrudOperation.ADD ? "secondary" : "primary");
         annullaButton.addClickListener(e -> annullaHandler());
         annullaButton.setIcon(new Icon(VaadinIcon.ARROW_LEFT));
@@ -332,19 +333,29 @@ public class CrudDialog extends Dialog {
             deleteButton.getElement().setAttribute("theme", "error");
             deleteButton.addClickListener(e -> deleteHandler());
             deleteButton.setIcon(new Icon(VaadinIcon.TRASH));
+            deleteButton.getElement().setProperty("title", "Shortcut SHIFT+D");
+            deleteButton.addClickShortcut(Key.KEY_D, KeyModifier.SHIFT);
             layout.add(deleteButton);
         }
 
         switch (operation) {
             case READ -> {}
             case ADD -> {
-                annullaButton.addClickShortcut(Key.ARROW_LEFT, KeyModifier.META);
+                annullaButton.getElement().setProperty("title", "Shortcut SHIFT+freccia sinistra");
+                annullaButton.addClickShortcut(Key.ARROW_LEFT, KeyModifier.SHIFT);
+                saveButton.getElement().setProperty("title", "Shortcut ENTER");
                 saveButton.addClickShortcut(Key.ENTER);
             }
             case UPDATE -> {
+                annullaButton.getElement().setProperty("title", "Shortcut ENTER");
+                annullaButton.addClickShortcut(Key.ENTER);
+                saveButton.getElement().setProperty("title", "Shortcut SHIFT+ENTER");
+                saveButton.addClickShortcut(Key.ENTER, KeyModifier.SHIFT);
+            }
+            case DELETE -> {
+                annullaButton.getElement().setProperty("title", "Shortcut ENTER");
                 annullaButton.addClickShortcut(Key.ENTER);
             }
-            case DELETE -> {}
         }
 
         layout.setFlexGrow(1, spazioVuotoEspandibile);

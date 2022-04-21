@@ -81,6 +81,7 @@ public class LoggerView extends CrudView {
         addSpanVerde("C) nella collection del database (facoltativo)");
         addSpanVerde("D) in una mail (facoltativo e di norma solo per 'error')");
         addSpanRosso("Necessita di config.logback-spring.xml e attivazione in application.properties");
+        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
     }
 
 

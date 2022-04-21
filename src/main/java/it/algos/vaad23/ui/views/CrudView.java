@@ -315,30 +315,33 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         if (usaBottoneNew) {
             buttonNew = new Button();
             buttonNew.getElement().setAttribute("theme", "secondary");
-            buttonNew.getElement().setProperty("title", "Add: aggiunge un elemento alla collezione");
+            buttonNew.getElement().setProperty("title", "Add: aggiunge un elemento alla collezione\nShortcut SHIFT+N");
             buttonNew.setIcon(new Icon(VaadinIcon.PLUS));
             buttonNew.setEnabled(true);
             buttonNew.addClickListener(event -> newItem());
+            buttonNew.addClickShortcut(Key.KEY_N, KeyModifier.SHIFT);
             topPlaceHolder.add(buttonNew);
         }
 
         if (usaBottoneEdit) {
             buttonEdit = new Button();
             buttonEdit.getElement().setAttribute("theme", "secondary");
-            buttonEdit.getElement().setProperty("title", "Update: modifica l'elemento selezionato");
+            buttonEdit.getElement().setProperty("title", "Update: modifica l'elemento selezionato\nShortcut SHIFT+E");
             buttonEdit.setIcon(new Icon(VaadinIcon.PENCIL));
             buttonEdit.setEnabled(false);
             buttonEdit.addClickListener(e -> updateItem());
+            buttonEdit.addClickShortcut(Key.KEY_E, KeyModifier.SHIFT);
             topPlaceHolder.add(buttonEdit);
         }
 
         if (usaBottoneDelete) {
             buttonDelete = new Button();
             buttonDelete.getElement().setAttribute("theme", "error");
-            buttonDelete.getElement().setProperty("title", "Delete: cancella l'elemento selezionato");
+            buttonDelete.getElement().setProperty("title", "Delete: cancella l'elemento selezionato\nShortcut SHIFT+D");
             buttonDelete.setIcon(new Icon(VaadinIcon.TRASH));
             buttonDelete.setEnabled(false);
             buttonDelete.addClickListener(e -> deleteItem());
+            buttonDelete.addClickShortcut(Key.KEY_D, KeyModifier.SHIFT);
             topPlaceHolder.add(buttonDelete);
         }
 
