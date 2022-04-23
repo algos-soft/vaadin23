@@ -64,7 +64,7 @@ public class WizDialogUpdateProject extends WizDialog {
 
         for (AEWizProject wiz : AEWizProject.getAllEnums()) {
             check = new Checkbox(wiz.getCaption());
-            check.setValue(wiz.is());
+            check.setValue(wiz.isUpdate());
             mappaCheckbox.put(wiz.name(), check);
             checkBoxLayout.add(check);
         }

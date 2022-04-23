@@ -5,6 +5,7 @@ import com.vaadin.flow.spring.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
+import java.time.*;
 import java.util.*;
 
 /**
@@ -18,7 +19,15 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class VaadCost {
 
+    public static final String ENCODE = "UTF-8";
+
+    public static final String PATH_WIKI = "https://it.wikipedia.org/wiki/";
+
+    public static final String TAG_WIKI = "https://it.wikipedia.org/wiki/";
+
     public static final String ALGOS = "algos";
+
+    public static final LocalDateTime ROOT_DATA_TIME = LocalDateTime.of(2000, 1, 1, 0, 0);
 
     public static final String PATH_RISORSE = "src/main/resources/META-INF/resources/";
 
@@ -44,11 +53,21 @@ public class VaadCost {
 
     public static final String PUNTO = ".";
 
+    public static final String ESCLAMATIVO = "!";
+
+    public static final String DOPPIO_ESCLAMATIVO = ESCLAMATIVO + ESCLAMATIVO;
+
+    public static final String PIPE_REGEX = "\\|";
+
+    public static final String DOPPIO_PIPE_REGEX = PIPE_REGEX + PIPE_REGEX;
+
     public static final String VIRGOLA = ",";
 
     public static final String PUNTO_VIRGOLA = ";";
 
     public static final String PUNTO_INTERROGATIVO = "?";
+
+    public static final String VIRGOLA_CAPO = VIRGOLA + CAPO;
 
     public static final String DUE_PUNTI = ":";
 
@@ -259,31 +278,31 @@ public class VaadCost {
     /**
      * Nomi delle properties.
      */
-    public final static String FIELD_NAME_ID_SENZA = "id";
+    public static final String FIELD_NAME_ID_SENZA = "id";
 
-    public final static String FIELD_NAME_ID_CON = "_id";
+    public static final String FIELD_NAME_ID_CON = "_id";
 
-    public final static String FIELD_NAME_ID_LINK = ".$id";
+    public static final String FIELD_NAME_ID_LINK = ".$id";
 
-    public final static String FIELD_NAME_ORDINE = "ordine";
+    public static final String FIELD_NAME_ORDINE = "ordine";
 
-    public final static String FIELD_NAME_CODE = "code";
+    public static final String FIELD_NAME_CODE = "code";
 
-    public final static String FIELD_NAME_DESCRIZIONE = "descrizione";
+    public static final String FIELD_NAME_DESCRIZIONE = "descrizione";
 
-    public final static String FIELD_NAME_RESET = "reset";
+    public static final String FIELD_NAME_RESET = "reset";
 
-    public final static String FIELD_NAME_COMPANY = "company";
+    public static final String FIELD_NAME_COMPANY = "company";
 
-    public final static String COLOR_VERO = "#9FE2BF";
+    public static final String COLOR_VERO = "#9FE2BF";
 
-    public final static String COLOR_FALSO = "#FF7F50";
+    public static final String COLOR_FALSO = "#FF7F50";
 
-    public final static String COLOR_BLUE = "blue";
+    public static final String COLOR_BLUE = "blue";
 
-    public final static String TAG_INIZIALE = "http://";
+    public static final String TAG_INIZIALE = "http://";
 
-    public final static String TAG_INIZIALE_SECURE = "https://";
+    public static final String TAG_INIZIALE_SECURE = "https://";
 
     public static final String PROPERTY_SERIAL = "serialVersionUID";
 

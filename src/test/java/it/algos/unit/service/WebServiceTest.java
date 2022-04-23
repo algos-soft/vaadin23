@@ -26,19 +26,19 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WebServiceTest extends ATest {
 
 
-    public final static String URL_WEB_GAC = URL_BASE_ALGOS + "hellogac.html";
+    public static final String URL_WEB_GAC = URL_BASE_ALGOS + "hellogac.html";
 
 
-    public final static String URL_CONTINENTI = URL_BASE_VAADIN23 + "continenti";
+    public static final String URL_CONTINENTI = URL_BASE_VAADIN23 + "continenti";
 
     /**
      * Tag aggiunto prima del titoloWiki (leggibile) della pagina per costruire il 'domain' completo
      */
-    private final static String TAG_WIKI = "https://it.wikipedia.org/wiki/";
+    private static final String TAG_WIKI = "https://it.wikipedia.org/wiki/";
 
-    private final static String UNKNOWN_HOST = "java.net.UnknownHostException: htp";
+    private static final String UNKNOWN_HOST = "java.net.UnknownHostException: htp";
 
-    private final static String URL_ERRATO = "htp://www.altos.it/hellogac.html";
+    private static final String URL_ERRATO = "htp://www.altos.it/hellogac.html";
 
     /**
      * Classe principale di riferimento <br>

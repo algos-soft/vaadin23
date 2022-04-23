@@ -6,6 +6,7 @@ import org.springframework.stereotype.*;
 
 import java.time.*;
 import java.time.format.*;
+import java.util.*;
 
 /**
  * Project vaadin23
@@ -185,6 +186,10 @@ public class DateService extends AbstractService {
 
     public String get() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("d-MMM-yy"));
+    }
+
+    public String get(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern("d-MMM-yy H:mm", Locale.ITALIAN));
     }
 
 }

@@ -11,7 +11,6 @@ import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -20,9 +19,7 @@ import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.beans.factory.config.*;
 import org.springframework.context.*;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
@@ -37,8 +34,6 @@ import java.util.stream.*;
  * Date: ven, 01-apr-2022
  * Time: 06:41
  */
-@SpringComponent
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public abstract class CrudView extends VerticalLayout implements AfterNavigationObserver {
 
     /**
@@ -168,6 +163,10 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected boolean usaComboType;
 
+    protected boolean usaBottomTotale;
+
+    protected boolean usaBottomInfo;
+
     /**
      * Flag di preferenza per la classe di dialogo. Di default CrudDialog. <br>
      */
@@ -212,6 +211,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
         //--Aggiunge i listener ai vari oggetti <br>
         this.fixListener();
+
+        //--Costruisce un layout per gli avvisi in calce alla pagina <br>
+        this.fixBottomLayout();
     }
 
     /**
@@ -237,6 +239,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         usaBottoneDelete = true;
         usaBottoneExport = false;
         usaComboType = false;
+        usaBottomTotale = true;
+        usaBottomInfo = true;
     }
 
     /**
@@ -262,7 +266,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * <p>
      * Non può essere sovrascritto <br>
      */
-    private void fixTopLayout() {
+    protected void fixTopLayout() {
         this.topPlaceHolder = new HorizontalLayout();
         topPlaceHolder.setClassName("buttons");
         topPlaceHolder.setPadding(false);
@@ -464,6 +468,25 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         }
     }
 
+    protected void fixBottomLayout() {
+        String message;
+        String view = textService.primaMaiuscola(entityClazz.getSimpleName());
+        int sel = 34;
+        int num = crudBackend.countAll();
+        String elementi = textService.format(num);
+
+        message = String.format("%s: in totale ci sono %s elementi", view, elementi);
+        //        message = String.format("%s: selezionati %d elementi su %d totali", view,sel,num);
+
+        if (usaBottomTotale) {
+            this.add(new Label(message));
+        }
+        if (usaBottomInfo) {
+            this.add(new Label("Algos"));
+        }
+
+    }
+
     protected List sincroFiltri() {
         List items = null;
         String textSearch;
@@ -494,6 +517,13 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         if (buttonDelete != null) {
             buttonDelete.setEnabled(singoloSelezionato);
         }
+    }
+
+    /**
+     * Ricarica interamente la pagina del browser (non solo la Grid) <br>
+     */
+    protected void reload() {
+        UI.getCurrent().getPage().reload();
     }
 
     protected void refresh() {

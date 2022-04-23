@@ -37,7 +37,7 @@ public class ArrayServiceTest extends ATest {
     /**
      * The constant LIST_STRING.
      */
-    protected final static List<String> LIST_STRING = new ArrayList(Arrays.asList(ARRAY_STRING));
+    protected static final List<String> LIST_STRING = new ArrayList(Arrays.asList(ARRAY_STRING));
 
 
     /**

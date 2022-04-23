@@ -31,9 +31,9 @@ import java.net.*;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class WebService extends AbstractService {
 
-    public final static String URL_BASE_ALGOS = "http://www.algos.it/";
+    public static final String URL_BASE_ALGOS = "http://www.algos.it/";
 
-    public final static String URL_BASE_VAADIN23 = URL_BASE_ALGOS + "vaadin23/";
+    public static final String URL_BASE_VAADIN23 = URL_BASE_ALGOS + "vaadin23/";
 
 
     /**
@@ -128,6 +128,42 @@ public class WebService extends AbstractService {
             result = AResult.errato(unErrore.toString());
         }
         result.setUrlRequest(urlDomain);
+
+        return result;
+    }
+
+    /**
+     * Request di tipo GET <br>
+     * Sorgente completo di una pagina wiki <br>
+     * Non usa le API di Mediawiki <br>
+     * Elabora il wikiTitle per eliminare gli spazi vuoti <br>
+     *
+     * @param wikiTitleGrezzo da controllare per riempire gli spazi vuoti
+     *
+     * @return testo sorgente completo della pagina web in formato html
+     */
+    public String leggeWikiTxt(String wikiTitleGrezzo) {
+        return leggeWiki(wikiTitleGrezzo).getResponse();
+    }
+
+
+    /**
+     * Request di tipo GET <br>
+     * Sorgente completo di una pagina wiki <br>
+     * Non usa le API di Mediawiki <br>
+     * Elabora il wikiTitle per eliminare gli spazi vuoti <br>
+     *
+     * @param wikiTitleGrezzo da controllare per riempire gli spazi vuoti
+     *
+     * @return testo sorgente completo della pagina web in formato html
+     */
+    public AIResult leggeWiki(final String wikiTitleGrezzo) {
+        AIResult result;
+        String wikiTitleElaborato = wikiTitleGrezzo.replaceAll(SPAZIO, UNDERSCORE);
+        result = legge(TAG_WIKI + wikiTitleElaborato);
+
+        result.setWikiTitle(wikiTitleGrezzo);
+        result.setUrlRequest(TAG_WIKI + wikiTitleGrezzo);
 
         return result;
     }

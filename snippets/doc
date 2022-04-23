@@ -80,7 +80,7 @@
     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
     * Non può essere sovrascritto <br>
 
-    public final static String XXX = "";
+    public static final String XXX = "";
 
 
 
@@ -120,3 +120,8 @@ Label emailStatus = new Label();
 emailStatus.getStyle().set("color", "Red");
 
 @Email, @NotEmpty, @NotBlank, @Positive, @PositiveOrZero, @Negative, @NegativeOrZero, @PastOrPresent and @FutureOrPresent
+
+
+    @Annotation public protected private static final transient volatile
+    @Annotation public protected private abstract static final synchronized native strictfp
+

@@ -29,7 +29,7 @@ public class SimpleVers extends VaadVers {
     /**
      * Property statica per le versioni inserite da vaadin23 direttamente <br>
      */
-    private final static String CODE_PROJECT_SIMPLE = "S";
+    private static final String CODE_PROJECT_SIMPLE = "S";
 
     /**
      * Executed on container startup <br>
