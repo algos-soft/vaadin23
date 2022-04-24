@@ -11,9 +11,8 @@ import org.springframework.context.annotation.Scope;
 /**
  * Project @PROJECTUPPER@
  * Created by Algos
- * User: gac
- * Date: mar, 15-mar-2022
- * Time: 09:17
+ * User: @USER@
+ * Date: @TODAY@
  * <p>
  * Log delle versioni, modifiche e patch installate <br>
  * Executed on container startup <br>

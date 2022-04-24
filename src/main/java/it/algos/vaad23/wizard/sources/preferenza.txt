@@ -2,6 +2,9 @@ package it.algos.@PROJECT@.backend.boot;
 
 import com.vaadin.flow.spring.annotation.*;
 import it.algos.vaad23.backend.boot.*;
+import it.algos.vaad23.backend.enumeration.*;
+import it.algos.vaad23.backend.packages.utility.preferenza.*;
+import it.algos.@PROJECT@.backend.enumeration.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.event.*;
@@ -9,9 +12,8 @@ import org.springframework.context.event.*;
 /**
  * Project @PROJECTUPPER@
  * Created by Algos
- * User: gac
- * Date: mar, 15-mar-2022
- * Time: 09:17
+ * User: @USER@
+ * Date: @TODAY@
  * <p>
  * Creazione da code di alcune preferenze del progetto <br>
  */
@@ -38,9 +40,45 @@ public class @PROJECTUPPER@Pref extends VaadPref {
      * Eseguito quindi a ogni avvio/riavvio del server e NON a ogni sessione <br>
      */
     public void inizia() {
-        for (WPref pref : WPref.getAllEnums()) {
+        for (@FIRSTPROJECT@Pref pref : @FIRSTPROJECT@Pref.getAllEnums()) {
             crea(pref);
         }
+    }
+
+    /**
+     * Inserimento di una preferenza del progetto specifico <br>
+     * Controlla che la entity non esista già <br>
+     */
+    protected void crea(final @FIRSTPROJECT@Pref pref) {
+        crea(pref.getKeyCode(), pref.getType(), pref.getDefaultValue(), pref.getDescrizione(), false);
+    }
+
+    /**
+     * Inserimento di una preferenza del progetto specifico <br>
+     * Controlla che la entity non esista già <br>
+     */
+    protected void crea(final String code, final AETypePref type, final Object value, final String descrizione, final boolean needRiavvio) {
+        Preferenza preferenza = null;
+
+        if (textService.isEmpty(code) || type == null || value == null || textService.isEmpty(descrizione)) {
+            return;
+        }
+        if (backend.existsByCode(code)) {
+            return;
+        }
+
+        preferenza = new Preferenza();
+        preferenza.code = code;
+        preferenza.type = type;
+        preferenza.value = type.objectToBytes(value);
+        preferenza.vaadFlow = false;
+        preferenza.usaCompany = false;
+        preferenza.needRiavvio = needRiavvio;
+        preferenza.visibileAdmin = true;
+        preferenza.descrizione = descrizione;
+        preferenza.descrizioneEstesa = descrizione;
+
+        backend.add(preferenza);
     }
 
 }
