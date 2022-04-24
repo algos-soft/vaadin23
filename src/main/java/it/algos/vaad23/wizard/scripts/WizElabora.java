@@ -67,6 +67,7 @@ public abstract class WizElabora {
         AEToken.targetProject.set(newUpdateProject);
         AEToken.targetProjectUpper.set(textService.primaMaiuscola(newUpdateProject));
         AEToken.targetProjectAllUpper.set(newUpdateProject.toUpperCase());
+        AEToken.firstProject.set(newUpdateProject.substring(0, 1).toUpperCase());
     }
 
     public void directory(final AEWizProject wiz) {
@@ -112,6 +113,20 @@ public abstract class WizElabora {
         }
         else {
             message = String.format("%s: il file %s non ha funzionato", tag, nomeFile);
+            logger.warn(new WrapLog().message(message).type(AETypeLog.wizard));
+        }
+    }
+
+    public void eliminaSources() {
+        String message;
+
+        //--elimina la directory 'sources' che deve restare unicamente nel progetto 'vaadin23' e non nei derivati
+        if (fileService.deleteDirectory(destNewProject + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX)) {
+            message = String.format("Delete: cancellata la directory 'sources' dal progetto %s", newUpdateProject);
+            logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
+        }
+        else {
+            message = String.format("Non sono riuscito a cancellare la directory 'sources' dal progetto %s", newUpdateProject);
             logger.warn(new WrapLog().message(message).type(AETypeLog.wizard));
         }
     }

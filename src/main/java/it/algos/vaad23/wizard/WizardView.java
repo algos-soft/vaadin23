@@ -51,6 +51,8 @@ public class WizardView extends VerticalLayout {
 
     private boolean projectBaseFlow;
 
+    private String updateProject;
+
     /**
      * Questa classe viene costruita partendo da @Route e NON dalla catena @Autowired di SpringBoot <br>
      */
@@ -98,9 +100,9 @@ public class WizardView extends VerticalLayout {
 
     public boolean isProjectBaseFlow() {
         String srcVaadin23 = System.getProperty("user.dir");
-        String newProject = fileService.estraeClasseFinaleSenzaJava(srcVaadin23).toLowerCase();
+        updateProject = fileService.estraeClasseFinaleSenzaJava(srcVaadin23).toLowerCase();
 
-        return newProject.equals(PROJECT_VAADFLOW);
+        return updateProject.equals(PROJECT_VAADFLOW);
     }
 
     public void titolo() {
@@ -158,11 +160,11 @@ public class WizardView extends VerticalLayout {
     }
 
     private void openUpdateProject() {
-        appContext.getBean(WizDialogUpdateProject.class).open(this::elaboraUpdateProject);
+        appContext.getBean(WizDialogUpdateProject.class, updateProject).open(this::elaboraUpdateProject);
     }
 
     private void elaboraUpdateProject(final LinkedHashMap<String, Checkbox> mappaCheckbox) {
-        appContext.getBean(WizElaboraUpdateProject.class).esegue(mappaCheckbox);
+        appContext.getBean(WizElaboraUpdateProject.class, updateProject).esegue(mappaCheckbox);
     }
 
     public void paragrafoFeedBackWizard() {

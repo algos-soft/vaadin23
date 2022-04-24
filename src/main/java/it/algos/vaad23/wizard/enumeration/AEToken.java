@@ -22,6 +22,8 @@ public enum AEToken {
 
     targetProjectAllUpper("PROJECTALLUPPER"),
 
+    firstProject("FIRSTPROJECT"),
+
     today("TODAY"),
     todayAnno("TODAYANNO"),
     todayMese("TODAYMESE"),
@@ -43,23 +45,20 @@ public enum AEToken {
     public static void reset() {
         for (AEToken aeToken : AEToken.values()) {
             aeToken.value = VUOTA;
-        }
-        AEToken.user.value = "gac";
+        } AEToken.user.value = "gac";
     }
 
     public static void setCrono() {
         LocalDateTime adesso = LocalDateTime.now();
         AEToken.today.value = LocalDateTime.now().format(DateTimeFormatter.ofPattern("EEE, d MMM yy"));
-        AEToken.todayAnno.value = adesso.getYear() + VUOTA;
-        AEToken.todayMese.value = adesso.getMonthValue() + VUOTA;
+        AEToken.todayAnno.value = adesso.getYear() + VUOTA; AEToken.todayMese.value = adesso.getMonthValue() + VUOTA;
         AEToken.todayGiorno.value = adesso.getDayOfMonth() + VUOTA;
     }
 
     public static String replaceAll(String textReplacing) {
         for (AEToken aeToken : AEToken.values()) {
             textReplacing = aeToken.replace(textReplacing);
-        }
-        return textReplacing;
+        } return textReplacing;
     }
 
 

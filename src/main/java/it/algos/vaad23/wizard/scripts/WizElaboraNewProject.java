@@ -2,8 +2,6 @@ package it.algos.vaad23.wizard.scripts;
 
 import com.vaadin.flow.spring.annotation.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.wizard.enumeration.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -46,14 +44,7 @@ public class WizElaboraNewProject extends WizElabora {
             }
         }
 
-        //--elimina la directory 'sources' che deve restare unicamente nel progetto 'vaadin23' e non nei derivati
-        if (fileService.deleteDirectory(destNewProject + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX)) {
-            message = String.format("Delete: cancellata la directory 'sources' dal progetto %s", newUpdateProject);
-            logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-        }
-        else {
-            message = String.format("Non sono riuscito a cancellare la directory 'sources' dal progetto %s", newUpdateProject);
-            logger.warn(new WrapLog().message(message).type(AETypeLog.wizard));
-        }
+        super.eliminaSources();
     }
+
 }

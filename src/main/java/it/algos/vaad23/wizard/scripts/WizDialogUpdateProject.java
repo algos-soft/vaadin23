@@ -28,13 +28,16 @@ public class WizDialogUpdateProject extends WizDialog {
 
     private Consumer<LinkedHashMap<String, Checkbox>> confirmHandler;
 
-    public WizDialogUpdateProject() {
+    private String updateProject;
+
+    public WizDialogUpdateProject(String updateProject) {
         super();
+        this.updateProject = updateProject;
     }// end of constructor
 
     /**
      * Legenda iniziale <br>
-     * Viene sovrascritta nella sottoclasse che deve invocare PRIMA questo metodo <br>
+     * Viene sovraScritta nella sottoclasse che deve invocare PRIMA questo metodo <br>
      */
     @Override
     protected void creaTopLayout() {
@@ -59,11 +62,15 @@ public class WizDialogUpdateProject extends WizDialog {
      */
     protected void creaCheckBoxLayout() {
         Checkbox check;
+        String caption;
         checkBoxLayout = fixSezione("Flags di regolazione");
         mappaCheckbox = new LinkedHashMap<>();
+        AEToken.targetProjectUpper.set(textService.primaMaiuscola(updateProject));
 
         for (AEWizProject wiz : AEWizProject.getAllEnums()) {
-            check = new Checkbox(wiz.getCaption());
+            caption = wiz.getCaption();
+            caption = AEToken.targetProjectUpper.replace(caption);
+            check = new Checkbox(caption);
             check.setValue(wiz.isUpdate());
             mappaCheckbox.put(wiz.name(), check);
             checkBoxLayout.add(check);

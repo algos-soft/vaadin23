@@ -49,18 +49,22 @@ public enum AEWizProject {
     application("Main class java", true, false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),
-    boot("xxxBoot: con fixMenuRoutes()", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Boot.java",
+    boot("@PROJECTUPPER@Boot: con fixMenuRoutes()", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Boot.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "boot"
     ),
-    cost("xxxCost: costanti statiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Cost.java",
+    cost("@PROJECTUPPER@Cost: costanti statiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Cost.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "cost"
     ),
-    vers("xxxVers: versioni specifiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Vers.java",
+    vers("@PROJECTUPPER@Vers: versioni specifiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Vers.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "vers"
     ),
-    pref("xxxPref: preferenze specifiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Pref" +
+    pref("@PROJECTUPPER@Pref: preferenze specifiche del programma", true, false, "src/main/java/it/algos/@PROJECT@/backend/boot/@PROJECTUPPER@Pref" +
             ".java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "preferenza"
+    ),
+    enumeration("@FIRSTPROJECT@Pref: enumeration di preferenze specifiche del programma", true, false, "src/main/java/it/algos/@PROJECT" +
+            "@/backend/enumeration/@FIRSTPROJECT@Pref.java",
+            AECopy.sourceSovrascriveSempreAncheSeEsiste, "enumeration"
     ),
     ;
 

@@ -21,6 +21,12 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class WizElaboraUpdateProject extends WizElabora {
 
+    private String updateProject;
+
+    public WizElaboraUpdateProject(String updateProject) {
+        super();
+        this.updateProject = updateProject;
+    }// end of constructor
 
     public void esegue(final LinkedHashMap<String, Checkbox> mappaCheckbox) {
         super.progettoEsistente = true;
@@ -45,6 +51,8 @@ public class WizElaboraUpdateProject extends WizElabora {
                 }
             }
         }
+
+        super.eliminaSources();
     }
 
 }
