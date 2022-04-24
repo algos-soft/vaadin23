@@ -176,7 +176,7 @@ public class VersioneView extends CrudView {
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
-    protected List<Versione> sincroFiltri() {
+    protected void sincroFiltri() {
         List items = null;
         String textSearch = VUOTA;
         AETypeVers type = null;
@@ -197,8 +197,6 @@ public class VersioneView extends CrudView {
         if (items != null) {
             grid.setItems(items);
         }
-
-        return items;
     }
 
 

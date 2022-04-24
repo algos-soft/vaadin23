@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.utility.nota;
 
+import com.vaadin.flow.component.checkbox.*;
 import com.vaadin.flow.component.combobox.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
@@ -32,6 +33,8 @@ public class NotaView extends CrudView {
 
     //--per eventuali metodi specifici
     private NotaBackend backend;
+
+    private Checkbox boxBox;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -97,13 +100,18 @@ public class NotaView extends CrudView {
         comboLivello.setItems(AENotaLevel.getAllEnums());
         comboLivello.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(comboLivello);
+
+        boxBox = new Checkbox();
+        boxBox.setLabel("Fatto / Da fare");
+        boxBox.addValueChangeListener(event -> sincroFiltri());
+        topPlaceHolder.add(boxBox);
     }
 
 
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
-    protected List sincroFiltri() {
+    protected void sincroFiltri() {
         List items = null;
         String textSearch = VUOTA;
         AENotaLevel level = null;
@@ -126,11 +134,16 @@ public class NotaView extends CrudView {
             items = backend.findByDescrizioneAndLivelloAndType(textSearch, level, type);
         }
 
+        if (boxBox.getValue()) {
+            items = backend.findByFatto(boxBox.getValue());
+        }
+        else {
+            items = backend.findByFatto(boxBox.getValue());
+        }
+
         if (items != null) {
             grid.setItems(items);
         }
-
-        return items;
     }
 
     @Override

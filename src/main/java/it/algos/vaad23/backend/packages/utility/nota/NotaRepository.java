@@ -53,5 +53,6 @@ public interface NotaRepository extends MongoRepository<Nota, String> {
 
     List<Nota> findByDescrizioneStartingWithIgnoreCaseAndLivelloAndTypeOrderByInizioDesc(String descrizione, AENotaLevel level, AETypeLog type);
 
+    List<Nota> findByFattoOrderByInizioDesc(boolean fatto);
 
 }// end of crud repository class

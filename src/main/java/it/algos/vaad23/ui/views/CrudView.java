@@ -517,7 +517,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     }
 
-    protected List sincroFiltri() {
+    protected void sincroFiltri() {
         List items = null;
         String textSearch;
 
@@ -529,8 +529,6 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         if (items != null) {
             grid.setItems(items);
         }
-
-        return items;
     }
 
     protected void sincroSelection(SelectionEvent event) {

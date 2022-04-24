@@ -129,4 +129,8 @@ public class NotaBackend extends CrudBackend {
         return repository.findByDescrizioneStartingWithIgnoreCaseOrderByInizioDesc(value);
     }
 
+    public List<Nota> findByFatto(final boolean fatto) {
+        return repository.findByFattoOrderByInizioDesc(fatto);
+    }
+
 }// end of crud backend class

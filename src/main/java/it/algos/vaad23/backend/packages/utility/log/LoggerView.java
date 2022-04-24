@@ -111,7 +111,7 @@ public class LoggerView extends CrudView {
     /**
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
-    protected List sincroFiltri() {
+    protected void sincroFiltri() {
         List items = null;
         String textSearch = VUOTA;
         AELogLevel level = null;
@@ -137,8 +137,6 @@ public class LoggerView extends CrudView {
         if (items != null) {
             grid.setItems(items);
         }
-
-        return items;
     }
 
 }// end of crud @Route view class
