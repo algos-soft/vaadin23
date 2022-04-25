@@ -303,6 +303,11 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.alertPlaceHolder.setSpacing(true);
         this.alertPlaceHolder.setMargin(false);
         this.add(alertPlaceHolder);
+
+        //--spazio prima dei bottoni
+        Label emptyLabel = new Label(VUOTA);
+        emptyLabel.setHeight("0.3em");
+        this.add(emptyLabel);
     }
 
     /**
@@ -332,6 +337,11 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.fixFiltri();
         this.fixBottoniTopSpecifici();
         this.add(topPlaceHolder);
+
+        //--spazio prima della grid
+        Label emptyLabel = new Label(VUOTA);
+        emptyLabel.setHeight("0.1em");
+        this.add(emptyLabel);
     }
 
     /**
