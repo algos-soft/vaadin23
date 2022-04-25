@@ -84,7 +84,6 @@ public class NotaView extends CrudView {
         columnService.addColumnsOneByOne(grid, entityClazz, gridPropertyNamesList);
     }
 
-
     /**
      * Componenti aggiuntivi oltre quelli base <br>
      * Tipicamente bottoni di selezione/filtro <br>
@@ -116,7 +115,7 @@ public class NotaView extends CrudView {
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void sincroFiltri() {
-        List<Nota> items = backend.findAll();
+        List<Nota> items = backend.findAll(sortOrder);
 
         final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
         if (textService.isValid(textSearch)) {

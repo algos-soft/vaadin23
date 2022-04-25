@@ -112,7 +112,7 @@ public class LoggerView extends CrudView {
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void sincroFiltri() {
-        List<Logger> items = backend.findAll();
+        List<Logger> items = backend.findAll(sortOrder);
 
         final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
         if (textService.isValid(textSearch)) {

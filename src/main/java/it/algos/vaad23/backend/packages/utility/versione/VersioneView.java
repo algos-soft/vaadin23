@@ -118,7 +118,7 @@ public class VersioneView extends CrudView {
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void sincroFiltri() {
-        List<Versione> items = backend.findAll();
+        List<Versione> items = backend.findAll(sortOrder);
 
         final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
         if (textService.isValid(textSearch)) {
