@@ -1,5 +1,6 @@
 package it.algos.vaad23.ui.views;
 
+import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.combobox.*;
@@ -189,6 +190,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     protected Sort sortOrder;
 
     protected ComboBox<AETypeLog> comboTypeLog;
+
+    protected IndeterminateCheckbox boxBox;
 
     private Function<String, Grid.Column<AEntity>> getColonna = name -> grid.getColumnByKey(name);
 

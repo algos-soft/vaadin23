@@ -1,7 +1,8 @@
 package it.algos.vaad23.backend.packages.utility.nota;
 
-import com.vaadin.flow.component.checkbox.*;
+import ch.carnet.kasparscherrer.*;
 import com.vaadin.flow.component.combobox.*;
+import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -34,7 +35,6 @@ public class NotaView extends CrudView {
     //--per eventuali metodi specifici
     private NotaBackend backend;
 
-    private Checkbox boxBox;
 
     /**
      * Costruttore @Autowired (facoltativo) <br>
@@ -64,6 +64,7 @@ public class NotaView extends CrudView {
         super.formPropertyNamesList = Arrays.asList("type", "livello", "descrizione", "fatto", "fine");
         super.sortOrder = Sort.by(Sort.Direction.DESC, "inizio");
         this.usaBottoneDeleteReset = true;
+        super.usaComboType = true;
     }
 
     /**
@@ -101,10 +102,13 @@ public class NotaView extends CrudView {
         comboLivello.addValueChangeListener(event -> sincroFiltri());
         topPlaceHolder.add(comboLivello);
 
-        boxBox = new Checkbox();
+        boxBox = new IndeterminateCheckbox();
         boxBox.setLabel("Fatto / Da fare");
+        boxBox.setIndeterminate(true);
         boxBox.addValueChangeListener(event -> sincroFiltri());
-        topPlaceHolder.add(boxBox);
+        HorizontalLayout layout = new HorizontalLayout(boxBox);
+        layout.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout);
     }
 
 
@@ -112,37 +116,29 @@ public class NotaView extends CrudView {
      * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
      */
     protected void sincroFiltri() {
-        List items = null;
-        String textSearch = VUOTA;
-        AENotaLevel level = null;
-        AETypeLog type = null;
+        List<Nota> items = backend.findAll();
 
-        if (usaBottoneSearch && searchField != null) {
-            textSearch = searchField != null ? searchField.getValue() : VUOTA;
-            items = backend.findByDescrizione(textSearch);
+        final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
+        if (textService.isValid(textSearch)) {
+            items = items.stream().filter(nota -> nota.descrizione.matches("^(?i)" + textSearch + ".*$")).toList();
         }
 
-        if (comboLivello != null) {
-            level = comboLivello.getValue();
+        final AETypeLog type = comboTypeLog != null ? comboTypeLog.getValue() : null;
+        if (type != null) {
+            items = items.stream().filter(nota -> nota.type == type).toList();
         }
 
-        if (comboTypeLog != null) {
-            type = comboTypeLog.getValue();
+        final AENotaLevel level = comboLivello != null ? comboLivello.getValue() : null;
+        if (level != null) {
+            items = items.stream().filter(nota -> nota.livello == level).toList();
         }
 
-        if (usaBottoneSearch) {
-            items = backend.findByDescrizioneAndLivelloAndType(textSearch, level, type);
-        }
-
-        if (boxBox.getValue()) {
-            items = backend.findByFatto(boxBox.getValue());
-        }
-        else {
-            items = backend.findByFatto(boxBox.getValue());
+        if (boxBox != null && !boxBox.isIndeterminate()) {
+            items = items.stream().filter(nota -> nota.fatto == boxBox.getValue()).toList();
         }
 
         if (items != null) {
-            grid.setItems(items);
+            grid.setItems((List) items);
         }
     }
 
