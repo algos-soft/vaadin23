@@ -122,16 +122,16 @@ public class VersioneView extends CrudView {
 
         final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
         if (textService.isValid(textSearch)) {
-            items = items.stream().filter(nota -> nota.descrizione.matches("^(?i)" + textSearch + ".*$")).toList();
+            items = items.stream().filter(vers -> vers.descrizione.matches("^(?i)" + textSearch + ".*$")).toList();
         }
 
         final AETypeVers level = comboTypeVers != null ? comboTypeVers.getValue() : null;
         if (level != null) {
-            items = items.stream().filter(nota -> nota.type == level).toList();
+            items = items.stream().filter(vers -> vers.type == level).toList();
         }
 
         if (boxBox != null && !boxBox.isIndeterminate()) {
-            items = items.stream().filter(nota -> nota.vaadin23 == boxBox.getValue()).toList();
+            items = items.stream().filter(vers -> vers.vaadin23 == boxBox.getValue()).toList();
         }
 
         if (items != null) {
