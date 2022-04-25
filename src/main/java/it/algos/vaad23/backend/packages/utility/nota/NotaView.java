@@ -139,6 +139,8 @@ public class NotaView extends CrudView {
 
         if (items != null) {
             grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
         }
     }
 

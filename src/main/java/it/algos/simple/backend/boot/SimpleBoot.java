@@ -48,6 +48,14 @@ public class SimpleBoot extends VaadBoot {
         VaadVar.projectCurrent = "simple";
 
         /**
+         * Nome identificativo maiuscolo dell' applicazione <br>
+         * Usato (eventualmente) nella barra di menu in testa pagina <br>
+         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.projectNameUpper = "Simple";
+
+        /**
          * Classe da usare per gestire le versioni <br>
          * Di default FlowVers oppure possibile sottoclasse del progetto <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
@@ -60,6 +68,13 @@ public class SimpleBoot extends VaadBoot {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         VaadVar.projectVersion = Double.parseDouble(Objects.requireNonNull(environment.getProperty("algos.simple.version")));
+
+        /**
+         * Data di rilascio della versione <br>
+         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.projectDate = Objects.requireNonNull(environment.getProperty("algos.simple.version.date"));
     }
 
     /**

@@ -13,6 +13,7 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.selection.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.logic.*;
@@ -21,6 +22,7 @@ import it.algos.vaad23.backend.wrapper.*;
 import it.algos.vaad23.ui.dialog.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
+import org.springframework.core.env.*;
 import org.springframework.data.domain.*;
 import org.vaadin.crudui.crud.*;
 
@@ -36,6 +38,14 @@ import java.util.stream.*;
  * Time: 06:41
  */
 public abstract class CrudView extends VerticalLayout implements AfterNavigationObserver {
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public Environment environment;
 
     /**
      * Istanza di una interfaccia SpringBoot <br>
@@ -99,7 +109,11 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected Class entityClazz;
 
+    protected VerticalLayout alertPlaceHolder;
+
     protected HorizontalLayout topPlaceHolder;
+
+    protected VerticalLayout bottomPlaceHolder;
 
     protected int browserWidth;
 
@@ -193,6 +207,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected IndeterminateCheckbox boxBox;
 
+    protected int elementiFiltrati;
+
     private Function<String, Grid.Column<AEntity>> getColonna = name -> grid.getColumnByKey(name);
 
 
@@ -209,6 +225,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      */
     @Override
     public void afterNavigation(AfterNavigationEvent beforeEnterEvent) {
+        //--Layout generale della view <br>
+        this.fixGeneralLayout();
+
         //--Preferenze usate da questa 'logica'
         this.fixPreferenze();
 
@@ -227,6 +246,18 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
         //--Costruisce un layout per gli avvisi in calce alla pagina <br>
         this.fixBottomLayout();
+    }
+
+    /**
+     * Costruisce il layout generale della view <br>
+     * Metodo chiamato da CrudView.afterNavigation() <br>
+     * Costruisce tutti i componenti in metodi che possono essere sovrascritti <br>
+     * Non può essere sovrascritto <br>
+     */
+    protected void fixGeneralLayout() {
+        this.setPadding(true);
+        this.setSpacing(false);
+        this.setMargin(false);
     }
 
     /**
@@ -263,6 +294,11 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public void fixAlert() {
+        this.alertPlaceHolder = new VerticalLayout();
+        this.alertPlaceHolder.setPadding(false);
+        this.alertPlaceHolder.setSpacing(true);
+        this.alertPlaceHolder.setMargin(false);
+        this.add(alertPlaceHolder);
     }
 
     /**
@@ -504,20 +540,45 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     protected void fixBottomLayout() {
+        this.bottomPlaceHolder = new VerticalLayout();
+        this.bottomPlaceHolder.setPadding(false);
+        this.bottomPlaceHolder.setSpacing(false);
+        this.bottomPlaceHolder.setMargin(false);
+
+        sicroBottomLayout();
+        this.add(bottomPlaceHolder);
+    }
+
+    protected void sicroBottomLayout() {
         String message;
         String view = textService.primaMaiuscola(entityClazz.getSimpleName());
-        int num = crudBackend.countAll();
-        String elementi = textService.format(num);
+        int elementiTotali = crudBackend.countAll();
+        String totaleTxt = textService.format(elementiTotali);
+        String filtratiTxtTxt = textService.format(elementiFiltrati);
 
-        message = String.format("%s: in totale ci sono %s elementi", view, elementi);
-
-        if (usaBottomTotale) {
-            this.add(new Label(message));
+        if (elementiFiltrati == 0 || elementiFiltrati == elementiTotali) {
+            message = String.format("%s: in totale ci sono %s elementi", view, totaleTxt);
         }
-        if (usaBottomInfo) {
-            this.add(new Label("Algos"));
+        else {
+            message = String.format("%s: filtrati %s elementi sul totale di %s", view, filtratiTxtTxt, totaleTxt);
         }
 
+        if (bottomPlaceHolder != null) {
+            bottomPlaceHolder.removeAll();
+            if (usaBottomTotale) {
+                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.verde).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+            }
+
+            if (usaBottomInfo) {
+                double doppio = VaadVar.projectVersion;
+                String nome = VaadVar.projectNameUpper;
+                String data = VaadVar.projectDate;
+
+                //--Locale.US per forzare la visualizzazione grafica di un punto anziché una virgola
+                message = String.format(Locale.US, "Algos® - %s %2.1f di %s", nome, doppio, data);
+                bottomPlaceHolder.add(htmlService.getSpan(new WrapSpan(message).color(AETypeColor.blu).weight(AEFontWeight.bold).fontHeight(AEFontHeight.em7)));
+            }
+        }
     }
 
     protected void sincroFiltri() {
@@ -695,10 +756,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
                 wrap.lineHeight(AELineHeight.em12);
             }
         }
-
         span = htmlService.getSpan(wrap);
         if (span != null) {
-            this.add(span);
+            alertPlaceHolder.add(span);
         }
     }
 
