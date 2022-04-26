@@ -212,6 +212,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected int elementiFiltrati;
 
+    protected String message;
+
     private Function<String, Grid.Column<AEntity>> getColonna = name -> grid.getColumnByKey(name);
 
 
@@ -300,14 +302,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     public void fixAlert() {
         this.alertPlaceHolder = new VerticalLayout();
         this.alertPlaceHolder.setPadding(false);
-        this.alertPlaceHolder.setSpacing(true);
+        this.alertPlaceHolder.setSpacing(false);
         this.alertPlaceHolder.setMargin(false);
         this.add(alertPlaceHolder);
-
-        //--spazio prima dei bottoni
-        Label emptyLabel = new Label(VUOTA);
-        emptyLabel.setHeight("0.3em");
-        this.add(emptyLabel);
     }
 
     /**
@@ -572,7 +569,6 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     protected void sicroBottomLayout() {
-        String message;
         String view = textService.primaMaiuscola(entityClazz.getSimpleName());
         int elementiTotali = crudBackend.countAll();
         String totaleTxt = textService.format(elementiTotali);
@@ -771,29 +767,24 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         return indexWidth;
     }
 
-    public Span getSpan(final String avviso) {
-        return htmlService.getSpanVerde(avviso);
-    }
 
     public void addSpanVerde(final String message) {
-        addSpan(new WrapSpan(message).color(AETypeColor.verde));
+        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.verde)));
     }
 
     public void addSpanBlue(final String message) {
-        addSpan(new WrapSpan(message).color(AETypeColor.blu));
+        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.blu)));
     }
 
     public void addSpanRosso(final String message) {
-        addSpan(new WrapSpan(message).color(AETypeColor.rosso));
+        alertPlaceHolder.add(getSpan(new WrapSpan(message).color(AETypeColor.rosso)));
     }
 
     public void addSpan(final String message) {
-        addSpan(new WrapSpan(message));
+        alertPlaceHolder.add(getSpan(new WrapSpan(message)));
     }
 
-    public void addSpan(WrapSpan wrap) {
-        Span span;
-
+    public Span getSpan(WrapSpan wrap) {
         if (wrap.getColor() == null) {
             wrap.color(AETypeColor.verde);
         }
@@ -810,16 +801,13 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         }
         if (wrap.getLineHeight() == null) {
             if (browserWidth == 0 || browserWidth > 500) {
-                wrap.lineHeight(AELineHeight.em3);
-            }
-            else {
                 wrap.lineHeight(AELineHeight.em12);
             }
+            else {
+                wrap.lineHeight(AELineHeight.em3);
+            }
         }
-        span = htmlService.getSpan(wrap);
-        if (span != null) {
-            alertPlaceHolder.add(span);
-        }
+        return htmlService.getSpan(wrap);
     }
 
 }// end of crud abstract @Route view class
