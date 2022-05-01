@@ -5,6 +5,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 
 import java.util.stream.*;
@@ -114,55 +115,50 @@ public class ResourceServiceTest extends ATest {
     }
 
 
-    @Test
+    @ParameterizedTest
+    @MethodSource(value = "FRONT_END")
     @Order(1)
     @DisplayName("1 - Legge nella directory 'frontend'")
-    void leggeFrontend() {
-        System.out.println("1 - Legge nella directory 'frontend'");
         //--path parziale
         //--esiste
-        FRONT_END().forEach(this::leggeFrontendBase);
+    void leggeFrontend(String path, boolean esiste) {
+        System.out.println("1 - Legge nella directory 'frontend'");
+        leggeFrontendBase(path, esiste);
     }
+
 
     //--path parziale
     //--esiste
-    void leggeFrontendBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
+    void leggeFrontendBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
-
         ottenuto = service.leggeFrontend(sorgente);
-        if (previstoBooleano) {
-            assertNotNull(ottenuto);
-            System.out.println(String.format("%s%s%s", sorgente, FORWARD, "esiste nella cartella frontend"));
+        if (esiste) {
+            assertTrue(textService.isValid(ottenuto));
+            System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "esiste nella cartella frontend"));
         }
         else {
-            assertEquals(VUOTA, ottenuto);
+            assertTrue(textService.isEmpty(ottenuto));
             System.out.println(String.format("%s%s%s", sorgente, FORWARD, "non esiste nella cartella frontend"));
         }
     }
 
-    @Test
+    @ParameterizedTest
     @Order(2)
+    @MethodSource(value = "META_INF")
     @DisplayName("2 - Legge nella directory META-INF")
-    void leggeMetaInf() {
-        System.out.println("2 - Legge nella directory META-INF");
         //--path parziale
         //--esiste
-        META_INF().forEach(this::leggeMetaInfBase);
+    void leggeMetaInf(String path, boolean esiste) {
+        System.out.println("2 - Legge nella directory META-INF");
+        leggeMetaInfBase(path, esiste);
     }
 
     //--path parziale
     //--esiste
-    void leggeMetaInfBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
+    void leggeMetaInfBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
-
         ottenuto = service.leggeMetaInf(sorgente);
-        if (previstoBooleano) {
+        if (esiste) {
             assertTrue(textService.isValid(ottenuto));
             System.out.println(String.format("%s%s%s", sorgente, FORWARD, "esiste nella cartella META-INF"));
         }
@@ -173,26 +169,23 @@ public class ResourceServiceTest extends ATest {
     }
 
 
-    @Test
+    @ParameterizedTest
     @Order(3)
+    @MethodSource(value = "META_INF")
     @DisplayName("3 - Legge i bytes[]")
-    void getBytes() {
-        System.out.println("3 - Legge i bytes[]");
         //--path parziale
         //--esiste
-        META_INF().forEach(this::getBytesBase);
+    void getBytes(String path, boolean esiste) {
+        System.out.println("3 - Legge i bytes[]");
+        getBytesBase(path, esiste);
     }
 
     //--path parziale
     //--esiste
-    void getBytesBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
+    void getBytesBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
-
         bytes = service.getBytes(sorgente);
-        if (previstoBooleano) {
+        if (esiste) {
             assertNotNull(bytes);
             System.out.println(String.format("Il file di risorse %s nella cartella META_INF esiste e non è vuoto", sorgente));
         }
@@ -202,27 +195,24 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
-
-    @Test
+    @ParameterizedTest
     @Order(4)
+    @MethodSource(value = "META_INF")
     @DisplayName("4 - Legge le risorse")
-    void getSrc() {
-        System.out.println("4 - Legge le risorse");
         //--path parziale
         //--esiste
-        META_INF().forEach(this::getSrcBase);
+    void getSrc(String path, boolean esiste) {
+        System.out.println("4 - Legge le risorse");
+        getSrcBase(path, esiste);
     }
 
     //--path parziale
     //--esiste
-    void getSrcBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
+    void getSrcBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
 
         ottenuto = service.getSrc(sorgente);
-        if (previstoBooleano) {
+        if (esiste) {
             assertTrue(textService.isValid(ottenuto));
             System.out.println(String.format("Il file di risorse %s nella cartella META_INF esiste e non è vuoto", sorgente));
         }
@@ -232,27 +222,24 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
-
-    @Test
+    @ParameterizedTest
     @Order(5)
+    @MethodSource(value = "CONFIG")
     @DisplayName("5 - Legge un file nella directory 'config'")
-    void leggeFileConfig() {
-        System.out.println("5 - Legge un file nella directory 'config'");
         //--path parziale
         //--esiste
-        CONFIG().forEach(this::leggeFileConfigBase);
+    void leggeFileConfig(String path, boolean esiste) {
+        System.out.println("5 - Legge un file nella directory 'config'");
+        leggeFileConfigBase(path, esiste);
     }
 
     //--path parziale
     //--esiste
-    void leggeFileConfigBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
+    void leggeFileConfigBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
 
         ottenuto = service.leggeConfig(sorgente);
-        if (previstoBooleano) {
+        if (esiste) {
             assertTrue(textService.isValid(ottenuto));
             System.out.println(String.format("%s%s%s", sorgente, FORWARD, "esiste nella cartella config"));
         }
@@ -262,44 +249,36 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
-    @Test
+    @ParameterizedTest
     @Order(6)
+    @MethodSource(value = "CONFIG")
     @DisplayName("6 - Legge una lista dalla directory 'config'")
-    void leggeListaConfig() {
-        System.out.println("5 - Legge una lista dalla directory 'config'");
         //--path parziale
         //--esiste
-        CONFIG().forEach(this::leggeListaConfigBase);
+    void leggeListaConfig(String path, boolean esiste) {
+        System.out.println(String.format("6 - Legge dalla directory 'config' una lista per il file CSV '%s'", path));
+        leggeListaConfigBase(path, esiste);
     }
 
     //--path parziale
     //--esiste
-    void leggeListaConfigBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
+    void leggeListaConfigBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
 
-        if (previstoBooleano) {
+        listaStr = service.leggeListaConfig(sorgente);
+        if (esiste) {
+            assertTrue(listaStr != null && listaStr.size() > 0);
             System.out.println(String.format("%s%s%s", sorgente, FORWARD, "esiste nella cartella config"));
-            System.out.println(VUOTA);
-
             listaStr = service.leggeListaConfig(sorgente, true);
-            assertNotNull(listaStr);
             printVuota(listaStr, "compresi i titoli");
 
+            System.out.println(VUOTA);
             listaStr = service.leggeListaConfig(sorgente, false);
             assertNotNull(listaStr);
-            System.out.println(VUOTA);
             printVuota(listaStr, "esclusi i titoli");
-
-            listaStr = service.leggeListaConfig(sorgente);
-            assertNotNull(listaStr);
-            System.out.println(VUOTA);
-            printVuota(listaStr, "coi titoli di default");
         }
         else {
-            assertTrue(textService.isEmpty(ottenuto));
+            assertTrue(listaStr == null);
             System.out.println(String.format("%s%s%s", sorgente, FORWARD, "non esiste nella cartella config"));
         }
     }
@@ -332,7 +311,6 @@ public class ResourceServiceTest extends ATest {
         System.out.println(VUOTA);
         printVuota(listaStr, "coi titoli di default");
     }
-
 
     @Test
     @Order(7)
@@ -373,7 +351,6 @@ public class ResourceServiceTest extends ATest {
         printMappa(mappa, "coi titoli di default");
     }
 
-
     @Test
     @Order(8)
     @DisplayName("8 - Legge un file dal server 'algos'")
@@ -390,7 +367,6 @@ public class ResourceServiceTest extends ATest {
         assertTrue(textService.isValid(ottenuto));
         System.out.println(ottenuto.substring(0, 40));
     }
-
 
     @Test
     @Order(9)
@@ -416,7 +392,6 @@ public class ResourceServiceTest extends ATest {
         assertNotNull(listaStr);
         printVuota(listaStr, "letta coi titoli di default");
     }
-
 
     @Test
     @Order(10)
@@ -452,7 +427,6 @@ public class ResourceServiceTest extends ATest {
     @AfterEach
     void tearDown() {
     }
-
 
     /**
      * Qui passa una volta sola, chiamato alla fine di tutti i tests <br>
