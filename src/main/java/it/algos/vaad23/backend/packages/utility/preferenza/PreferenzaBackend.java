@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.utility.preferenza;
 
+import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.logic.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
@@ -22,8 +23,7 @@ import java.util.*;
  * NOT annotated with @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) (inutile, esiste già @Service) <br>
  */
 @Service
-@Qualifier("Preferenza") //@todo Qualifier da sostituire (eventualmente) con costante da registrare su VaadCost 
-//@AIScript(sovraScrivibile = true)
+@Qualifier(TAG_PRE)
 public class PreferenzaBackend extends CrudBackend {
 
     private PreferenzaRepository repository;
@@ -38,8 +38,7 @@ public class PreferenzaBackend extends CrudBackend {
      *
      * @param crudRepository per la persistenza dei dati
      */
-    //@todo registrare eventualmente come costante in VaadCost il valore del Qualifier
-    public PreferenzaBackend(@Autowired @Qualifier("Preferenza") final MongoRepository crudRepository) {
+    public PreferenzaBackend(@Autowired @Qualifier(TAG_PRE) final MongoRepository crudRepository) {
         super(crudRepository, Preferenza.class);
         this.repository = (PreferenzaRepository) crudRepository;
     }
@@ -54,13 +53,7 @@ public class PreferenzaBackend extends CrudBackend {
 
 
     public Preferenza findByKey(final String key) {
-        List<Preferenza> lista = repository.findByCodeStartingWithIgnoreCase(key);
-        if (lista != null && lista.size() == 1) {
-            return lista.get(0);
-        }
-        else {
-            return null;
-        }
+        return repository.findFirstByCode(key);
     }
 
     public Preferenza findByCode(final String code) {
@@ -77,28 +70,5 @@ public class PreferenzaBackend extends CrudBackend {
     public List<Preferenza> findAllByCode(final String code) {
         return repository.findAllByCode(code);
     }
-
-    //    public List<Preferenza> findAllByType(final AETypePref type) {
-    //        if (type != null) {
-    //            return repository.findByType(type);
-    //        }
-    //        else {
-    //            return repository.findAll();
-    //        }
-    //    }
-
-    //    public List<Preferenza> findAllByCodeAndType(final String code, final AETypePref type) {
-    //        if (type == null) {
-    //            return repository.findByCodeStartingWithIgnoreCase(code);
-    //        }
-    //        else {
-    //            if (textService.isValid(code)) {
-    //                return repository.findByCodeStartingWithIgnoreCaseAndType(code, type);
-    //            }
-    //            else {
-    //                return repository.findByType(type);
-    //            }
-    //        }
-    //    }
 
 }// end of crud backend class

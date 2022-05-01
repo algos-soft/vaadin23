@@ -71,7 +71,7 @@ public class @PROJECTUPPER@Pref extends VaadPref {
         preferenza.code = code;
         preferenza.type = type;
         preferenza.value = type.objectToBytes(value);
-        preferenza.vaadFlow = false;
+        preferenza.vaad23 = false;
         preferenza.usaCompany = false;
         preferenza.needRiavvio = needRiavvio;
         preferenza.visibileAdmin = true;

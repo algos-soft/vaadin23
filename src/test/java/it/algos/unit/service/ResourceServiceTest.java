@@ -81,7 +81,9 @@ public class ResourceServiceTest extends ATest {
                 Arguments.of("at.png", true),
                 Arguments.of("africa", true),
                 Arguments.of("regioni", true),
-                Arguments.of("continenti", true)
+                Arguments.of("continenti", true),
+                Arguments.of("mesi", true),
+                Arguments.of("secoli", true)
         );
     }
 
@@ -234,16 +236,16 @@ public class ResourceServiceTest extends ATest {
     @Test
     @Order(5)
     @DisplayName("5 - Legge un file nella directory 'config'")
-    void leggeConfig() {
+    void leggeFileConfig() {
         System.out.println("5 - Legge un file nella directory 'config'");
         //--path parziale
         //--esiste
-        CONFIG().forEach(this::leggeConfigBase);
+        CONFIG().forEach(this::leggeFileConfigBase);
     }
 
     //--path parziale
     //--esiste
-    void leggeConfigBase(Arguments arg) {
+    void leggeFileConfigBase(Arguments arg) {
         Object[] mat = arg.get();
         sorgente = (String) mat[0];
         previstoBooleano = (boolean) mat[1];
@@ -260,11 +262,50 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
-
     @Test
     @Order(6)
     @DisplayName("6 - Legge una lista dalla directory 'config'")
     void leggeListaConfig() {
+        System.out.println("5 - Legge una lista dalla directory 'config'");
+        //--path parziale
+        //--esiste
+        CONFIG().forEach(this::leggeListaConfigBase);
+    }
+
+    //--path parziale
+    //--esiste
+    void leggeListaConfigBase(Arguments arg) {
+        Object[] mat = arg.get();
+        sorgente = (String) mat[0];
+        previstoBooleano = (boolean) mat[1];
+        System.out.println(VUOTA);
+
+        if (previstoBooleano) {
+            System.out.println(String.format("%s%s%s", sorgente, FORWARD, "esiste nella cartella config"));
+            System.out.println(VUOTA);
+
+            listaStr = service.leggeListaConfig(sorgente, true);
+            assertNotNull(listaStr);
+            printVuota(listaStr, "compresi i titoli");
+
+            listaStr = service.leggeListaConfig(sorgente, false);
+            assertNotNull(listaStr);
+            System.out.println(VUOTA);
+            printVuota(listaStr, "esclusi i titoli");
+
+            listaStr = service.leggeListaConfig(sorgente);
+            assertNotNull(listaStr);
+            System.out.println(VUOTA);
+            printVuota(listaStr, "coi titoli di default");
+        }
+        else {
+            assertTrue(textService.isEmpty(ottenuto));
+            System.out.println(String.format("%s%s%s", sorgente, FORWARD, "non esiste nella cartella config"));
+        }
+    }
+
+    //    @Test
+    void leggeListaConfigxx() {
         sorgente = "continenti";
         System.out.println(String.format("6 - Legge dalla directory 'config' una lista per il file CSV '%s'", sorgente));
 
@@ -280,6 +321,12 @@ public class ResourceServiceTest extends ATest {
         System.out.println(VUOTA);
         printVuota(listaStr, "esclusi i titoli");
 
+        listaStr = service.leggeListaConfig(sorgente);
+        assertNotNull(listaStr);
+        System.out.println(VUOTA);
+        printVuota(listaStr, "coi titoli di default");
+
+        sorgente = "mesi";
         listaStr = service.leggeListaConfig(sorgente);
         assertNotNull(listaStr);
         System.out.println(VUOTA);
@@ -309,6 +356,21 @@ public class ResourceServiceTest extends ATest {
         assertNotNull(mappa);
         System.out.println(VUOTA);
         printMappa(mappa, "coi titoli di default");
+
+        sorgente = "mesi";
+        mappa = service.leggeMappaConfig(sorgente, true);
+        assertNotNull(mappa);
+        printMappa(mappa, "compresi i titoli");
+
+        mappa = service.leggeMappaConfig(sorgente, false);
+        assertNotNull(mappa);
+        System.out.println(VUOTA);
+        printMappa(mappa, "esclusi i titoli");
+
+        mappa = service.leggeMappaConfig(sorgente);
+        assertNotNull(mappa);
+        System.out.println(VUOTA);
+        printMappa(mappa, "coi titoli di default");
     }
 
 
@@ -322,6 +384,11 @@ public class ResourceServiceTest extends ATest {
         ottenuto = service.leggeServer(sorgente);
         assertTrue(textService.isValid(ottenuto));
         System.out.println(ottenuto.substring(0, 200));
+
+        sorgente = "mesi";
+        ottenuto = service.leggeServer(sorgente);
+        assertTrue(textService.isValid(ottenuto));
+        System.out.println(ottenuto.substring(0, 40));
     }
 
 
@@ -340,6 +407,11 @@ public class ResourceServiceTest extends ATest {
         assertNotNull(listaStr);
         printVuota(listaStr, "letta esclusi i titoli");
 
+        listaStr = service.leggeListaServer(sorgente);
+        assertNotNull(listaStr);
+        printVuota(listaStr, "letta coi titoli di default");
+
+        sorgente = "mesi";
         listaStr = service.leggeListaServer(sorgente);
         assertNotNull(listaStr);
         printVuota(listaStr, "letta coi titoli di default");
@@ -362,6 +434,12 @@ public class ResourceServiceTest extends ATest {
         System.out.println(VUOTA);
         printMappa(mappa, "esclusi i titoli");
 
+        mappa = service.leggeMappaServer(sorgente);
+        assertNotNull(mappa);
+        System.out.println(VUOTA);
+        printMappa(mappa, "coi titoli di default");
+
+        sorgente = "mesi";
         mappa = service.leggeMappaServer(sorgente);
         assertNotNull(mappa);
         System.out.println(VUOTA);

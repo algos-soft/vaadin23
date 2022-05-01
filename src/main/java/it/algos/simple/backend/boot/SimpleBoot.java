@@ -4,6 +4,8 @@ import com.vaadin.flow.spring.annotation.*;
 import static it.algos.simple.backend.boot.SimpleCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.interfaces.*;
+import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -30,6 +32,16 @@ import java.util.*;
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class SimpleBoot extends VaadBoot {
+
+    private String property;
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public LogService logger;
 
     /**
      * Regola le variabili generali dell' applicazione con il loro valore iniziale di default <br>
@@ -67,14 +79,26 @@ public class SimpleBoot extends VaadBoot {
          * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
-        VaadVar.projectVersion = Double.parseDouble(Objects.requireNonNull(environment.getProperty("algos.simple.version")));
+        try {
+            property = "algos.simple.version";
+            VaadVar.projectVersion = Double.parseDouble(Objects.requireNonNull(environment.getProperty(property)));
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+        }
 
         /**
          * Data di rilascio della versione <br>
          * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
-        VaadVar.projectDate = Objects.requireNonNull(environment.getProperty("algos.simple.version.date"));
+        try {
+            property = "algos.simple.version.date";
+            VaadVar.projectDate = Objects.requireNonNull(environment.getProperty(property));
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+        }
     }
 
     /**
