@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.crono;
+package it.algos.vaad23.backend.packages.crono.mese;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.exception.*;
@@ -27,6 +27,7 @@ import java.util.*;
 @Service
 public class MeseBackend extends CrudBackend {
 
+    private MeseRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>
@@ -38,12 +39,13 @@ public class MeseBackend extends CrudBackend {
      *
      * @param crudRepository per la persistenza dei dati
      */
-    public MeseBackend(@Autowired final MongoRepository crudRepository) {
+    public MeseBackend(@Autowired @Qualifier(TAG_MESE) final MongoRepository crudRepository) {
         super(crudRepository, Mese.class);
+        this.repository = (MeseRepository) crudRepository;
     }
 
-    public boolean crea(final int giorni, final String breve, final String lungo) {
-        Mese mese = newEntity(giorni, breve, lungo);
+    public boolean crea(final int giorni, final String breve, final String nome) {
+        Mese mese = newEntity(giorni, breve, nome);
         return crudRepository.insert(mese) != null;
     }
 
@@ -66,16 +68,20 @@ public class MeseBackend extends CrudBackend {
      *
      * @param giorni (obbligatorio)
      * @param breve  (obbligatorio, unico)
-     * @param lungo  (obbligatorio, unico)
+     * @param nome   (obbligatorio, unico)
      *
      * @return la nuova entity appena creata (non salvata e senza keyID)
      */
-    public Mese newEntity(final int giorni, final String breve, final String lungo) {
+    public Mese newEntity(final int giorni, final String breve, final String nome) {
         return Mese.builder()
                 .giorni(giorni)
                 .breve(textService.isValid(breve) ? breve : null)
-                .lungo(textService.isValid(lungo) ? lungo : null)
+                .nome(textService.isValid(nome) ? nome : null)
                 .build();
+    }
+
+    public Mese findByNome(final String nome) {
+        return repository.findFirstByNome(nome);
     }
 
     /**
@@ -92,7 +98,7 @@ public class MeseBackend extends CrudBackend {
         List<String> riga;
         int giorni;
         String breve;
-        String lungo;
+        String nome;
 
         if (super.reset()) {
             mappa = resourceService.leggeMappaServer(nomeFile, false);
@@ -107,14 +113,14 @@ public class MeseBackend extends CrudBackend {
                             giorni = 0;
                         }
                         breve = riga.get(1);
-                        lungo = riga.get(2);
+                        nome = riga.get(2);
                     }
                     else {
                         logger.error(new WrapLog().exception(new AlgosException("I dati non sono congruenti")).usaDb());
                         return false;
                     }
-                    if (!crea(giorni, breve, lungo)) {
-                        logger.error(new WrapLog().exception(new AlgosException(String.format("La entity %s non è stata salvata", lungo))).usaDb());
+                    if (!crea(giorni, breve, nome)) {
+                        logger.error(new WrapLog().exception(new AlgosException(String.format("La entity %s non è stata salvata", nome))).usaDb());
                     }
                 }
             }

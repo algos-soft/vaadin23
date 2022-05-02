@@ -1,5 +1,7 @@
-package it.algos.vaad23.backend.packages.crono;
+package it.algos.vaad23.backend.packages.crono.secolo;
 
+import ch.carnet.kasparscherrer.*;
+import com.vaadin.flow.component.orderedlayout.*;
 import com.vaadin.flow.router.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.ui.views.*;
@@ -12,7 +14,7 @@ import java.util.*;
  * Created by Algos
  * User: gac
  * Date: dom, 01-mag-2022
- * Time: 08:51
+ * Time: 21:24
  * <p>
  * Vista iniziale e principale di un package <br>
  *
@@ -20,13 +22,13 @@ import java.util.*;
  * Presenta la Grid <br>
  * Su richiesta apre un Dialogo per gestire la singola entity <br>
  */
-@PageTitle("Mesi")
-@Route(value = TAG_MESE, layout = MainLayout.class)
-public class MeseView extends CrudView {
+@PageTitle("Secoli")
+@Route(value = TAG_SECOLO, layout = MainLayout.class)
+public class SecoloView extends CrudView {
 
 
     //--per eventuali metodi specifici
-    private MeseBackend backend;
+    private SecoloBackend backend;
 
 
     /**
@@ -37,8 +39,8 @@ public class MeseView extends CrudView {
      *
      * @param crudBackend service specifico per la businessLogic e il collegamento con la persistenza dei dati
      */
-    public MeseView(@Autowired final MeseBackend crudBackend) {
-        super(crudBackend, Mese.class);
+    public SecoloView(@Autowired final SecoloBackend crudBackend) {
+        super(crudBackend, Secolo.class);
         this.backend = crudBackend;
     }
 
@@ -51,9 +53,10 @@ public class MeseView extends CrudView {
     protected void fixPreferenze() {
         super.fixPreferenze();
 
-        super.gridPropertyNamesList = Arrays.asList("giorni", "breve", "lungo");
-        super.formPropertyNamesList = Arrays.asList("giorni", "breve", "lungo");
+        super.gridPropertyNamesList = Arrays.asList("ordine", "nome", "inizio", "fine", "anteCristo");
+        super.formPropertyNamesList = Arrays.asList("ordine", "nome", "inizio", "fine", "anteCristo");
 
+        super.usaRowIndex = false;
         super.usaBottoneDeleteReset = true;
         super.usaReset = true;
         super.usaBottoneNew = false;
@@ -69,8 +72,46 @@ public class MeseView extends CrudView {
     @Override
     public void fixAlert() {
         super.fixAlert();
+
+        addSpanBlue("L'anno zero non esiste");
         addSpan("Usati solo in background. File originale (CSV) sul server Algos");
         addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+    }
+
+
+    /**
+     * Componenti aggiuntivi oltre quelli base <br>
+     * Tipicamente bottoni di selezione/filtro <br>
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixBottoniTopSpecifici() {
+        super.fixBottoniTopSpecifici();
+
+        boxBox = new IndeterminateCheckbox();
+        boxBox.setLabel("Prima di Cristo");
+        boxBox.setIndeterminate(true);
+        boxBox.addValueChangeListener(event -> sincroFiltri());
+        HorizontalLayout layout = new HorizontalLayout(boxBox);
+        layout.setAlignItems(Alignment.CENTER);
+        topPlaceHolder.add(layout);
+    }
+
+    /**
+     * Può essere sovrascritto, SENZA invocare il metodo della superclasse <br>
+     */
+    protected void sincroFiltri() {
+        List<Secolo> items = backend.findAll(sortOrder);
+
+        if (boxBox != null && !boxBox.isIndeterminate()) {
+            items = items.stream().filter(sec -> sec.anteCristo == boxBox.getValue()).toList();
+        }
+
+        if (items != null) {
+            grid.setItems((List) items);
+            elementiFiltrati = items.size();
+            sicroBottomLayout();
+        }
     }
 
 }// end of crud @Route view class

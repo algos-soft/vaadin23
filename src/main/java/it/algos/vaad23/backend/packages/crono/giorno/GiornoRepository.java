@@ -1,7 +1,8 @@
-package it.algos.vaad23.backend.repository;
+package it.algos.vaad23.backend.packages.crono.giorno;
 
-import org.springframework.context.annotation.*;
-import org.springframework.data.domain.*;
+import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.entity.*;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -11,8 +12,8 @@ import java.util.*;
  * Project vaadin23
  * Created by Algos
  * User: gac
- * Date: dom, 03-apr-2022
- * Time: 08:39
+ * Date: lun, 02-mag-2022
+ * Time: 08:26
  * <p>
  * Estende l'interfaccia MongoRepository col casting alla Entity relativa di questa repository <br>
  * <p>
@@ -21,19 +22,17 @@ import java.util.*;
  * Eventualmente usare una costante di VaadCost come @Qualifier sia qui che nella corrispondente classe xxxBackend <br>
  */
 @Repository
-@Primary
-public interface CrudRepository<T, ID> extends MongoRepository<T, ID> {
+@Qualifier(TAG_GIORNO)
+public interface GiornoRepository extends MongoRepository<Giorno, String> {
 
     @Override
-    List<T> findAll();
+    List<Giorno> findAll();
 
-    List<T> findAll(Sort sort);
+    <Giorno extends AEntity> Giorno insert(Giorno entity);
 
-    <S extends T> S insert(S entity);
-
-    <S extends T> S save(S entity);
+    <Giorno extends AEntity> Giorno save(Giorno entity);
 
     @Override
-    void delete(T entity);
+    void delete(Giorno entity);
 
 }// end of crud repository class

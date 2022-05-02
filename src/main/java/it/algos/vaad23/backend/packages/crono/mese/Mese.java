@@ -1,4 +1,4 @@
-package it.algos.vaad23.backend.packages.crono;
+package it.algos.vaad23.backend.packages.crono.mese;
 
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
@@ -29,11 +29,11 @@ public class Mese extends AEntity {
     public String breve;
 
     @AIField(type = AETypeField.text)
-    public String lungo;
+    public String nome;
 
     @Override
     public String toString() {
-        return breve;
+        return nome;
     }
 
 }// end of crud entity class

@@ -488,6 +488,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         // layout configuration
         setSizeFull();
         this.add(grid);
+        sincroFiltri();
     }
 
     protected void fixAutoNumbering() {
@@ -705,7 +706,15 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * @param entityBeanDaRegistrare (nuova o esistente)
      */
     public void updateItem(AEntity entityBeanDaRegistrare) {
-        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, CrudOperation.UPDATE, crudBackend, formPropertyNamesList);
+        CrudOperation operation;
+
+        if (usaBottoneEdit) {
+            operation = CrudOperation.UPDATE;
+        }
+        else {
+            operation = CrudOperation.READ;
+        }
+        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, operation, crudBackend, formPropertyNamesList);
         dialog.open(this::saveHandler, this::annullaHandler);
     }
 

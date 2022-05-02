@@ -4,6 +4,11 @@ import com.vaadin.flow.spring.annotation.*;
 import static it.algos.simple.backend.boot.SimpleCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.interfaces.*;
+import it.algos.vaad23.backend.packages.crono.anno.*;
+import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.vaad23.backend.packages.crono.mese.*;
+import it.algos.vaad23.backend.packages.crono.secolo.*;
+import it.algos.vaad23.backend.packages.geografia.continente.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
@@ -116,6 +121,12 @@ public class SimpleBoot extends VaadBoot {
     @Override
     protected void fixMenuRoutes() {
         super.fixMenuRoutes();
+
+        VaadVar.menuRouteList.add(ContinenteView.class);
+        VaadVar.menuRouteList.add(MeseView.class);
+        VaadVar.menuRouteList.add(SecoloView.class);
+        VaadVar.menuRouteList.add(GiornoView.class);
+        VaadVar.menuRouteList.add(AnnoView.class);
     }
 
 }

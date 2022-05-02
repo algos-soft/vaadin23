@@ -67,24 +67,25 @@ public class ResourceServiceTest extends ATest {
     }
 
     //--path parziale
-    //--esiste
+    //--esiste in locale
+    //--esiste sul server
     protected static Stream<Arguments> CONFIG() {
         return Stream.of(
-                Arguments.of(null, false),
-                Arguments.of(VUOTA, false),
-                Arguments.of("config.password.txt", false),
-                Arguments.of("/config.password.txt", false),
-                Arguments.of("/config/password.txt", false),
-                Arguments.of("/config.password.txt", false),
-                Arguments.of("/config.password.txt", false),
-                Arguments.of("config/password.txt", false),
-                Arguments.of("password.txt", false),
-                Arguments.of("at.png", true),
-                Arguments.of("africa", true),
-                Arguments.of("regioni", true),
-                Arguments.of("continenti", true),
-                Arguments.of("mesi", true),
-                Arguments.of("secoli", true)
+                Arguments.of(null, false, false),
+                Arguments.of(VUOTA, false, false),
+                Arguments.of("config.password.txt", false, false),
+                Arguments.of("/config.password.txt", false, false),
+                Arguments.of("/config/password.txt", false, false),
+                Arguments.of("/config.password.txt", false, false),
+                Arguments.of("/config.password.txt", false, false),
+                Arguments.of("config/password.txt", false, false),
+                Arguments.of("password.txt", false, false),
+                Arguments.of("at.png", true, false),
+                Arguments.of("africa", true, false),
+                Arguments.of("regioni", true, false),
+                Arguments.of("continenti", true, true),
+                Arguments.of("mesi", true, true),
+                Arguments.of("secoli", true, true)
         );
     }
 
@@ -120,17 +121,11 @@ public class ResourceServiceTest extends ATest {
     @Order(1)
     @DisplayName("1 - Legge nella directory 'frontend'")
         //--path parziale
-        //--esiste
-    void leggeFrontend(String path, boolean esiste) {
+        //--esiste in locale
+    void leggeFrontend(String sorgente, boolean esiste) {
         System.out.println("1 - Legge nella directory 'frontend'");
-        leggeFrontendBase(path, esiste);
-    }
-
-
-    //--path parziale
-    //--esiste
-    void leggeFrontendBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
+
         ottenuto = service.leggeFrontend(sorgente);
         if (esiste) {
             assertTrue(textService.isValid(ottenuto));
@@ -142,21 +137,17 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
+
     @ParameterizedTest
     @Order(2)
     @MethodSource(value = "META_INF")
     @DisplayName("2 - Legge nella directory META-INF")
         //--path parziale
-        //--esiste
-    void leggeMetaInf(String path, boolean esiste) {
+        //--esiste in locale
+    void leggeMetaInf(String sorgente, boolean esiste) {
         System.out.println("2 - Legge nella directory META-INF");
-        leggeMetaInfBase(path, esiste);
-    }
-
-    //--path parziale
-    //--esiste
-    void leggeMetaInfBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
+
         ottenuto = service.leggeMetaInf(sorgente);
         if (esiste) {
             assertTrue(textService.isValid(ottenuto));
@@ -174,16 +165,11 @@ public class ResourceServiceTest extends ATest {
     @MethodSource(value = "META_INF")
     @DisplayName("3 - Legge i bytes[]")
         //--path parziale
-        //--esiste
-    void getBytes(String path, boolean esiste) {
+        //--esiste in locale
+    void getBytes(String sorgente, boolean esiste) {
         System.out.println("3 - Legge i bytes[]");
-        getBytesBase(path, esiste);
-    }
-
-    //--path parziale
-    //--esiste
-    void getBytesBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
+
         bytes = service.getBytes(sorgente);
         if (esiste) {
             assertNotNull(bytes);
@@ -195,20 +181,15 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
+
     @ParameterizedTest
     @Order(4)
     @MethodSource(value = "META_INF")
     @DisplayName("4 - Legge le risorse")
         //--path parziale
-        //--esiste
-    void getSrc(String path, boolean esiste) {
+        //--esiste in locale
+    void getSrc(String sorgente, boolean esiste) {
         System.out.println("4 - Legge le risorse");
-        getSrcBase(path, esiste);
-    }
-
-    //--path parziale
-    //--esiste
-    void getSrcBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
 
         ottenuto = service.getSrc(sorgente);
@@ -222,20 +203,15 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
+
     @ParameterizedTest
     @Order(5)
     @MethodSource(value = "CONFIG")
     @DisplayName("5 - Legge un file nella directory 'config'")
         //--path parziale
-        //--esiste
-    void leggeFileConfig(String path, boolean esiste) {
+        //--esiste in locale
+    void leggeFileConfig(String sorgente, boolean esiste) {
         System.out.println("5 - Legge un file nella directory 'config'");
-        leggeFileConfigBase(path, esiste);
-    }
-
-    //--path parziale
-    //--esiste
-    void leggeFileConfigBase(String sorgente, boolean esiste) {
         System.out.println(VUOTA);
 
         ottenuto = service.leggeConfig(sorgente);
@@ -249,20 +225,15 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
+
     @ParameterizedTest
     @Order(6)
     @MethodSource(value = "CONFIG")
     @DisplayName("6 - Legge una lista dalla directory 'config'")
         //--path parziale
-        //--esiste
-    void leggeListaConfig(String path, boolean esiste) {
-        System.out.println(String.format("6 - Legge dalla directory 'config' una lista per il file CSV '%s'", path));
-        leggeListaConfigBase(path, esiste);
-    }
-
-    //--path parziale
-    //--esiste
-    void leggeListaConfigBase(String sorgente, boolean esiste) {
+        //--esiste in locale
+    void leggeListaConfig(String sorgente, boolean esiste) {
+        System.out.println(String.format("6 - Legge dalla directory 'config' una lista per il file CSV '%s'", sorgente));
         System.out.println(VUOTA);
 
         listaStr = service.leggeListaConfig(sorgente);
@@ -283,142 +254,119 @@ public class ResourceServiceTest extends ATest {
         }
     }
 
-    //    @Test
-    void leggeListaConfigxx() {
-        sorgente = "continenti";
-        System.out.println(String.format("6 - Legge dalla directory 'config' una lista per il file CSV '%s'", sorgente));
 
-        ottenuto = service.leggeConfig(sorgente);
-        assertTrue(textService.isValid(ottenuto));
-
-        listaStr = service.leggeListaConfig(sorgente, true);
-        assertNotNull(listaStr);
-        printVuota(listaStr, "compresi i titoli");
-
-        listaStr = service.leggeListaConfig(sorgente, false);
-        assertNotNull(listaStr);
-        System.out.println(VUOTA);
-        printVuota(listaStr, "esclusi i titoli");
-
-        listaStr = service.leggeListaConfig(sorgente);
-        assertNotNull(listaStr);
-        System.out.println(VUOTA);
-        printVuota(listaStr, "coi titoli di default");
-
-        sorgente = "mesi";
-        listaStr = service.leggeListaConfig(sorgente);
-        assertNotNull(listaStr);
-        System.out.println(VUOTA);
-        printVuota(listaStr, "coi titoli di default");
-    }
-
-    @Test
+    @ParameterizedTest
     @Order(7)
+    @MethodSource(value = "CONFIG")
     @DisplayName("7 - Legge una mappa dalla directory 'config'")
-    void leggeMappaConfig() {
-        sorgente = "continenti";
+        //--path parziale
+        //--esiste in locale
+    void leggeMappaConfig(String sorgente, boolean esiste) {
         System.out.println(String.format("7 - Legge dalla directory 'config' una mappa per il file CSV '%s'", sorgente));
-        ottenuto = service.leggeConfig(sorgente);
-        assertTrue(textService.isValid(ottenuto));
-
-        mappa = service.leggeMappaConfig(sorgente, true);
-        assertNotNull(mappa);
-        printMappa(mappa, "compresi i titoli");
-
-        mappa = service.leggeMappaConfig(sorgente, false);
-        assertNotNull(mappa);
         System.out.println(VUOTA);
-        printMappa(mappa, "esclusi i titoli");
 
         mappa = service.leggeMappaConfig(sorgente);
-        assertNotNull(mappa);
-        System.out.println(VUOTA);
-        printMappa(mappa, "coi titoli di default");
+        if (esiste) {
+            System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "esiste sul server Algos"));
 
-        sorgente = "mesi";
-        mappa = service.leggeMappaConfig(sorgente, true);
-        assertNotNull(mappa);
-        printMappa(mappa, "compresi i titoli");
+            System.out.println(VUOTA);
+            mappa = service.leggeMappaConfig(sorgente, true);
+            assertNotNull(mappa);
+            printMappa(mappa, "compresi i titoli");
 
-        mappa = service.leggeMappaConfig(sorgente, false);
-        assertNotNull(mappa);
-        System.out.println(VUOTA);
-        printMappa(mappa, "esclusi i titoli");
-
-        mappa = service.leggeMappaConfig(sorgente);
-        assertNotNull(mappa);
-        System.out.println(VUOTA);
-        printMappa(mappa, "coi titoli di default");
+            System.out.println(VUOTA);
+            mappa = service.leggeMappaConfig(sorgente, false);
+            assertNotNull(mappa);
+            printMappa(mappa, "esclusi i titoli");
+        }
+        else {
+            assertTrue(mappa == null);
+            System.out.println(String.format("%s%s%s", sorgente, FORWARD, "non esiste nella cartella config"));
+        }
     }
 
-    @Test
+    @ParameterizedTest
     @Order(8)
+    @MethodSource(value = "CONFIG")
     @DisplayName("8 - Legge un file dal server 'algos'")
-    void leggeServer() {
-        sorgente = "continenti";
+        //--path parziale
+        //--esiste in locale
+        //--esiste sul server
+    void leggeFileServer(String sorgente, boolean nonUsato, boolean esisteSulServer) {
         System.out.println(String.format("8 - Legge dal server 'algos' un file CSV '%s'", sorgente));
+        System.out.println(VUOTA);
 
         ottenuto = service.leggeServer(sorgente);
-        assertTrue(textService.isValid(ottenuto));
-        System.out.println(ottenuto.substring(0, 200));
-
-        sorgente = "mesi";
-        ottenuto = service.leggeServer(sorgente);
-        assertTrue(textService.isValid(ottenuto));
-        System.out.println(ottenuto.substring(0, 40));
+        if (esisteSulServer) {
+            assertTrue(textService.isValid(ottenuto));
+            System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "esiste sul server Algos"));
+        }
+        else {
+            assertTrue(textService.isEmpty(ottenuto));
+            System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "NON esiste sul server Algos"));
+        }
     }
 
-    @Test
+    @ParameterizedTest
     @Order(9)
+    @MethodSource(value = "CONFIG")
     @DisplayName("9 - Legge una lista dal server 'algos'")
-    void leggeListaServer() {
-        sorgente = "continenti";
+        //--path parziale
+        //--esiste in locale
+        //--esiste sul server
+    void leggeListaServer(String sorgente, boolean nonUsato, boolean esisteSulServer) {
         System.out.println(String.format("9 - Legge dal server 'algos' una lista '%s'", sorgente));
-
-        listaStr = service.leggeListaServer(sorgente, true);
-        assertNotNull(listaStr);
-        printVuota(listaStr, "letta compresi i titoli");
-
-        listaStr = service.leggeListaServer(sorgente, false);
-        assertNotNull(listaStr);
-        printVuota(listaStr, "letta esclusi i titoli");
+        System.out.println(VUOTA);
 
         listaStr = service.leggeListaServer(sorgente);
-        assertNotNull(listaStr);
-        printVuota(listaStr, "letta coi titoli di default");
+        if (esisteSulServer) {
+            System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "esiste sul server Algos"));
 
-        sorgente = "mesi";
-        listaStr = service.leggeListaServer(sorgente);
-        assertNotNull(listaStr);
-        printVuota(listaStr, "letta coi titoli di default");
+            System.out.println(VUOTA);
+            listaStr = service.leggeListaServer(sorgente, true);
+            assertNotNull(listaStr);
+            printVuota(listaStr, "nella lista compresi i titoli");
+
+            System.out.println(VUOTA);
+            listaStr = service.leggeListaServer(sorgente, false);
+            assertNotNull(listaStr);
+            printVuota(listaStr, "nella lista esclusi i titoli");
+        }
+        else {
+            assertNull(listaStr);
+            System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "NON esiste sul server Algos"));
+        }
     }
 
-    @Test
+    @ParameterizedTest
     @Order(10)
+    @MethodSource(value = "CONFIG")
     @DisplayName("10 - Legge una mappa dal server 'algos'")
-    void leggeMappaServer() {
-        sorgente = "continenti";
+        //--path parziale
+        //--esiste in locale
+        //--esiste sul server
+    void leggeMappaServer(String sorgente, boolean nonUsato, boolean esisteSulServer) {
         System.out.println(String.format("10 - Legge dalla server 'algos' una mappa per il file CSV '%s'", sorgente));
-
-        mappa = service.leggeMappaServer(sorgente, true);
-        assertNotNull(mappa);
-        printMappa(mappa, "compresi i titoli");
-
-        mappa = service.leggeMappaServer(sorgente, false);
-        assertNotNull(mappa);
         System.out.println(VUOTA);
-        printMappa(mappa, "esclusi i titoli");
 
         mappa = service.leggeMappaServer(sorgente);
-        assertNotNull(mappa);
-        System.out.println(VUOTA);
-        printMappa(mappa, "coi titoli di default");
+        if (esisteSulServer) {
+            System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "esiste sul server Algos"));
 
-        sorgente = "mesi";
-        mappa = service.leggeMappaServer(sorgente);
-        assertNotNull(mappa);
-        System.out.println(VUOTA);
-        printMappa(mappa, "coi titoli di default");
+            System.out.println(VUOTA);
+            mappa = service.leggeMappaServer(sorgente, true);
+            assertNotNull(mappa);
+            printMappa(mappa, "nella mappa compresi i titoli");
+
+            System.out.println(VUOTA);
+            mappa = service.leggeMappaServer(sorgente, false);
+            assertNotNull(mappa);
+            printMappa(mappa, "nella mappa esclusi i titoli");
+        }
+        else {
+            assertNull(mappa);
+            System.out.println(String.format("Il file %s%s%s", sorgente, FORWARD, "NON esiste sul server Algos"));
+        }
     }
 
     /**
