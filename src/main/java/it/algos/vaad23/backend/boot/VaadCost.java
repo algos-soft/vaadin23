@@ -105,6 +105,12 @@ public class VaadCost {
 
     public static final String RETURN = "\n";
 
+    public static final String REF = "<ref>";
+
+    public static final String REF_OPEN = "<ref";
+
+    public static final String REF_END = "</ref>";
+
     //--codifica dei caratteri
     public static final String INPUT = "UTF8";
 
@@ -325,6 +331,12 @@ public class VaadCost {
 
     public static final String PROPERTY_NOTE = "note";
 
+    public static final String ECC = "ecc.";
+
+    public static final String NOTE = "<!--";
+
+    public static final String NO_WIKI = "<nowiki>";
+
     public static final List<String> ESCLUSI_SEMPRE = Arrays.asList(PROPERTY_SERIAL);
 
     public static final List<String> ESCLUSI_ALL = Arrays.asList(PROPERTY_SERIAL, PROPERTY_NOTE, PROPERTY_CREAZIONE, PROPERTY_MODIFICA);
@@ -353,5 +365,11 @@ public class VaadCost {
     public static final int ANTE_CRISTO = 1000;
 
     public static final int DOPO_CRISTO = 2030;
+
+    public static final List<String> MASCHI = Arrays.asList("m", "uomo", "maschio", "maschile", "M", "Uomo", "Maschio", "Maschile");
+
+    public static final List<String> FEMMINE = Arrays.asList("f", "donna", "femmina", "femminile", "F", "Donna", "Femmina", "Femminile");
+
+    public static final List<String> TRANS = Arrays.asList("", "trans", "incerto", "non si sa", "dubbio", "?", "*", "ǝ");
 
 }
