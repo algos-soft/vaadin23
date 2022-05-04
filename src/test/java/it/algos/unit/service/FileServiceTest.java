@@ -150,106 +150,72 @@ public class FileServiceTest extends ATest {
     @DisplayName("3 - Check di un file")
         //--path
         //--esiste
-    void isEsisteFile() {
+    void checkFile(final String sorgente, final boolean previstoBooleano) {
         System.out.println("3 - Check di un file");
         System.out.println(VUOTA);
 
-        //        ottenutoRisultato = service.checkFile(sorgente);
+        ottenutoRisultato = service.checkFile(sorgente);
         assertNotNull(ottenutoRisultato);
         assertEquals(previstoBooleano, ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
     }
 
-    //    //--path
-    //    //--esiste
-    //    void isEsisteFileBase(Arguments arg) {
-    //        Object[] mat = arg.get();
-    //        sorgente = (String) mat[0];
-    //        previstoBooleano = (boolean) mat[1];
-    //
-    //        ottenutoBooleano = service.isEsisteFile(sorgente);
-    //        assertEquals(previstoBooleano, ottenutoBooleano);
-    //
-    //        System.out.println(VUOTA);
-    //        System.out.println(String.format("Il file '%s' %s", sorgente, ottenutoBooleano ? "esiste" : "non esiste"));
-    //        if (ottenutoBooleano) {
-    //            unFile = new File(sorgente);
-    //            if (unFile != null) {
-    //                System.out.println("file.getName() = " + unFile.getName());
-    //                System.out.println("file.getPath() = " + unFile.getPath());
-    //                System.out.println("file.getAbsolutePath() = " + unFile.getAbsolutePath());
-    //                System.out.println(VUOTA);
-    //            }
-    //            else {
-    //                System.out.println(String.format("Non sono riuscito a costruire il file '%s", sorgente));
-    //            }
-    //        }
-    //    }
 
-    //    @Test
-    //    @Order(4)
-    //    @DisplayName("4 - Errore nella ricerca di un file")
-    //    void isEsisteFileStr() {
-    //        System.out.println("2 - Errore nella ricerca di un file");
-    //        //--path
-    //        //--esiste
-    //        FILE().forEach(this::isEsisteFileStrBase);
-    //    }
+    @ParameterizedTest
+    @MethodSource(value = "FILE")
+    @Order(4)
+    @DisplayName("4 - Esistenza di un file")
+        //--path
+        //--esiste
+    void isEsisteFile(final String sorgente, final boolean previstoBooleano) {
+        System.out.println("4 - Esistenza di un file");
+        System.out.println(VUOTA);
 
-    //    //--path
-    //    //--esiste
-    //    void isEsisteFileStrBase(Arguments arg) {
-    //        Object[] mat = arg.get();
-    //        sorgente = (String) mat[0];
-    //        previstoBooleano = (boolean) mat[1];
-    //
-    //        ottenuto = service.isEsisteFileStr(sorgente);
-    //        if (previstoBooleano) {
-    //            assertEquals(VUOTA, ottenuto);
-    //            System.out.println(VUOTA);
-    //            System.out.println(String.format("%s%s%s", sorgente, FORWARD, "File trovato"));
-    //        }
-    //        else {
-    //            assertNotNull(ottenuto);
-    //            System.out.println(VUOTA);
-    //            System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
-    //        }
-    //    }
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertEquals(previstoBooleano, ottenutoBooleano);
+    }
+
 
     @Test
     @Order(5)
     @DisplayName("5 - Creo e cancello una directory")
-    void xxx() {
+    void directory() {
         System.out.println("5 - Creo e cancello una directory");
         System.out.println(VUOTA);
 
         sorgente = "/Users/gac/Desktop/test4522/";
         System.out.println(String.format("Nome (completo) della directory: %s", sorgente));
+        System.out.println(VUOTA);
 
+        System.out.println("A - Controlla l'esistenza");
         ottenutoBooleano = service.isEsisteDirectory(sorgente);
         assertFalse(ottenutoBooleano);
-        System.out.println(VUOTA);
         System.out.println("Prima non esiste");
-
-        ottenuto = service.creaDirectoryStr(sorgente);
-        assertTrue(textService.isEmpty(ottenuto));
         System.out.println(VUOTA);
-        System.out.println("La directory è stata creata");
 
+        System.out.println("B - Crea la directory");
+        ottenutoRisultato = service.creaDirectory(sorgente);
+        assertTrue(textService.isEmpty(ottenuto));
+        System.out.println("La directory è stata creata");
+        System.out.println(VUOTA);
+
+        System.out.println("C - Ricontrolla l'esistenza");
         ottenutoBooleano = service.isEsisteDirectory(sorgente);
         assertTrue(ottenutoBooleano);
+        System.out.println("La directory esiste");
         System.out.println(VUOTA);
-        System.out.println("Controllo che esista");
 
-        ottenuto = service.deleteDirectoryStr(sorgente);
+        System.out.println("D - Cancella la directory");
+        ottenutoRisultato = service.deleteDirectory(sorgente);
         assertTrue(textService.isEmpty(ottenuto));
+        System.out.println("La directory è stata cancellata");
         System.out.println(VUOTA);
-        System.out.println("La cancello");
 
+        System.out.println("E - Controllo finale");
         ottenutoBooleano = service.isEsisteDirectory(sorgente);
         assertFalse(ottenutoBooleano);
+        System.out.println("La directory non esiste");
         System.out.println(VUOTA);
-        System.out.println("Controllo che non esista più");
     }
 
     //    @Test

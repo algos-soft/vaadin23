@@ -21,15 +21,17 @@ public class AResult {
 
     private boolean valido;
 
-    private String webTitle = VUOTA;
-
-    private String wikiTitle = VUOTA;
-
-    private String urlPreliminary = VUOTA;
-
-    private String urlRequest = VUOTA;
+    //    private String webTitle = VUOTA;
+    //
+    //    private String wikiTitle = VUOTA;
+    //
+    //    private String urlPreliminary = VUOTA;
+    //
+    //    private String urlRequest = VUOTA;
 
     private String target = VUOTA;
+
+    private String method = VUOTA;
 
     private String errorCode = VUOTA;
 
@@ -39,17 +41,17 @@ public class AResult {
 
     private String validMessage = VUOTA;
 
-    private String preliminaryResponse = VUOTA;
+    //    private String preliminaryResponse = VUOTA;
 
-    private String response = VUOTA;
+    //    private String response = VUOTA;
 
-    private String wikiText = VUOTA;
+    //    private String wikiText = VUOTA;
 
-    private String wikiBio = VUOTA;
+    //    private String wikiBio = VUOTA;
 
-    private String token = VUOTA;
+    //    private String token = VUOTA;
 
-    private String queryType = VUOTA;
+    //    private String queryType = VUOTA;
 
     private int intValue = 0;
 
@@ -98,8 +100,8 @@ public class AResult {
         return this;
     }
 
-    public AResult query(final String queryType) {
-        this.queryType = queryType;
+    public AResult method(final String method) {
+        this.method = method;
         return this;
     }
 
@@ -122,7 +124,7 @@ public class AResult {
 
         if (text != null && text.length() > 0) {
             result.setValido(true);
-            result.setResponse(text);
+            //            result.setResponse(text);
             result.setValidMessage(JSON_SUCCESS);
         }
         else {
@@ -211,30 +213,29 @@ public class AResult {
         this.setValido(true);
     }
 
-    public String getWebTitle() {
-        return webTitle;
-    }
+    //    public String getWebTitle() {
+    //        return webTitle;
+    //    }
+    //
+    //    public void setWebTitle(String webTitle) {
+    //        this.webTitle = webTitle;
+    //    }
+    //
+    //    public String getWikiTitle() {
+    //        return wikiTitle;
+    //    }
+    //
+    //    public void setWikiTitle(String wikiTitle) {
+    //        this.wikiTitle = wikiTitle;
+    //    }
 
-    public void setWebTitle(String webTitle) {
-        this.webTitle = webTitle;
-    }
-
-    public String getWikiTitle() {
-        return wikiTitle;
-    }
-
-    public void setWikiTitle(String wikiTitle) {
-        this.wikiTitle = wikiTitle;
-    }
-
-
-    public String getResponse() {
-        return response;
-    }
-
-    public void setResponse(String response) {
-        this.response = response;
-    }
+    //    public String getResponse() {
+    //        return response;
+    //    }
+    //
+    //    public void setResponse(String response) {
+    //        this.response = response;
+    //    }
 
     public int getIntValue() {
         return intValue;
@@ -260,21 +261,21 @@ public class AResult {
         this.lista = lista;
     }
 
-    public String getUrlPreliminary() {
-        return urlPreliminary;
-    }
-
-    public void setUrlPreliminary(String urlPreliminary) {
-        this.urlPreliminary = urlPreliminary;
-    }
-
-    public String getUrlRequest() {
-        return urlRequest;
-    }
-
-    public void setUrlRequest(String urlRequest) {
-        this.urlRequest = urlRequest;
-    }
+    //    public String getUrlPreliminary() {
+    //        return urlPreliminary;
+    //    }
+    //
+    //    public void setUrlPreliminary(String urlPreliminary) {
+    //        this.urlPreliminary = urlPreliminary;
+    //    }
+    //
+    //    public String getUrlRequest() {
+    //        return urlRequest;
+    //    }
+    //
+    //    public void setUrlRequest(String urlRequest) {
+    //        this.urlRequest = urlRequest;
+    //    }
 
     public Map getMappa() {
         return mappa;
@@ -284,45 +285,45 @@ public class AResult {
         this.mappa = mappa;
     }
 
-    public String getPreliminaryResponse() {
-        return preliminaryResponse;
-    }
-
-    public void setPreliminaryResponse(String preliminaryResponse) {
-        this.preliminaryResponse = preliminaryResponse;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getQueryType() {
-        return queryType;
-    }
-
-    public void setQueryType(String queryType) {
-        this.queryType = queryType;
-    }
-
-    public String getWikiText() {
-        return wikiText;
-    }
-
-    public void setWikiText(String wikiText) {
-        this.wikiText = wikiText;
-    }
-
-    public String getWikiBio() {
-        return wikiBio;
-    }
-
-    public void setWikiBio(String wikiBio) {
-        this.wikiBio = wikiBio;
-    }
+    //    public String getPreliminaryResponse() {
+    //        return preliminaryResponse;
+    //    }
+    //
+    //    public void setPreliminaryResponse(String preliminaryResponse) {
+    //        this.preliminaryResponse = preliminaryResponse;
+    //    }
+    //
+    //    public String getToken() {
+    //        return token;
+    //    }
+    //
+    //    public void setToken(String token) {
+    //        this.token = token;
+    //    }
+    //
+    //    public String getQueryType() {
+    //        return queryType;
+    //    }
+    //
+    //    public void setQueryType(String queryType) {
+    //        this.queryType = queryType;
+    //    }
+    //
+    //    public String getWikiText() {
+    //        return wikiText;
+    //    }
+    //
+    //    public void setWikiText(String wikiText) {
+    //        this.wikiText = wikiText;
+    //    }
+    //
+    //    public String getWikiBio() {
+    //        return wikiBio;
+    //    }
+    //
+    //    public void setWikiBio(String wikiBio) {
+    //        this.wikiBio = wikiBio;
+    //    }
 
     public String getTarget() {
         return target;
@@ -330,6 +331,14 @@ public class AResult {
 
     public void setTarget(String target) {
         this.target = target;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     public void print(final LogService logger, final AETypeLog typeLog) {

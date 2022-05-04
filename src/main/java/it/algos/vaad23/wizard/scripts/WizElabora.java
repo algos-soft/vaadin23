@@ -120,7 +120,7 @@ public abstract class WizElabora {
         String message;
 
         //--elimina la directory 'sources' che deve restare unicamente nel progetto 'vaadin23' e non nei derivati
-        if (fileService.deleteDirectory(destNewProject + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX)) {
+        if (fileService.deleteDirectory(destNewProject + SOURCE_PREFIX + VAADIN_MODULE + SOURCE_SUFFFIX).isValido()) {
             message = String.format("Delete: cancellata la directory 'sources' dal progetto %s", newUpdateProject);
             logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
         }
