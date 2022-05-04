@@ -289,13 +289,13 @@ public class LogServiceTest extends ATest {
                 .type(AETypeLog.password)
                 .exception(new AlgosException("Niente"))
                 .company("crpt")
-                    .user("Domenichetti")
-                    .address("2001:B07:6466:70A3:D869:97FA:FB8E:C443")
-                    .usaDb();
+                .user("Domenichetti")
+                .address("2001:B07:6466:70A3:D869:97FA:FB8E:C443")
+                .usaDb();
 
-            ottenuto = service.error(wrapLog);
-            printMessaggio(ottenuto);
-        }
+        ottenuto = service.error(wrapLog);
+        printMessaggio(ottenuto);
+    }
 
     @Test
     @Order(7)

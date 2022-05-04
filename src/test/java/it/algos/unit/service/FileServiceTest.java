@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
 
+import java.io.*;
 import java.util.stream.*;
 
 /**
@@ -22,7 +23,6 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@SpringBootTest(classes = {SimpleApplication.class})
 @Tag("quickly")
 @DisplayName("File service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -48,6 +48,8 @@ public class FileServiceTest extends ATest {
      * Gia 'costruita' nella superclasse <br>
      */
     private FileService service;
+
+    private File unFile;
 
     //--path
     //--esiste
@@ -106,6 +108,8 @@ public class FileServiceTest extends ATest {
     @BeforeEach
     protected void setUpEach() {
         super.setUpEach();
+
+        unFile = null;
     }
 
 
@@ -131,7 +135,7 @@ public class FileServiceTest extends ATest {
         assertEquals(previstoBooleano, ottenutoBooleano);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("La directory %s è %b", sorgente, ottenutoBooleano));
+        System.out.println(String.format("La directory '%s' %s", sorgente, ottenutoBooleano ? "esiste" : "non esiste"));
     }
 
     @Test
@@ -186,7 +190,19 @@ public class FileServiceTest extends ATest {
         assertEquals(previstoBooleano, ottenutoBooleano);
 
         System.out.println(VUOTA);
-        System.out.println(String.format("Il file %s è %b", sorgente, ottenutoBooleano));
+        System.out.println(String.format("Il file '%s' %s", sorgente, ottenutoBooleano ? "esiste" : "non esiste"));
+        if (ottenutoBooleano) {
+            unFile = new File(sorgente);
+            if (unFile != null) {
+                System.out.println("file.getName() = " + unFile.getName());
+                System.out.println("file.getPath() = " + unFile.getPath());
+                System.out.println("file.getAbsolutePath() = " + unFile.getAbsolutePath());
+                System.out.println(VUOTA);
+            }
+            else {
+                System.out.println(String.format("Non sono riuscito a costruire il file '%s", sorgente));
+            }
+        }
     }
 
     @Test
@@ -217,6 +233,57 @@ public class FileServiceTest extends ATest {
             System.out.println(VUOTA);
             System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
         }
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - Creo e cancello una directory")
+    void xxx() {
+        System.out.println("5 - Creo e cancello una directory");
+        System.out.println(VUOTA);
+
+        sorgente = "/Users/gac/Desktop/test4522/";
+        System.out.println(String.format("Nome (completo) della directory: %s", sorgente));
+
+        ottenutoBooleano = service.isEsisteDirectory(sorgente);
+        assertFalse(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println("Prima non esiste");
+
+        ottenuto = service.creaDirectoryStr(sorgente);
+        assertTrue(textService.isEmpty(ottenuto));
+        System.out.println(VUOTA);
+        System.out.println("La directory è stata creata");
+
+        ottenutoBooleano = service.isEsisteDirectory(sorgente);
+        assertTrue(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println("Controllo che esista");
+
+        ottenuto = service.deleteDirectoryStr(sorgente);
+        assertTrue(textService.isEmpty(ottenuto));
+        System.out.println(VUOTA);
+        System.out.println("La cancello");
+
+        ottenutoBooleano = service.isEsisteDirectory(sorgente);
+        assertFalse(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println("Controllo che non esista più");
+    }
+
+    //    @Test
+    @Order(6)
+    @DisplayName("6 - Creo e cancello un file")
+    void xxxyy() {
+        System.out.println("6 - Creo e cancello un file");
+        System.out.println(VUOTA);
+
+        sorgente = "/Users/gac/Desktop/test/Mantova/";
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertFalse(ottenutoBooleano);
+        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
+        System.out.println("Prima non esiste");
+        service.creaFileStr(sorgente);
     }
 
     /**
