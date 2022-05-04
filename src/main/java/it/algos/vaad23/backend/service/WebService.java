@@ -1,7 +1,6 @@
 package it.algos.vaad23.backend.service;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
@@ -112,8 +111,8 @@ public class WebService extends AbstractService {
      *
      * @return risultato col testo grezzo in formato html oppure BSON
      */
-    public AIResult legge(final String urlDomain) {
-        AIResult result;
+    public AResult legge(final String urlDomain) {
+        AResult result;
         String codiceSorgente;
         URLConnection urlConn;
         String tag = TAG_INIZIALE;
@@ -157,8 +156,8 @@ public class WebService extends AbstractService {
      *
      * @return testo sorgente completo della pagina web in formato html
      */
-    public AIResult leggeWiki(final String wikiTitleGrezzo) {
-        AIResult result;
+    public AResult leggeWiki(final String wikiTitleGrezzo) {
+        AResult result;
         String wikiTitleElaborato = wikiTitleGrezzo.replaceAll(SPAZIO, UNDERSCORE);
         result = legge(TAG_WIKI + wikiTitleElaborato);
 

@@ -4,7 +4,6 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.apache.commons.io.*;
 import org.springframework.beans.factory.config.*;
@@ -94,8 +93,8 @@ public class FileService extends AbstractService {
      *
      * @return testo di errore, vuoto se il file esiste
      */
-    public AIResult checkDirectory(final File directoryToBeChecked) {
-        AIResult result = AResult.build().query("checkDirectory").target(directoryToBeChecked.getName());
+    public AResult checkDirectory(final File directoryToBeChecked) {
+        AResult result = AResult.build().query("checkDirectory").target(directoryToBeChecked.getName());
         String message;
 
         if (directoryToBeChecked == null) {
@@ -148,8 +147,8 @@ public class FileService extends AbstractService {
      *
      * @return testo di errore, vuoto se la directory esiste
      */
-    public AIResult checkDirectory(final String absolutePathDirectoryToBeChecked) {
-        AIResult result = AResult.build().query("checkDirectory").target(absolutePathDirectoryToBeChecked);
+    public AResult checkDirectory(final String absolutePathDirectoryToBeChecked) {
+        AResult result = AResult.build().query("checkDirectory").target(absolutePathDirectoryToBeChecked);
 
         if (absolutePathDirectoryToBeChecked == null) {
             logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
@@ -925,7 +924,7 @@ public class FileService extends AbstractService {
      *
      * @return true se la directory è stata copiata
      */
-    public AIResult copyDirectory(AECopy typeCopy, String srcPath, String destPath) {
+    public AResult copyDirectory(AECopy typeCopy, String srcPath, String destPath) {
         return copyDirectory(typeCopy, srcPath, destPath, VUOTA);
     }
 
@@ -1007,8 +1006,8 @@ public class FileService extends AbstractService {
      *
      * @return true se la directory  è stata copiata
      */
-    public AIResult copyDirectory(AECopy typeCopy, String srcPath, String destPath, String firstDirectory) {
-        AIResult result = AResult.errato();
+    public AResult copyDirectory(AECopy typeCopy, String srcPath, String destPath, String firstDirectory) {
+        AResult result = AResult.errato();
         boolean copiata = false;
         boolean esisteDest;
         String message = VUOTA;
@@ -1274,8 +1273,8 @@ public class FileService extends AbstractService {
      * @param pathFileToBeWritten nome completo del file
      * @param text                contenuto del file
      */
-    public AIResult scriveNewFile(String pathFileToBeWritten, String text) {
-        AIResult result;
+    public AResult scriveNewFile(String pathFileToBeWritten, String text) {
+        AResult result;
         String message;
 
         if (isEsisteFile(pathFileToBeWritten)) {
@@ -1301,7 +1300,7 @@ public class FileService extends AbstractService {
      * @param testo               contenuto del file
      * @param sovrascrive         anche se esiste già
      */
-    public AIResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo) {
+    public AResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo) {
         return scriveFile(typeCopy, pathFileToBeWritten, testo, VUOTA);
     }
 
@@ -1315,8 +1314,8 @@ public class FileService extends AbstractService {
      * @param directory           da cui iniziare il path per il messaggio di avviso
      * @param stampaInfo          flag per usare il logger
      */
-    public AIResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo, String firstDirectory) {
-        AIResult result = AResult.errato();
+    public AResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo, String firstDirectory) {
+        AResult result = AResult.errato();
         String message = VUOTA;
         String path;
 

@@ -2,7 +2,6 @@ package it.algos.vaad23.backend.wrapper;
 
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
-import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.service.*;
 import org.springframework.stereotype.*;
 
@@ -18,7 +17,7 @@ import java.util.*;
  * Semplice wrapper per veicolare una risposta con diverse property <br>
  */
 @Component
-public class AResult implements AIResult {
+public class AResult {
 
     private boolean valido;
 
@@ -79,46 +78,46 @@ public class AResult implements AIResult {
         this.intValue = intValue;
     }
 
-    public static AIResult build() {
+    public static AResult build() {
         return new AResult();
     }
 
-    public static AIResult valido() {
+    public static AResult valido() {
         return AResult.build();
     }
 
-    public AIResult validMessage(final String validMessage) {
+    public AResult validMessage(final String validMessage) {
         this.valido = true;
         this.validMessage = validMessage;
         return this;
     }
 
-    public AIResult errorMessage(final String errorMessage) {
+    public AResult errorMessage(final String errorMessage) {
         this.valido = false;
         this.errorMessage = errorMessage;
         return this;
     }
 
-    public AIResult query(final String queryType) {
+    public AResult query(final String queryType) {
         this.queryType = queryType;
         return this;
     }
 
-    public AIResult target(final String target) {
+    public AResult target(final String target) {
         this.target = target;
         return this;
     }
 
 
-    public static AIResult valido(final String validMessage) {
+    public static AResult valido(final String validMessage) {
         return new AResult(true, validMessage);
     }
 
-    public static AIResult valido(final String validMessage, final int value) {
+    public static AResult valido(final String validMessage, final int value) {
         return new AResult(true, validMessage, value);
     }
 
-    public static AIResult contenuto(final String text, final String source) {
+    public static AResult contenuto(final String text, final String source) {
         AResult result = new AResult();
 
         if (text != null && text.length() > 0) {
@@ -133,55 +132,48 @@ public class AResult implements AIResult {
         return result;
     }
 
-    public static AIResult contenuto(final String text) {
+    public static AResult contenuto(final String text) {
         return contenuto(text, VUOTA);
     }
 
-    public static AIResult errato() {
+    public static AResult errato() {
         return new AResult(false, "Non effettuato");
     }
 
-    public static AIResult errato(final int valore) {
+    public static AResult errato(final int valore) {
         return new AResult(false, VUOTA, valore);
     }
 
-    public static AIResult errato(final String errorMessage) {
+    public static AResult errato(final String errorMessage) {
         AResult result = new AResult(false, errorMessage);
         result.setErrorCode(errorMessage);
         return result;
     }
 
-    @Override
     public boolean isValido() {
         return valido;
     }
 
-    @Override
     public void setValido(final boolean valido) {
         this.valido = valido;
     }
 
-    @Override
     public boolean isErrato() {
         return !valido;
     }
 
-    @Override
     public String getCodeMessage() {
         return codeMessage;
     }
 
-    @Override
     public void setCodeMessage(String codeMessage) {
         this.codeMessage = codeMessage;
     }
 
-    @Override
     public String getMessage() {
         return isValido() ? getValidMessage() : getErrorMessage();
     }
 
-    @Override
     public void setMessage(final String message) {
         if (isValido()) {
             setValidMessage(message);
@@ -191,177 +183,143 @@ public class AResult implements AIResult {
         }
     }
 
-    @Override
     public String getErrorCode() {
         return errorCode;
     }
 
-    @Override
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
         this.setValido(false);
     }
 
-    @Override
-    public AIResult setErrorMessage(final String message) {
+    public AResult setErrorMessage(final String message) {
         errorMessage = message;
         this.setValido(false);
         return this;
     }
 
-    @Override
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    @Override
     public String getValidMessage() {
         return validMessage;
     }
 
-    @Override
     public void setValidMessage(String validMessage) {
         this.validMessage = validMessage;
         this.setValido(true);
     }
 
-    @Override
     public String getWebTitle() {
         return webTitle;
     }
 
-    @Override
     public void setWebTitle(String webTitle) {
         this.webTitle = webTitle;
     }
 
-    @Override
     public String getWikiTitle() {
         return wikiTitle;
     }
 
-    @Override
     public void setWikiTitle(String wikiTitle) {
         this.wikiTitle = wikiTitle;
     }
 
 
-    @Override
     public String getResponse() {
         return response;
     }
 
-    @Override
     public void setResponse(String response) {
         this.response = response;
     }
 
-    @Override
     public int getIntValue() {
         return intValue;
     }
 
-    @Override
     public void setIntValue(int intValue) {
         this.intValue = intValue;
     }
 
-    @Override
     public long getLongValue() {
         return longValue;
     }
 
-    @Override
     public void setLongValue(long longValue) {
         this.longValue = longValue;
     }
 
-    @Override
     public List getLista() {
         return lista;
     }
 
-    @Override
     public void setLista(List lista) {
         this.lista = lista;
     }
 
-    @Override
     public String getUrlPreliminary() {
         return urlPreliminary;
     }
 
-    @Override
     public void setUrlPreliminary(String urlPreliminary) {
         this.urlPreliminary = urlPreliminary;
     }
 
-    @Override
     public String getUrlRequest() {
         return urlRequest;
     }
 
-    @Override
     public void setUrlRequest(String urlRequest) {
         this.urlRequest = urlRequest;
     }
 
-    @Override
     public Map getMappa() {
         return mappa;
     }
 
-    @Override
     public void setMappa(Map mappa) {
         this.mappa = mappa;
     }
 
-    @Override
     public String getPreliminaryResponse() {
         return preliminaryResponse;
     }
 
-    @Override
     public void setPreliminaryResponse(String preliminaryResponse) {
         this.preliminaryResponse = preliminaryResponse;
     }
 
-    @Override
     public String getToken() {
         return token;
     }
 
-    @Override
     public void setToken(String token) {
         this.token = token;
     }
 
-    @Override
     public String getQueryType() {
         return queryType;
     }
 
-    @Override
     public void setQueryType(String queryType) {
         this.queryType = queryType;
     }
 
-    @Override
     public String getWikiText() {
         return wikiText;
     }
 
-    @Override
     public void setWikiText(String wikiText) {
         this.wikiText = wikiText;
     }
 
-    @Override
     public String getWikiBio() {
         return wikiBio;
     }
 
-    @Override
     public void setWikiBio(String wikiBio) {
         this.wikiBio = wikiBio;
     }
@@ -374,7 +332,6 @@ public class AResult implements AIResult {
         this.target = target;
     }
 
-    @Override
     public void print(final LogService logger, final AETypeLog typeLog) {
         if (isValido()) {
             //            logger.log(typeLog, getValidMessage()); @todo rimettere

@@ -8,6 +8,7 @@ import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.service.*;
+import it.algos.vaad23.backend.wrapper.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
@@ -95,9 +96,9 @@ public abstract class ATest {
 
     protected double ottenutoDouble = 0;
 
-    protected AIResult previstoRisultato;
+    protected AResult previstoRisultato;
 
-    protected AIResult ottenutoRisultato;
+    protected AResult ottenutoRisultato;
 
     protected Span span;
 
@@ -482,7 +483,7 @@ public abstract class ATest {
         return dateService.deltaTextEsatto(inizio);
     }
 
-    protected void printRisultato(AIResult result) {
+    protected void printRisultato(AResult result) {
         List lista = result.getLista();
         lista = lista != null && lista.size() > 20 ? lista.subList(0, 10) : lista;
 
