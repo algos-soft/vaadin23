@@ -20,7 +20,7 @@ import org.junit.jupiter.api.*;
 @Tag("quickly")
 @DisplayName("Reflection service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ReflectionServiceTest extends ATest {
+public class ReflectionServiceTest extends AlgosTest {
 
 
     /**

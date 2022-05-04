@@ -26,7 +26,7 @@ import java.util.stream.*;
 @Tag("quickly")
 @DisplayName("Resource service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ResourceServiceTest extends ATest {
+public class ResourceServiceTest extends AlgosTest {
 
 
     /**

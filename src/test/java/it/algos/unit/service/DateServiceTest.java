@@ -25,7 +25,7 @@ import java.util.stream.*;
 @Tag("slowly")
 @DisplayName("Date service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DateServiceTest extends ATest {
+public class DateServiceTest extends AlgosTest {
 
     public static final long MILLISECONDI_AL_MINUTO = 60000;
 

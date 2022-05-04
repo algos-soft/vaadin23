@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("quickly")
 @DisplayName("Class service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ClassServiceTest extends ATest {
+public class ClassServiceTest extends AlgosTest {
 
 
     /**

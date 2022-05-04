@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("quickly")
 @DisplayName("Web service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class WebServiceTest extends ATest {
+public class WebServiceTest extends AlgosTest {
 
 
     public static final String URL_WEB_GAC = URL_BASE_ALGOS + "hellogac.html";

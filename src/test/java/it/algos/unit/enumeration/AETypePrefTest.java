@@ -24,7 +24,7 @@ import java.util.*;
 @Tag("quickly")
 @Tag("enums")
 @DisplayName("Test sul service di preferenze")
-public class AETypePrefTest extends ATest {
+public class AETypePrefTest extends AlgosTest {
 
     @InjectMocks
     public PreferenzaBackend service;

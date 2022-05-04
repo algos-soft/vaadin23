@@ -22,7 +22,7 @@ import java.time.*;
 @Tag("slowly")
 @DisplayName("Mail service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class MailServiceTest extends ATest {
+public class MailServiceTest extends AlgosTest {
 
 
     /**

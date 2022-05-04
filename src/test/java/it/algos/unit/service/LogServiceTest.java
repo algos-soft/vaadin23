@@ -37,7 +37,7 @@ import java.util.stream.*;
 @Tag("spring")
 @DisplayName("Log service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class LogServiceTest extends ATest {
+public class LogServiceTest extends AlgosTest {
 
     @Autowired
     protected ApplicationContext appContext;

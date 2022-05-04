@@ -30,7 +30,7 @@ import javax.validation.constraints.*;
 @Tag("quickly")
 @DisplayName("Annotation service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AnnotationServiceTest extends ATest {
+public class AnnotationServiceTest extends AlgosTest {
 
 
     /**

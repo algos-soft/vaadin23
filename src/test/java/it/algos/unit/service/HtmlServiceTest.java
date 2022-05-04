@@ -22,7 +22,7 @@ import org.junit.jupiter.api.*;
 @Tag("quickly")
 @DisplayName("HtmlService - Gestione dei testi html.")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class HtmlServiceTest extends ATest {
+public class HtmlServiceTest extends AlgosTest {
 
 
     /**

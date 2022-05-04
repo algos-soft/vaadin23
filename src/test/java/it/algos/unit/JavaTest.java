@@ -29,7 +29,7 @@ import java.util.stream.*;
 @Tag("quickly")
 @DisplayName("Java - Nuove funzioni Java 17")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class JavaTest extends ATest {
+public class JavaTest extends AlgosTest {
 
 
     private String ottenuto;

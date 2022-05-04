@@ -26,7 +26,7 @@ import java.util.*;
 @Tag("quickly")
 @DisplayName("Array service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ArrayServiceTest extends ATest {
+public class ArrayServiceTest extends AlgosTest {
 
 
     /**

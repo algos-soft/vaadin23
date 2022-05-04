@@ -30,7 +30,7 @@ import java.util.stream.*;
  *
  * @see https://www.baeldung.com/parameterized-tests-junit-5
  */
-public abstract class ATest {
+public abstract class AlgosTest {
 
     public static final String SEP_RIGA = "====================";
 
@@ -268,6 +268,7 @@ public abstract class ATest {
         assertNotNull(htmlService);
         assertNotNull(webService);
         assertNotNull(loggerBackend);
+
     }
 
 

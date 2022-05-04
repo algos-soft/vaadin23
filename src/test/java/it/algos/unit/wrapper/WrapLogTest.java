@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("quickly")
 @DisplayName("WrapLog")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class WrapLogTest extends ATest {
+public class WrapLogTest extends AlgosTest {
 
 
     /**

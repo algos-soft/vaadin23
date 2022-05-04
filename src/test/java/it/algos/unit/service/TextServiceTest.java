@@ -27,7 +27,7 @@ import java.util.stream.*;
 @Tag("quickly")
 @DisplayName("Text service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TextServiceTest extends ATest {
+public class TextServiceTest extends AlgosTest {
 
 
     /**

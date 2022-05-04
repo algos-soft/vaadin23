@@ -1,5 +1,6 @@
 package it.algos.unit.service;
 
+import it.algos.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
+import org.springframework.boot.test.context.*;
 
 import java.io.*;
 import java.util.stream.*;
@@ -23,11 +25,12 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("quickly")
+@Tag("spring")
 @DisplayName("File service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class FileServiceTest extends ATest {
+public class FileServiceTest extends SpringTest {
 
 
     private static String PATH_DIRECTORY_TEST = "/Users/gac/Desktop/test/";
@@ -218,19 +221,103 @@ public class FileServiceTest extends ATest {
         System.out.println(VUOTA);
     }
 
-    //    @Test
+
+    @Test
     @Order(6)
-    @DisplayName("6 - Creo e cancello un file")
-    void xxxyy() {
-        System.out.println("6 - Creo e cancello un file");
+    @DisplayName("6 - Creo e cancello un file in una directory 'stabile'")
+    void fileRoot() {
+        System.out.println("6 - Creo e cancello un file in una directory 'stabile'");
         System.out.println(VUOTA);
 
-        sorgente = "/Users/gac/Desktop/test/Mantova/";
+        sorgente = "/Users/gac/Desktop/Mantova.txt";
+        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
+        System.out.println(VUOTA);
+
+        System.out.println("A - Controlla l'esistenza");
         ottenutoBooleano = service.isEsisteFile(sorgente);
         assertFalse(ottenutoBooleano);
-        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
         System.out.println("Prima non esiste");
-        service.creaFileStr(sorgente);
+        System.out.println(VUOTA);
+
+        System.out.println("B - Creo il file");
+        ottenutoRisultato = service.creaFile(sorgente);
+        assertTrue(textService.isEmpty(ottenuto));
+        System.out.println("Il file è stato creato");
+        System.out.println(VUOTA);
+
+        System.out.println("C - Ricontrolla l'esistenza");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertTrue(ottenutoBooleano);
+        System.out.println("Il file esiste");
+        System.out.println(VUOTA);
+
+        System.out.println("D - Cancello il file");
+        ottenutoRisultato = service.deleteFile(sorgente);
+        assertTrue(textService.isEmpty(ottenuto));
+        System.out.println("Il file è stato cancellato");
+        System.out.println(VUOTA);
+
+        System.out.println("E - Controllo finale");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertFalse(ottenutoBooleano);
+        System.out.println("Il file non esiste");
+        System.out.println(VUOTA);
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - Creo e cancello un file in una directory 'inesistente'")
+    void fileSottoCartella() {
+        System.out.println("7 - Creo e cancello un file in una directory 'inesistente'");
+        System.out.println(VUOTA);
+
+        sorgente2 = "/Users/gac/Desktop/Torino/";
+        sorgente3 = sorgente2 + "Padova/";
+        sorgente = sorgente3 + "Mantova.txt";
+        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
+        System.out.println(VUOTA);
+
+        System.out.println("A - Controlla l'esistenza");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertFalse(ottenutoBooleano);
+        System.out.println("Prima non esiste");
+        System.out.println(VUOTA);
+
+        System.out.println("B - Creo il file");
+        ottenutoRisultato = service.creaFile(sorgente);
+        assertTrue(textService.isEmpty(ottenuto));
+        System.out.println("Il file è stato creato");
+        System.out.println(VUOTA);
+
+        System.out.println("C - Ricontrolla l'esistenza");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertTrue(ottenutoBooleano);
+        System.out.println("Il file esiste");
+        System.out.println(VUOTA);
+
+        System.out.println("D - Cancello il file");
+        ottenutoRisultato = service.deleteFile(sorgente);
+        assertTrue(textService.isEmpty(ottenuto));
+        System.out.println("Il file è stato cancellato");
+        System.out.println(VUOTA);
+
+        System.out.println("E - Controllo finale del file");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertFalse(ottenutoBooleano);
+        System.out.println("Il file non esiste");
+        System.out.println(VUOTA);
+
+        System.out.println("F - Cancello anche la(e) cartella(e) intermedia(e)");
+        ottenutoRisultato = service.deleteDirectory(sorgente2);
+        assertTrue(textService.isEmpty(ottenuto));
+        System.out.println("Cancellata la directory provvisoria");
+        System.out.println(VUOTA);
+
+        System.out.println("G - Controllo finale della directory");
+        ottenutoBooleano = service.isEsisteDirectory(sorgente2);
+        assertFalse(ottenutoBooleano);
+        System.out.println("La directory provvisoria non esiste");
+        System.out.println(VUOTA);
     }
 
     /**

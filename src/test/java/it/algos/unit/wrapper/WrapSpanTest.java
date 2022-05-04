@@ -26,7 +26,7 @@ import org.mockito.*;
 @Tag("quickly")
 @DisplayName("WrapSpan")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class WrapSpanTest extends ATest {
+public class WrapSpanTest extends AlgosTest {
 
     private UI ui = new UI();
 
