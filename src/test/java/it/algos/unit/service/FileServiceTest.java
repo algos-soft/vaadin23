@@ -5,6 +5,7 @@ import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 
 import java.io.*;
@@ -113,127 +114,107 @@ public class FileServiceTest extends ATest {
     }
 
 
-    @Test
+    @ParameterizedTest
+    @MethodSource(value = "DIRECTORY")
     @Order(1)
-    @DisplayName("1 - Esistenza di una directory")
-    void isEsisteDirectory() {
-        System.out.println("1 - Esistenza di una directory");
+    @DisplayName("1 - Check di una directory")
         //--path
         //--esiste
-        DIRECTORY().forEach(this::isEsisteDirectoryBase);
+    void checkDirectory(final String sorgente, final boolean previstoBooleano) {
+        System.out.println("1 - Check di una directory");
+        System.out.println(VUOTA);
+
+        ottenutoRisultato = service.checkDirectory(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertEquals(previstoBooleano, ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
     }
 
-
-    //--path
-    //--esiste
-    void isEsisteDirectoryBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
+    @ParameterizedTest
+    @MethodSource(value = "DIRECTORY")
+    @Order(2)
+    @DisplayName("2 - Esistenza di una directory")
+        //--path
+        //--esiste
+    void isEsisteDirectory(final String sorgente, final boolean previstoBooleano) {
+        System.out.println("2 - Esistenza di una directory");
+        System.out.println(VUOTA);
 
         ottenutoBooleano = service.isEsisteDirectory(sorgente);
         assertEquals(previstoBooleano, ottenutoBooleano);
-
-        System.out.println(VUOTA);
-        System.out.println(String.format("La directory '%s' %s", sorgente, ottenutoBooleano ? "esiste" : "non esiste"));
     }
 
-    @Test
-    @Order(2)
-    @DisplayName("2 - Errore nella ricerca di una directory")
-    void isEsisteDirectoryStr() {
-        System.out.println("2 - Errore nella ricerca di una directory");
-        //--path
-        //--esiste
-        DIRECTORY().forEach(this::isEsisteDirectoryStrBase);
-    }
-
-    //--path
-    //--esiste
-    void isEsisteDirectoryStrBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
-
-        ottenuto = service.isEsisteDirectoryStr(sorgente);
-        if (previstoBooleano) {
-            assertEquals(VUOTA, ottenuto);
-            System.out.println(VUOTA);
-            System.out.println(String.format("%s%s%s", sorgente, FORWARD, "esiste"));
-        }
-        else {
-            assertNotNull(ottenuto);
-            System.out.println(VUOTA);
-            System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
-        }
-    }
-
-
-    @Test
+    @ParameterizedTest
+    @MethodSource(value = "FILE")
     @Order(3)
-    @DisplayName("3 - Esistenza di un file")
+    @DisplayName("3 - Check di un file")
+        //--path
+        //--esiste
     void isEsisteFile() {
-        System.out.println("3 - Esistenza di un file");
-        //--path
-        //--esiste
-        FILE().forEach(this::isEsisteFileBase);
-    }
-
-    //--path
-    //--esiste
-    void isEsisteFileBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
-
-        ottenutoBooleano = service.isEsisteFile(sorgente);
-        assertEquals(previstoBooleano, ottenutoBooleano);
-
+        System.out.println("3 - Check di un file");
         System.out.println(VUOTA);
-        System.out.println(String.format("Il file '%s' %s", sorgente, ottenutoBooleano ? "esiste" : "non esiste"));
-        if (ottenutoBooleano) {
-            unFile = new File(sorgente);
-            if (unFile != null) {
-                System.out.println("file.getName() = " + unFile.getName());
-                System.out.println("file.getPath() = " + unFile.getPath());
-                System.out.println("file.getAbsolutePath() = " + unFile.getAbsolutePath());
-                System.out.println(VUOTA);
-            }
-            else {
-                System.out.println(String.format("Non sono riuscito a costruire il file '%s", sorgente));
-            }
-        }
+
+        //        ottenutoRisultato = service.checkFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertEquals(previstoBooleano, ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
     }
 
-    @Test
-    @Order(4)
-    @DisplayName("4 - Errore nella ricerca di un file")
-    void isEsisteFileStr() {
-        System.out.println("2 - Errore nella ricerca di un file");
-        //--path
-        //--esiste
-        FILE().forEach(this::isEsisteFileStrBase);
-    }
+    //    //--path
+    //    //--esiste
+    //    void isEsisteFileBase(Arguments arg) {
+    //        Object[] mat = arg.get();
+    //        sorgente = (String) mat[0];
+    //        previstoBooleano = (boolean) mat[1];
+    //
+    //        ottenutoBooleano = service.isEsisteFile(sorgente);
+    //        assertEquals(previstoBooleano, ottenutoBooleano);
+    //
+    //        System.out.println(VUOTA);
+    //        System.out.println(String.format("Il file '%s' %s", sorgente, ottenutoBooleano ? "esiste" : "non esiste"));
+    //        if (ottenutoBooleano) {
+    //            unFile = new File(sorgente);
+    //            if (unFile != null) {
+    //                System.out.println("file.getName() = " + unFile.getName());
+    //                System.out.println("file.getPath() = " + unFile.getPath());
+    //                System.out.println("file.getAbsolutePath() = " + unFile.getAbsolutePath());
+    //                System.out.println(VUOTA);
+    //            }
+    //            else {
+    //                System.out.println(String.format("Non sono riuscito a costruire il file '%s", sorgente));
+    //            }
+    //        }
+    //    }
 
-    //--path
-    //--esiste
-    void isEsisteFileStrBase(Arguments arg) {
-        Object[] mat = arg.get();
-        sorgente = (String) mat[0];
-        previstoBooleano = (boolean) mat[1];
+    //    @Test
+    //    @Order(4)
+    //    @DisplayName("4 - Errore nella ricerca di un file")
+    //    void isEsisteFileStr() {
+    //        System.out.println("2 - Errore nella ricerca di un file");
+    //        //--path
+    //        //--esiste
+    //        FILE().forEach(this::isEsisteFileStrBase);
+    //    }
 
-        ottenuto = service.isEsisteFileStr(sorgente);
-        if (previstoBooleano) {
-            assertEquals(VUOTA, ottenuto);
-            System.out.println(VUOTA);
-            System.out.println(String.format("%s%s%s", sorgente, FORWARD, "File trovato"));
-        }
-        else {
-            assertNotNull(ottenuto);
-            System.out.println(VUOTA);
-            System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
-        }
-    }
+    //    //--path
+    //    //--esiste
+    //    void isEsisteFileStrBase(Arguments arg) {
+    //        Object[] mat = arg.get();
+    //        sorgente = (String) mat[0];
+    //        previstoBooleano = (boolean) mat[1];
+    //
+    //        ottenuto = service.isEsisteFileStr(sorgente);
+    //        if (previstoBooleano) {
+    //            assertEquals(VUOTA, ottenuto);
+    //            System.out.println(VUOTA);
+    //            System.out.println(String.format("%s%s%s", sorgente, FORWARD, "File trovato"));
+    //        }
+    //        else {
+    //            assertNotNull(ottenuto);
+    //            System.out.println(VUOTA);
+    //            System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+    //        }
+    //    }
 
     @Test
     @Order(5)

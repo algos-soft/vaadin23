@@ -40,7 +40,9 @@ public class FileService extends AbstractService {
 
     public static final String PARAMETRO_NULLO = "Il parametro in ingresso è nullo";
 
-    public static final String PATH_NULLO = "Il path in ingresso è nullo o vuoto";
+    public static final String PATH_NULLO = "Il path in ingresso è nullo";
+
+    public static final String PATH_VUOTO = "Il path in ingresso è vuoto";
 
     public static final String PATH_NOT_ABSOLUTE = "Il primo carattere del path NON è uno '/' (slash)";
 
@@ -83,26 +85,7 @@ public class FileService extends AbstractService {
      * <p>
      * Il path non deve essere nullo <br>
      * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed inziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
-     *
-     * @param directoryToBeChecked con path completo che DEVE cominciare con '/' SLASH
-     *
-     * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
-     */
-    public boolean isEsisteDirectory(final File directoryToBeChecked) {
-        return isEsisteDirectoryStr(directoryToBeChecked).equals(VUOTA);
-    }
-
-
-    /**
-     * Controlla l'esistenza di una directory
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
      * Il path deve essere completo e terminare con un 'suffix' <br>
      * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
      * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
@@ -111,44 +94,99 @@ public class FileService extends AbstractService {
      *
      * @return testo di errore, vuoto se il file esiste
      */
-    public String isEsisteDirectoryStr(File directoryToBeChecked) {
+    public AIResult checkDirectory(final File directoryToBeChecked) {
+        AIResult result = AResult.build().query("checkDirectory").target(directoryToBeChecked.getName());
         String message;
 
         if (directoryToBeChecked == null) {
             logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return PARAMETRO_NULLO;
+            return result.errorMessage(PARAMETRO_NULLO);
         }
 
         if (textService.isEmpty(directoryToBeChecked.getName())) {
             logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return PATH_NULLO;
+            return result.errorMessage(PATH_NULLO);
         }
 
         if (!directoryToBeChecked.getPath().equals(directoryToBeChecked.getAbsolutePath())) {
-            //            message = String.format("Il primo carattere del path di %s NON è uno '/' (slash)", directoryToBeChecked.getAbsolutePath());
-            //            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-            return PATH_NOT_ABSOLUTE;
+            message = String.format("%s%S%S", PATH_NOT_ABSOLUTE, FORWARD, directoryToBeChecked.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(message);
         }
 
         if (directoryToBeChecked.exists()) {
             if (directoryToBeChecked.isDirectory()) {
-                //                message = String.format("Trovata la directory %s", directoryToBeChecked.getAbsolutePath());
-                //                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
-                return VUOTA;
+                message = String.format("Trovata la directory %s", directoryToBeChecked.getAbsolutePath());
+                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                return result.validMessage(message);
             }
             else {
-                //                message = String.format("%s non è una directory", directoryToBeChecked.getAbsolutePath());
-                //                logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
-                return NON_E_DIRECTORY;
+                message = String.format("%s%S%S", NON_E_DIRECTORY, FORWARD, directoryToBeChecked.getAbsolutePath());
+                logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                return result.errorMessage(message);
             }
         }
         else {
-            //            message = String.format("La directory %s non esiste", directoryToBeChecked.getAbsolutePath());
-            //            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
-            return NON_ESISTE_DIRECTORY;
+            message = String.format("%s%S%S", NON_ESISTE_DIRECTORY, FORWARD, directoryToBeChecked.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            return result.errorMessage(message);
         }
     }
 
+    /**
+     * Controlla l'esistenza di una directory <br>
+     * <p>
+     * Il path non deve essere nullo <br>
+     * Il path non deve essere vuoto <br>
+     * Il path deve essere completo e iniziare con uno 'slash' <br>
+     * Il path deve essere completo e terminare con un 'suffix' <br>
+     * Controlla che getPath() e getAbsolutePath() siano uguali <br>
+     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
+     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
+     *
+     * @param absolutePathDirectoryToBeChecked path completo della directory che DEVE cominciare con '/' SLASH
+     *
+     * @return testo di errore, vuoto se la directory esiste
+     */
+    public AIResult checkDirectory(final String absolutePathDirectoryToBeChecked) {
+        AIResult result = AResult.build().query("checkDirectory").target(absolutePathDirectoryToBeChecked);
+
+        if (absolutePathDirectoryToBeChecked == null) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_NULLO);
+        }
+        if (absolutePathDirectoryToBeChecked.length() == 0) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
+        }
+
+        if (this.isNotSlashIniziale(absolutePathDirectoryToBeChecked)) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_NOT_ABSOLUTE);
+        }
+
+        return checkDirectory(new File(absolutePathDirectoryToBeChecked));
+    }
+
+
+    /**
+     * Controlla l'esistenza di una directory <br>
+     * <p>
+     * Il path non deve essere nullo <br>
+     * Il path non deve essere vuoto <br>
+     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+     * Il path deve essere completo e terminare con un 'suffix' <br>
+     * Controlla che getPath() e getAbsolutePath() siano uguali <br>
+     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
+     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
+     *
+     * @param absolutePathDirectoryToBeChecked path completo della directory che DEVE cominciare con '/' SLASH
+     *
+     * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
+     */
+    public boolean isEsisteDirectory(final String absolutePathDirectoryToBeChecked) {
+        return checkDirectory(absolutePathDirectoryToBeChecked).isValido();
+    }
 
     /**
      * Creazioni di una directory 'parent' <br>
@@ -179,75 +217,24 @@ public class FileService extends AbstractService {
         return risposta;
     }
 
-
-    /**
-     * Controlla l'esistenza di una directory <br>
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * Controlla che getPath() e getAbsolutePath() siano uguali <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
-     *
-     * @param absolutePathDirectoryToBeChecked path completo della directory che DEVE cominciare con '/' SLASH
-     *
-     * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
-     */
-    public boolean isNotEsisteDirectory(String absolutePathDirectoryToBeChecked) {
-        return !isEsisteDirectoryStr(absolutePathDirectoryToBeChecked).equals(VUOTA);
-    }
-
-
-    /**
-     * Controlla l'esistenza di una directory <br>
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * Controlla che getPath() e getAbsolutePath() siano uguali <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
-     *
-     * @param absolutePathDirectoryToBeChecked path completo della directory che DEVE cominciare con '/' SLASH
-     *
-     * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
-     */
-    public boolean isEsisteDirectory(final String absolutePathDirectoryToBeChecked) {
-        return isEsisteDirectoryStr(absolutePathDirectoryToBeChecked).equals(VUOTA);
-    }
-
-
-    /**
-     * Controlla l'esistenza di una directory <br>
-     * <p>
-     * Il path non deve essere nullo <br>
-     * Il path non deve essere vuoto <br>
-     * Il path deve essere completo ed iniziare con uno 'slash' <br>
-     * Il path deve essere completo e terminare con un 'suffix' <br>
-     * Controlla che getPath() e getAbsolutePath() siano uguali <br>
-     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
-     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
-     *
-     * @param absolutePathDirectoryToBeChecked path completo della directory che DEVE cominciare con '/' SLASH
-     *
-     * @return testo di errore, vuoto se la directory esiste
-     */
-    public String isEsisteDirectoryStr(final String absolutePathDirectoryToBeChecked) {
-        if (textService.isEmpty(absolutePathDirectoryToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return PATH_NULLO;
-        }
-
-        if (this.isNotSlashIniziale(absolutePathDirectoryToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return PATH_NOT_ABSOLUTE;
-        }
-
-        return isEsisteDirectoryStr(new File(absolutePathDirectoryToBeChecked));
-    }
+    //    /**
+    //     * Controlla l'esistenza di una directory <br>
+    //     * <p>
+    //     * Il path non deve essere nullo <br>
+    //     * Il path non deve essere vuoto <br>
+    //     * Il path deve essere completo ed iniziare con uno 'slash' <br>
+    //     * Il path deve essere completo e terminare con un 'suffix' <br>
+    //     * Controlla che getPath() e getAbsolutePath() siano uguali <br>
+    //     * La richiesta è CASE INSENSITIVE (maiuscole e minuscole SONO uguali) <br>
+    //     * Una volta costruita la directory, getPath() e getAbsolutePath() devono essere uguali
+    //     *
+    //     * @param absolutePathDirectoryToBeChecked path completo della directory che DEVE cominciare con '/' SLASH
+    //     *
+    //     * @return true se la directory esiste, false se non sono rispettate le condizioni della richiesta
+    //     */
+    //    public boolean isNotEsisteDirectory(String absolutePathDirectoryToBeChecked) {
+    //        return !isEsisteDirectoryStr(absolutePathDirectoryToBeChecked).equals(VUOTA);
+    //    }
 
 
     /**
@@ -338,7 +325,7 @@ public class FileService extends AbstractService {
 
         risposta = isEsisteFileStr(new File(absolutePathFileWithSuffixToBeChecked));
         if (!risposta.equals(VUOTA)) {
-            if (isEsisteDirectory(new File(absolutePathFileWithSuffixToBeChecked))) {
+            if (isEsisteDirectory(absolutePathFileWithSuffixToBeChecked)) {
                 logger.error(new WrapLog().exception(new AlgosException(NON_E_FILE)).usaDb().type(AETypeLog.file));
                 return NON_E_FILE;
             }

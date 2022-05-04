@@ -491,6 +491,7 @@ public abstract class ATest {
         System.out.println(String.format("Status: %s", result.isValido() ? "true" : "false"));
         System.out.println(String.format("Query: %s", result.getQueryType()));
         System.out.println(String.format("Title: %s", result.getWikiTitle()));
+        System.out.println(String.format("Target: %s", result.getTarget()));
         System.out.println(String.format("Preliminary url: %s", result.getUrlPreliminary()));
         System.out.println(String.format("Secondary url: %s", result.getUrlRequest()));
         System.out.println(String.format("Preliminary response: %s", result.getPreliminaryResponse()));

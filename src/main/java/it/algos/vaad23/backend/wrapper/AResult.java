@@ -30,6 +30,8 @@ public class AResult implements AIResult {
 
     private String urlRequest = VUOTA;
 
+    private String target = VUOTA;
+
     private String errorCode = VUOTA;
 
     private String errorMessage = VUOTA;
@@ -77,9 +79,36 @@ public class AResult implements AIResult {
         this.intValue = intValue;
     }
 
-    public static AIResult valido() {
+    public static AIResult build() {
         return new AResult();
     }
+
+    public static AIResult valido() {
+        return AResult.build();
+    }
+
+    public AIResult validMessage(final String validMessage) {
+        this.valido = true;
+        this.validMessage = validMessage;
+        return this;
+    }
+
+    public AIResult errorMessage(final String errorMessage) {
+        this.valido = false;
+        this.errorMessage = errorMessage;
+        return this;
+    }
+
+    public AIResult query(final String queryType) {
+        this.queryType = queryType;
+        return this;
+    }
+
+    public AIResult target(final String target) {
+        this.target = target;
+        return this;
+    }
+
 
     public static AIResult valido(final String validMessage) {
         return new AResult(true, validMessage);
@@ -335,6 +364,14 @@ public class AResult implements AIResult {
     @Override
     public void setWikiBio(String wikiBio) {
         this.wikiBio = wikiBio;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 
     @Override
