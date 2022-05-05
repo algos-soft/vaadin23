@@ -3,6 +3,7 @@ package it.algos.unit.service;
 import it.algos.*;
 import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
+import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,8 +33,9 @@ import java.util.stream.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FileServiceTest extends SpringTest {
 
+    private static String NOME_FILE_UNO = "Mantova.txt";
 
-    private static String PATH_DIRECTORY_TEST = "/Users/gac/Desktop/test/";
+    private static String PATH_DIRECTORY_TEST = "/Users/gac/Desktop/testvaadin23/";
 
     private static String PATH_DIRECTORY_UNO = PATH_DIRECTORY_TEST + "Pippo/";
 
@@ -90,6 +92,26 @@ public class FileServiceTest extends SpringTest {
         );
     }
 
+
+    //--type copy
+    //--pathDir sorgente
+    //--pathDir destinazione
+    //--nome file
+    //--flag copiato
+    protected static Stream<Arguments> COPY_FILE() {
+        return Stream.of(
+                Arguments.of(null, VUOTA, VUOTA, VUOTA, false),
+                Arguments.of(AECopy.sourceSoloSeNonEsiste, VUOTA, VUOTA, NOME_FILE_UNO, false),
+                Arguments.of(AECopy.fileSovrascriveSempreAncheSeEsiste, VUOTA, VUOTA, VUOTA, false),
+                Arguments.of(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, VUOTA, false),
+                Arguments.of(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, VUOTA, false),
+                Arguments.of(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, NOME_FILE_UNO, false),
+                Arguments.of(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, NOME_FILE_UNO, false),
+                Arguments.of(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_TRE, VUOTA, NOME_FILE_UNO, false),
+                Arguments.of(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_TRE, VUOTA, NOME_FILE_UNO, false)
+        );
+    }
+
     /**
      * Execute only once before running all tests <br>
      * Esegue una volta sola, chiamato dalle sottoclassi <br>
@@ -102,8 +124,18 @@ public class FileServiceTest extends SpringTest {
 
         //--reindirizzo l'istanza della superclasse
         service = fileService;
+        this.creaCartelle();
     }
 
+    private void creaCartelle() {
+        service.creaDirectory(PATH_DIRECTORY_UNO);
+        service.creaDirectory(PATH_DIRECTORY_DUE);
+        service.creaDirectory(PATH_DIRECTORY_TRE);
+    }
+
+    private void cancellaCartelle() {
+        service.deleteDirectory(PATH_DIRECTORY_TEST);
+    }
 
     /**
      * Qui passa prima di ogni test <br>
@@ -191,35 +223,37 @@ public class FileServiceTest extends SpringTest {
         System.out.println("5 - Creo e cancello una directory");
         System.out.println(VUOTA);
 
-        sorgente = "/Users/gac/Desktop/test4522/";
+        sorgente = PATH_DIRECTORY_TEST + "test4522/";
         System.out.println(String.format("Nome (completo) della directory: %s", sorgente));
         System.out.println(VUOTA);
 
-        System.out.println("A - Controlla l'esistenza");
+        System.out.println("A - Controlla l'esistenza (isEsisteDirectory)");
         ottenutoBooleano = service.isEsisteDirectory(sorgente);
         assertFalse(ottenutoBooleano);
         System.out.println("Prima non esiste");
         System.out.println(VUOTA);
 
-        System.out.println("B - Crea la directory");
+        System.out.println("B - Crea la directory (creaDirectory)");
         ottenutoRisultato = service.creaDirectory(sorgente);
-        assertTrue(textService.isEmpty(ottenuto));
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
         System.out.println("La directory è stata creata");
         System.out.println(VUOTA);
 
-        System.out.println("C - Ricontrolla l'esistenza");
+        System.out.println("C - Ricontrolla l'esistenza (isEsisteDirectory)");
         ottenutoBooleano = service.isEsisteDirectory(sorgente);
         assertTrue(ottenutoBooleano);
         System.out.println("La directory esiste");
         System.out.println(VUOTA);
 
-        System.out.println("D - Cancella la directory");
+        System.out.println("D - Cancella la directory (deleteDirectory)");
         ottenutoRisultato = service.deleteDirectory(sorgente);
-        assertTrue(textService.isEmpty(ottenuto));
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
         System.out.println("La directory è stata cancellata");
         System.out.println(VUOTA);
 
-        System.out.println("E - Controllo finale");
+        System.out.println("E - Controllo finale (isEsisteDirectory)");
         ottenutoBooleano = service.isEsisteDirectory(sorgente);
         assertFalse(ottenutoBooleano);
         System.out.println("La directory non esiste");
@@ -232,37 +266,40 @@ public class FileServiceTest extends SpringTest {
     @DisplayName("6 - Creo e cancello un file in una directory 'stabile'")
     void fileRoot() {
         System.out.println("6 - Creo e cancello un file in una directory 'stabile'");
+        System.out.println("Il file viene creato VUOTO");
         System.out.println(VUOTA);
 
         sorgente = "/Users/gac/Desktop/Mantova.txt";
         System.out.println(String.format("Nome (completo) del file: %s", sorgente));
         System.out.println(VUOTA);
 
-        System.out.println("A - Controlla l'esistenza");
+        System.out.println("A - Controlla l'esistenza (isEsisteFile)");
         ottenutoBooleano = service.isEsisteFile(sorgente);
         assertFalse(ottenutoBooleano);
         System.out.println("Prima non esiste");
         System.out.println(VUOTA);
 
-        System.out.println("B - Creo il file");
+        System.out.println("B - Creo il file (creaFile)");
         ottenutoRisultato = service.creaFile(sorgente);
-        assertTrue(textService.isEmpty(ottenuto));
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
         System.out.println("Il file è stato creato");
         System.out.println(VUOTA);
 
-        System.out.println("C - Ricontrolla l'esistenza");
+        System.out.println("C - Ricontrolla l'esistenza (isEsisteFile)");
         ottenutoBooleano = service.isEsisteFile(sorgente);
         assertTrue(ottenutoBooleano);
         System.out.println("Il file esiste");
         System.out.println(VUOTA);
 
-        System.out.println("D - Cancello il file");
+        System.out.println("D - Cancello il file (deleteFile)");
         ottenutoRisultato = service.deleteFile(sorgente);
-        assertTrue(textService.isEmpty(ottenuto));
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
         System.out.println("Il file è stato cancellato");
         System.out.println(VUOTA);
 
-        System.out.println("E - Controllo finale");
+        System.out.println("E - Controllo finale (isEsisteFile)");
         ottenutoBooleano = service.isEsisteFile(sorgente);
         assertFalse(ottenutoBooleano);
         System.out.println("Il file non esiste");
@@ -274,51 +311,55 @@ public class FileServiceTest extends SpringTest {
     @DisplayName("7 - Creo e cancello un file in una directory 'inesistente'")
     void fileSottoCartella() {
         System.out.println("7 - Creo e cancello un file in una directory 'inesistente'");
+        System.out.println("Il file viene creato VUOTO");
         System.out.println(VUOTA);
 
-        sorgente2 = "/Users/gac/Desktop/Torino/";
+        sorgente2 = PATH_DIRECTORY_TEST + "Torino/";
         sorgente3 = sorgente2 + "Padova/";
         sorgente = sorgente3 + "Mantova.txt";
         System.out.println(String.format("Nome (completo) del file: %s", sorgente));
         System.out.println(VUOTA);
 
-        System.out.println("A - Controlla l'esistenza");
+        System.out.println("A - Controlla l'esistenza (isEsisteFile)");
         ottenutoBooleano = service.isEsisteFile(sorgente);
         assertFalse(ottenutoBooleano);
         System.out.println("Prima non esiste");
         System.out.println(VUOTA);
 
-        System.out.println("B - Creo il file");
+        System.out.println("B - Creo il file (creaDirectoryParentAndFile)");
         ottenutoRisultato = service.creaFile(sorgente);
-        assertTrue(textService.isEmpty(ottenuto));
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
         System.out.println("Il file è stato creato");
         System.out.println(VUOTA);
 
-        System.out.println("C - Ricontrolla l'esistenza");
+        System.out.println("C - Ricontrolla l'esistenza (isEsisteFile)");
         ottenutoBooleano = service.isEsisteFile(sorgente);
         assertTrue(ottenutoBooleano);
         System.out.println("Il file esiste");
         System.out.println(VUOTA);
 
-        System.out.println("D - Cancello il file");
+        System.out.println("D - Cancello il file (deleteFile)");
         ottenutoRisultato = service.deleteFile(sorgente);
-        assertTrue(textService.isEmpty(ottenuto));
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
         System.out.println("Il file è stato cancellato");
         System.out.println(VUOTA);
 
-        System.out.println("E - Controllo finale del file");
+        System.out.println("E - Controllo finale del file (isEsisteFile)");
         ottenutoBooleano = service.isEsisteFile(sorgente);
         assertFalse(ottenutoBooleano);
         System.out.println("Il file non esiste");
         System.out.println(VUOTA);
 
-        System.out.println("F - Cancello anche la(e) cartella(e) intermedia(e)");
+        System.out.println("F - Cancello anche la(e) cartella(e) intermedia(e) (deleteDirectory)");
         ottenutoRisultato = service.deleteDirectory(sorgente2);
-        assertTrue(textService.isEmpty(ottenuto));
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
         System.out.println("Cancellata la directory provvisoria");
         System.out.println(VUOTA);
 
-        System.out.println("G - Controllo finale della directory");
+        System.out.println("G - Controllo finale della directory (isEsisteDirectory)");
         ottenutoBooleano = service.isEsisteDirectory(sorgente2);
         assertFalse(ottenutoBooleano);
         System.out.println("La directory provvisoria non esiste");
@@ -340,6 +381,259 @@ public class FileServiceTest extends SpringTest {
         assertEquals(mancaSlash, ottenutoBooleano);
     }
 
+    @ParameterizedTest
+    @MethodSource(value = "COPY_FILE")
+    @Order(9)
+    @DisplayName("9 - Copia il file")
+        //--type copy
+        //--pathDir sorgente
+        //--pathDir destinazione
+        //--nome file
+        //--flag copiato
+    void copyFile(final AECopy typeCopy, final String srcPathDir, final String destPathDir, final String nomeFile, final boolean copiato) {
+        System.out.println("9 - Copia il file");
+        System.out.println(VUOTA);
+
+        ottenutoRisultato = service.copyFile(typeCopy, srcPathDir, destPathDir, nomeFile);
+        assertNotNull(ottenutoRisultato);
+        assertEquals(copiato, ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("10 - Copia un file NON esistente (AECopy.fileSoloSeNonEsiste)")
+    void copyFile() {
+        System.out.println("10 - Copia un file NON esistente (AECopy.fileSoloSeNonEsiste)");
+        System.out.println("Il file viene creato VUOTO");
+        System.out.println(VUOTA);
+
+        sorgente = PATH_DIRECTORY_UNO + NOME_FILE_UNO;
+        sorgente2 = PATH_DIRECTORY_DUE + NOME_FILE_UNO;
+        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
+
+        System.out.println(VUOTA);
+        System.out.println("A - Inizialmente non esiste (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("B - Viene creato (creaFile)");
+        ottenutoRisultato = service.creaFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println("C - Controlla che NON esista nella directory di destinazione (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("D - Il file viene copiato (copyFile)");
+        ottenutoRisultato = service.copyFile(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println("E - Controlla che sia stato copiato (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        assertTrue(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("F - Cancellazione finale del file dalla directory sorgente (deleteFile)");
+        ottenutoRisultato = service.deleteFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println("G - Cancellazione finale del file dalla directory destinazione (deleteFile)");
+        ottenutoRisultato = service.deleteFile(sorgente2);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("11 - Cerca di copiare un file GIA esistente (AECopy.fileSoloSeNonEsiste)")
+    void copyFile2() {
+        System.out.println("11 - Cerca di copiare un file GIA esistente (AECopy.fileSoloSeNonEsiste)");
+        System.out.println("Il file viene creato VUOTO");
+        System.out.println(VUOTA);
+
+        sorgente = PATH_DIRECTORY_UNO + NOME_FILE_UNO;
+        sorgente2 = PATH_DIRECTORY_DUE + NOME_FILE_UNO;
+        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
+
+        System.out.println(VUOTA);
+        System.out.println("A - Inizialmente non esiste nella directory sorgente (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("B - Inizialmente non esiste nella directory destinazione (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("C - Viene creato nella directory sorgente (creaFile)");
+        ottenutoRisultato = service.creaFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println("D - Viene creato nella directory destinazione (creaFile)");
+        ottenutoRisultato = service.creaFile(sorgente2);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println("E - Controlla che esista nella directory sorgente (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertTrue(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("F - Controlla che esista nella directory di destinazione (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        assertTrue(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("G - Prova a copiare il file sovrascrivendo quello esistente (copyFile)");
+        ottenutoRisultato = service.copyFile(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println("H - Cancellazione finale del file dalla directory sorgente (deleteFile)");
+        ottenutoRisultato = service.deleteFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(" - Cancellazione finale del file dalla directory destinazione (deleteFile)");
+        ottenutoRisultato = service.deleteFile(sorgente2);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+    }
+
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - Copia un file esistente (AECopy.fileSovrascriveSempreAncheSeEsiste)")
+    void copyFile3() {
+        System.out.println("12 - Copia un file esistente (AECopy.fileSovrascriveSempreAncheSeEsiste)");
+        System.out.println("Il file viene creato VUOTO");
+        System.out.println(VUOTA);
+
+        sorgente = PATH_DIRECTORY_UNO + NOME_FILE_UNO;
+        sorgente2 = PATH_DIRECTORY_DUE + NOME_FILE_UNO;
+        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
+
+        System.out.println(VUOTA);
+        System.out.println("A - Inizialmente non esiste nella directory sorgente (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("B - Inizialmente non esiste nella directory destinazione (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("C - Viene creato nella directory sorgente (creaFile)");
+        ottenutoRisultato = service.creaFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println("D - Viene creato nella directory destinazione (creaFile)");
+        ottenutoRisultato = service.creaFile(sorgente2);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println("E - Controlla che esista nella directory sorgente (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertTrue(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("F - Controlla che esista nella directory di destinazione (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        assertTrue(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("G - Copia il file sovrascrivendo quello esistente (copyFile)");
+        ottenutoRisultato = service.copyFile(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println("H - Cancellazione finale del file dalla directory sorgente (deleteFile)");
+        ottenutoRisultato = service.deleteFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println(" - Cancellazione finale del file dalla directory destinazione (deleteFile)");
+        ottenutoRisultato = service.deleteFile(sorgente2);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - Copia un file NON esistente (AECopy.fileSovrascriveSempreAncheSeEsiste)")
+    void copyFile4() {
+        System.out.println("13 - Copia un file NON esistente (AECopy.fileSovrascriveSempreAncheSeEsiste)");
+        System.out.println("Il file viene creato VUOTO");
+        System.out.println(VUOTA);
+
+        sorgente = PATH_DIRECTORY_UNO + NOME_FILE_UNO;
+        sorgente2 = PATH_DIRECTORY_DUE + NOME_FILE_UNO;
+        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
+
+        System.out.println(VUOTA);
+        System.out.println("A - Inizialmente non esiste (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("B - Viene creato (creaFile)");
+        ottenutoRisultato = service.creaFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println("C - Controlla che NON esista nella directory di destinazione (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        assertFalse(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("D - Il file viene copiato (copyFile)");
+        ottenutoRisultato = service.copyFile(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+
+        System.out.println(VUOTA);
+        System.out.println("E - Controlla che sia stato copiato (isEsisteFile)");
+        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        assertTrue(ottenutoBooleano);
+
+        System.out.println(VUOTA);
+        System.out.println("F - Cancellazione finale del file dalla directory sorgente (deleteFile)");
+        ottenutoRisultato = service.deleteFile(sorgente);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+
+        System.out.println(VUOTA);
+        System.out.println("G - Cancellazione finale del file dalla directory destinazione (deleteFile)");
+        ottenutoRisultato = service.deleteFile(sorgente2);
+        assertNotNull(ottenutoRisultato);
+        assertTrue(ottenutoRisultato.isValido());
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>
@@ -354,6 +648,7 @@ public class FileServiceTest extends SpringTest {
      */
     @AfterAll
     void tearDownAll() {
+        cancellaCartelle();
     }
 
 }

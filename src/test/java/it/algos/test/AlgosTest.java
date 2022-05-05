@@ -494,6 +494,7 @@ public abstract class AlgosTest {
         System.out.println(String.format("Method: %s", result.getMethod()));
         //        System.out.println(String.format("Title: %s", result.getWikiTitle()));
         System.out.println(String.format("Target: %s", result.getTarget()));
+        System.out.println(String.format("Type: %s", result.getType()));
         //        System.out.println(String.format("Preliminary url: %s", result.getUrlPreliminary()));
         //        System.out.println(String.format("Secondary url: %s", result.getUrlRequest()));
         //        System.out.println(String.format("Preliminary response: %s", result.getPreliminaryResponse()));

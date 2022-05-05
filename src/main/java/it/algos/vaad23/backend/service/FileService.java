@@ -595,63 +595,60 @@ public class FileService extends AbstractService {
         return deleteFile(new File(absolutePathFileWithSuffixToBeCanceled));
     }
 
+    //    /**
+    //     * Copia un file
+    //     * <p>
+    //     * Se manca il file sorgente, non fa nulla <br>
+    //     * Se manca la directory di destinazione, la crea <br>
+    //     * Se esiste il file destinazione, non fa nulla <br>
+    //     *
+    //     * @param srcPath  nome completo del file sorgente
+    //     * @param destPath nome completo del file destinazione
+    //     *
+    //     * @return true se il file è stato copiato
+    //     */
+    //    @Deprecated
+    //    public boolean copyFile(final String srcPath, final String destPath) {
+    //        return copyFileStr(srcPath, destPath) == VUOTA;
+    //    }
 
-    /**
-     * Copia un file
-     * <p>
-     * Se manca il file sorgente, non fa nulla <br>
-     * Se manca la directory di destinazione, la crea <br>
-     * Se esiste il file destinazione, non fa nulla <br>
-     *
-     * @param srcPath  nome completo del file sorgente
-     * @param destPath nome completo del file destinazione
-     *
-     * @return true se il file è stato copiato
-     */
-    @Deprecated
-    public boolean copyFile(String srcPath, String destPath) {
-        return copyFileStr(srcPath, destPath) == VUOTA;
-    }
+    //    /**
+    //     * Copia un file sovrascrivendolo se già esistente
+    //     * <p>
+    //     * Se manca il file sorgente, non fa nulla <br>
+    //     * Se esiste il file destinazione, lo cancella prima di copiarlo <br>
+    //     *
+    //     * @param srcPath  nome completo del file sorgente
+    //     * @param destPath nome completo del file destinazione
+    //     *
+    //     * @return true se il file è stato copiato
+    //     */
+    //    public boolean copyFileDeletingAll(String srcPath, String destPath) {
+    //        if (!isEsisteFile(srcPath)) {
+    //            return false;
+    //        }
+    //
+    //        if (isEsisteFile(destPath)) {
+    //            deleteFile(destPath);
+    //        }
+    //
+    //        return copyFileStr(srcPath, destPath) == VUOTA;
+    //    }
 
-
-    /**
-     * Copia un file sovrascrivendolo se già esistente
-     * <p>
-     * Se manca il file sorgente, non fa nulla <br>
-     * Se esiste il file destinazione, lo cancella prima di copiarlo <br>
-     *
-     * @param srcPath  nome completo del file sorgente
-     * @param destPath nome completo del file destinazione
-     *
-     * @return true se il file è stato copiato
-     */
-    public boolean copyFileDeletingAll(String srcPath, String destPath) {
-        if (!isEsisteFile(srcPath)) {
-            return false;
-        }
-
-        if (isEsisteFile(destPath)) {
-            deleteFile(destPath);
-        }
-
-        return copyFileStr(srcPath, destPath) == VUOTA;
-    }
-
-
-    /**
-     * Copia un file solo se non già esistente
-     * <p>
-     * Se manca il file sorgente, non fa nulla <br>
-     * Se esiste il file destinazione, non fa nulla <br>
-     *
-     * @param srcPath  nome completo del file sorgente
-     * @param destPath nome completo del file destinazione
-     *
-     * @return true se il file è stato copiato
-     */
-    public boolean copyFileOnlyNotExisting(String srcPath, String destPath) {
-        return copyFileStr(srcPath, destPath) == VUOTA;
-    }
+    //    /**
+    //     * Copia un file solo se non già esistente
+    //     * <p>
+    //     * Se manca il file sorgente, non fa nulla <br>
+    //     * Se esiste il file destinazione, non fa nulla <br>
+    //     *
+    //     * @param srcPath  nome completo del file sorgente
+    //     * @param destPath nome completo del file destinazione
+    //     *
+    //     * @return true se il file è stato copiato
+    //     */
+    //    public boolean copyFileOnlyNotExisting(String srcPath, String destPath) {
+    //        return copyFileStr(srcPath, destPath) == VUOTA;
+    //    }
 
 
     /**
@@ -724,48 +721,94 @@ public class FileService extends AbstractService {
      * Nei messaggi di avviso, accorcia il destPath eliminando i livelli precedenti alla directory indicata <br>
      *
      * @param typeCopy       modalità di comportamento se esiste il file di destinazione
-     * @param srcPath        nome completo di suffisso del file sorgente
-     * @param destPath       nome completo di suffisso del file da creare
+     * @param srcPathDir     path della directory sorgente
+     * @param destPathDir    path della directory destinazione
+     * @param nomeFile       nome del file completo di suffisso
      * @param firstDirectory da cui iniziare il path per il messaggio di avviso
      */
-    public void copyFile(AECopy typeCopy, String srcPath, String destPath, String firstDirectory) {
-        boolean esisteFileDest;
+    public AResult copyFile(final AECopy typeCopy, final String srcPathDir, final String destPathDir, final String nomeFile) {
+        AResult result = AResult.build().method("copyFile").target(nomeFile);
         String message;
-        String path = this.findPathBreve(destPath, firstDirectory);
+        String srcPath = srcPathDir + nomeFile;
+        String destPath = destPathDir + nomeFile;
+        String path = this.findPathBreve(destPathDir, VUOTA);
 
-        if (!this.isEsisteFile(srcPath)) {
-            message = "Non sono riuscito a trovare il file " + srcPath + " nella directory indicata";
+        if (typeCopy == null) {
+            message = "Manca il type AECopy";
             logger.warn(AETypeLog.file, new AlgosException(message));
-            return;
+            return result.errorMessage(message);
+        }
+        result = result.type(typeCopy.getDescrizione());
+
+        if (textService.isEmpty(nomeFile)) {
+            message = "Manca il nome del file";
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
         }
 
-        esisteFileDest = this.isEsisteFile(destPath);
+        if (textService.isEmpty(destPathDir)) {
+            message = "Manca il nome della directory di destinazione";
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
+        }
+
+        if (typeCopy != AECopy.fileSovrascriveSempreAncheSeEsiste && typeCopy != AECopy.fileSoloSeNonEsiste && typeCopy != AECopy.fileCheckFlagSeEsiste) {
+            message = String.format("Il type.%s previsto non è compatibile", typeCopy);
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
+        }
+
+        result = checkPath("copyFile", destPath).target(nomeFile).type(typeCopy.getDescrizione());
+        if (result.isErrato()) {
+            return result;
+        }
+
+        if (!new File(srcPath).exists()) {
+            message = String.format("Non sono riuscito a trovare il file sorgente %s nella directory %s", nomeFile, srcPathDir);
+            logger.warn(AETypeLog.file, new AlgosException(message));
+            return result.errorMessage(message);
+        }
+
         switch (typeCopy) {
             case fileSovrascriveSempreAncheSeEsiste:
-                if (esisteFileDest) {
-                    message = "Il file: " + path + " esisteva già ed è stato modificato.";
+                if (new File(destPath).exists()) {
+                    message = "Il file: " + path + " esisteva già ma è stato modificato.";
                     logger.info(new WrapLog().type(AETypeLog.file).message(message));
                 }
                 else {
                     message = "Il file: " + path + " non esisteva ed è stato copiato.";
                     logger.info(new WrapLog().type(AETypeLog.file).message(message));
                 }
-                this.copyFileDeletingAll(srcPath, destPath);
-                break;
+                try {
+                    FileUtils.copyFile(new File(srcPath), new File(destPath));
+                } catch (Exception unErrore) {
+                    logger.error(new WrapLog().exception(unErrore).usaDb());
+                    return result.errorMessage(unErrore.getMessage());
+                }
+                return result.validMessage(message);
             case fileSoloSeNonEsiste:
-                if (esisteFileDest) {
+                if (new File(destPath).exists()) {
                     message = "Il file: " + path + " esisteva già e non è stato modificato.";
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                    return result.validMessage(message);
                 }
                 else {
-                    this.copyFileDeletingAll(srcPath, destPath);
-                    message = "Il file: " + path + " non esisteva ed è stato copiato.";
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
+                    try {
+                        FileUtils.copyFile(new File(srcPath), new File(destPath));
+                        message = "Il file: " + path + " non esisteva ed è stato copiato.";
+                        logger.info(new WrapLog().type(AETypeLog.file).message(message));
+                        return result.validMessage(message);
+                    } catch (Exception unErrore) {
+                        logger.error(new WrapLog().exception(unErrore).usaDb());
+                        return result.errorMessage(unErrore.getMessage());
+                    }
                 }
-                break;
+            case fileCheckFlagSeEsiste:
+                logger.warn(AETypeLog.file, new AlgosException(SWITCH_FUTURO));
+                return result.errorMessage(SWITCH_FUTURO);
             default:
                 logger.warn(AETypeLog.file, new AlgosException(SWITCH));
-                break;
+                return result.errorMessage(SWITCH);
         }
     }
 

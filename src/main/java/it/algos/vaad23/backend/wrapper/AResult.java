@@ -31,6 +31,8 @@ public class AResult {
 
     private String target = VUOTA;
 
+    private String type = VUOTA;
+
     private String method = VUOTA;
 
     private String errorCode = VUOTA;
@@ -107,6 +109,11 @@ public class AResult {
 
     public AResult target(final String target) {
         this.target = target;
+        return this;
+    }
+
+    public AResult type(final String type) {
+        this.type = type;
         return this;
     }
 
@@ -339,6 +346,14 @@ public class AResult {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void print(final LogService logger, final AETypeLog typeLog) {
