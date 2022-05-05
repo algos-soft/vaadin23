@@ -104,24 +104,11 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file esiste
      */
     public AResult checkDirectory(final File directoryToBeChecked) {
-        AResult result = AResult.build().method("checkDirectory").target(directoryToBeChecked.getAbsolutePath());
+        AResult result = checkFileDirectory("checkDirectory", directoryToBeChecked);
+        if (result.isErrato()) {
+            return result;
+        }
         String message;
-
-        if (directoryToBeChecked == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PARAMETRO_NULLO);
-        }
-
-        if (textService.isEmpty(directoryToBeChecked.getName())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (!directoryToBeChecked.getPath().equals(directoryToBeChecked.getAbsolutePath())) {
-            message = String.format("%s%s%s", PATH_NOT_ABSOLUTE, FORWARD, directoryToBeChecked.getAbsolutePath());
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(message);
-        }
 
         if (directoryToBeChecked.exists()) {
             if (directoryToBeChecked.isDirectory()) {
@@ -158,21 +145,9 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se la directory esiste
      */
     public AResult checkDirectory(final String absolutePathDirectoryToBeChecked) {
-        AResult result = AResult.build().method("checkDirectory").target(absolutePathDirectoryToBeChecked);
-
-        if (absolutePathDirectoryToBeChecked == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (absolutePathDirectoryToBeChecked.length() == 0) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
-        }
-
-        if (this.isNotSlashIniziale(absolutePathDirectoryToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NOT_ABSOLUTE);
+        AResult result = checkPath("checkDirectory", absolutePathDirectoryToBeChecked);
+        if (result.isErrato()) {
+            return result;
         }
 
         return checkDirectory(new File(absolutePathDirectoryToBeChecked));
@@ -214,24 +189,11 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file esiste
      */
     public AResult checkFile(final File fileToBeChecked) {
-        AResult result = AResult.build().method("checkFile").target(fileToBeChecked.getName());
+        AResult result = checkFileDirectory("checkFile", fileToBeChecked);
+        if (result.isErrato()) {
+            return result;
+        }
         String message;
-
-        if (fileToBeChecked == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PARAMETRO_NULLO);
-        }
-
-        if (textService.isEmpty(fileToBeChecked.getName())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (!fileToBeChecked.getPath().equals(fileToBeChecked.getAbsolutePath())) {
-            message = String.format("%s%s%s", PATH_NOT_ABSOLUTE, FORWARD, fileToBeChecked.getAbsolutePath());
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(message);
-        }
 
         if (fileToBeChecked.exists()) {
             if (fileToBeChecked.isFile()) {
@@ -279,22 +241,10 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file esiste
      */
     public AResult checkFile(final String absolutePathFileWithSuffixToBeChecked) {
-        AResult result = AResult.build().method("checkFile").target(absolutePathFileWithSuffixToBeChecked);
         String message;
-
-        if (absolutePathFileWithSuffixToBeChecked == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (absolutePathFileWithSuffixToBeChecked.length() == 0) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
-        }
-
-        if (this.isNotSlashIniziale(absolutePathFileWithSuffixToBeChecked)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NOT_ABSOLUTE);
+        AResult result = checkPath("checkFile", absolutePathFileWithSuffixToBeChecked);
+        if (result.isErrato()) {
+            return result;
         }
 
         if (this.isSlashFinale(absolutePathFileWithSuffixToBeChecked)) {
@@ -358,24 +308,11 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file è stato creato
      */
     public AResult creaDirectory(final File directoryToBeCreated) {
-        AResult result = AResult.build().method("creaDirectory").target(directoryToBeCreated.getAbsolutePath());
+        AResult result = checkFileDirectory("creaDirectory", directoryToBeCreated);
+        if (result.isErrato()) {
+            return result;
+        }
         String message;
-
-        if (directoryToBeCreated == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PARAMETRO_NULLO);
-        }
-
-        if (textService.isEmpty(directoryToBeCreated.getName())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (!directoryToBeCreated.getPath().equals(directoryToBeCreated.getAbsolutePath())) {
-            message = String.format("%s%s%s", PATH_NOT_ABSOLUTE, FORWARD, directoryToBeCreated.getAbsolutePath());
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(message);
-        }
 
         if (!this.isNotSuffix(directoryToBeCreated.getAbsolutePath())) {
             message = String.format("%s%s%s", NON_E_DIRECTORY, FORWARD, directoryToBeCreated.getAbsolutePath());
@@ -410,21 +347,9 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file è stato creato
      */
     public AResult creaDirectory(final String absolutePathDirectoryToBeCreated) {
-        AResult result = AResult.build().method("creaDirectory").target(absolutePathDirectoryToBeCreated);
-
-        if (absolutePathDirectoryToBeCreated == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (absolutePathDirectoryToBeCreated.length() == 0) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
-        }
-
-        if (this.isNotSlashIniziale(absolutePathDirectoryToBeCreated)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NOT_ABSOLUTE);
+        AResult result = checkPath("creaDirectory", absolutePathDirectoryToBeCreated);
+        if (result.isErrato()) {
+            return result;
         }
 
         return creaDirectory(new File(absolutePathDirectoryToBeCreated));
@@ -447,24 +372,11 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file è stato creato
      */
     public AResult creaFile(final File fileToBeCreated) {
-        AResult result = AResult.build().method("creaFile").target(fileToBeCreated.getAbsolutePath());
+        AResult result = checkFileDirectory("creaFile", fileToBeCreated);
+        if (result.isErrato()) {
+            return result;
+        }
         String message;
-
-        if (fileToBeCreated == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PARAMETRO_NULLO);
-        }
-
-        if (textService.isEmpty(fileToBeCreated.getName())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (!fileToBeCreated.getPath().equals(fileToBeCreated.getAbsolutePath())) {
-            message = String.format("%s%s%s", PATH_NOT_ABSOLUTE, FORWARD, fileToBeCreated.getAbsolutePath());
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(message);
-        }
 
         if (this.isNotSuffix(fileToBeCreated.getAbsolutePath())) {
             message = String.format("%s%s%s", PATH_SENZA_SUFFIX, FORWARD, fileToBeCreated.getAbsolutePath());
@@ -499,16 +411,9 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file è stato creato
      */
     public AResult creaFile(final String absolutePathFileWithSuffixToBeCreated) {
-        AResult result = AResult.build().method("creaFile").target(absolutePathFileWithSuffixToBeCreated);
-
-        if (absolutePathFileWithSuffixToBeCreated == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (absolutePathFileWithSuffixToBeCreated.length() == 0) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
+        AResult result = checkPath("creaFile", absolutePathFileWithSuffixToBeCreated);
+        if (result.isErrato()) {
+            return result;
         }
 
         return creaFile(new File(absolutePathFileWithSuffixToBeCreated));
@@ -568,24 +473,11 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se la directory è stata cancellata
      */
     public AResult deleteDirectory(final File directoryToBeDeleted) {
-        AResult result = AResult.build().method("deleteDirectory").target(directoryToBeDeleted.getAbsolutePath());
+        AResult result = checkFileDirectory("deleteDirectory", directoryToBeDeleted);
+        if (result.isErrato()) {
+            return result;
+        }
         String message;
-
-        if (directoryToBeDeleted == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PARAMETRO_NULLO);
-        }
-
-        if (textService.isEmpty(directoryToBeDeleted.getName())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (!directoryToBeDeleted.getPath().equals(directoryToBeDeleted.getAbsolutePath())) {
-            message = String.format("%s%s%s", PATH_NOT_ABSOLUTE, FORWARD, directoryToBeDeleted.getAbsolutePath());
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(message);
-        }
 
         if (!directoryToBeDeleted.exists()) {
             message = String.format("%s%s%s", NON_ESISTE_DIRECTORY, FORWARD, directoryToBeDeleted.getAbsolutePath());
@@ -627,21 +519,9 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se la directory è stata cancellata
      */
     public AResult deleteDirectory(final String absolutePathDirectoryToBeDeleted) {
-        AResult result = AResult.build().method("deleteDirectory").target(absolutePathDirectoryToBeDeleted);
-
-        if (absolutePathDirectoryToBeDeleted == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (absolutePathDirectoryToBeDeleted.length() == 0) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
-        }
-
-        if (this.isNotSlashIniziale(absolutePathDirectoryToBeDeleted)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NOT_ABSOLUTE);
+        AResult result = checkPath("deleteDirectory", absolutePathDirectoryToBeDeleted);
+        if (result.isErrato()) {
+            return result;
         }
 
         return deleteDirectory(new File(absolutePathDirectoryToBeDeleted));
@@ -662,24 +542,11 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file è stato creato
      */
     public AResult deleteFile(final File fileToBeDeleted) {
-        AResult result = AResult.build().method("deleteFile").target(fileToBeDeleted.getAbsolutePath());
+        AResult result = checkFileDirectory("deleteFile", fileToBeDeleted);
+        if (result.isErrato()) {
+            return result;
+        }
         String message;
-
-        if (fileToBeDeleted == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PARAMETRO_NULLO);
-        }
-
-        if (textService.isEmpty(fileToBeDeleted.getName())) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (!fileToBeDeleted.getPath().equals(fileToBeDeleted.getAbsolutePath())) {
-            message = String.format("%s%s%s", PATH_NOT_ABSOLUTE, FORWARD, fileToBeDeleted.getAbsolutePath());
-            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(message);
-        }
 
         if (this.isNotSuffix(fileToBeDeleted.getAbsolutePath())) {
             message = String.format("%s%s%s", PATH_SENZA_SUFFIX, FORWARD, fileToBeDeleted.getAbsolutePath());
@@ -720,21 +587,9 @@ public class FileService extends AbstractService {
      * @return testo di errore, vuoto se il file è stato cancellato
      */
     public AResult deleteFile(final String absolutePathFileWithSuffixToBeCanceled) {
-        AResult result = AResult.build().method("deleteFile").target(absolutePathFileWithSuffixToBeCanceled);
-
-        if (absolutePathFileWithSuffixToBeCanceled == null) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NULLO);
-        }
-
-        if (absolutePathFileWithSuffixToBeCanceled.length() == 0) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
-        }
-
-        if (this.isNotSlashIniziale(absolutePathFileWithSuffixToBeCanceled)) {
-            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
-            return result.errorMessage(PATH_NOT_ABSOLUTE);
+        AResult result = checkPath("deleteFile", absolutePathFileWithSuffixToBeCanceled);
+        if (result.isErrato()) {
+            return result;
         }
 
         return deleteFile(new File(absolutePathFileWithSuffixToBeCanceled));
@@ -2421,27 +2276,50 @@ public class FileService extends AbstractService {
         return status;
     }
 
+    public AResult checkFileDirectory(final String methodName, final File fileDirectoryToBeChecked) {
+        AResult result = AResult.build().method(methodName).target(fileDirectoryToBeChecked.getAbsolutePath());
+        String message;
 
-    public AResult checkPath(final AResult result, final String absolutePathFileToBeChecked) {
-        result.target(absolutePathFileToBeChecked);
+        if (fileDirectoryToBeChecked == null) {
+            logger.error(new WrapLog().exception(new AlgosException(PARAMETRO_NULLO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PARAMETRO_NULLO);
+        }
 
-        if (absolutePathFileToBeChecked == null) {
+        if (textService.isEmpty(fileDirectoryToBeChecked.getName())) {
             logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
             return result.errorMessage(PATH_NULLO);
         }
 
-        if (absolutePathFileToBeChecked.length() == 0) {
+        if (!fileDirectoryToBeChecked.getPath().equals(fileDirectoryToBeChecked.getAbsolutePath())) {
+            message = String.format("%s%s%s", PATH_NOT_ABSOLUTE, FORWARD, fileDirectoryToBeChecked.getAbsolutePath());
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(message);
+        }
+
+        return result;
+    }
+
+    public AResult checkPath(final String methodName, final String absolutePathToBeChecked) {
+        AResult result = AResult.build().method(methodName).target(absolutePathToBeChecked);
+
+        if (absolutePathToBeChecked == null) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_NULLO);
+        }
+
+        if (absolutePathToBeChecked.length() == 0) {
             logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
             return result.errorMessage(PATH_VUOTO).target("(vuoto)");
         }
 
-        if (this.isNotSlashIniziale(absolutePathFileToBeChecked)) {
+        if (this.isNotSlashIniziale(absolutePathToBeChecked)) {
             logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
             return result.errorMessage(PATH_NOT_ABSOLUTE);
         }
 
         return result;
     }
+
 
     /**
      * Recupera una lista di files (sub-directory escluse) dalla directory <br>
