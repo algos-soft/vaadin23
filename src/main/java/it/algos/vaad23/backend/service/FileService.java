@@ -2318,13 +2318,13 @@ public class FileService extends AbstractService {
      * @return true se il primo carattere NON è uno quello previsto
      */
     public boolean isNotPrimoCarattere(final String testoIngresso, final String primoCarattereExpected) {
-        boolean status = true;
+        boolean status = false;
         String primoCarattereEffettivo;
 
         if (textService.isValid(testoIngresso)) {
             primoCarattereEffettivo = testoIngresso.substring(0, 1);
-            if (primoCarattereEffettivo.equals(primoCarattereExpected)) {
-                status = false;
+            if (!primoCarattereEffettivo.equals(primoCarattereExpected)) {
+                status = true;
             }
         }
 
@@ -2419,6 +2419,28 @@ public class FileService extends AbstractService {
         }
 
         return status;
+    }
+
+
+    public AResult checkPath(final AResult result, final String absolutePathFileToBeChecked) {
+        result.target(absolutePathFileToBeChecked);
+
+        if (absolutePathFileToBeChecked == null) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NULLO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_NULLO);
+        }
+
+        if (absolutePathFileToBeChecked.length() == 0) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_VUOTO)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_VUOTO).target("(vuoto)");
+        }
+
+        if (this.isNotSlashIniziale(absolutePathFileToBeChecked)) {
+            logger.error(new WrapLog().exception(new AlgosException(PATH_NOT_ABSOLUTE)).usaDb().type(AETypeLog.file));
+            return result.errorMessage(PATH_NOT_ABSOLUTE);
+        }
+
+        return result;
     }
 
     /**

@@ -56,17 +56,18 @@ public class FileServiceTest extends SpringTest {
     private File unFile;
 
     //--path
-    //--esiste
+    //--esiste directory
+    //--manca slash iniziale
     protected static Stream<Arguments> DIRECTORY() {
         return Stream.of(
-                Arguments.of(null, false),
-                Arguments.of(VUOTA, false),
-                Arguments.of("/Users/gac/Desktop/test/", false),
-                Arguments.of("/Users/gac/Desktop/test/Mantova", false),
-                Arguments.of("/Users/gac/Desktop/test/Mantova.txt", false),
-                Arguments.of("Users/gac/Documents/IdeaProjects/operativi/vaadin23/src/", false),
-                Arguments.of("/Users/gac/Documents/IdeaProjects/operativi/vaadin23/src/", true),
-                Arguments.of("/Users/gac/Desktop/test/Pippo/", false)
+                Arguments.of(null, false, false),
+                Arguments.of(VUOTA, false, false),
+                Arguments.of("/Users/gac/Desktop/test/", false, false),
+                Arguments.of("/Users/gac/Desktop/test/Mantova", false, false),
+                Arguments.of("/Users/gac/Desktop/test/Mantova.txt", false, false),
+                Arguments.of("Users/gac/Documents/IdeaProjects/operativi/vaadin23/src/", false, true),
+                Arguments.of("/Users/gac/Documents/IdeaProjects/operativi/vaadin23/src/", true, false),
+                Arguments.of("/Users/gac/Desktop/test/Pippo/", false, false)
         );
     }
 
@@ -122,7 +123,8 @@ public class FileServiceTest extends SpringTest {
     @Order(1)
     @DisplayName("1 - Check di una directory")
         //--path
-        //--esiste
+        //--esiste directory
+        //--manca slash iniziale
     void checkDirectory(final String sorgente, final boolean previstoBooleano) {
         System.out.println("1 - Check di una directory");
         System.out.println(VUOTA);
@@ -138,7 +140,8 @@ public class FileServiceTest extends SpringTest {
     @Order(2)
     @DisplayName("2 - Esistenza di una directory")
         //--path
-        //--esiste
+        //--esiste directory
+        //--manca slash iniziale
     void isEsisteDirectory(final String sorgente, final boolean previstoBooleano) {
         System.out.println("2 - Esistenza di una directory");
         System.out.println(VUOTA);
@@ -152,7 +155,8 @@ public class FileServiceTest extends SpringTest {
     @Order(3)
     @DisplayName("3 - Check di un file")
         //--path
-        //--esiste
+        //--esiste directory
+        //--manca slash iniziale
     void checkFile(final String sorgente, final boolean previstoBooleano) {
         System.out.println("3 - Check di un file");
         System.out.println(VUOTA);
@@ -169,7 +173,8 @@ public class FileServiceTest extends SpringTest {
     @Order(4)
     @DisplayName("4 - Esistenza di un file")
         //--path
-        //--esiste
+        //--esiste directory
+        //--manca slash iniziale
     void isEsisteFile(final String sorgente, final boolean previstoBooleano) {
         System.out.println("4 - Esistenza di un file");
         System.out.println(VUOTA);
@@ -319,6 +324,22 @@ public class FileServiceTest extends SpringTest {
         System.out.println("La directory provvisoria non esiste");
         System.out.println(VUOTA);
     }
+
+    @ParameterizedTest
+    @MethodSource(value = "DIRECTORY")
+    @Order(8)
+    @DisplayName("8 - Controlla la slash iniziale del path")
+        //--path
+        //--esiste directory
+        //--manca slash iniziale
+    void isNotSlashIniziale(final String sorgente, final boolean nonUsato, final boolean mancaSlash) {
+        System.out.println("8 - Controlla la slash iniziale del path");
+        System.out.println(VUOTA);
+
+        ottenutoBooleano = service.isNotSlashIniziale(sorgente);
+        assertEquals(mancaSlash, ottenutoBooleano);
+    }
+
 
     /**
      * Qui passa al termine di ogni singolo test <br>
