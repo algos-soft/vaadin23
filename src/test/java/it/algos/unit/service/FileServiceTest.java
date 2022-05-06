@@ -5,6 +5,7 @@ import it.algos.test.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
+import org.apache.commons.io.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
@@ -48,6 +49,10 @@ public class FileServiceTest extends SpringTest {
     private static String PATH_DIRECTORY_DA_COPIARE = PATH_DIRECTORY_TEST + "NuovaDirectory/";
 
     private static String PATH_DIRECTORY_MANCANTE = PATH_DIRECTORY_TEST + "CartellaCopiata/";
+
+    private static String SOURCE = PATH_DIRECTORY_TEST + "Sorgente";
+
+    private static String DEST = PATH_DIRECTORY_TEST + "Destinazione";
 
     /**
      * Classe principale di riferimento <br>
@@ -102,13 +107,33 @@ public class FileServiceTest extends SpringTest {
         return Stream.of(
                 Arguments.of(null, VUOTA, VUOTA, VUOTA, false),
                 Arguments.of(AECopy.sourceSoloSeNonEsiste, VUOTA, VUOTA, NOME_FILE_UNO, false),
-                Arguments.of(AECopy.fileSovrascriveSempreAncheSeEsiste, VUOTA, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, VUOTA, false),
-                Arguments.of(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, VUOTA, false),
-                Arguments.of(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, NOME_FILE_UNO, false),
-                Arguments.of(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, NOME_FILE_UNO, false),
-                Arguments.of(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_TRE, VUOTA, NOME_FILE_UNO, false),
-                Arguments.of(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_TRE, VUOTA, NOME_FILE_UNO, false)
+                Arguments.of(AECopy.fileDelete, VUOTA, VUOTA, VUOTA, false),
+                Arguments.of(AECopy.sourceSoloSeNonEsiste, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, NOME_FILE_UNO, false),
+                Arguments.of(AECopy.fileOnly, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, VUOTA, false),
+                Arguments.of(AECopy.fileDelete, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, VUOTA, false),
+                Arguments.of(AECopy.fileOnly, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, NOME_FILE_UNO, true),
+                Arguments.of(AECopy.fileDelete, PATH_DIRECTORY_TRE, PATH_DIRECTORY_DUE, NOME_FILE_UNO, true),
+                Arguments.of(AECopy.fileOnly, PATH_DIRECTORY_TRE, VUOTA, NOME_FILE_UNO, false),
+                Arguments.of(AECopy.fileDelete, PATH_DIRECTORY_TRE, VUOTA, NOME_FILE_UNO, false)
+        );
+    }
+
+    //--type copy
+    //--pathDir sorgente
+    //--pathDir destinazione
+    //--directory copiata
+    protected static Stream<Arguments> COPY_DIRECTORY() {
+        return Stream.of(
+                Arguments.of(null, VUOTA, VUOTA, false),
+                Arguments.of(AECopy.fileOnly, VUOTA, VUOTA, false),
+                Arguments.of(AECopy.dirOnly, VUOTA, VUOTA, false),
+                Arguments.of(AECopy.dirOnly, SOURCE, DEST, true),
+                Arguments.of(AECopy.dirOnly, SOURCE, PATH_DIRECTORY_DUE, false),
+                Arguments.of(AECopy.dirDelete, SOURCE, PATH_DIRECTORY_DUE, false),
+                Arguments.of(AECopy.dirDelete, SOURCE, DEST, false),
+                Arguments.of(AECopy.dirFilesAddOnly, SOURCE, PATH_DIRECTORY_TRE, false),
+                Arguments.of(AECopy.dirFilesAddOnly, SOURCE, DEST, false),
+                Arguments.of(AECopy.dirFilesModifica, SOURCE, DEST, false)
         );
     }
 
@@ -131,6 +156,7 @@ public class FileServiceTest extends SpringTest {
         service.creaDirectory(PATH_DIRECTORY_UNO);
         service.creaDirectory(PATH_DIRECTORY_DUE);
         service.creaDirectory(PATH_DIRECTORY_TRE);
+        service.creaFile(PATH_DIRECTORY_TRE + NOME_FILE_UNO);
     }
 
     private void cancellaCartelle() {
@@ -407,48 +433,52 @@ public class FileServiceTest extends SpringTest {
         System.out.println("10 - Copia un file NON esistente (AECopy.fileSoloSeNonEsiste)");
         System.out.println("Il file viene creato VUOTO");
         System.out.println(VUOTA);
+        String nomeFile = NOME_FILE_UNO;
+        String dirSorgente = PATH_DIRECTORY_UNO;
+        String dirDestinazione = PATH_DIRECTORY_TRE;
+        String pathSorgente = dirSorgente + nomeFile;
+        String pathDestinazione = dirDestinazione + nomeFile;
 
-        sorgente = PATH_DIRECTORY_UNO + NOME_FILE_UNO;
-        sorgente2 = PATH_DIRECTORY_DUE + NOME_FILE_UNO;
-        System.out.println(String.format("Nome (completo) del file: %s", sorgente));
+        cancellaCartelle();
+        System.out.println(String.format("Nome (completo) del file: %s", pathDestinazione));
 
         System.out.println(VUOTA);
         System.out.println("A - Inizialmente non esiste (isEsisteFile)");
-        ottenutoBooleano = service.isEsisteFile(sorgente);
+        ottenutoBooleano = service.isEsisteFile(pathSorgente);
         assertFalse(ottenutoBooleano);
 
         System.out.println(VUOTA);
         System.out.println("B - Viene creato (creaFile)");
-        ottenutoRisultato = service.creaFile(sorgente);
+        ottenutoRisultato = service.creaFile(pathSorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println("C - Controlla che NON esista nella directory di destinazione (isEsisteFile)");
-        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        ottenutoBooleano = service.isEsisteFile(pathDestinazione);
         assertFalse(ottenutoBooleano);
 
         System.out.println(VUOTA);
         System.out.println("D - Il file viene copiato (copyFile)");
-        ottenutoRisultato = service.copyFile(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
+        ottenutoRisultato = service.copyFile(AECopy.fileOnly, dirSorgente, dirDestinazione, nomeFile);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
 
         System.out.println(VUOTA);
         System.out.println("E - Controlla che sia stato copiato (isEsisteFile)");
-        ottenutoBooleano = service.isEsisteFile(sorgente2);
+        ottenutoBooleano = service.isEsisteFile(pathDestinazione);
         assertTrue(ottenutoBooleano);
 
         System.out.println(VUOTA);
         System.out.println("F - Cancellazione finale del file dalla directory sorgente (deleteFile)");
-        ottenutoRisultato = service.deleteFile(sorgente);
+        ottenutoRisultato = service.deleteFile(pathSorgente);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
 
         System.out.println(VUOTA);
         System.out.println("G - Cancellazione finale del file dalla directory destinazione (deleteFile)");
-        ottenutoRisultato = service.deleteFile(sorgente2);
+        ottenutoRisultato = service.deleteFile(pathDestinazione);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
     }
@@ -461,8 +491,16 @@ public class FileServiceTest extends SpringTest {
         System.out.println("Il file viene creato VUOTO");
         System.out.println(VUOTA);
 
+        String nomeFile = NOME_FILE_UNO;
+        String dirSorgente = PATH_DIRECTORY_UNO;
+        String dirDestinazione = PATH_DIRECTORY_TRE;
+        String pathSorgente = dirSorgente + nomeFile;
+        String pathDestinazione = dirDestinazione + nomeFile;
+
         sorgente = PATH_DIRECTORY_UNO + NOME_FILE_UNO;
         sorgente2 = PATH_DIRECTORY_DUE + NOME_FILE_UNO;
+
+        cancellaCartelle();
         System.out.println(String.format("Nome (completo) del file: %s", sorgente));
 
         System.out.println(VUOTA);
@@ -499,7 +537,7 @@ public class FileServiceTest extends SpringTest {
 
         System.out.println(VUOTA);
         System.out.println("G - Prova a copiare il file sovrascrivendo quello esistente (copyFile)");
-        ottenutoRisultato = service.copyFile(AECopy.fileSoloSeNonEsiste, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
+        ottenutoRisultato = service.copyFile(AECopy.fileOnly, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
@@ -564,7 +602,7 @@ public class FileServiceTest extends SpringTest {
 
         System.out.println(VUOTA);
         System.out.println("G - Copia il file sovrascrivendo quello esistente (copyFile)");
-        ottenutoRisultato = service.copyFile(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
+        ottenutoRisultato = service.copyFile(AECopy.fileDelete, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
@@ -612,7 +650,7 @@ public class FileServiceTest extends SpringTest {
 
         System.out.println(VUOTA);
         System.out.println("D - Il file viene copiato (copyFile)");
-        ottenutoRisultato = service.copyFile(AECopy.fileSovrascriveSempreAncheSeEsiste, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
+        ottenutoRisultato = service.copyFile(AECopy.fileDelete, PATH_DIRECTORY_UNO, PATH_DIRECTORY_DUE, NOME_FILE_UNO);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
@@ -633,6 +671,105 @@ public class FileServiceTest extends SpringTest {
         ottenutoRisultato = service.deleteFile(sorgente2);
         assertNotNull(ottenutoRisultato);
         assertTrue(ottenutoRisultato.isValido());
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "DIRECTORY")
+    @Order(14)
+    @DisplayName("14 - findPathBreve")
+        //--path
+        //--esiste directory
+        //--manca slash iniziale
+    void findPathBreve(final String sorgente) {
+        System.out.println("14 - findPathBreve");
+        System.out.println(VUOTA);
+
+        if (textService.isValid(sorgente)) {
+            ottenuto = service.findPathBreve(sorgente);
+            assertTrue(textService.isValid(ottenuto));
+        }
+
+        System.out.println(VUOTA);
+        System.out.print(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "DIRECTORY")
+    @Order(15)
+    @DisplayName("15 - lastDirectory")
+        //--path
+        //--esiste directory
+        //--manca slash iniziale
+    void estraeDirectoryFinaleSenzaSlash(final String sorgente) {
+        System.out.println("15 - lastDirectory");
+        System.out.println(VUOTA);
+
+        if (textService.isValid(sorgente)) {
+            ottenuto = service.lastDirectory(sorgente);
+            assertTrue(textService.isValid(ottenuto));
+        }
+
+        System.out.println(VUOTA);
+        System.out.print(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "COPY_DIRECTORY")
+    @Order(16)
+    @DisplayName("16 - Copia la directory")
+        //--type copy
+        //--pathDir sorgente
+        //--pathDir destinazione
+        //--directory copiata
+    void copyDirectory(final AECopy typeCopy, final String srcPathDir, final String destPathDir, final boolean copiato) {
+        System.out.println("16 - Copia la directory");
+        System.out.println(VUOTA);
+
+        //--prepare due cartella regolate nelle condizioni iniziali
+        fixCartelle(true);
+
+        ottenutoRisultato = service.copyDirectory(typeCopy, srcPathDir, destPathDir);
+        assertNotNull(ottenutoRisultato);
+        assertEquals(copiato, copiato);
+        printRisultato(ottenutoRisultato);
+
+        //--cancella le due cartella
+        fixCartelle(false);
+    }
+
+    void fixCartelle(boolean inizio) {
+        String srcDir = PATH_DIRECTORY_TEST + "Sorgente";
+        String destDir = PATH_DIRECTORY_TEST + "Destinazione";
+        String srcDirSub1 = srcDir + SLASH + "Sub1";
+        String file1 = "Alfa.txt";
+        String file2 = "Beta.txt";
+        String file3 = "Gamma.txt";
+        File src = new File(srcDir);
+        File dest = new File(destDir);
+        File sub1 = new File(srcDirSub1);
+        File fileUno = new File(srcDir + SLASH + file1);
+        File fileDue = new File(srcDir + SLASH + file2);
+        File fileTre = new File(sub1 + SLASH + file3);
+
+        if (inizio) {
+            try {
+                src.mkdirs();
+                //                dest.mkdirs();
+                sub1.mkdirs();
+                fileUno.createNewFile();
+                fileDue.createNewFile();
+                fileTre.createNewFile();
+            } catch (Exception unErrore) {
+            }
+        }
+        else {
+            try {
+                FileUtils.deleteDirectory(src);
+                FileUtils.deleteDirectory(dest);
+            } catch (Exception unErrore) {
+            }
+        }
     }
 
     /**

@@ -207,6 +207,12 @@ public class AResult {
         return this;
     }
 
+    public AResult setValidMessage(final String message) {
+        validMessage = message;
+        this.setValido(true);
+        return this;
+    }
+
     public String getErrorMessage() {
         return errorMessage;
     }
@@ -215,10 +221,6 @@ public class AResult {
         return validMessage;
     }
 
-    public void setValidMessage(String validMessage) {
-        this.validMessage = validMessage;
-        this.setValido(true);
-    }
 
     //    public String getWebTitle() {
     //        return webTitle;

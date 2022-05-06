@@ -74,7 +74,7 @@ public abstract class WizElabora {
         AResult result;
         String srcPath = srcVaadin23 + wiz.getCopyDest() + SLASH;
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
-        String dir = fileService.estraeDirectoryFinaleSenzaSlash(destPath).toLowerCase();
+        String dir = fileService.lastDirectory(destPath).toLowerCase();
         String tag = progettoEsistente ? "Update" : "New";
 
         result = fileService.copyDirectory(wiz.getCopy(), srcPath, destPath);
