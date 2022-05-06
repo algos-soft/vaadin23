@@ -616,9 +616,11 @@ public class FileService extends AbstractService {
      *
      * @return wrapper di informazioni risultanti
      */
-    public AResult copyFile(final AECopy typeCopy, final String srcPathDir, final String destPathDir, final String nomeFile) {
+    public AResult copyFile(final AECopy typeCopy, String srcPathDir, String destPathDir, final String nomeFile) {
         AResult result = AResult.build().method("copyFile").target(nomeFile);
         String message;
+        srcPathDir = srcPathDir.endsWith(SLASH) ? srcPathDir : srcPathDir + SLASH;
+        destPathDir = destPathDir.endsWith(SLASH) ? destPathDir : destPathDir + SLASH;
         String srcPath = srcPathDir + nomeFile;
         String destPath = destPathDir + nomeFile;
         String path = this.findPathBreve(destPathDir);
@@ -729,6 +731,8 @@ public class FileService extends AbstractService {
         String path = this.findPathBreve(destPath);
         File dirSrc = new File(srcPath);
         File dirDest = new File(destPath);
+        List<String> filesSorgenti;
+        List<String> filesDestinazione;
 
         if (typeCopy == null) {
             message = "Manca il type AECopy";
@@ -792,7 +796,34 @@ public class FileService extends AbstractService {
                 }
             case dirFilesAddOnly:
                 if (dirDest.exists()) {
+                    //--recupero i files esistenti nella destinazione
+                    //--copio SOLO i sorgenti NON presenti nella destinazione
+                    filesSorgenti = getFilesName(srcPath);
+                    filesDestinazione = getFilesName(destPath);
+
+                    for (String nomeFile : filesSorgenti) {
+                        if (!filesDestinazione.contains(nomeFile)) {
+                            copyFile(AECopy.fileOnly, srcPath, destPath, nomeFile);
+                        }
+                    }
                     message = String.format("La directory '%s' esisteva già ma è stata integrata.", path);
+                    logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                    return result.setValidMessage(message);
+                }
+                else {
+                    try {
+                        FileUtils.copyDirectory(dirSrc, dirDest);
+                        message = String.format("La directory '%s' non esisteva ed è stata creata.", path);
+                        logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
+                        return result.setValidMessage(message);
+                    } catch (Exception unErrore) {
+                        return result.setErrorMessage(unErrore.getMessage());
+                    }
+                }
+            case dirFilesModifica:
+                if (dirDest.exists()) {
+                    message = String.format("La directory '%s' esisteva già ma sono stati aggiunti", path);
+                    message += " i files mancanti e modificati quelli esistenti con lo stesso nome";
                 }
                 else {
                     message = String.format("La directory '%s' non esisteva ed è stata creata.", path);
@@ -804,10 +835,7 @@ public class FileService extends AbstractService {
                 } catch (Exception unErrore) {
                     return result.setErrorMessage(unErrore.getMessage());
                 }
-            case dirFilesModifica:
-                break;
             default:
-                //                        copiata = copyDirectoryAddingOnly(srcPath, destPath);
                 logger.warn(AETypeLog.file, new AlgosException(SWITCH));
                 break;
         }
@@ -2232,26 +2260,50 @@ public class FileService extends AbstractService {
         return lista;
     }
 
-
     /**
-     * Recupera una lista di nomi di files (sub-directory escluse) dalla directory <br>
-     * Elimina il suffisso '.java' finale <br>
+     * Recupera una lista di path di files (sub-directory comprese) dalla directory <br>
      *
      * @param pathDirectory da spazzolare
      *
-     * @return lista di files
+     * @return lista di path di files
      */
-    public List<String> getFilesNames(String pathDirectory) {
+    public List<String> getFilesPath(String pathDirectory) {
         List<String> lista = new ArrayList();
-        List<File> listaFiles = getFiles(pathDirectory);
-        String nome;
+        Stream<Path> walk;
 
-        for (File unFile : listaFiles) {
-            if (unFile.isFile()) {
-                nome = unFile.getName();
-                nome = textService.levaCoda(nome, JAVA_SUFFIX);
-                lista.add(nome);
-            }
+        try {
+            walk = Files.walk(Paths.get(pathDirectory));
+            lista = walk
+                    .filter(Files::isRegularFile)
+                    .map(x -> x.toString())
+                    .collect(Collectors.toList());
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        return lista;
+    }
+
+    /**
+     * Recupera una lista di nomi di files (sub-directory comprese) dalla directory <br>
+     *
+     * @param pathDirectory da spazzolare
+     *
+     * @return lista di nomi (parziali) di files
+     */
+    public List<String> getFilesName(String pathDirectory) {
+        List<String> lista = new ArrayList();
+        Stream<Path> walk;
+        final String path = pathDirectory.endsWith(SLASH) ? pathDirectory : pathDirectory + SLASH;
+
+        try {
+            walk = Files.walk(Paths.get(pathDirectory));
+            lista = walk
+                    .filter(Files::isRegularFile)
+                    .map(x -> textService.levaTesta(x.toString(), path))
+                    .collect(Collectors.toList());
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
         }
 
         return lista;
