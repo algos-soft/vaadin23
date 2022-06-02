@@ -17,4 +17,6 @@ public class SimpleCost {
 
     public static final String TAG_SIMPLE_VERSION = "simpleversion";
 
+    public static final String TAG_SIMPLE_PREFERENCES = "simplepreferences";
+
 }

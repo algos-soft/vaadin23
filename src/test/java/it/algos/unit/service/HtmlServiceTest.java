@@ -1,6 +1,6 @@
 package it.algos.unit.service;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import static org.junit.Assert.*;

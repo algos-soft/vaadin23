@@ -1,7 +1,7 @@
-package it.algos.unit.service;
+package it.algos.integration.service;
 
 import it.algos.*;
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.service.*;
@@ -29,7 +29,8 @@ import java.util.stream.*;
  */
 @SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("spring")
+@Tag("integration")
+@Tag("service")
 @DisplayName("File service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FileServiceTest extends SpringTest {
@@ -127,6 +128,9 @@ public class FileServiceTest extends SpringTest {
                 Arguments.of(null, VUOTA, VUOTA, false),
                 Arguments.of(AECopy.fileOnly, VUOTA, VUOTA, false),
                 Arguments.of(AECopy.dirOnly, VUOTA, VUOTA, false),
+                Arguments.of(AECopy.dirOnly, VUOTA, DEST, false),
+                Arguments.of(AECopy.dirOnly, SOURCE, VUOTA, false),
+                Arguments.of(AECopy.dirOnly, PATH_DIRECTORY_MANCANTE, DEST, false),
                 Arguments.of(AECopy.dirOnly, SOURCE, DEST, true),
                 Arguments.of(AECopy.dirOnly, SOURCE, PATH_DIRECTORY_DUE, true),
                 Arguments.of(AECopy.dirDelete, SOURCE, PATH_DIRECTORY_DUE, true),

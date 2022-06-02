@@ -1,4 +1,4 @@
-package it.algos.test;
+package it.algos.base;
 
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.server.*;
@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.*;
 
 import java.lang.reflect.*;
 import java.time.*;
@@ -140,6 +141,8 @@ public abstract class AlgosTest {
 
     protected Map<String, List<String>> mappa;
 
+    protected String message;
+
     protected byte[] bytes;
 
     protected StreamResource streamResource;
@@ -187,6 +190,9 @@ public abstract class AlgosTest {
 
     @InjectMocks
     protected WebService webService;
+
+    @Autowired
+    protected MongoService mongoService;
 
 
     //--tag
@@ -241,7 +247,9 @@ public abstract class AlgosTest {
      */
     protected void setUpAll() {
         MockitoAnnotations.openMocks(this);
+
         slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
+        mongoService.fixProperties();
 
         initMocks();
         fixRiferimentiIncrociati();
@@ -268,7 +276,7 @@ public abstract class AlgosTest {
         assertNotNull(htmlService);
         assertNotNull(webService);
         assertNotNull(loggerBackend);
-
+        assertNotNull(mongoService);
     }
 
 
@@ -349,6 +357,7 @@ public abstract class AlgosTest {
         streamResource = null;
         span = null;
         inizio = System.currentTimeMillis();
+        message = VUOTA;
     }
 
 
@@ -423,15 +432,15 @@ public abstract class AlgosTest {
         }
     }
 
-    protected void printVuota(List<String> lista, String message) {
-        System.out.println(VUOTA);
-        print(lista, message);
-    }
+    //    protected void printVuota(List<String> lista, String message) {
+    //        System.out.println(VUOTA);
+    //        print(lista, message);
+    //    }
 
     protected void print(List<String> lista, String message) {
         int k = 0;
         if (lista != null && lista.size() > 0) {
-            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size(), message));
+            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size() - 1, message));
         }
         else {
             System.out.println("La lista è vuota");
@@ -439,7 +448,7 @@ public abstract class AlgosTest {
         System.out.println(VUOTA);
         if (arrayService.isAllValid(lista)) {
             for (String stringa : lista) {
-                System.out.print(++k);
+                System.out.print(k++);
                 System.out.print(PARENTESI_TONDA_END);
                 System.out.print(SPAZIO);
                 System.out.println(stringa);
@@ -448,24 +457,27 @@ public abstract class AlgosTest {
     }
 
 
-    protected void printMappa(Map<String, List<String>> mappa, String message) {
+    protected void printMappa(Map<String, List<String>> mappa, String titoloMappa) {
         List<String> lista;
-
+        String riga;
+        String message = "esclusi i titoli";
         if (arrayService.isAllValid(mappa)) {
             System.out.println(VUOTA);
-            System.out.println(String.format("Ci sono %d elementi %s", mappa.size(), message));
+            System.out.println(String.format("Ci sono %d elementi nella mappa %s %s", mappa.size(), titoloMappa, message));
             System.out.println(VUOTA);
             for (String key : mappa.keySet()) {
                 lista = mappa.get(key);
                 if (arrayService.isAllValid(lista)) {
                     System.out.print(key);
                     System.out.print(FORWARD);
+                    riga = VUOTA;
                     for (String value : lista) {
-                        System.out.print(value);
-                        System.out.print(VIRGOLA);
-                        System.out.print(SPAZIO);
+                        riga += value;
+                        riga += VIRGOLA;
+                        riga += SPAZIO;
                     }
-                    System.out.println(VUOTA);
+                    riga = textService.levaCoda(riga, VIRGOLA).trim();
+                    System.out.println(riga);
                 }
             }
         }
@@ -509,6 +521,10 @@ public abstract class AlgosTest {
         System.out.println(String.format("List value: %s", lista));
         System.out.println(String.format("Map value: %s", result.getMappa()));
         System.out.println(String.format("Risultato ottenuto in %s", dateService.deltaText(inizio)));
+    }
+
+    protected String getSimpleName(final Class clazz) {
+        return clazz != null ? clazz.getSimpleName() : "(manca la classe)";
     }
 
 }

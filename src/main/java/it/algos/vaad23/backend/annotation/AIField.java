@@ -391,4 +391,12 @@ public @interface AIField {
      */
     boolean search() default false;
 
+    /**
+     * (Optional) Flag per la property di ordinamento (potrebbe essere diversa dal campo)
+     * Defaults to VUOTA.
+     *
+     * @return the string
+     */
+    String sortProperty() default VUOTA;
+
 }

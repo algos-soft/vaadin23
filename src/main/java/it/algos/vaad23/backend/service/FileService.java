@@ -755,6 +755,11 @@ public class FileService extends AbstractService {
             return result.setErrorMessage(message);
         }
 
+        if (!dirSrc.isDirectory()) {
+            message = String.format("Non esiste la directory sorgente '%s' da copiare.", srcPath);
+            return result.setErrorMessage(message);
+        }
+
         switch (typeCopy) {
             case dirOnly:
                 if (dirDest.exists()) {
@@ -843,161 +848,6 @@ public class FileService extends AbstractService {
         return result;
     }
 
-    //    /**
-    //     * Copia una directory
-    //     * <p>
-    //     * Se manca la directory sorgente, non fa nulla <br>
-    //     * Se manca la directory di destinazione, la crea <br>
-    //     * Se esiste la directory di destinazione, non fa nulla <br>
-    //     *
-    //     * @param srcPath  nome completo della directory sorgente
-    //     * @param destPath nome completo della directory destinazione
-    //     *
-    //     * @return true se la directory  è stata copiata
-    //     */
-    //    @Deprecated
-    //    public boolean copyDirectory(String srcPath, String destPath) {
-    //        return copyDirectoryAddingOnly(srcPath, destPath);
-    //    }
-
-    //    /**
-    //     * Copia una directory sostituendo integralmente quella eventualmente esistente <br>
-    //     * <p>
-    //     * Se manca la directory sorgente, non fa nulla <br>
-    //     * Se manca la directory di destinazione, la crea <br>
-    //     * Se esiste la directory di destinazione, la cancella prima di ricopiarla <br>
-    //     * Tutte i files e le subdirectories originali vengono cancellata <br>
-    //     *
-    //     * @param srcPath  nome parziale del path sorgente
-    //     * @param destPath nome parziale del path destinazione
-    //     * @param dirName  nome della directory da copiare
-    //     *
-    //     * @return true se la directory  è stata copiata
-    //     */
-    //    public boolean copyDirectoryDeletingAll(String srcPath, String destPath, String dirName) {
-    //        return copyDirectoryDeletingAll(srcPath + dirName, destPath + dirName);
-    //    }
-
-    //
-    //    /**
-    //     * Copia una directory sostituendo integralmente quella eventualmente esistente <br>
-    //     * <p>
-    //     * Se manca la directory sorgente, non fa nulla <br>
-    //     * Se manca la directory di destinazione, la crea <br>
-    //     * Se esiste la directory di destinazione, la cancella prima di ricopiarla <br>
-    //     * Tutte i files e le subdirectories originali vengono cancellata <br>
-    //     *
-    //     * @param srcPath  nome completo della directory sorgente
-    //     * @param destPath nome completo della directory destinazione
-    //     *
-    //     * @return true se la directory  è stata copiata
-    //     */
-    //    public boolean copyDirectoryDeletingAll(String srcPath, String destPath) {
-    //        File srcDir = new File(srcPath);
-    //        File destDir = new File(destPath);
-    //
-    //        if (!isEsisteDirectory(srcPath)) {
-    //            return false;
-    //        }
-    //
-    //        if (isEsisteDirectory(destPath)) {
-    //            try {
-    //                FileUtils.forceDelete(new File(destPath));
-    //            } catch (Exception unErrore) {
-    //            }
-    //        }
-    //
-    //        if (isEsisteDirectory(destPath)) {
-    //            return false;
-    //        }
-    //        else {
-    //            try {
-    //                FileUtils.copyDirectory(srcDir, destDir);
-    //                return true;
-    //            } catch (Exception unErrore) {
-    //            }
-    //        }
-    //
-    //        return false;
-    //    }
-
-    //    /**
-    //     * Copia una directory solo se non esisteva <br>
-    //     * <p>
-    //     * Se manca la directory sorgente, non fa nulla <br>
-    //     * Se manca la directory di destinazione, la crea <br>
-    //     * Se esiste la directory di destinazione, non fa nulla <br>
-    //     *
-    //     * @param srcPath  nome completo della directory sorgente
-    //     * @param destPath nome completo della directory destinazione
-    //     *
-    //     * @return true se la directory  è stata copiata
-    //     */
-    //    public boolean copyDirectoryOnlyNotExisting(String srcPath, String destPath) {
-    //        if (!isEsisteDirectory(srcPath)) {
-    //            return false;
-    //        }
-    //
-    //        if (isEsisteDirectory(destPath)) {
-    //            return false;
-    //        }
-    //
-    //        return copyDirectoryDeletingAll(srcPath, destPath);
-    //    }
-
-    //    /**
-    //     * Copia una directory aggiungendo files e subdirectories a quelli eventualmente esistenti <br>
-    //     * Lascia inalterate subdirectories e files già esistenti <br>
-    //     * <p>
-    //     * Se manca la directory sorgente, non fa nulla <br>
-    //     * Se manca la directory di destinazione, la crea <br>
-    //     * Se esiste la directory destinazione, aggiunge files e subdirectories <br>
-    //     * Tutti i files e le subdirectories esistenti vengono mantenuti <br>
-    //     * Tutte le aggiunte sono ricorsive nelle subdirectories <br>
-    //     *
-    //     * @param srcPath  nome parziale del path sorgente
-    //     * @param destPath nome parziale del path destinazione
-    //     * @param dirName  nome della directory da copiare
-    //     *
-    //     * @return true se la directory  è stata copiata
-    //     */
-    //    public boolean copyDirectoryAddingOnly(String srcPath, String destPath, String dirName) {
-    //        return copyDirectoryAddingOnly(srcPath + dirName, destPath + dirName);
-    //    }
-
-    //    /**
-    //     * Copia una directory aggiungendo files e subdirectories a quelli eventualmente esistenti <br>
-    //     * Lascia inalterate subdirectories e files già esistenti <br>
-    //     * <p>
-    //     * Se manca la directory sorgente, non fa nulla <br>
-    //     * Se manca la directory di destinazione, la crea <br>
-    //     * Se esiste la directory destinazione, aggiunge files e subdirectories <br>
-    //     * Tutti i files e le subdirectories esistenti vengono mantenuti <br>
-    //     * Tutte le aggiunte sono ricorsive nelle subdirectories <br>
-    //     *
-    //     * @param srcPath  nome completo della directory sorgente
-    //     * @param destPath nome completo della directory destinazione
-    //     *
-    //     * @return true se la directory  è stata copiata
-    //     */
-    //    public boolean copyDirectoryAddingOnly(String srcPath, String destPath) {
-    //        boolean copiata = false;
-    //        File srcDir = new File(srcPath);
-    //        File destDir = new File(destPath);
-    //
-    //        if (!isEsisteDirectory(srcPath)) {
-    //            return false;
-    //        }
-    //
-    //        try {
-    //            FileUtils.copyDirectory(srcDir, destDir);
-    //            copiata = true;
-    //        } catch (IOException e) {
-    //            e.printStackTrace();
-    //        }
-    //
-    //        return copiata;
-    //    }
 
 
     /**
@@ -1491,26 +1341,6 @@ public class FileService extends AbstractService {
         return pathOut.trim();
     }
 
-    //    /**
-    //     * Recupera l'ultima directory da un path <br>
-    //     * <p>
-    //     * Esegue solo se il path è valido <br>
-    //     * Elimina spazi vuoti iniziali e finali <br>
-    //     *
-    //     * @param pathIn in ingresso
-    //     *
-    //     * @return directory finale del path, comprensiva di SLASH
-    //     */
-    //    public String estraeDirectoryFinale(final String pathIn) {
-    //        String pathOut = pathIn.trim();
-    //
-    //        if (textService.isValid(pathOut) && pathOut.endsWith(SLASH)) {
-    //            pathOut = textService.levaCoda(pathOut, SLASH);
-    //            pathOut = pathOut.substring(pathOut.lastIndexOf(SLASH) + 1) + SLASH;
-    //        }
-    //
-    //        return pathOut.trim();
-    //    }
 
     /**
      * Recupera l'ultima classe da un path <br>
@@ -1592,23 +1422,6 @@ public class FileService extends AbstractService {
         return pathOut.trim();
     }
 
-    //    /**
-    //     * Estrae il path parziale da una directory indicata, escludendo il percorso iniziale <br>
-    //     * <p>
-    //     * La directory indicata è la prima con quel nome <br>
-    //     * Esegue solo se il path è valido
-    //     * Se la directory indicata non esiste nel path, restituisce tutto il path completo <br>
-    //     * Elimina spazi vuoti iniziali e finali
-    //     *
-    //     * @param pathIn    in ingresso
-    //     * @param directory da cui iniziare il path
-    //     *
-    //     * @return path parziale da una directory
-    //     */
-    //    public String findPathBreve(String pathIn) {
-    //        return findPathBreve(pathIn, VUOTA);
-    //    }
-
     /**
      * Estrae il path parziale da una directory indicata, escludendo il percorso iniziale <br>
      * <p>
@@ -1636,122 +1449,6 @@ public class FileService extends AbstractService {
 
         return pathOut.trim();
     }
-
-    //    /**
-    //     * Estrae il path parziale da una directory indicata, escludendo il percorso iniziale <br>
-    //     * <p>
-    //     * La directory indicata è l'ultima con quel nome <br>
-    //     * Esegue solo se il path è valido
-    //     * Se la directory indicata non esiste nel path, restituisce tutto il path completo <br>
-    //     * Elimina spazi vuoti iniziali e finali
-    //     *
-    //     * @param pathIn    in ingresso
-    //     * @param directory da cui iniziare il path
-    //     *
-    //     * @return path parziale da una directory
-    //     */
-    //    public String findPathBreveDa(String pathIn, String directory) {
-    //        String pathBreve = pathIn;
-    //        String pathCanonical;
-    //        String prefix = "../";
-    //
-    //        if (textService.isEmpty(directory)) {
-    //            return pathIn;
-    //        }
-    //
-    //        pathCanonical = findPathCanonicalDa(pathIn, directory);
-    //        if (textService.isValid(pathCanonical)) {
-    //            pathBreve = prefix + pathCanonical;
-    //            pathBreve = textService.levaCoda(pathBreve, SLASH);
-    //            pathBreve = textService.levaCoda(pathBreve, JAVA_SUFFIX);
-    //        }
-    //
-    //        return pathBreve;
-    //    }
-
-    //    /**
-    //     * Estrae il path canonico da una directory indicata <br>
-    //     * <p>
-    //     * La directory indicata è l'ultima con quel nome <br>
-    //     * Esegue solo se il path è valido
-    //     * Se la directory indicata non esiste nel path, restituisce tutto il path completo <br>
-    //     * Elimina spazi vuoti iniziali e finali
-    //     *
-    //     * @param pathIn    in ingresso
-    //     * @param directory da cui iniziare il path
-    //     *
-    //     * @return path parziale da una directory
-    //     */
-    //    public String findPathCanonical(String pathIn, String directory) {
-    //        String path = VUOTA;
-    //
-    //        if (textService.isEmpty(pathIn) || textService.isEmpty(directory)) {
-    //            return pathIn;
-    //        }
-    //
-    //        if (pathIn.contains(directory)) {
-    //            path = pathIn.substring(pathIn.lastIndexOf(directory));
-    //            if (path.startsWith(SLASH)) {
-    //                path = path.substring(1);
-    //            }
-    //        }
-    //
-    //        return path;
-    //    }
-
-    //    /**
-    //     * Estrae il path canonico da una directory indicata <br>
-    //     * <p>
-    //     * La directory indicata è l'ultima con quel nome <br>
-    //     * Esegue solo se il path è valido
-    //     * Se la directory indicata non esiste nel path, restituisce tutto il path completo <br>
-    //     * Elimina spazi vuoti iniziali e finali
-    //     *
-    //     * @param pathIn    in ingresso
-    //     * @param directory da cui iniziare il path
-    //     *
-    //     * @return path parziale da una directory
-    //     */
-    //    public String findPathCanonicalDa(String pathIn, String directory) {
-    //        String path = VUOTA;
-    //
-    //        if (textService.isEmpty(pathIn) || textService.isEmpty(directory)) {
-    //            return pathIn;
-    //        }
-    //
-    //        if (pathIn.contains(directory)) {
-    //            path = pathIn.substring(pathIn.lastIndexOf(directory) + directory.length());
-    //            if (path.startsWith(SLASH)) {
-    //                path = path.substring(1);
-    //            }
-    //        }
-    //
-    //        return path;
-    //    }
-
-    //    /**
-    //     * Elabora un path eliminando i livelli iniziali indicati. <br>
-    //     * <p>
-    //     * Esegue solo se il testo è valido <br>
-    //     * Elimina spazi vuoti iniziali e finali <br>
-    //     * Aggiunge un prefisso indicativo -> '../' <br>
-    //     *
-    //     * @param testoIn    ingresso
-    //     * @param numLivelli iniziali da eliminare nel path
-    //     *
-    //     * @return path semplificato
-    //     */
-    //    @Deprecated
-    //    public String pathBreve(final String testoIn, int numLivelli) {
-    //        String path = text.testoDopoTagRipetuto(testoIn, SLASH, numLivelli);
-    //        String prefix = "../";
-    //
-    //        if (!path.equals(testoIn)) {
-    //            path = text.isValid(path) ? prefix + path : path;
-    //        }
-    //
-    //        return path;
-    //    }
 
 
     /**

@@ -1,6 +1,6 @@
 package it.algos.unit.enumeration;
 
-import it.algos.test.*;
+import it.algos.base.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.packages.utility.preferenza.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +23,7 @@ import java.util.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
 @Tag("enums")
-@DisplayName("Test sul service di preferenze")
+@DisplayName("Enumeration AETypePref")
 public class AETypePrefTest extends AlgosTest {
 
     @InjectMocks

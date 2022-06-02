@@ -506,6 +506,180 @@ public class TextService extends AbstractService {
         return uscita;
     }
 
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoRef(String entrata) {
+        return levaDopo(entrata, REF);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoNote(String entrata) {
+        return levaDopo(entrata, NOTE);
+    }
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoWiki(String entrata) {
+        return levaDopo(entrata, NO_WIKI);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoUguale(String entrata) {
+        return levaDopo(entrata, UGUALE_SEMPLICE);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoEccetera(String entrata) {
+        return levaDopo(entrata, ECC);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoGraffe(String entrata) {
+        return levaDopo(entrata, DOPPIE_GRAFFE_INI);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoVirgola(String entrata) {
+        return levaDopo(entrata, VIRGOLA);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoParentesi(String entrata) {
+        return levaDopo(entrata, PARENTESI_TONDA_END);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoInterrogativo(String entrata) {
+        return levaDopo(entrata, PUNTO_INTERROGATIVO);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoCirca(String entrata) {
+        return levaDopo(entrata, CIRCA);
+    }
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoTagRef(String entrata) {
+        return levaDopo(entrata, TAG_REF);
+    }
+
     /**
      * Elimina dal testo il tagFinale, se esiste. <br>
      * <p>
@@ -722,7 +896,7 @@ public class TextService extends AbstractService {
         String tag;
 
         if (this.isValid(testoOut) && this.isValid(tagIniziale)) {
-            tag = tagIniziale.trim();
+            tag = tagIniziale.equals(CAPO) ? tagIniziale : tagIniziale.trim();
             if (testoOut.contains(tag)) {
                 testoOut = testoOut.substring(testoOut.indexOf(tag) + tag.length());
             }
@@ -901,6 +1075,68 @@ public class TextService extends AbstractService {
         String regexSpazioVariabile = "\\s+"; // una o più occorrenze
 
         return line.replaceAll(regexSpazioVariabile, SPAZIO).trim();
+    }
+
+
+    /**
+     * Aggiunge parentesi quadre doppie in testa e coda alla stringa. <br>
+     * Aggiunge SOLO se gia non esistono (ne doppie, ne singole) <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     * Elimina eventuali quadre già presenti, per evitare di metterle doppie <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con doppie parentesi quadre aggiunte
+     */
+    public String setDoppieQuadre(final String stringaIn) {
+        String stringaOut = stringaIn;
+
+        if (stringaIn != null && stringaIn.length() > 0) {
+            stringaOut = this.setNoQuadre(stringaOut);
+            stringaOut = this.setNoQuadre(stringaOut);
+            if (this.isValid(stringaOut)) {
+                if (!stringaOut.startsWith(DOPPIE_QUADRE_INI)) {
+                    stringaOut = DOPPIE_QUADRE_INI + stringaOut;
+                }
+                if (!stringaOut.endsWith(DOPPIE_QUADRE_END)) {
+                    stringaOut = stringaOut + DOPPIE_QUADRE_END;
+                }
+                if (stringaOut.startsWith(QUADRA_INI + DOPPIE_QUADRE_INI)) {
+                    stringaOut = stringaOut.substring(1);
+                }
+                if (stringaOut.endsWith(QUADRA_END + DOPPIE_QUADRE_END)) {
+                    stringaOut = stringaOut.substring(0, stringaOut.length() - 1);
+                }
+            }
+        }
+
+        return stringaOut.trim();
+    }
+
+
+    /**
+     * Aggiunge parentesi tonde singole in testa e coda alla stringa. <br>
+     * Aggiunge SOLO se gia non esistono <br>
+     * Se arriva una stringa vuota, restituisce una stringa vuota <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     * Elimina eventuali quadre già presenti, per evitare di metterle doppie <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con parentesi tonde aggiunte
+     */
+    public String setTonde(String stringaIn) {
+        String stringaOut = stringaIn;
+
+        if (!stringaOut.startsWith(PARENTESI_TONDA_INI)) {
+            stringaOut = PARENTESI_TONDA_INI + stringaOut;
+        }
+        if (!stringaOut.endsWith(PARENTESI_TONDA_END)) {
+            stringaOut = stringaOut + PARENTESI_TONDA_END;
+        }
+
+        return stringaOut.trim();
     }
 
 }

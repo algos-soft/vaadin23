@@ -2,7 +2,7 @@ package it.algos.unit.wrapper;
 
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.server.*;
-import it.algos.test.*;
+import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -24,6 +24,7 @@ import org.mockito.*;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("quickly")
+@Tag("wrapper")
 @DisplayName("WrapSpan")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class WrapSpanTest extends AlgosTest {

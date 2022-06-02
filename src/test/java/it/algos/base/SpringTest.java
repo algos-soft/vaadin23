@@ -1,4 +1,4 @@
-package it.algos.test;
+package it.algos.base;
 
 import it.algos.vaad23.backend.packages.utility.log.*;
 import static org.junit.jupiter.api.Assertions.*;

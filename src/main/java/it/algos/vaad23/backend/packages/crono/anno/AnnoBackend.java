@@ -34,7 +34,7 @@ public class AnnoBackend extends CrudBackend {
     @Autowired
     public SecoloBackend secoloBackend;
 
-    private AnnoRepository repository;
+    public AnnoRepository repository;
 
     /**
      * Costruttore @Autowired (facoltativo) @Qualifier (obbligatorio) <br>

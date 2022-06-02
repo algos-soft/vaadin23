@@ -4,6 +4,7 @@ import com.vaadin.flow.spring.annotation.*;
 import static it.algos.simple.backend.boot.SimpleCost.*;
 import it.algos.vaad23.backend.boot.*;
 import it.algos.vaad23.backend.interfaces.*;
+import it.algos.vaad23.backend.packages.anagrafica.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
@@ -118,6 +119,12 @@ public class SimpleBoot extends VaadBoot {
         this.versInstance = versInstance;
     }
 
+    @Autowired
+    @Qualifier(TAG_SIMPLE_PREFERENCES)
+    public void setPrefInstance(final AIEnumPref prefInstance) {
+        this.prefInstance = prefInstance;
+    }
+
     @Override
     protected void fixMenuRoutes() {
         super.fixMenuRoutes();
@@ -127,6 +134,7 @@ public class SimpleBoot extends VaadBoot {
         VaadVar.menuRouteList.add(SecoloView.class);
         VaadVar.menuRouteList.add(GiornoView.class);
         VaadVar.menuRouteList.add(AnnoView.class);
+        VaadVar.menuRouteList.add(ViaView.class);
     }
 
 }
