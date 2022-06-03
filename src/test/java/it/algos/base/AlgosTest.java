@@ -14,7 +14,6 @@ import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.*;
 
 import java.lang.reflect.*;
 import java.time.*;
@@ -191,8 +190,6 @@ public abstract class AlgosTest {
     @InjectMocks
     protected WebService webService;
 
-    @Autowired
-    protected MongoService mongoService;
 
 
     //--tag
@@ -249,7 +246,6 @@ public abstract class AlgosTest {
         MockitoAnnotations.openMocks(this);
 
         slf4jLogger = LoggerFactory.getLogger("vaad23.admin");
-        mongoService.fixProperties();
 
         initMocks();
         fixRiferimentiIncrociati();
@@ -276,7 +272,6 @@ public abstract class AlgosTest {
         assertNotNull(htmlService);
         assertNotNull(webService);
         assertNotNull(loggerBackend);
-        assertNotNull(mongoService);
     }
 
 

@@ -164,9 +164,15 @@ public class TextServiceTest extends AlgosTest {
         ottenutoBooleano = service.isEmpty(null);
         assertTrue(ottenutoBooleano);
 
+        //--stringa vuota
         ottenutoBooleano = service.isEmpty(VUOTA);
         assertTrue(ottenutoBooleano);
 
+        //--stringa con spazio
+        ottenutoBooleano = service.isEmpty(SPAZIO);
+        assertFalse(ottenutoBooleano);
+
+        //--stringa con qualsiasi carattere
         ottenutoBooleano = service.isEmpty(PIENA);
         assertFalse(ottenutoBooleano);
 
@@ -182,10 +188,28 @@ public class TextServiceTest extends AlgosTest {
         ottenutoBooleano = service.isValid(null);
         assertFalse(ottenutoBooleano);
 
+        //--stringa vuota
         ottenutoBooleano = service.isValid(VUOTA);
         assertFalse(ottenutoBooleano);
 
+        //--stringa con spazio
+        ottenutoBooleano = service.isValid(SPAZIO);
+        assertTrue(ottenutoBooleano);
+
+        //--stringa con qualsiasi carattere
         ottenutoBooleano = service.isValid(PIENA);
+        assertTrue(ottenutoBooleano);
+
+        //--stringa vuota
+        ottenutoBooleano = service.isValidNoSpace(VUOTA);
+        assertFalse(ottenutoBooleano);
+
+        //--stringa con spazio
+        ottenutoBooleano = service.isValidNoSpace(SPAZIO);
+        assertFalse(ottenutoBooleano);
+
+        //--stringa con qualsiasi carattere
+        ottenutoBooleano = service.isValidNoSpace(PIENA);
         assertTrue(ottenutoBooleano);
 
         System.out.println("2 - Controlla validità di una stringa");

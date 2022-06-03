@@ -36,7 +36,7 @@ import java.util.stream.*;
 @Tag("service")
 @DisplayName("Mongo Service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class MongoServiceTest extends AlgosTest {
+public class MongoServiceTest extends AlgosIntegrationTest {
 
     /**
      * Classe principale di riferimento <br>
