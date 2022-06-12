@@ -45,6 +45,10 @@ public class VaadCost {
 
     public static final String CAPO = "\n";
 
+    public static final String TAB = "\t";
+
+    public static final String ASTERISCO = "*";
+
     public static final String PIENA = "Piena";
 
     public static final VaadinIcon DEFAULT_ICON = VaadinIcon.ASTERISK;
@@ -141,6 +145,8 @@ public class VaadCost {
     public static final String JAVA_SUFFIX = ".java";
 
     public static final String KEY_NULL = "null";
+
+    public static final String NULL = "(null)";
 
     public static final String KEY_ROUTE_TYPE = "type";
 

@@ -503,6 +503,27 @@ public class ArrayServiceTest extends AlgosTest {
         Assertions.assertEquals(mappaPrevista, mappaOttenuta);
     }
 
+    @Test
+    @Order(11)
+    @DisplayName("11 - ordina una mappa")
+    void sort() {
+        System.out.println("11 - Ordina secondo le chiavi una mappa che è stata costruita NON ordinata");
+        //        protected Map<String, String> mappaSorgente;
+        //
+        //        protected Map<String, String> mappaPrevista;
+        //
+        //        protected Map<String, String> mappaOttenuta;
+
+        mappaSorgente = new HashMap<>();
+        mappaSorgente.put("beta", "78");
+        mappaSorgente.put("beta", "3334");
+        mappaSorgente.put("delta", "78");
+        mappaSorgente.put("alfa", "78");
+        mappaSorgente.put("coraggio", "78");
+        mappaOttenuta = service.sort(mappaSorgente);
+        Assertions.assertNotNull(mappaOttenuta);
+    }
+
 
     /**
      * Qui passa al termine di ogni singolo test <br>

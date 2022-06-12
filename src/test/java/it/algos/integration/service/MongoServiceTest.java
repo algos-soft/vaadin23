@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
 import org.springframework.test.context.junit.jupiter.*;
 
+import java.util.*;
 import java.util.stream.*;
 
 /**
@@ -107,7 +108,7 @@ public class MongoServiceTest extends AlgosIntegrationTest {
     @Order(1)
     @DisplayName("1 - Stato del database")
     void status() {
-        System.out.println("1- Stato del database");
+        System.out.println("1 - Stato del database");
 
         ottenuto = service.getDatabaseName();
         assertTrue(textService.isValid(ottenuto));
@@ -250,11 +251,46 @@ public class MongoServiceTest extends AlgosIntegrationTest {
             message = String.format("La clazz %s non ha collection", getSimpleName(clazz));
         }
         System.out.println(message);
-
-        //        collection = service.getCollection(clazz);
-        //        ottenutoBooleano = service.isValidCollection(clazz);
-
         System.out.println(VUOTA);
+    }
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Query semplice all entities")
+    void query() {
+        System.out.println("6 - Query semplice all entities");
+        System.out.println(VUOTA);
+
+        clazz = Mese.class;
+        List<Mese> lista = service.query(clazz);
+        assertEquals(12, lista.size());
+        message = String.format("La query per la clazz %s fornisce una lista di %d entities", getSimpleName(clazz), lista.size());
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - Query semplice all entities")
+    void queryProperty() {
+        System.out.println("7 - Query semplice all entities");
+        System.out.println(VUOTA);
+
+        clazz = Mese.class;
+        sorgente = "nome";
+        List<String> listaNomi = service.projectionString(clazz, sorgente);
+        assertEquals(12, listaNomi.size());
+        message = String.format(
+                "La query per la clazz %s fornisce una lista di %d entities sotto forma di una singola property",
+                getSimpleName(clazz),
+                listaNomi.size()
+        );
+        System.out.println(message);
+        System.out.println(VUOTA);
+        for (String nome : listaNomi) {
+            System.out.println(nome);
+        }
     }
 
     /**
