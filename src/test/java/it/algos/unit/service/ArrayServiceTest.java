@@ -525,6 +525,126 @@ public class ArrayServiceTest extends AlgosTest {
     }
 
 
+    @Test
+    @Order(12)
+    @DisplayName("12 - Differenza di array A (server wiki) meno array B (database mongo)")
+    void differenceWikiMenoMongoInt() {
+        System.out.println("12 - Differenza di array A (server wiki) meno array B (database mongo)");
+        System.out.println("pageIds della Category - pageIds dei records già presenti");
+        System.out.println("la differenza sono nuove voci da caricare ex-novo nel database");
+        System.out.println("l'ordine è irrilevante");
+        System.out.println("non sono previsti doppioni - la property pageId è unica");
+        List<Integer> listA;
+        List<Integer> listB;
+        List<Integer> listaPrevista;
+        List<Integer> listaDifferenza;
+
+        Integer[] sourceArrayA = {35, 136, 88, 94, 581};
+        listA = Arrays.stream(sourceArrayA).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array A");
+        System.out.println(listA);
+
+        Integer[] sourceArrayB = {35, 94, 581, 17};
+        listB = Arrays.stream(sourceArrayB).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array B");
+        System.out.println(listB);
+
+        Integer[] arrayPrevisto = {88, 136};
+        listaPrevista = Arrays.stream(arrayPrevisto).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array previsto");
+        System.out.println(listaPrevista);
+
+        listaDifferenza = service.differenzaInt(listA, listB);
+        Assertions.assertNotNull(listaDifferenza);
+        Assertions.assertTrue(listaDifferenza.size() > 0);
+        System.out.println(VUOTA);
+        System.out.println("Array ottenuto");
+        System.out.println(listaDifferenza);
+    }
+
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - Differenza di array B (database mongo) meno array A (server wiki)")
+    void differenceMongoMenoWikiInt() {
+        System.out.println("13 - Differenza di array B (database mongo) meno array A (server wiki)");
+        System.out.println("pageIds dei records già presenti - pageIds della Category");
+        System.out.println("la differenza sono voci esistenti nel database da cancellare perché non più presenti nella categoria");
+        System.out.println("non sono previsti doppioni - la property pageId è unica");
+        List<Integer> listA;
+        List<Integer> listB;
+        List<Integer> listaPrevista;
+        List<Integer> listaDifferenza;
+
+        Integer[] sourceArrayA = {35, 88, 94, 136, 581};
+        listA = Arrays.stream(sourceArrayA).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array A");
+        System.out.println(listA);
+
+        Integer[] sourceArrayB = {35, 17, 94, 581};
+        listB = Arrays.stream(sourceArrayB).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array B");
+        System.out.println(listB);
+
+        Integer[] arrayPrevisto = {17};
+        listaPrevista = Arrays.stream(arrayPrevisto).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array previsto");
+        System.out.println(listaPrevista);
+
+        listaDifferenza = service.differenzaInt(listB, listA);
+        Assertions.assertNotNull(listaDifferenza);
+        Assertions.assertTrue(listaDifferenza.size() > 0);
+        System.out.println(VUOTA);
+        System.out.println("Array ottenuto");
+        System.out.println(listaDifferenza);
+    }
+
+    @Test
+    @Order(14)
+    @DisplayName("14 - Differenza di array A (server wiki) meno array B (database mongo)")
+    void differenceWikiMenoMongoLong() {
+        System.out.println("14 - Differenza di array A (server wiki) meno array B (database mongo)");
+        System.out.println("pageIds della Category - pageIds dei records già presenti");
+        System.out.println("la differenza sono nuove voci da caricare ex-novo nel database");
+        System.out.println("l'ordine è irrilevante");
+        System.out.println("non sono previsti doppioni - la property pageId è unica");
+        List<Long> listA;
+        List<Long> listB;
+        List<Long> listaPrevista;
+        List<Long> listaDifferenza;
+
+        Long[] sourceArrayA = {35L, 136L, 88L, 94L, 581L};
+        listA = Arrays.stream(sourceArrayA).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array A");
+        System.out.println(listA);
+
+        Long[] sourceArrayB = {35L, 94L, 581L, 17L};
+        listB = Arrays.stream(sourceArrayB).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array B");
+        System.out.println(listB);
+
+        Long[] arrayPrevisto = {88L, 136L};
+        listaPrevista = Arrays.stream(arrayPrevisto).toList();
+        System.out.println(VUOTA);
+        System.out.println("Array previsto");
+        System.out.println(listaPrevista);
+
+        listaDifferenza = service.differenzaLong(listA, listB);
+        Assertions.assertNotNull(listaDifferenza);
+        Assertions.assertTrue(listaDifferenza.size() > 0);
+        System.out.println(VUOTA);
+        System.out.println("Array ottenuto");
+        System.out.println(listaDifferenza);
+    }
+
     /**
      * Qui passa al termine di ogni singolo test <br>
      */

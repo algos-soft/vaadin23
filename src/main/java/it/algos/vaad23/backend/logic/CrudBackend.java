@@ -45,6 +45,15 @@ public abstract class CrudBackend extends AbstractService {
      * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
+    public MongoService mongoService;
+
+
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
     public TextService textService;
 
     public MongoRepository crudRepository;
@@ -124,6 +133,10 @@ public abstract class CrudBackend extends AbstractService {
         AEntity entity = (AEntity) objEntity;
 
         return (AEntity) crudRepository.insert(entity);
+    }
+
+    public AEntity save(Object entity) {
+        return (AEntity) crudRepository.save(entity);
     }
 
     public AEntity update(Object entity) {

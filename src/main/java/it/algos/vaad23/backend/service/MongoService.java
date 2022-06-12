@@ -253,7 +253,7 @@ public class MongoService<capture> extends AbstractService {
         return listaEntities;
     }
 
-    public List projectionString(Class<? extends AEntity> entityClazz, String property) {
+    public List<String> projectionString(Class<? extends AEntity> entityClazz, String property) {
         List<String> listaProperty = new ArrayList();
         collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
 
@@ -266,7 +266,7 @@ public class MongoService<capture> extends AbstractService {
         return listaProperty;
     }
 
-    public List projectionLong(Class<? extends AEntity> entityClazz, String property) {
+    public List<Long> projectionLong(Class<? extends AEntity> entityClazz, String property) {
         List<Long> listaProperty = new ArrayList();
         collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
 
@@ -278,5 +278,4 @@ public class MongoService<capture> extends AbstractService {
         }
         return listaProperty;
     }
-
 }
