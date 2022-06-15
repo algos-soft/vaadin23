@@ -5,6 +5,7 @@ import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
+import org.bson.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
@@ -72,6 +73,11 @@ public abstract class CrudBackend extends AbstractService {
     }// end of constructor with @Autowired
 
 
+    public AEntity newEntity(Document doc) {
+        return null;
+    }
+
+
     /**
      * Creazione in memoria di una nuova entityBean che NON viene salvata <br>
      * Eventuali regolazioni iniziali delle property <br>
@@ -90,6 +96,7 @@ public abstract class CrudBackend extends AbstractService {
 
         return newEntityBean;
     }
+
 
     public List findAll() {
         return crudRepository.findAll();

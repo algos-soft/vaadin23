@@ -113,8 +113,8 @@ public abstract class VaadBoot implements ServletContextListener {
         //        this.fixDBMongo();
         this.fixVariabili();
         this.fixPreferenze();
-        //        this.fixData();
         this.fixMenuRoutes();
+        this.fixData();
         this.fixVersioni();
         this.fixLogin();
     }
@@ -252,6 +252,14 @@ public abstract class VaadBoot implements ServletContextListener {
         this.dataInstance = dataInstance;
     }
 
+
+    /**
+     * Inizializzazione dei database di vaadinFlow <br>
+     * Inizializzazione dei database del programma specifico <br>
+     */
+    protected void fixData() {
+        this.dataInstance.inizia();
+    }
 
     /**
      * Inizializzazione delle versioni standard di vaadinFlow <br>

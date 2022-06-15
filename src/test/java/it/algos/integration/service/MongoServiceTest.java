@@ -45,6 +45,14 @@ public class MongoServiceTest extends AlgosIntegrationTest {
      */
     private MongoService service;
 
+    /**
+     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
+     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public MeseBackend meseBackend;
+
     private MongoDatabase dataBase;
 
     @Value("${spring.data.mongodb.database}")
@@ -290,6 +298,30 @@ public class MongoServiceTest extends AlgosIntegrationTest {
         System.out.println(VUOTA);
         for (String nome : listaNomi) {
             System.out.println(nome);
+        }
+    }
+
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - Query exclude")
+    void projectionExclude() {
+        System.out.println("8 - Query exclude");
+        System.out.println(VUOTA);
+
+        clazz = Mese.class;
+        sorgente = "giorni";
+        List<Mese> listaMesi = service.projectionExclude(clazz, meseBackend, sorgente);
+        assertEquals(12, listaMesi.size());
+        message = String.format(
+                "La query per la clazz %s fornisce una lista di %d entities sotto forma di una entityBean senza una property",
+                getSimpleName(clazz),
+                listaMesi.size()
+        );
+        System.out.println(message);
+        System.out.println(VUOTA);
+        for (Mese mese : listaMesi) {
+            System.out.println(mese.breve);
         }
     }
 
