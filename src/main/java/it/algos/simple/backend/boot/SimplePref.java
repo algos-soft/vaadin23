@@ -17,7 +17,7 @@ import org.springframework.context.event.*;
  * Time: 13:29
  */
 @SpringComponent
-@Qualifier(TAG_SIMPLE_PREFERENCES)
+@Qualifier(QUALIFIER_PREFERENCES_SIMPLE)
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class SimplePref extends VaadPref {
 

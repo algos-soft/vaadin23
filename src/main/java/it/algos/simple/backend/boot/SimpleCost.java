@@ -15,8 +15,10 @@ import org.springframework.context.annotation.Scope;
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class SimpleCost {
 
-    public static final String TAG_SIMPLE_VERSION = "simpleversion";
+    public static final String QUALIFIER_VERSION_SIMPLE = "versionSimple";
 
-    public static final String TAG_SIMPLE_PREFERENCES = "simplepreferences";
+    public static final String QUALIFIER_DATA_SIMPLE = "dataSimple";
+
+    public static final String QUALIFIER_PREFERENCES_SIMPLE = "preferencesSimple";
 
 }

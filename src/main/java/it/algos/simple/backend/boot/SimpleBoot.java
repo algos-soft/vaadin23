@@ -10,7 +10,6 @@ import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.packages.crono.secolo.*;
 import it.algos.vaad23.backend.packages.geografia.continente.*;
-import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
@@ -41,13 +40,6 @@ public class SimpleBoot extends VaadBoot {
 
     private String property;
 
-    /**
-     * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
-     * Iniettata automaticamente dal framework SpringBoot/Vaadin con l'Annotation @Autowired <br>
-     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    public LogService logger;
 
     /**
      * Regola le variabili generali dell' applicazione con il loro valore iniziale di default <br>
@@ -72,6 +64,13 @@ public class SimpleBoot extends VaadBoot {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         VaadVar.projectNameUpper = "Simple";
+
+        /**
+         * Classe da usare per lo startup del programma <br>
+         * Di default FlowData oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() <br>
+         */
+        VaadVar.dataClazz = SimpleData.class;
 
         /**
          * Classe da usare per gestire le versioni <br>
@@ -99,8 +98,7 @@ public class SimpleBoot extends VaadBoot {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         try {
-            property = "algos.simple.version.date";
-            VaadVar.projectDate = Objects.requireNonNull(environment.getProperty(property));
+            property = "algos.simple.version.date"; VaadVar.projectDate = Objects.requireNonNull(environment.getProperty(property));
         } catch (Exception unErrore) {
             String message = String.format("Non ho trovato la property %s nelle risorse", property);
             logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
@@ -109,31 +107,48 @@ public class SimpleBoot extends VaadBoot {
 
     /**
      * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
      * Chiamata dal costruttore di questa classe con valore nullo <br>
      * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
      */
     @Autowired
-    @Qualifier(TAG_SIMPLE_VERSION)
+    @Qualifier(QUALIFIER_VERSION_SIMPLE)
     public void setVersInstance(final AIVers versInstance) {
         this.versInstance = versInstance;
     }
 
+    /**
+     * Set con @Autowired di una property chiamata dal costruttore <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
+     * Chiamata dal costruttore di questa classe con valore nullo <br>
+     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+     */
     @Autowired
-    @Qualifier(TAG_SIMPLE_PREFERENCES)
+    @Qualifier(QUALIFIER_DATA_SIMPLE)
+    public void setDataInstance(final AIData dataInstance) {
+        this.dataInstance = dataInstance;
+    }
+
+    /**
+     * Set con @Autowired di una property chiamata dal costruttore <br>
+     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
+     * Chiamata dal costruttore di questa classe con valore nullo <br>
+     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+     */
+
+    @Autowired
+    @Qualifier(QUALIFIER_PREFERENCES_SIMPLE)
     public void setPrefInstance(final AIEnumPref prefInstance) {
         this.prefInstance = prefInstance;
     }
+
 
     @Override
     protected void fixMenuRoutes() {
         super.fixMenuRoutes();
 
-        VaadVar.menuRouteList.add(ContinenteView.class);
-        VaadVar.menuRouteList.add(MeseView.class);
-        VaadVar.menuRouteList.add(SecoloView.class);
-        VaadVar.menuRouteList.add(GiornoView.class);
-        VaadVar.menuRouteList.add(AnnoView.class);
+        VaadVar.menuRouteList.add(ContinenteView.class); VaadVar.menuRouteList.add(MeseView.class);
+        VaadVar.menuRouteList.add(SecoloView.class); VaadVar.menuRouteList.add(GiornoView.class); VaadVar.menuRouteList.add(AnnoView.class);
         VaadVar.menuRouteList.add(ViaView.class);
     }
 

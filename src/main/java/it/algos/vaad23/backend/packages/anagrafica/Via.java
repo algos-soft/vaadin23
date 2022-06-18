@@ -3,6 +3,7 @@ package it.algos.vaad23.backend.packages.anagrafica;
 import it.algos.vaad23.backend.entity.*;
 import lombok.*;
 import org.springframework.data.mongodb.core.index.*;
+import org.springframework.data.mongodb.core.mapping.*;
 
 import javax.validation.constraints.*;
 
@@ -15,6 +16,7 @@ import javax.validation.constraints.*;
  * <p>
  * Estende la entity astratta AEntity che contiene la key property ObjectId <br>
  */
+@Document
 //Lombok
 @Data
 @NoArgsConstructor

@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Scope;
  * Eseguita quindi a ogni avvio/riavvio del server e NON a ogni sessione <br>
  */
 @SpringComponent
-@Qualifier(TAG_SIMPLE_VERSION)
+@Qualifier(QUALIFIER_VERSION_SIMPLE)
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class SimpleVers extends VaadVers {
 

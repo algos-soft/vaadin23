@@ -465,6 +465,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Costruisce un' istanza dedicata con la Grid <br>
      */
     protected void fixBodyLayout() {
+        List items;
         // Create a listing component for a bean type
         grid = new Grid(entityClazz, autoCreateColumns);
 
@@ -479,7 +480,10 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.fixSearch();
 
         // Pass all objects to a grid from a Spring Data repository object
-        grid.setItems(crudBackend.findAll(sortOrder));
+        items = crudBackend.findAll(sortOrder);
+        if (items != null) {
+            grid.setItems(items);
+        }
 
         // The row-stripes theme produces a background color for every other row.
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
@@ -617,12 +621,16 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     }
 
     protected void sincroFiltri() {
-        List items = null;
-        String textSearch;
+        List<AEntity> items = crudBackend.findAll(sortOrder);
 
         if (usaBottoneSearch && searchField != null) {
-            textSearch = searchField != null ? searchField.getValue() : VUOTA;
-            items = crudBackend.findByDescrizione(textSearch);
+            final String textSearch = searchField != null ? searchField.getValue() : VUOTA;
+            if (textService.isValid(textSearch)) {
+                items = items
+                        .stream()
+                        .filter(bean -> ((String) reflectionService.getPropertyValue(bean, searchFieldName)).matches("^(?i)" + textSearch + ".*$"))
+                        .toList();
+            }
         }
 
         if (items != null) {

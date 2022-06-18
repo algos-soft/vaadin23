@@ -522,4 +522,16 @@ public abstract class AlgosTest {
         return clazz != null ? clazz.getSimpleName() : "(manca la classe)";
     }
 
+    protected void startTime() {
+        inizio = System.currentTimeMillis();
+    }
+
+    protected void printTime() {
+        System.out.println(dateService.deltaText(inizio));
+    }
+
+    protected void printTimeEsatto() {
+        System.out.println(dateService.deltaTextEsatto(inizio));
+    }
+
 }
