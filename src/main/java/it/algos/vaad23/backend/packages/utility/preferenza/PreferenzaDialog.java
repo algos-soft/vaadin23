@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Scope;
 import org.vaadin.crudui.crud.*;
 
 import javax.annotation.*;
+import java.util.*;
 import java.util.function.*;
 
 /**
@@ -59,6 +60,9 @@ public class PreferenzaDialog extends Dialog {
 
     @Autowired
     public LogService logger;
+
+    @Autowired
+    public ArrayService arrayService;
 
     /**
      * Istanza unica di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) di servizio <br>
@@ -297,7 +301,6 @@ public class PreferenzaDialog extends Dialog {
                 boxField.setReadOnly(operation == CrudOperation.DELETE);
                 valueLayout.add(boxField);
             }
-
             case integer -> {
                 TextField numberField = new TextField("Value (intero)");
                 numberField.setRequired(true);
@@ -323,6 +326,23 @@ public class PreferenzaDialog extends Dialog {
                 DateTimePicker pickerField = new DateTimePicker("Data completa (giorno e orario)");
                 pickerField.setReadOnly(operation == CrudOperation.DELETE);
                 valueLayout.add(pickerField);
+            }
+            case enumerationString -> {
+                ComboBox<String> combo = new ComboBox<>();
+                combo.setRequired(true);
+                combo.setAllowCustomValue(false);
+                combo.setClearButtonVisible(false);
+                combo.setReadOnly(false);
+                combo.addValueChangeListener(event -> sincroCombo());
+                String allEnumSelection = (String) type.getValue().bytesToObject(currentItem.getValue());
+                String allValues = textService.getEnumAll(allEnumSelection);
+                String selectedValue = textService.getEnumValue(allEnumSelection);
+                List<String> items = arrayService.getList(allValues);
+                if (items != null) {
+                    combo.setItems(items);
+                }
+                combo.setValue(selectedValue);
+                valueLayout.add(combo);
             }
             default -> valueLayout.add(new Label("Type non ancora gestito"));
         }
@@ -386,10 +406,25 @@ public class PreferenzaDialog extends Dialog {
                     valido = true;
                 }
             }
+            case enumerationString -> {
+                String value;
+                comp = valueLayout.getComponentAt(0);
+                if (comp != null && comp instanceof ComboBox combo) {
+                    value = (String) combo.getValue();
+                    String allEnumSelection = (String) type.getValue().bytesToObject(currentItem.getValue());
+                    String allValues = textService.getEnumAll(allEnumSelection);
+                    value = textService.setEnumValue(allEnumSelection, value);
+                    currentItem.setValue(type.getValue().objectToBytes(value));
+                    valido = true;
+                }
+            }
             default -> Notification.show("Switch non previsto").addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
 
         return valido;
+    }
+
+    protected void sincroCombo() {
     }
 
     /**

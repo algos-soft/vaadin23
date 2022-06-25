@@ -1,10 +1,12 @@
 package it.algos.simple;
 
+import it.algos.*;
 import it.algos.base.*;
 import it.algos.simple.backend.enumeration.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.boot.test.context.*;
 
 import java.util.*;
 
@@ -19,9 +21,9 @@ import java.util.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("quickly")
-@Tag("enums")
+@Tag("integration")
 @DisplayName("Enumeration SPref")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SPrefTest extends AlgosTest {
@@ -117,6 +119,175 @@ public class SPrefTest extends AlgosTest {
         System.out.println(String.format("KeyCode e descrizione della enumeration (%s valori)", listaEnum.size()));
         System.out.println(VUOTA);
         listaEnum.forEach(pref -> System.out.println(String.format("%s%s%s", pref.getKeyCode(), FORWARD, pref.getDescrizione())));
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - prova tipo stringa")
+    void stringa() {
+        System.out.println("5 - prova tipo stringa");
+        String oldValue = VUOTA;
+        String newValue = "pippo";
+        String currentValue;
+
+        oldValue = SPref.string.getStr();
+        assertNotNull(oldValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore iniziale %s%s", FORWARD, oldValue));
+
+        SPref.string.setValue(newValue);
+        currentValue = SPref.string.getStr();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore temporaneo %s%s", FORWARD, currentValue));
+
+        SPref.string.setValue(oldValue);
+        currentValue = SPref.string.getStr();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore originale %s%s", FORWARD, currentValue));
+    }
+
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - prova tipo boolean")
+    void booleano() {
+        System.out.println("6 - prova tipo boolean");
+        boolean oldValue;
+        boolean newValue = true;
+        boolean currentValue;
+
+        oldValue = SPref.bool.is();
+        assertNotNull(oldValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore iniziale %s%s", FORWARD, oldValue));
+
+        SPref.bool.setValue(newValue);
+        currentValue = SPref.bool.is();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore temporaneo %s%s", FORWARD, currentValue));
+
+        SPref.bool.setValue(oldValue);
+        currentValue = SPref.bool.is();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore originale %s%s", FORWARD, currentValue));
+    }
+
+
+    @Test
+    @Order(7)
+    @DisplayName("7 - prova tipo intero")
+    void intero() {
+        System.out.println("7 - prova tipo intero");
+        int oldValue;
+        int newValue = 17;
+        int currentValue;
+
+        oldValue = SPref.integer.getInt();
+        assertNotNull(oldValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore iniziale %s%s", FORWARD, oldValue));
+
+        SPref.integer.setValue(newValue);
+        currentValue = SPref.integer.getInt();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore temporaneo %s%s", FORWARD, currentValue));
+
+        SPref.integer.setValue(oldValue);
+        currentValue = SPref.integer.getInt();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore originale %s%s", FORWARD, currentValue));
+    }
+
+
+    @Test
+    @Order(8)
+    @DisplayName("8 - prova tipo lungo")
+    void lungo() {
+        System.out.println("8 - prova tipo lungo");
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("9 - prova tipo localDateTime")
+    void localDateTime() {
+        System.out.println("9 - prova tipo localDateTime");
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("10 - prova tipo localDate")
+    void localDate() {
+        System.out.println("10 - prova tipo localDate");
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("11 - prova tipo localTime")
+    void localTime() {
+        System.out.println("11 - prova tipo localTime");
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("12 - prova tipo email")
+    void email() {
+        System.out.println("12 - prova tipo email");
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("13 - prova tipo enumerationType")
+    void enumerationType() {
+        System.out.println("13 - prova tipo enumerationType");
+    }
+
+    @Test
+    @Order(14)
+    @DisplayName("14 - prova tipo enumerationString")
+    void enumerationString() {
+        System.out.println("14 - prova tipo enumerationString");
+        String allEnumSelection;
+        String oldValue = VUOTA;
+        String newValue = "alfa";
+        String currentValue;
+
+        allEnumSelection = (String) SPref.enumerationString.getDefaultValue();
+        assertNotNull(allEnumSelection);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore di default della enumeration %s%s", FORWARD, allEnumSelection));
+
+        allEnumSelection = SPref.enumerationString.getEnumAll();
+        assertNotNull(allEnumSelection);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore completo old della preferenza %s%s", FORWARD, allEnumSelection));
+
+        oldValue = SPref.enumerationString.getEnum();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore selezionato old della preferenza %s%s", FORWARD, oldValue));
+
+        SPref.enumerationString.setEnum(newValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Modifica effettuata col nuovo valore %s%s", FORWARD, newValue));
+
+        allEnumSelection = SPref.enumerationString.getEnumAll();
+        assertNotNull(allEnumSelection);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore completo modificato della preferenza %s%s", FORWARD, allEnumSelection));
+
+        currentValue = SPref.enumerationString.getEnum();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore selezionato modificato della preferenza %s%s", FORWARD, currentValue));
+
+        SPref.enumerationString.setEnum(oldValue);
+
+        allEnumSelection = SPref.enumerationString.getEnumAll();
+        assertNotNull(allEnumSelection);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore completo originario della preferenza %s%s", FORWARD, allEnumSelection));
+
+        oldValue = SPref.enumerationString.getEnum();
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore selezionato originario della preferenza %s%s", FORWARD, oldValue));
     }
 
     /**

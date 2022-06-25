@@ -634,7 +634,7 @@ public class TextServiceTest extends AlgosTest {
 
         sorgente = " Levare questa<ref> fine Non ancora altro testo</ref>";
         sorgente2 = "<ref ";
-        previsto = " Levare questa<ref> fine Non ancora altro testo</ref>";
+        previsto = " Levare questa";
         ottenuto = service.levaCodaDa(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
@@ -796,6 +796,87 @@ public class TextServiceTest extends AlgosTest {
         //        ottenuto = text.levaTesto(sorgente, sorgente2);
         //        assertNotNull(ottenuto);
         //        assertEquals(previsto, ottenuto);
+    }
+
+
+    @Test
+    @Order(22)
+    @DisplayName("22 - getEnumAll")
+    public void getEnumAll() {
+        sorgente = "alfa,beta,gamma;beta";
+        sorgente2 = " alfa ,beta ,  gamma;alfa";
+        sorgente3 = " alfa, beta, gamma, delta";
+        previsto = "alfa,beta,gamma";
+
+        ottenuto = service.getEnumAll(sorgente);
+        assertTrue(service.isValid(ottenuto));
+        assertEquals(previsto, ottenuto);
+        message = String.format("Sorgente %s%s%s", sorgente, FORWARD, ottenuto);
+        System.out.println(message);
+
+        ottenuto = service.getEnumAll(sorgente2);
+        assertTrue(service.isValid(ottenuto));
+        assertEquals(previsto, ottenuto);
+        message = String.format("Sorgente %s%s%s", sorgente2, FORWARD, ottenuto);
+        System.out.println(message);
+
+        ottenuto = service.getEnumAll(sorgente3);
+        assertTrue(service.isEmpty(ottenuto));
+        message = String.format("Sorgente %s%s%s", sorgente3, FORWARD, ottenuto);
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(23)
+    @DisplayName("23 - getEnumValue")
+    public void getEnumValue() {
+        sorgente = "alfa,beta,gamma;beta";
+        sorgente2 = " alfa ,beta ,  gamma;beta";
+        sorgente3 = " alfa, beta, gamma, delta";
+        previsto = "beta";
+
+        ottenuto = service.getEnumValue(sorgente);
+        assertTrue(service.isValid(ottenuto));
+        assertEquals(previsto, ottenuto);
+        message = String.format("Sorgente %s%s%s", sorgente, FORWARD, ottenuto);
+        System.out.println(message);
+
+        ottenuto = service.getEnumValue(sorgente2);
+        assertTrue(service.isValid(ottenuto));
+        assertEquals(previsto, ottenuto);
+        message = String.format("Sorgente %s%s%s", sorgente2, FORWARD, ottenuto);
+        System.out.println(message);
+
+        ottenuto = service.getEnumValue(sorgente3);
+        assertTrue(service.isEmpty(ottenuto));
+        message = String.format("Sorgente %s%s%s", sorgente3, FORWARD, ottenuto);
+        System.out.println(message);
+    }
+
+
+    @Test
+    @Order(24)
+    @DisplayName("24 - setEnumValue")
+    public void setEnumValue() {
+        sorgente = "alfa,beta,gamma;beta";
+        sorgente2 = "alfa";
+        sorgente3 = "alfa,beta,gamma,delta";
+        previsto = "alfa,beta,gamma;alfa";
+
+        ottenuto = service.setEnumValue(sorgente, sorgente2);
+        assertTrue(service.isValid(ottenuto));
+        assertEquals(previsto, ottenuto);
+        System.out.println(String.format("Old %s", sorgente));
+        System.out.println(String.format("New %s", sorgente2));
+        System.out.println(String.format("Enum %s", ottenuto));
+        System.out.println(VUOTA);
+
+        ottenuto = service.setEnumValue(sorgente3, sorgente2);
+        assertTrue(service.isValid(ottenuto));
+        System.out.println(String.format("Old %s", sorgente3));
+        System.out.println(String.format("New %s", sorgente2));
+        System.out.println(String.format("Enum %s", ottenuto));
     }
 
     protected void print(final String sorgente, final String ottenuto) {

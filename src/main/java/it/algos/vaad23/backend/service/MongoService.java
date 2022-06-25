@@ -369,7 +369,14 @@ public class MongoService<capture> extends AbstractService {
 
     public List<String> projectionString(Class<? extends AEntity> entityClazz, String property) {
         List<String> listaProperty = new ArrayList();
+        String message;
         collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
+
+        if (collection == null) {
+            message = String.format("Non esiste la collection", entityClazz.getSimpleName());
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return null;
+        }
 
         Bson projection = Projections.fields(Projections.include(property), Projections.excludeId());
         FindIterable<Document> documents = collection.find().projection(projection);
@@ -382,7 +389,14 @@ public class MongoService<capture> extends AbstractService {
 
     public List<Long> projectionLong(Class<? extends AEntity> entityClazz, String property) {
         List<Long> listaProperty = new ArrayList();
+        String message;
         collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
+
+        if (collection == null) {
+            message = String.format("Non esiste la collection", entityClazz.getSimpleName());
+            logger.warn(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return null;
+        }
 
         Bson projection = Projections.fields(Projections.include(property), Projections.excludeId());
         FindIterable<Document> documents = collection.find().projection(projection);
@@ -394,7 +408,14 @@ public class MongoService<capture> extends AbstractService {
     }
 
     public List<AEntity> projectionExclude(Class<? extends AEntity> entityClazz, CrudBackend backend, String property) {
+        return projectionExclude(entityClazz, backend, null, property);
+    }
+
+
+    public List<AEntity> projectionExclude(Class<? extends AEntity> entityClazz, CrudBackend backend, Bson sort, String property) {
         List<AEntity> listaExcluded = new ArrayList();
+        Bson projection;
+        FindIterable<Document> documents;
         String message;
         collection = getCollection(textService.primaMinuscola(entityClazz.getSimpleName()));
         AEntity entityBean;
@@ -405,8 +426,8 @@ public class MongoService<capture> extends AbstractService {
             return null;
         }
 
-        Bson projection = Projections.fields(Projections.exclude(property), Projections.excludeId());
-        FindIterable<Document> documents = collection.find().projection(projection);
+        projection = Projections.fields(Projections.exclude(property), Projections.excludeId());
+        documents = collection.find().sort(sort).projection(projection);
 
         for (var singolo : documents) {
             entityBean = backend.newEntity(singolo);

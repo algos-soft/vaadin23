@@ -302,6 +302,7 @@ public abstract class AlgosTest {
         loggerBackend.textService = textService;
         resourceService.webService = webService;
         resourceService.logger = logService;
+        textService.logger = logService;
     }
 
     /**

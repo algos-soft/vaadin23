@@ -28,7 +28,8 @@ public enum SPref {
     localDate("localDate", AETypePref.localdate, "Test di preferenza per type. Solo in questo progetto", ROOT_DATA),
     localTime("localTime", AETypePref.localtime, "Test di preferenza per type. Solo in questo progetto", ROOT_TIME),
     email("email", AETypePref.email, "Test di preferenza per type. Solo in questo progetto", "mail"),
-    //    enumeration("enumeration", AETypePref.enumeration, "Test di preferenza per type. Solo in questo progetto", null),
+    enumerationType("enumerationType", AETypePref.enumerationType, "Test di preferenza per type. Solo in questo progetto", AECopyType.file),
+    enumerationString("enumerationString", AETypePref.enumerationString, "Test di preferenza per type. Solo in questo progetto", "alfa,beta,gamma;beta"),
     //    icona("icona", AETypePref.icona, "Test di preferenza per type. Solo in questo progetto", null),
 
     ;
@@ -58,14 +59,15 @@ public enum SPref {
     //--Link injected da un metodo static
     private DateService date;
 
+    private TextService text;
 
-    SPref(final String keyCode, final AETypePref type, final String descrizione, final Object defaultValue) {
+
+    SPref(final String keyCode, final AETypePref type, final String descrizione, final Object allEnumSelection) {
         this.keyCode = keyCode;
         this.type = type;
         this.descrizione = descrizione;
-        this.defaultValue = defaultValue;
+        this.defaultValue = allEnumSelection;
     }// fine del costruttore
-
 
     public static List<SPref> getAllEnums() {
         return Arrays.stream(values()).toList();
@@ -81,6 +83,10 @@ public enum SPref {
 
     public void setDate(DateService date) {
         this.date = date;
+    }
+
+    public void setText(TextService text) {
+        this.text = text;
     }
 
     public void setValue(Object javaValue) {
@@ -156,6 +162,61 @@ public enum SPref {
         }
     }
 
+    /**
+     * Tutti i valori della enum <br>
+     */
+    public String getEnumAll() {
+        String message;
+
+        if (type == AETypePref.enumerationString) {
+            return getValue() != null ? (String) getValue() : VUOTA;
+        }
+        else {
+            message = String.format("La preferenza %s è di type %s. Non puoi usare getEnumAll()", keyCode, type);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return VUOTA;
+        }
+    }
+
+    /**
+     * Valore selezionato della enum <br>
+     */
+    public String getEnum() {
+        String message;
+        String value;
+
+        if (type == AETypePref.enumerationString) {
+            value = getValue() != null ? (String) getValue() : VUOTA;
+            value = text.getEnumValue(value);
+            return value;
+        }
+        else {
+            message = String.format("La preferenza %s è di type %s. Non puoi usare getEnum()", keyCode, type);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+            return VUOTA;
+        }
+    }
+
+    /**
+     * Valore selezionato della enum <br>
+     */
+    public void setEnum(String currentValue) {
+        String message;
+        String allValori;
+
+        if (type == AETypePref.enumerationString) {
+            allValori = getValue() != null ? (String) getValue() : VUOTA;
+            if (text.isValid(allValori)) {
+                allValori = text.setEnumValue(allValori, currentValue);
+                setValue(allValori);
+            }
+        }
+        else {
+            message = String.format("La preferenza %s è di type %s. Non puoi usare setEnum()", keyCode, type);
+            logger.error(new WrapLog().exception(new AlgosException(message)).usaDb());
+        }
+    }
+
     public AETypePref getType() {
         return type;
     }
@@ -184,12 +245,16 @@ public enum SPref {
         @Autowired
         private DateService date;
 
+        @Autowired
+        private TextService text;
+
         @PostConstruct
         public void postConstruct() {
             for (SPref pref : SPref.values()) {
                 pref.setPreferenzaBackend(preferenzaBackend);
                 pref.setLogger(logger);
                 pref.setDate(date);
+                pref.setText(text);
             }
         }
 

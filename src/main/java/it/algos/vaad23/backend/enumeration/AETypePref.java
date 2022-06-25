@@ -266,7 +266,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    enumeration("enum", "black") {
+    enumerationType("enum", "black") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -277,6 +277,31 @@ public enum AETypePref implements AIPref {
             return bytes;
         }
 
+        @Override
+        public String bytesToObject(byte[] bytes) {
+            String obj = "";
+            if (bytes != null) {
+                obj = new String(bytes, Charset.forName("UTF-8"));
+            }
+            return obj;
+        }
+
+        @Override
+        public String bytesToString(byte[] bytes) {
+            return bytesToObject(bytes).substring(bytesToObject(bytes).indexOf(PUNTO_VIRGOLA) + 1);
+        }
+    },// end of single enumeration
+
+    enumerationString("enum", "black") {
+        @Override
+        public byte[] objectToBytes(Object obj) {
+            byte[] bytes = new byte[0];
+            if (obj instanceof String) {
+                String stringa = (String) obj;
+                bytes = stringa.getBytes(Charset.forName("UTF-8"));
+            }
+            return bytes;
+        }
 
         @Override
         public String bytesToObject(byte[] bytes) {
