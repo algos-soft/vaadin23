@@ -7,7 +7,7 @@ package it.algos.vaad23.backend.interfaces;
  * Date: lun, 07-mar-2022
  * Time: 11:44
  */
-public interface AIPref {
+public interface AITypePref {
 
     /**
      * Stringa di valori (text) da usare per memorizzare la preferenza <br>

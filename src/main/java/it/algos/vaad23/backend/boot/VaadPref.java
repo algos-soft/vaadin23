@@ -88,7 +88,7 @@ public class VaadPref implements AIEnumPref, ServletContextListener {
      * Inserimento di una preferenza del progetto base Vaadin23 <br>
      * Controlla che la entity non esista già <br>
      */
-    protected void crea(final String keyCode, final AETypePref type, final Object value, final String descrizione,
+    protected void crea(final String keyCode, final AETypePref type, Object value, final String descrizione,
                         final boolean needRiavvio, final boolean vaad23) {
         Preferenza preferenza = null;
         String message;
@@ -115,6 +115,13 @@ public class VaadPref implements AIEnumPref, ServletContextListener {
 
         if (backend.existsByKeyCode(keyCode)) {
             return;
+        }
+
+        if (type == AETypePref.enumerationType && value instanceof AITypePref) {
+            Object obj = ((AITypePref) value).getPref();
+            if (obj instanceof String valueTxt) {
+                value = valueTxt;
+            }
         }
 
         preferenza = new Preferenza();

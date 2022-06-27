@@ -17,7 +17,7 @@ import java.util.*;
  * Codifica e decodifica specifiche per ogni tipologia. <br>
  * Usato sempre il charset di caratteri UTF-8 <br>
  */
-public enum AETypePref implements AIPref {
+public enum AETypePref implements AITypePref {
     string("string", "Blue") {
         @Override
         public byte[] objectToBytes(Object obj) {
@@ -266,7 +266,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    enumerationType("enum", "black") {
+    enumerationType("enumType", "black") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];
@@ -292,7 +292,7 @@ public enum AETypePref implements AIPref {
         }
     },// end of single enumeration
 
-    enumerationString("enum", "black") {
+    enumerationString("enumString", "black") {
         @Override
         public byte[] objectToBytes(Object obj) {
             byte[] bytes = new byte[0];

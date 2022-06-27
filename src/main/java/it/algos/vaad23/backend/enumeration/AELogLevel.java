@@ -13,7 +13,7 @@ import java.util.*;
  * Date: lun, 07-mar-2022
  * Time: 11:45
  */
-public enum AELogLevel implements AIType, AIPref {
+public enum AELogLevel implements AIType, AITypePref {
     debug(GREEN),
     info(BRIGHT_BLUE),
     warn(YELLOW),

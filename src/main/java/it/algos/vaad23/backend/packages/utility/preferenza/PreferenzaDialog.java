@@ -327,6 +327,26 @@ public class PreferenzaDialog extends Dialog {
                 pickerField.setReadOnly(operation == CrudOperation.DELETE);
                 valueLayout.add(pickerField);
             }
+            case enumerationType -> {
+                ComboBox<String> combo = new ComboBox<>();
+                combo.setRequired(true);
+                combo.setAllowCustomValue(false);
+                combo.setClearButtonVisible(false);
+                combo.setReadOnly(false);
+                combo.addValueChangeListener(event -> sincroCombo());
+                String allEnumSelection = (String) type.getValue().bytesToObject(currentItem.getValue());
+                String allValues = textService.getEnumAll(allEnumSelection);
+                String selectedValue = textService.getEnumValue(allEnumSelection);
+                List<String> items = arrayService.getList(allValues);
+                if (items != null) {
+                    combo.setItems(items);
+                    if (items.contains(selectedValue)) {
+                        combo.setValue(selectedValue);
+                    }
+                }
+                valueLayout.add(combo);
+            }
+
             case enumerationString -> {
                 ComboBox<String> combo = new ComboBox<>();
                 combo.setRequired(true);
@@ -340,8 +360,10 @@ public class PreferenzaDialog extends Dialog {
                 List<String> items = arrayService.getList(allValues);
                 if (items != null) {
                     combo.setItems(items);
+                    if (items.contains(selectedValue)) {
+                        combo.setValue(selectedValue);
+                    }
                 }
-                combo.setValue(selectedValue);
                 valueLayout.add(combo);
             }
             default -> valueLayout.add(new Label("Type non ancora gestito"));
@@ -406,13 +428,11 @@ public class PreferenzaDialog extends Dialog {
                     valido = true;
                 }
             }
-            case enumerationString -> {
-                String value;
+            case enumerationType, enumerationString -> {
                 comp = valueLayout.getComponentAt(0);
                 if (comp != null && comp instanceof ComboBox combo) {
-                    value = (String) combo.getValue();
+                    String value = (String) combo.getValue();
                     String allEnumSelection = (String) type.getValue().bytesToObject(currentItem.getValue());
-                    String allValues = textService.getEnumAll(allEnumSelection);
                     value = textService.setEnumValue(allEnumSelection, value);
                     currentItem.setValue(type.getValue().objectToBytes(value));
                     valido = true;

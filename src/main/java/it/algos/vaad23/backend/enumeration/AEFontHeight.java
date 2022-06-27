@@ -13,7 +13,7 @@ import java.util.*;
  * Date: sab, 20-feb-2021
  * Time: 17:40
  */
-public enum AEFontHeight implements AIType, AIPref {
+public enum AEFontHeight implements AIType, AITypePref {
 
     normal("1"),
     number16("1.6"),

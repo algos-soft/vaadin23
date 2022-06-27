@@ -12,7 +12,7 @@ import java.util.*;
  * Date: sab, 26-mar-2022
  * Time: 10:44
  */
-public enum AELineHeight implements AIType, AIPref {
+public enum AELineHeight implements AIType, AITypePref {
 
 
     normal("1"),

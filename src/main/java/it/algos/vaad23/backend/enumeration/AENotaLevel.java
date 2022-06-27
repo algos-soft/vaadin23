@@ -13,7 +13,7 @@ import java.util.*;
  * Date: ven, 18-mar-2022
  * Time: 07:13
  */
-public enum AENotaLevel implements AIType, AIPref {
+public enum AENotaLevel implements AIType, AITypePref {
     dettaglio(GREEN),
     normale(BRIGHT_BLUE),
     urgente(YELLOW),
