@@ -27,7 +27,7 @@ public enum SPref implements AIGenPref {
     localDate("localDate", AETypePref.localdate, ROOT_DATA),
     localTime("localTime", AETypePref.localtime, ROOT_TIME),
     email("email", AETypePref.email, "mail"),
-    enumerationType("enumerationType", AETypePref.enumerationType, AELogLevel.info),
+    enumerationType("enumerationType", AETypePref.enumerationType, AELogLevel.info, DESCRIZIONE_PREFERENZA, AELogLevel.info),
     enumerationString("enumerationString", AETypePref.enumerationString, "alfa,beta,gamma;beta"),
     //    icona("icona", AETypePref.icona, "Test di preferenza per type. Solo in questo progetto", null),
 
@@ -48,6 +48,9 @@ public enum SPref implements AIGenPref {
     //--Valore java iniziale da convertire in byte[] a seconda del type
     private Object defaultValue;
 
+    //--Tipo AITypePref per AETypePref.enumerationType
+    private AITypePref typeEnum;
+
     //--preferenze che necessita di un riavvio del programma per avere effetto
     private boolean needRiavvio;
 
@@ -67,10 +70,15 @@ public enum SPref implements AIGenPref {
     }// fine del costruttore
 
     SPref(final String keyCode, final AETypePref type, final Object defaultValue, final String descrizione) {
+        this(keyCode, type, defaultValue, descrizione, null);
+    }// fine del costruttore
+
+    SPref(final String keyCode, final AETypePref type, final Object defaultValue, final String descrizione, AITypePref typeEnum) {
         this.keyCode = keyCode;
         this.type = type;
         this.defaultValue = defaultValue;
         this.descrizione = descrizione;
+        this.typeEnum = typeEnum;
     }// fine del costruttore
 
     public static List<SPref> getAllEnums() {
@@ -153,6 +161,11 @@ public enum SPref implements AIGenPref {
         return defaultValue;
     }
 
+    @Override
+    public AITypePref getTypeEnum() {
+        return typeEnum;
+    }
+
     /**
      * Tutti i valori della enum <br>
      */
@@ -161,18 +174,18 @@ public enum SPref implements AIGenPref {
         return preferenceService.getEnumAll(type, keyCode);
     }
 
-    @Override
-    public AITypePref getEnumCurrentObj() {
-        return preferenceService.getEnumCurrentObj(type, keyCode);
-    }
-
 
     /**
      * Valore selezionato della enum <br>
      */
     @Override
-    public String getEnumCurrentTxt() {
+    public String getEnumCurrent() {
         return preferenceService.getEnumCurrentTxt(type, keyCode);
+    }
+
+    @Override
+    public AITypePref getEnumCurrentObj() {
+        return preferenceService.getEnumCurrentObj(typeEnum, type, keyCode);
     }
 
     /**
@@ -180,7 +193,12 @@ public enum SPref implements AIGenPref {
      */
     @Override
     public void setEnumCurrent(String currentValue) {
-        preferenceService.setEnumCurrent(type, keyCode, currentValue);
+        preferenceService.setEnumCurrentTxt(type, keyCode, currentValue);
+    }
+
+    @Override
+    public void setEnumCurrentObj(AITypePref currentValue) {
+        preferenceService.setEnumCurrentObj(type, keyCode, currentValue);
     }
 
     @Component

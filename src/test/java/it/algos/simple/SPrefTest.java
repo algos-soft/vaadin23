@@ -243,46 +243,36 @@ public class SPrefTest extends AlgosTest {
         System.out.println("13 - prova tipo enumerationType");
         AITypePref enumValue = null;
         AITypePref oldValue = null;
-        AITypePref newValue = AELogLevel.error;
+        AITypePref newValue = AELogLevel.debug;
         AITypePref currentValue;
 
         enumValue = (AITypePref) SPref.enumerationType.getDefaultValue();
         assertNotNull(enumValue);
         System.out.println(VUOTA);
-        System.out.println(String.format("Valore di default della enumeration %s%s", FORWARD, enumValue));
+        System.out.println(String.format("Valore di default di typeEnum della enumeration %s%s", FORWARD, enumValue));
 
-        //        oldValue = SPref.enumerationType.getEnumCurrentObj();
-        //        assertNotNull(oldValue);
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Valore completo old della preferenza %s%s", FORWARD, oldValue));
+        oldValue = SPref.enumerationType.getEnumCurrentObj();
+        assertNotNull(oldValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Vecchio valore typeEnum della preferenza %s%s", FORWARD, oldValue));
 
-        //        oldValue = SPref.enumerationType.getEnumCurrentTxt();
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Valore selezionato old della preferenza %s%s", FORWARD, oldValue));
-        //
-        //        SPref.enumerationType.setEnumCurrent(newValue);
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Modifica effettuata col nuovo valore %s%s", FORWARD, newValue));
-        //
-        //        allEnumSelection = SPref.enumerationType.getEnumAll();
-        //        assertNotNull(allEnumSelection);
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Valore completo modificato della preferenza %s%s", FORWARD, allEnumSelection));
-        //
-        //        currentValue = SPref.enumerationType.getEnumCurrentTxt();
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Valore selezionato modificato della preferenza %s%s", FORWARD, currentValue));
-        //
-        //        SPref.enumerationType.setEnumCurrent(oldValue);
-        //
-        //        allEnumSelection = SPref.enumerationType.getEnumAll();
-        //        assertNotNull(allEnumSelection);
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Valore completo originario della preferenza %s%s", FORWARD, allEnumSelection));
-        //
-        //        oldValue = SPref.enumerationType.getEnumCurrentTxt();
-        //        System.out.println(VUOTA);
-        //        System.out.println(String.format("Valore selezionato originario della preferenza %s%s", FORWARD, oldValue));
+        SPref.enumerationType.setEnumCurrentObj(newValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Modificata la preferenza col nuovo typeEnum %s%s", FORWARD, newValue));
+
+        enumValue = SPref.enumerationType.getEnumCurrentObj();
+        assertNotNull(enumValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore corrente modificato di typeEnum per la preferenza %s%s", FORWARD, enumValue));
+
+        SPref.enumerationType.setEnumCurrentObj(oldValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Modificata la preferenza col vecchio typeEnum originario %s%s", FORWARD, oldValue));
+
+        enumValue = SPref.enumerationType.getEnumCurrentObj();
+        assertNotNull(enumValue);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Valore corrente originario di typeEnum per la preferenza %s%s", FORWARD, enumValue));
     }
 
     @Test
@@ -305,7 +295,7 @@ public class SPrefTest extends AlgosTest {
         System.out.println(VUOTA);
         System.out.println(String.format("Valore completo old della preferenza %s%s", FORWARD, allEnumSelection));
 
-        oldValue = SPref.enumerationString.getEnumCurrentTxt();
+        oldValue = SPref.enumerationString.getEnumCurrent();
         System.out.println(VUOTA);
         System.out.println(String.format("Valore selezionato old della preferenza %s%s", FORWARD, oldValue));
 
@@ -318,7 +308,7 @@ public class SPrefTest extends AlgosTest {
         System.out.println(VUOTA);
         System.out.println(String.format("Valore completo modificato della preferenza %s%s", FORWARD, allEnumSelection));
 
-        currentValue = SPref.enumerationString.getEnumCurrentTxt();
+        currentValue = SPref.enumerationString.getEnumCurrent();
         System.out.println(VUOTA);
         System.out.println(String.format("Valore selezionato modificato della preferenza %s%s", FORWARD, currentValue));
 
@@ -329,7 +319,7 @@ public class SPrefTest extends AlgosTest {
         System.out.println(VUOTA);
         System.out.println(String.format("Valore completo originario della preferenza %s%s", FORWARD, allEnumSelection));
 
-        oldValue = SPref.enumerationString.getEnumCurrentTxt();
+        oldValue = SPref.enumerationString.getEnumCurrent();
         System.out.println(VUOTA);
         System.out.println(String.format("Valore selezionato originario della preferenza %s%s", FORWARD, oldValue));
     }

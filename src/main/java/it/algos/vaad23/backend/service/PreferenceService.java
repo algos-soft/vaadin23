@@ -122,28 +122,6 @@ public class PreferenceService extends AbstractService {
         }
     }
 
-
-    /**
-     * Valore selezionato della enum <br>
-     */
-    public AITypePref getEnumCurrentObj(AETypePref type, String keyCode) {
-        Object obj = null;
-
-        if (type == AETypePref.enumerationType) {
-            obj = getValue(type, keyCode);
-            if (obj instanceof String value) {
-                value = textService.getEnumValue(value);
-                return null;
-            }
-            return null;
-        }
-        else {
-            log(type, keyCode, "getEnumCurrentObj");
-            return null;
-        }
-    }
-
-
     /**
      * Valore selezionato della enum <br>
      */
@@ -163,11 +141,43 @@ public class PreferenceService extends AbstractService {
         }
     }
 
+    /**
+     * Valore selezionato della enum <br>
+     */
+    public AITypePref getEnumCurrentObj(AITypePref typeEnum, AETypePref type, String keyCode) {
+        Object obj = null;
+
+        if (type == AETypePref.enumerationType) {
+            obj = getValue(type, keyCode);
+            if (obj instanceof String value) {
+                value = textService.getEnumValue(value);
+                typeEnum = typeEnum.get(value);
+                return typeEnum;
+            }
+            return null;
+        }
+        else {
+            log(type, keyCode, "getEnumCurrentObj");
+            return null;
+        }
+    }
 
     /**
      * Valore selezionato della enum <br>
      */
-    public void setEnumCurrent(AETypePref type, String keyCode, String currentValue) {
+    public void setEnumCurrentObj(AETypePref type, String keyCode, AITypePref currentValue) {
+        if (type == AETypePref.enumerationType) {
+            setValue(type, keyCode, currentValue.getPref());
+        }
+        else {
+            log(type, keyCode, "setEnumCurrentObj");
+        }
+    }
+
+    /**
+     * Valore selezionato della enum <br>
+     */
+    public void setEnumCurrentTxt(AETypePref type, String keyCode, String currentValue) {
         Object obj;
         String newTestoCompletoEnum;
 
@@ -182,6 +192,7 @@ public class PreferenceService extends AbstractService {
             log(type, keyCode, "setEnumCurrent");
         }
     }
+
 
     public void log(AETypePref type, String keyCode, String methodName) {
         String message;

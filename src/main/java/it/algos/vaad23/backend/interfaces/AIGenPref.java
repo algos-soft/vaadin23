@@ -28,9 +28,10 @@ public interface AIGenPref {
 
     public String getEnumAll();
 
-    public AITypePref getEnumCurrentObj();
 
-    public String getEnumCurrentTxt();
+    public String getEnumCurrent();
+
+    public AITypePref getEnumCurrentObj();
 
     AETypePref getType();
 
@@ -40,6 +41,8 @@ public interface AIGenPref {
 
     Object getDefaultValue();
 
+    AITypePref getTypeEnum();
+
     void setDate(DateService date);
 
     void setText(TextService text);
@@ -47,5 +50,7 @@ public interface AIGenPref {
     void setValue(Object javaValue);
 
     void setEnumCurrent(String currentValue);
+
+    void setEnumCurrentObj(AITypePref currentValue);
 
 }// end of interface

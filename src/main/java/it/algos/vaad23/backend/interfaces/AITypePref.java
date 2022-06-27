@@ -18,5 +18,7 @@ public interface AITypePref {
      */
     String getPref();
 
+    AITypePref get(final String name);
+
 }// end of interface
 

@@ -96,4 +96,14 @@ public enum AEFontHeight implements AIType, AITypePref {
 
         return buffer.toString();
     }
+
+    @Override
+    public AITypePref get(String nome) {
+        return getAllEnums()
+                .stream()
+                .filter(type -> type.name().equals(nome))
+                .findAny()
+                .orElse(null);
+    }
+
 }

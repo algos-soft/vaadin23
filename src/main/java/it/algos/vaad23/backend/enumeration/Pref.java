@@ -32,6 +32,9 @@ public enum Pref implements AIGenPref {
     //--Valore java iniziale da convertire in byte[] a seconda del type
     private Object defaultValue;
 
+    //--Tipo AITypePref per AETypePref.enumerationType
+    private AITypePref typeEnum;
+
     //--preferenze singole per ogni company; usa un prefisso col codice della company
     private boolean usaCompany;
 
@@ -149,6 +152,11 @@ public enum Pref implements AIGenPref {
         return defaultValue;
     }
 
+    @Override
+    public AITypePref getTypeEnum() {
+        return typeEnum;
+    }
+
     /**
      * Tutti i valori della enum <br>
      */
@@ -159,14 +167,14 @@ public enum Pref implements AIGenPref {
 
     @Override
     public AITypePref getEnumCurrentObj() {
-        return preferenceService.getEnumCurrentObj(type, keyCode);
+        return preferenceService.getEnumCurrentObj(typeEnum, type, keyCode);
     }
 
     /**
      * Valore selezionato della enum <br>
      */
     @Override
-    public String getEnumCurrentTxt() {
+    public String getEnumCurrent() {
         return preferenceService.getEnumCurrentTxt(type, keyCode);
     }
 
@@ -175,7 +183,12 @@ public enum Pref implements AIGenPref {
      */
     @Override
     public void setEnumCurrent(String currentValue) {
-        preferenceService.setEnumCurrent(type, keyCode, currentValue);
+        preferenceService.setEnumCurrentTxt(type, keyCode, currentValue);
+    }
+
+    @Override
+    public void setEnumCurrentObj(AITypePref currentValue) {
+        preferenceService.setEnumCurrentObj(type, keyCode, currentValue);
     }
 
     @Component
