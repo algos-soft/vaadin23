@@ -190,6 +190,8 @@ public abstract class AlgosTest {
     @InjectMocks
     protected WebService webService;
 
+    @InjectMocks
+    protected MathService mathService;
 
 
     //--tag
@@ -272,6 +274,7 @@ public abstract class AlgosTest {
         assertNotNull(htmlService);
         assertNotNull(webService);
         assertNotNull(loggerBackend);
+        assertNotNull(mathService);
     }
 
 

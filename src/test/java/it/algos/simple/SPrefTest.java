@@ -243,7 +243,7 @@ public class SPrefTest extends AlgosTest {
         System.out.println("13 - prova tipo enumerationType");
         AITypePref enumValue = null;
         AITypePref oldValue = null;
-        AITypePref newValue = AELogLevel.debug;
+        AITypePref newValue = AELogLevel.warn;
         AITypePref currentValue;
 
         enumValue = (AITypePref) SPref.enumerationType.getDefaultValue();

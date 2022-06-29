@@ -91,5 +91,4 @@ public enum AELogLevel implements AIType, AITypePref {
                 .findAny()
                 .orElse(null);
     }
-
 }
