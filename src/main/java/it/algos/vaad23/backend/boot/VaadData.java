@@ -228,6 +228,13 @@ public class VaadData extends AbstractService {
                 .stream()
                 .filter(n -> n.endsWith(SUFFIX_BACKEND))
                 .collect(Collectors.toList());
+        if (allBackendClasses != null && allBackendClasses.size() > 0) {
+            message = String.format("Nel modulo %s sono stati trovati %d packages con classi di tipo xxxBackend", moduleName, allBackendClasses.size());
+        }
+        else {
+            message = String.format("Nel modulo %s non è stato trovato nessun package con classi di tipo xxxBackend", moduleName);
+        }
+        logger.info(new WrapLog().message(message).type(AETypeLog.checkData));
 
         //--seleziono solo le classi xxxBackend che implementano il metodo resetStartUp
         allBackendClassesResetStartUp = allBackendClasses
@@ -235,19 +242,16 @@ public class VaadData extends AbstractService {
                 .filter(checkUsaResetStartUp)
                 .collect(Collectors.toList());
         if (allBackendClassesResetStartUp != null && allBackendClassesResetStartUp.size() > 0) {
-            message = String.format("In %s sono stati trovati %d packages con classi di tipo xxxBackend", moduleName, allBackendClassesResetStartUp.size());
+            message = String.format("Nel modulo %s sono state trovate %d classi xxxBackend che implementano il metodo 'resetStartUp'", moduleName, allBackendClassesResetStartUp.size());
+            logger.info(new WrapLog().message(message).type(AETypeLog.checkData));
         }
-        else {
-            message = String.format("In %s non è stato trovato nessun package con classi di tipo xxxBackend", moduleName);
-        }
-        logger.info(new WrapLog().message(message).type(AETypeLog.checkData));
 
         //--esegue il metodo xxxBackend.resetStartUp per tutte le classi che lo implementano
         if (allBackendClassesResetStartUp != null) {
             allBackendClassesResetStartUp
                     .stream()
                     .forEach(bootReset);
-            message = String.format("Controllati i dati iniziali di %s", moduleName);
+            message = String.format("Controllati i dati iniziali di tutti i packages del modulo %s", moduleName);
             logger.info(new WrapLog().message(message).type(AETypeLog.checkData));
         }
 
@@ -316,20 +320,14 @@ public class VaadData extends AbstractService {
      */
     protected Consumer<Object> bootReset = canonicalBackend -> {
         final String canonicaBackendName = (String) canonicalBackend;
-        int numRec;
         final String tag = "resetStartUp";
-
-        //--controlla se la collection è vuota o piena
-        numRec = mongoService.count(canonicaBackendName);
-        if (numRec > 0) {
-            return;
-        }
+        boolean eseguito;
 
         try {
             final Class clazz = classService.getClazzFromCanonicalName(canonicaBackendName);
             final Method metodo = clazz.getMethod(tag);
             final Object istanza = appContext.getBean(clazz);
-            metodo.invoke(istanza);
+            eseguito = (Boolean) metodo.invoke(istanza);
         } catch (Exception unErrore) {
             logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
         }

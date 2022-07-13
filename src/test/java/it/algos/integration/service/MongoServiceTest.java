@@ -352,7 +352,7 @@ public class MongoServiceTest extends AlgosIntegrationTest {
         System.out.println(VUOTA);
         System.out.println(String.format("La collection %s non esiste", sorgente));
 
-        ottenutoBooleano = service.isCollectionEmpty(clazz);
+        ottenutoBooleano = service.isCollectionNullOrEmpty(clazz);
         assertTrue(ottenutoBooleano);
         System.out.println(VUOTA);
         System.out.println(String.format("La collection %s non esiste ed è vuota", sorgente));
@@ -369,7 +369,7 @@ public class MongoServiceTest extends AlgosIntegrationTest {
         System.out.println(VUOTA);
         System.out.println(String.format("Nella collection %s c'è 1 entity", sorgente));
 
-        ottenutoBooleano = service.isCollectionEmpty(clazz);
+        ottenutoBooleano = service.isCollectionNullOrEmpty(clazz);
         assertFalse(ottenutoBooleano);
         System.out.println(VUOTA);
         System.out.println(String.format("La collection %s non è vuota", sorgente));
@@ -388,7 +388,7 @@ public class MongoServiceTest extends AlgosIntegrationTest {
         System.out.println(VUOTA);
         System.out.println(String.format("Esiste la collection %s%s%s", sorgente, FORWARD, ottenutoBooleano));
 
-        ottenutoBooleano = service.isCollectionEmpty(clazz);
+        ottenutoBooleano = service.isCollectionNullOrEmpty(clazz);
         assertTrue(ottenutoBooleano);
         System.out.println(VUOTA);
         System.out.println(String.format("La collection %s esiste ed è vuota%s%s", sorgente, FORWARD, ottenutoBooleano));

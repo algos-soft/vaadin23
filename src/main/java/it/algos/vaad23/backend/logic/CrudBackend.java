@@ -187,6 +187,22 @@ public abstract class CrudBackend extends AbstractService {
     /**
      * Creazione di alcuni dati iniziali <br>
      * Viene invocato alla creazione del programma e dal bottone Reset della lista <br>
+     * Esegue SOLO se la collection NON esiste oppure esiste ma è VUOTA <br>
+     * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
+     * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     */
+    public boolean resetStartUp() {
+        if (mongoService.isCollectionNullOrEmpty(entityClazz)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Creazione di alcuni dati <br>
+     * Viene invocato alla creazione del programma e dal bottone Reset della lista <br>
      * La collezione viene svuotata <br>
      * I dati possono essere presi da una Enumeration, da un file CSV locale, da un file CSV remoto o creati hardcoded <br>
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>

@@ -247,9 +247,20 @@ public class MongoService<capture> extends AbstractService {
      *
      * @return true if the collection is null or empty
      */
-    public boolean isCollectionEmpty(final Class<? extends AEntity> entityClazz) {
-        if (isExistsCollection(entityClazz)) {
-            return count(entityClazz) == 0;
+    public boolean isCollectionNullOrEmpty(final Class<? extends AEntity> entityClazz) {
+        return entityClazz == null ? false : isCollectionNullOrEmpty(entityClazz.getSimpleName().toLowerCase());
+    }
+
+    /**
+     * Controlla che la collezione sia vuota. <br>
+     *
+     * @param collectionName corrispondente ad una collection sul database mongoDB
+     *
+     * @return true if the collection is null or empty
+     */
+    public boolean isCollectionNullOrEmpty(final String collectionName) {
+        if (isExistsCollection(collectionName)) {
+            return count(collectionName) == 0;
         }
         else {
             return true;
