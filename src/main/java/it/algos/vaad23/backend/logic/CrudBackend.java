@@ -192,8 +192,12 @@ public abstract class CrudBackend extends AbstractService {
      * Deve essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
      */
     public boolean resetStartUp() {
+        String message;
+
         if (mongoService.isCollectionNullOrEmpty(entityClazz)) {
-            return true;
+            message = String.format("Creati i dati iniziale della collection %s", entityClazz.getSimpleName());
+            logger.info(new WrapLog().message(message).type(AETypeLog.checkData));
+            return reset();
         }
         else {
             return false;
