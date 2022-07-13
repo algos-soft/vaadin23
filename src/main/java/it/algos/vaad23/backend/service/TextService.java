@@ -916,7 +916,7 @@ public class TextService extends AbstractService {
         if (this.isValid(testoOut) && this.isValid(tagIniziale)) {
             tag = tagIniziale.equals(CAPO) ? tagIniziale : tagIniziale.trim();
             if (testoOut.contains(tag)) {
-                testoOut = testoOut.substring(testoOut.indexOf(tag) + tag.length());
+                testoOut = testoOut.substring(testoOut.indexOf(tag));
             }
         }
 
@@ -1197,6 +1197,20 @@ public class TextService extends AbstractService {
      */
     public String setRef(final String stringaIn) {
         String stringaOut = REF + stringaIn.trim() + REF_END;
+        return stringaOut.trim();
+    }
+
+
+    /**
+     * Aggiunge 3 tag APICE in testa e coda alla stringa. <br>
+     * Elimina spazi vuoti iniziali e finali <br>
+     *
+     * @param stringaIn in ingresso
+     *
+     * @return stringa con 3 APICE aggiunti
+     */
+    public String setBold(final String stringaIn) {
+        String stringaOut = APICE + APICE + APICE + stringaIn.trim() + APICE + APICE + APICE;
         return stringaOut.trim();
     }
 

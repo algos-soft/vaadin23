@@ -3,6 +3,7 @@ package it.algos.base;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
 
 /**
  * Project vaadin23
@@ -13,6 +14,14 @@ import org.springframework.beans.factory.annotation.*;
  * Layer per gestire ApplicationContext
  */
 public abstract class SpringTest extends AlgosTest {
+
+    /**
+     * Istanza di una interfaccia <br>
+     * Iniettata automaticamente dal framework SpringBoot con l'Annotation @Autowired <br>
+     * Disponibile DOPO il ciclo init() del costruttore di questa classe <br>
+     */
+    @Autowired
+    public ApplicationContext appContext;
 
     @Autowired
     protected LoggerRepository loggerRepository;
@@ -34,6 +43,7 @@ public abstract class SpringTest extends AlgosTest {
      */
     protected void initMocks() {
         super.initMocks();
+        assertNotNull(appContext);
         assertNotNull(loggerRepository);
     }
 
@@ -47,6 +57,7 @@ public abstract class SpringTest extends AlgosTest {
         super.fixRiferimentiIncrociati();
         loggerBackend.crudRepository = loggerRepository;
         loggerBackend.repository = loggerRepository;
+        classService.appContext = appContext;
     }
 
 }

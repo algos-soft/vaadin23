@@ -1,9 +1,7 @@
 package it.algos.simple.backend.boot;
 
 import com.vaadin.flow.spring.annotation.*;
-import static it.algos.simple.backend.boot.SimpleCost.*;
 import it.algos.vaad23.backend.boot.*;
-import org.springframework.beans.factory.annotation.*;
 import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 
@@ -15,13 +13,37 @@ import org.springframework.context.annotation.Scope;
  * Time: 15:00
  */
 @SpringComponent
-@Qualifier(QUALIFIER_DATA_SIMPLE)
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SimpleData extends VaadData {
 
 
-    public void inizia() {
-        super.inizia();
+    /**
+     * Costruttore senza parametri <br>
+     * Not annotated with @Autowired annotation, per creare l'istanza SOLO come SCOPE_PROTOTYPE <br>
+     * L'istanza DEVE essere creata con appContext.getBean(SimpleData.class); <br>
+     * Non utilizzato e non necessario <br>
+     * Per evitare il bug (solo visivo), aggiungo un costruttore senza parametri <br>
+     */
+    public SimpleData() {
+    }// end of constructor not @Autowired
+
+
+    /**
+     * Check iniziale. A ogni avvio del programma spazzola tutte le collections <br>
+     * Ognuna viene ricreata (mantenendo le entities che hanno reset=false) se:
+     * - xxx->@AIEntity usaBoot=true,
+     * - esiste xxxService.reset(),
+     * - la collezione non contiene nessuna entity che abbia la property reset=true
+     * Può essere sovrascritto, invocando PRIMA il metodo della superclasse <br>
+     * L' ordine con cui vengono create le collections è significativo <br>
+     *
+     * @since java 8
+     */
+    @Override
+    protected void resetData() {
+        super.resetData();
+
+        //--altre eventuali regolazioni specifiche di questa applicazione
     }
 
 }

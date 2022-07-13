@@ -77,6 +77,9 @@ public class ViaBackend extends CrudBackend {
                 .build();
     }
 
+    public void resetStartUp() {
+        int a = 87;
+    }
 
     /**
      * Creazione di alcuni dati iniziali <br>

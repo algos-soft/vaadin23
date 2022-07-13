@@ -3,8 +3,6 @@ package it.algos.vaad23.backend.service;
 import com.vaadin.flow.component.grid.*;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.*;
-import com.vaadin.flow.data.renderer.*;
-import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.config.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
-import java.lang.reflect.*;
 import java.time.format.*;
 import java.util.*;
 
@@ -77,28 +74,29 @@ public class ColumnService extends AbstractService {
         String sortProperty = annotationService.getSortProperty(entityClazz, propertyName);
 
         colonna = switch (type) {
-            case text, integer, lungo, enumeration, link, localDateTime, localDate, localTime ->
-                    grid.addColumn(propertyName).setSortable(true);
-            case booleano -> {
-                yield grid.addColumn(new ComponentRenderer<>(entity -> {
-                    Field field = null;
-                    Icon icona = null;
-                    try {
-                        field = reflectionService.getField(entityClazz, propertyName);
-                    } catch (Exception unErrore) {
-                        logger.error(new WrapLog().exception(unErrore).usaDb());
-                    }
-                    try {
-                        icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
-                        icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);
-
-                    } catch (Exception unErrore) {
-                        logger.error(new WrapLog().exception(unErrore).usaDb());
-                    }
-
-                    return icona;
-                })).setSortable(false);
-            }
+            case text, enumeration, link, localDateTime, localDate, localTime -> grid.addColumn(propertyName).setSortable(true);
+            case integer, lungo -> grid.addColumn(propertyName).setSortable(true);
+            case booleano -> grid.addColumn(propertyName).setSortable(true);
+            //            case booleano -> {
+            //                yield grid.addColumn(new ComponentRenderer<>(entity -> {
+            //                    Field field = null;
+            //                    Icon icona = null;
+            //                    try {
+            //                        field = reflectionService.getField(entityClazz, propertyName);
+            //                    } catch (Exception unErrore) {
+            //                        logger.error(new WrapLog().exception(unErrore).usaDb());
+            //                    }
+            //                    try {
+            //                        icona = (boolean) field.get(entity) ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
+            //                        icona.setColor((boolean) field.get(entity) ? COLOR_VERO : COLOR_FALSO);
+            //
+            //                    } catch (Exception unErrore) {
+            //                        logger.error(new WrapLog().exception(unErrore).usaDb());
+            //                    }
+            //
+            //                    return icona;
+            //                })).setSortable(true);
+            //            }
             default -> null;
         };
 

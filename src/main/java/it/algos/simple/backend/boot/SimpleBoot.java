@@ -66,20 +66,6 @@ public class SimpleBoot extends VaadBoot {
         VaadVar.projectNameUpper = "Simple";
 
         /**
-         * Classe da usare per lo startup del programma <br>
-         * Di default FlowData oppure possibile sottoclasse del progetto <br>
-         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() <br>
-         */
-        VaadVar.dataClazz = SimpleData.class;
-
-        /**
-         * Classe da usare per gestire le versioni <br>
-         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
-         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
-         */
-        VaadVar.versionClazz = SimpleVers.class;
-
-        /**
          * Versione dell' applicazione <br>
          * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
@@ -106,6 +92,33 @@ public class SimpleBoot extends VaadBoot {
     }
 
     /**
+     * Costruisce alcune istanze generali dell'applicazione e ne mantiene i riferimenti nelle apposite variabili <br>
+     * Le istanze (prototype) sono uniche per tutta l' applicazione <br>
+     * Vengono create SOLO in questa classe o in una sua sottoclasse <br>
+     * La selezione su quale istanza creare tocca a questa sottoclasse xxxBoot <br>
+     * Se la sottoclasse non ha creato l'istanza, ci pensa la superclasse <br>
+     * Può essere sovrascritto, invocando DOPO il metodo della superclasse <br>
+     */
+    @Override
+    protected void fixVariabiliRiferimentoIstanzeGenerali() {
+        /**
+         * Classe da usare per lo startup del programma <br>
+         * Di default FlowData oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabiliRiferimentoIstanzeGenerali() del progetto corrente <br>
+         */
+        VaadVar.istanzaData = appContext.getBean(SimpleData.class);
+
+        /**
+         * Classe da usare per gestire le versioni <br>
+         * Di default FlowVers oppure possibile sottoclasse del progetto <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        VaadVar.versionClazz = SimpleVers.class;
+
+        super.fixVariabiliRiferimentoIstanzeGenerali();
+    }
+
+    /**
      * Set con @Autowired di una property chiamata dal costruttore <br>
      * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
      * Chiamata dal costruttore di questa classe con valore nullo <br>
@@ -117,17 +130,17 @@ public class SimpleBoot extends VaadBoot {
         this.versInstance = versInstance;
     }
 
-    /**
-     * Set con @Autowired di una property chiamata dal costruttore <br>
-     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
-     * Chiamata dal costruttore di questa classe con valore nullo <br>
-     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
-     */
-    @Autowired
-    @Qualifier(QUALIFIER_DATA_SIMPLE)
-    public void setDataInstance(final AIData dataInstance) {
-        this.dataInstance = dataInstance;
-    }
+    //    /**
+    //     * Set con @Autowired di una property chiamata dal costruttore <br>
+    //     * Istanza di una classe @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON) <br>
+    //     * Chiamata dal costruttore di questa classe con valore nullo <br>
+    //     * Iniettata dal framework SpringBoot/Vaadin al termine del ciclo init() del costruttore di questa classe <br>
+    //     */
+    //    @Autowired
+    //    @Qualifier(QUALIFIER_DATA_SIMPLE)
+    //    public void setDataInstance(final AIData dataInstance) {
+    //        this.dataInstance = dataInstance;
+    //    }
 
     /**
      * Set con @Autowired di una property chiamata dal costruttore <br>

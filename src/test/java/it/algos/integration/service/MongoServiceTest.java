@@ -8,6 +8,7 @@ import it.algos.vaad23.backend.interfaces.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.packages.geografia.continente.*;
+import it.algos.vaad23.backend.packages.utility.test.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.ui.views.*;
 import org.bson.*;
@@ -323,6 +324,83 @@ public class MongoServiceTest extends AlgosIntegrationTest {
         for (Mese mese : listaMesi) {
             System.out.println(mese.breve);
         }
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("9 - Delete")
+    void delete() {
+        System.out.println("9 - Delete");
+        System.out.println(VUOTA);
+        clazz = Prova.class;
+        service.deleteAll(clazz);
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("10 - Prova")
+    void prova() {
+        System.out.println("10 - Prova");
+        Prova istanzaProva;
+        clazz = Prova.class;
+        sorgente = "prova";
+        sorgente2 = "test";
+        sorgente3 = "alfa";
+
+        ottenutoBooleano = service.isExistsCollection(clazz);
+        assertFalse(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("La collection %s non esiste", sorgente));
+
+        ottenutoBooleano = service.isCollectionEmpty(clazz);
+        assertTrue(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("La collection %s non esiste ed è vuota", sorgente));
+
+        istanzaProva = new Prova();
+        istanzaProva.id = sorgente3;
+        istanzaProva.nome = sorgente2;
+        istanzaProva = service.mongoOp.insert(istanzaProva);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Aggiunta una entity di %s", sorgente));
+
+        ottenutoIntero = service.count(sorgente);
+        assertEquals(1, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Nella collection %s c'è 1 entity", sorgente));
+
+        ottenutoBooleano = service.isCollectionEmpty(clazz);
+        assertFalse(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("La collection %s non è vuota", sorgente));
+
+        service.delete(istanzaProva);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Cancellata la entity %s", sorgente2));
+
+        ottenutoIntero = service.count(sorgente);
+        assertEquals(0, ottenutoIntero);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Nella collection %s ci sono zero entities", sorgente));
+
+        ottenutoBooleano = service.isExistsCollection(clazz);
+        assertTrue(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Esiste la collection %s%s%s", sorgente, FORWARD, ottenutoBooleano));
+
+        ottenutoBooleano = service.isCollectionEmpty(clazz);
+        assertTrue(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("La collection %s esiste ed è vuota%s%s", sorgente, FORWARD, ottenutoBooleano));
+
+        service.deleteAll(clazz);
+        System.out.println(VUOTA);
+        System.out.println(String.format("Cancellata la collection %s", sorgente));
+
+        ottenutoBooleano = service.isExistsCollection(clazz);
+        assertFalse(ottenutoBooleano);
+        System.out.println(VUOTA);
+        System.out.println(String.format("La collection %s non esiste", sorgente));
     }
 
     /**
