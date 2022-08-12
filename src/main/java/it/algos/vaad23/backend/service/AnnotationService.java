@@ -701,4 +701,21 @@ public class AnnotationService extends AbstractService {
         return isSearch;
     }
 
+    /**
+     * Get the specific annotation of the field. <br>
+     *
+     * @param reflectionJavaField di riferimento per estrarre la Annotation
+     */
+    public AETypeBoolCol getTypeBoolCol(final Class<? extends AEntity> entityClazz, final String publicFieldName) {
+        AETypeBoolCol type = AETypeBoolCol.boolGrezzo;
+        AIField annotation = this.getAIField(entityClazz, publicFieldName);
+
+        if (annotation != null) {
+            type = annotation.typeBool();
+        }
+
+        return type;
+    }
+
+
 }
