@@ -248,7 +248,7 @@ public class MongoService<capture> extends AbstractService {
      * @return true if the collection is null or empty
      */
     public boolean isCollectionNullOrEmpty(final Class<? extends AEntity> entityClazz) {
-        return entityClazz == null ? false : isCollectionNullOrEmpty(entityClazz.getSimpleName().toLowerCase());
+        return entityClazz == null ? false : isCollectionNullOrEmpty(textService.primaMinuscola(entityClazz.getSimpleName()));
     }
 
     /**
@@ -291,7 +291,9 @@ public class MongoService<capture> extends AbstractService {
             logger.info(new WrapLog().exception(new AlgosException("Manca il nome della collection")).usaDb());
         }
 
-        String shortName = fileService.estraeClasseFinale(collectionName).toLowerCase();
+        String shortName = fileService.estraeClasseFinale(collectionName);
+        shortName = textService.primaMinuscola(shortName);
+
         return mongoOp.collectionExists(shortName);
     }
 
@@ -385,7 +387,8 @@ public class MongoService<capture> extends AbstractService {
      * @return numero di entities totali
      */
     public int count(final String collectionName) {
-        String simpleLowerCollectionName = fileService.estraeClasseFinale(collectionName).toLowerCase();
+        String simpleLowerCollectionName = fileService.estraeClasseFinale(collectionName);
+        simpleLowerCollectionName = textService.primaMinuscola(simpleLowerCollectionName);
         Long entities;
         Query query = new Query();
         entities = mongoOp.count(query, simpleLowerCollectionName);

@@ -237,6 +237,11 @@ public class AnnotationService extends AbstractService {
             return null;
         }
 
+        // Controlla che il parametro in ingresso non sia stato creato 'al volo'
+        if (fieldName.equals(FIELD_KEY_ORDER)) {
+            return null;
+        }
+
         try {
             reflectionJavaField = entityClazz.getField(fieldName);
             annotation = getAIField(reflectionJavaField);

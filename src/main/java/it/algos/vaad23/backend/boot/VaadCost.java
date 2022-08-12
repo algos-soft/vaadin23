@@ -71,6 +71,10 @@ public class VaadCost {
 
     public static final String ESCLAMATIVO = "!";
 
+    public static final String UGUALE = "=";
+
+    public static final String DOPPIO_UGUALE = UGUALE + UGUALE;
+
     public static final String DOPPIO_ESCLAMATIVO = ESCLAMATIVO + ESCLAMATIVO;
 
     public static final String PIPE_REGEX = "\\|";
@@ -90,6 +94,8 @@ public class VaadCost {
     public static final String TRE_PUNTI = "...";
 
     public static final String SPAZIO = " ";
+
+    public static final String SPAZIO_NON_BREAKING = "&nbsp;";
 
     public static final String UNDERSCORE = "_";
 
@@ -372,6 +378,8 @@ public class VaadCost {
 
     public static final String FIELD_NAME_COMPANY = "company";
 
+    public static final String FIELD_KEY_ORDER = "#";
+
     public static final String TRATTINO = "-";
 
     public static final String COLOR_VERO = "#9FE2BF";
@@ -423,9 +431,10 @@ public class VaadCost {
 
     public static final int ANNO_INIZIALE = 2000;
 
-    public static final int ANTE_CRISTO = 1000;
+    public static final int ANTE_CRISTO_MAX = 1000;
 
-    public static final int DOPO_CRISTO = 2030;
+    public static final int DOPO_CRISTO_MAX = 2030;
+
 
     public static final List<String> MASCHI = Arrays.asList("m", "uomo", "maschio", "maschile", "M", "Uomo", "Maschio", "Maschile");
 
