@@ -79,7 +79,6 @@ public class ColumnService extends AbstractService {
         colonna = switch (type) {
             case text, enumeration, link, localDateTime, localDate, localTime -> grid.addColumn(propertyName).setSortable(true);
             case integer, lungo -> grid.addColumn(propertyName).setSortable(true);
-            //            case booleano -> grid.addColumn(propertyName).setSortable(true);
             case booleano -> addBoolean(grid, entityClazz, propertyName);
 
             //            case booleano -> {
@@ -274,6 +273,16 @@ public class ColumnService extends AbstractService {
                         label.getStyle().set("color", "red");
                     }
                     return label;
+                case yesNoReverse:
+                    testo = status ? "no" : "si";
+                    label.setText(testo);
+                    if (status) {
+                        label.getStyle().set("color", "red");
+                    }
+                    else {
+                        label.getStyle().set("color", "green");
+                    }
+                    return label;
                 case yesNoBold:
                     testo = status ? "si" : "no";
                     label.setText(testo);
@@ -285,6 +294,17 @@ public class ColumnService extends AbstractService {
                         label.getStyle().set("color", "red");
                     }
                     return label;
+                case thumb:
+                    if (status) {
+                        icon = new Icon(VaadinIcon.THUMBS_UP);
+                        icon.setColor("green");
+                    }
+                    else {
+                        icon = new Icon(VaadinIcon.THUMBS_DOWN);
+                        icon.setColor("red");
+                    }
+                    icon.setSize("1em");
+                    return icon;
                 default:
                     logger.error(new WrapLog().exception(new AlgosException("Switch - caso non definito")).usaDb());
                     break;

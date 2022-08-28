@@ -1,5 +1,6 @@
 package it.algos.unit.service;
 
+import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
+import org.springframework.boot.test.context.*;
 
 import java.util.*;
 import java.util.stream.*;
@@ -23,8 +25,9 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("quickly")
+//@Tag("quickly")
 @DisplayName("Text service")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TextServiceTest extends AlgosTest {
@@ -595,7 +598,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare questa fine Non ";
         sorgente2 = VUOTA;
         previsto = " Levare questa fine Non ";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaPrimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -605,7 +608,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare questa fine Non ancora altro testo ";
         sorgente2 = "Non";
         previsto = " Levare questa fine";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaPrimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -615,7 +618,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare questa fine Non ancora altro testo ";
         sorgente2 = "non";
         previsto = " Levare questa fine Non ancora altro testo ";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaPrimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -625,7 +628,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare <re>questa<ref> fine Non ancora altro testo</ref>";
         sorgente2 = "<ref";
         previsto = " Levare <re>questa";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaPrimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -635,7 +638,7 @@ public class TextServiceTest extends AlgosTest {
         sorgente = " Levare questa<ref> fine Non ancora altro testo</ref>";
         sorgente2 = "<ref ";
         previsto = " Levare questa";
-        ottenuto = service.levaCodaDa(sorgente, sorgente2);
+        ottenuto = service.levaCodaDaPrimo(sorgente, sorgente2);
         assertEquals(previsto, ottenuto);
         System.out.println(VUOTA);
         System.out.println(String.format("Testo originale %s[%s]", FORWARD, sorgente));
@@ -786,7 +789,7 @@ public class TextServiceTest extends AlgosTest {
     @DisplayName("21 - levaTestoPrimaDi")
     public void levaTestoPrimaDi() {
         sorgente = "/Users/gac/Documents/IdeaProjects/operativi/vaadflow14";
-        sorgente2 = "IdeaProjects";
+        sorgente2 = "/operativi";
         previsto = "/operativi/vaadflow14";
 
         ottenuto = service.levaTestoPrimaDi(sorgente, sorgente2);
@@ -878,6 +881,7 @@ public class TextServiceTest extends AlgosTest {
         System.out.println(String.format("New %s", sorgente2));
         System.out.println(String.format("Enum %s", ottenuto));
     }
+
 
     protected void print(final String sorgente, final String ottenuto) {
         System.out.println(String.format("%s%s%s", sorgente, FORWARD, ottenuto));

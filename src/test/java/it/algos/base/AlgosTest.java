@@ -201,6 +201,9 @@ public abstract class AlgosTest {
     @InjectMocks
     protected MathService mathService;
 
+    @InjectMocks
+    protected RegexService regexService;
+
     @Autowired
     protected ApplicationContext appContext;
 
@@ -336,6 +339,7 @@ public abstract class AlgosTest {
         assertNotNull(loggerBackend);
         assertNotNull(mathService);
         assertNotNull(appContext);
+        assertNotNull(regexService);
     }
 
 
@@ -375,6 +379,7 @@ public abstract class AlgosTest {
         classService.fileService = fileService;
         classService.arrayService = arrayService;
         fileService.arrayService = arrayService;
+        regexService.textService = textService;
     }
 
     /**

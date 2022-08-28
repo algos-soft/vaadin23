@@ -162,6 +162,10 @@ public class VaadCost {
 
     public static final String NULL = "(null)";
 
+    public static final String TAG_ALTRE = "...";
+
+    public static final String TAG_ALTRE_BY = TAG_ALTRE + SPAZIO + "by" + SPAZIO;
+
     public static final String KEY_ROUTE_TYPE = "type";
 
     public static final String KEY_BEAN_CLASS = "beanClass";
@@ -422,6 +426,8 @@ public class VaadCost {
     public static final String KEY_MAPPA_GIORNI_NORMALE = "normale";
 
     public static final String KEY_MAPPA_GIORNI_BISESTILE = "bisestile";
+
+    public static final String WIDTH_EM = "18ex";
 
     public static final String KEY_MAPPA_GIORNI_NOME = "nome";
 

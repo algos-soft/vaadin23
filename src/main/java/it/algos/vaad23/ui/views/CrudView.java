@@ -431,7 +431,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
         if (usaBottoneSearch) {
             searchField = new TextField();
-            searchField.setPlaceholder("Filter by ...");
+            searchField.setPlaceholder(TAG_ALTRE_BY);
+            searchField.setWidth(WIDTH_EM);
             searchField.setClearButtonVisible(true);
             searchField.addValueChangeListener(event -> sincroFiltri());
             topPlaceHolder.add(searchField);
@@ -465,7 +466,6 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      * Costruisce un' istanza dedicata con la Grid <br>
      */
     protected void fixBodyLayout() {
-        List items;
         // Create a listing component for a bean type
         grid = new Grid(entityClazz, autoCreateColumns);
 
@@ -480,10 +480,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         this.fixSearch();
 
         // Pass all objects to a grid from a Spring Data repository object
-        items = crudBackend.findAll(sortOrder);
-        if (items != null) {
-            grid.setItems(items);
-        }
+        this.fixItems();
 
         // The row-stripes theme produces a background color for every other row.
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
@@ -501,6 +498,14 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         setSizeFull();
         this.add(grid);
         sincroFiltri();
+    }
+
+    protected void fixItems() {
+        List items;
+        items = crudBackend.findAll(sortOrder);
+        if (items != null) {
+            grid.setItems(items);
+        }
     }
 
     protected void fixAutoNumbering() {
@@ -556,13 +561,12 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
                 if (annotationService.isSearch(entityClazz, column.getKey())) {
                     searchFieldName = column.getKey();
                     if (searchField != null) {
-                        searchField.setPlaceholder(String.format("Filter by %s", searchFieldName));
+                        searchField.setPlaceholder(String.format("%s%s", TAG_ALTRE_BY, searchFieldName));
                     }
                     break;
                 }
             }
         }
-
     }
 
     /**

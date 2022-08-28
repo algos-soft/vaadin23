@@ -1,9 +1,11 @@
 package it.algos.unit;
 
+import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.boot.test.context.*;
 
 import java.text.*;
 import java.time.*;
@@ -25,8 +27,8 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("quickly")
 @DisplayName("Java - Nuove funzioni Java 17")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class JavaTest extends AlgosTest {
@@ -226,13 +228,70 @@ public class JavaTest extends AlgosTest {
             }
             assertTrue(status);
         }
+    }
 
-        String patterns = Pattern.quote("wikitable");
-        Pattern pattern = Pattern.compile(patterns);
-        Matcher matcher = pattern.matcher((String) sor1);
-        int num = matcher.groupCount();
-        matcher.matches();
-        //        assertTrue(matcher.matches());
+
+    @Test
+    @Order(18)
+    @DisplayName("18 - regex")
+    public void regex2() {
+        boolean status;
+        Pattern pattern;
+        Matcher matcher;
+
+        String tag1 = "\n|Sesso=\n";
+        String tag2 = "\n|Sesso =\n";
+        String tag3 = "\n|Sesso= \n";
+        String tag4 = "\n|Sesso = \n";
+        String tag5 = "\n| Sesso=\n";
+        String tag6 = "\n| Sesso =\n";
+        String tag7 = "\n| Sesso= \n";
+        String tag8 = "\n| Sesso = \n";
+
+        String sor1 = String.format("{{Bio\n|Nome = Michela\n|Cognome = Rostan%s|LuogoNascita = Polla\n", tag1);
+        String sor2 = String.format("{{Bio\n|Nome = Michela\n|Cognome = Rostan%s|LuogoNascita = Polla\n", tag2);
+        String sor3 = String.format("{{Bio\n|Nome = Michela\n|Cognome = Rostan%s|LuogoNascita = Polla\n", tag3);
+        String sor4 = String.format("{{Bio\n|Nome = Michela\n|Cognome = Rostan%s|LuogoNascita = Polla\n", tag4);
+        String sor5 = String.format("{{Bio\n|Nome = Michela\n|Cognome = Rostan%s|LuogoNascita = Polla\n", tag5);
+        String sor6 = String.format("{{Bio\n|Nome = Michela\n|Cognome = Rostan%s|LuogoNascita = Polla\n", tag6);
+        String sor7 = String.format("{{Bio\n|Nome = Michela\n|Cognome = Rostan%s|LuogoNascita = Polla\n", tag7);
+        String sor8 = String.format("{{Bio\n|Nome = Michela\n|Cognome = Rostan%s|LuogoNascita = Polla\n", tag8);
+
+        List<String> tags = Arrays.asList(tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8);
+        List<String> sorgs = Arrays.asList(sor1, sor2, sor3, sor4, sor5, sor6, sor7, sor8);
+
+        for (String sor : sorgs) {
+            status = false;
+            for (String tag : tags) {
+                if (sor.contains(tag)) {
+                    status = true;
+                }
+            }
+            assertTrue(status);
+        }
+
+        for (int k = 0; k < sorgs.size(); k++) {
+            pattern = Pattern.compile(tags.get(k));
+            matcher = pattern.matcher(sorgs.get(k));
+            assertTrue(matcher.find());
+        }
+
+        sorgente = "\n*\\| *Sesso *= *\n*\\|";
+        sorgente2 = "\n|Sesso = M\n|";
+        pattern = Pattern.compile(sorgente);
+        for (int k = 0; k < sorgs.size(); k++) {
+            matcher = pattern.matcher(sorgs.get(k));
+
+            if (matcher.find()) {
+                ottenuto = matcher.group(0);
+                ottenuto2 = sorgs.get(k).replace(ottenuto, sorgente2);
+                System.out.println(String.format(ottenuto));
+                System.out.println(String.format(ottenuto2));
+            }
+            else {
+                System.out.println(String.format("Non valido per %s", sorgs.get(k)));
+            }
+        }
     }
 
     @Test
