@@ -134,3 +134,4 @@ mvn clean package -Pproduction
 mvn clean package -Pproduction -Dmaven.test.skip=true
 java -jar -Dserver.port=8090 vaadin23.jar
 java -jar -Dserver.port=8090 wiki23.jar
+mvn clean package -Dmaven.test.skip=true

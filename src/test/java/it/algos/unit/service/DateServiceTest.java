@@ -1,11 +1,16 @@
 package it.algos.unit.service;
 
+import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.provider.*;
+import org.springframework.boot.test.context.*;
 
+import java.time.*;
+import java.time.format.*;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.*;
 
@@ -21,6 +26,7 @@ import java.util.stream.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("slowly")
 @DisplayName("Date service")
@@ -186,7 +192,7 @@ public class DateServiceTest extends AlgosTest {
         System.out.println(String.format("Sono trascorsi esattamente %s", ottenuto));
     }
 
-    @Test
+    //    @Test
     @Order(5)
     @DisplayName("5 - Tempo trascorso in secondi")
     void deltaText() throws InterruptedException {
@@ -206,6 +212,36 @@ public class DateServiceTest extends AlgosTest {
         TimeUnit.SECONDS.sleep(7);
         ottenuto = service.deltaText(sorgenteLong);
         System.out.println(String.format("Sono trascorsi %s", ottenuto));
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - Ordinamento date")
+    void ordinamentoDate() {
+        System.out.println("5 - Ordinamento date");
+        System.out.println(VUOTA);
+        List<LocalDate> date = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MMM-yy");
+
+        LocalDate uno = LocalDate.now();
+        LocalDate due = uno.minusDays(17);
+        LocalDate tre = uno.plusDays(5);
+        LocalDate quattro = uno.minusDays(2);
+
+        date.add(uno);
+        date.add(due);
+        date.add(tre);
+        date.add(quattro);
+
+        for (LocalDate data : date) {
+            System.out.println(data.format(formatter));
+        }
+
+        System.out.println(VUOTA);
+        Collections.sort(date);
+        for (LocalDate data : date) {
+            System.out.println(data.format(formatter));
+        }
     }
 
     /**

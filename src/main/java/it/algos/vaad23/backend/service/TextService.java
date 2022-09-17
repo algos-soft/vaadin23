@@ -552,6 +552,22 @@ public class TextService extends AbstractService {
      *
      * @return uscita stringa ridotta
      */
+    public String levaDopoHtml(String entrata) {
+        return levaCodaDaPrimo(entrata, HTML);
+    }
+
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
     public String levaDopoNote(String entrata) {
         return levaCodaDaPrimo(entrata, NOTE);
     }
@@ -647,7 +663,22 @@ public class TextService extends AbstractService {
      *
      * @return uscita stringa ridotta
      */
-    public String levaDopoParentesi(String entrata) {
+    public String levaDopoParentesiIni(String entrata) {
+        return levaCodaDaPrimo(entrata, PARENTESI_TONDA_INI);
+    }
+
+    /**
+     * Elimina la parte di stringa successiva al tag indicato, se esiste.
+     * <p>
+     * Esegue solo se la stringa è valida
+     * Se manca il tag, restituisce la stringa
+     * Elimina spazi vuoti iniziali e finali
+     *
+     * @param entrata stringa in ingresso
+     *
+     * @return uscita stringa ridotta
+     */
+    public String levaDopoParentesiEnd(String entrata) {
         return levaCodaDaPrimo(entrata, PARENTESI_TONDA_END);
     }
 

@@ -38,6 +38,7 @@ public class GiornoBackendTest extends AlgosTest {
 
     protected List<Giorno> listaGiorni;
 
+
     /**
      * Qui passa una volta sola <br>
      */
