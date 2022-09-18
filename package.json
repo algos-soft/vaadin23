@@ -254,7 +254,8 @@
     "lit": "$lit",
     "line-awesome": "$line-awesome",
     "@vaadin/lit-renderer": "$@vaadin/lit-renderer",
-    "@vaadin/multi-select-combo-box": "$@vaadin/multi-select-combo-box"
+    "@vaadin/multi-select-combo-box": "$@vaadin/multi-select-combo-box",
+    "proj4": "$proj4"
   },
   "vaadin": {
     "dependencies": {

@@ -239,6 +239,30 @@ public class RegexServiceTest extends AlgosTest {
         assertEquals(previsto, ottenuto);
     }
 
+    @Test
+    @Order(5)
+    @DisplayName("5 - count")
+    void count() {
+        sorgente2 = "\n*\\| *Sesso *= *[MF]*\n*\\|";
+
+        sorgente = "{{Bio\n|Nome = Michela\n|Cognome = Rostan\n|Sesso =\n|LuogoNascita = Polla\n";
+        previstoIntero = 1;
+        ottenutoIntero = service.count(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+
+        sorgente = "{{Sportivo\n|Nome = Paulo André\n|Immagine = Paulo Andre.jpg\n|Sesso = M\n|CodiceNazione = {{BRA}}\n";
+        previstoIntero = 1;
+        ottenutoIntero = service.count(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+
+        sorgente = "{{Sportivo\n|Nome = Paulo André\n|Immagine = Paulo Andre.jpg\n|Sesso = M\n|CodiceNazione = {{BRA}}\n" +
+                "{{Bio\n|Nome = Michela\n|Cognome = Rostan\n|Sesso =\n|LuogoNascita = Polla\n";
+        previstoIntero = 2;
+        ottenutoIntero = service.count(sorgente, sorgente2);
+        assertEquals(previstoIntero, ottenutoIntero);
+
+
+    }
 
     /**
      * Qui passa al termine di ogni singolo test <br>
