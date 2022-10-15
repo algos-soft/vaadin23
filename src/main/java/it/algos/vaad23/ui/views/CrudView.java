@@ -207,7 +207,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
     /**
      * Flag di preferenza per la classe di dialogo. Di default CrudDialog. <br>
      */
-    protected Class<?> dialogClazz = CrudDialog.class;
+    protected Class<?> dialogClazz = CrudDialogBase.class;
 
     protected CrudDialog dialog;
 
@@ -223,7 +223,9 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
     protected String message;
 
-    protected boolean usaSelectionGrid;
+    protected boolean usaSingleClick;
+
+    protected boolean usaDoubleClick;
 
     private Function<String, Grid.Column<AEntity>> getColonna = name -> grid.getColumnByKey(name);
 
@@ -304,7 +306,8 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         usaComboType = false;
         usaBottomTotale = true;
         usaBottomInfo = true;
-        usaSelectionGrid = true;
+        usaSingleClick = true;
+        usaDoubleClick = true;
     }
 
     /**
@@ -477,7 +480,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         else {
             this.addColumnsOneByOne();
         }
-        this.fixSearch();
+        //        this.fixSearch();
 
         // Pass all objects to a grid from a Spring Data repository object
         this.fixItems();
@@ -490,7 +493,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
 
         // sincronizzazione delle righe
         grid.addSelectionListener(event -> sincroSelection(event));
-        if (!usaSelectionGrid) {
+        if (!usaSingleClick) {
             grid.setSelectionMode(Grid.SelectionMode.NONE);
         }
 
@@ -578,7 +581,10 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
      */
     protected void fixListener() {
         // pass the row/item that the user double-clicked to method updateItem
-        if (usaSelectionGrid && Pref.doubleClick.is()) {
+        //        if (usaSingleClick) {
+        //            grid.addItemClickListener(listener -> updateItem(listener.getItem()));
+        //        }
+        if (usaDoubleClick) {
             grid.addItemDoubleClickListener(listener -> updateItem(listener.getItem()));
         }
     }
@@ -734,7 +740,7 @@ public abstract class CrudView extends VerticalLayout implements AfterNavigation
         else {
             operation = CrudOperation.READ;
         }
-        dialog = (CrudDialog) appContext.getBean(dialogClazz, entityBeanDaRegistrare, operation, crudBackend, formPropertyNamesList);
+        dialog = (CrudDialogBase) appContext.getBean(dialogClazz, entityBeanDaRegistrare, operation, crudBackend, formPropertyNamesList);
         dialog.open(this::saveHandler, this::annullaHandler);
     }
 

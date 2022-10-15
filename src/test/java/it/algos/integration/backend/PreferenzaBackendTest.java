@@ -46,7 +46,7 @@ public class PreferenzaBackendTest extends AlgosTest {
     protected static Stream<Arguments> KEY_PREFERENZE() {
         return Stream.of(
                 Arguments.of(Pref.debug),
-                Arguments.of(Pref.doubleClick),
+                Arguments.of(Pref.usaNonBreaking),
                 Arguments.of(Pref.durataAvviso)
         );
     }
