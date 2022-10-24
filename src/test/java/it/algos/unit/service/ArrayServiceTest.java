@@ -2,11 +2,13 @@ package it.algos.unit.service;
 
 import com.vaadin.flow.component.button.*;
 import com.vaadin.flow.component.html.*;
+import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.boot.test.context.*;
 
 import java.util.*;
 
@@ -22,9 +24,10 @@ import java.util.*;
  * Nella superclasse ATest vengono iniettate (@InjectMocks) tutte le altre classi di service <br>
  * Nella superclasse ATest vengono regolati tutti i link incrociati tra le varie classi singleton di service <br>
  */
+@SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("quickly")
-@DisplayName("Array service")
+@Tag("integration")
+@Tag("backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ArrayServiceTest extends AlgosTest {
 
@@ -644,6 +647,29 @@ public class ArrayServiceTest extends AlgosTest {
         System.out.println("Array ottenuto");
         System.out.println(listaDifferenza);
     }
+
+    @Test
+    @Order(15)
+    @DisplayName("15 - Array (ArrayList<String>) da una matrice (String[])")
+    void crea() {
+        String[] arrayString = {"primo", "secondo", "quarto", "quinto", "1Ad", "terzo", "a10"};
+        previstoArray = new ArrayList(Arrays.asList(arrayString));
+
+        ottenutoArray = service.crea(arrayString);
+        assertEquals(previstoArray, ottenutoArray);
+    }
+
+    @Test
+    @Order(16)
+    @DisplayName("16 - Array (ArrayList<String>) da una matrice (String[])")
+    void crea2() {
+        String[] arrayString = {"primo", "secondo", "quarto", "quinto", "1Ad", "terzo", "a10"};
+        previstoArray = new ArrayList(Arrays.asList(arrayString));
+
+        ottenutoArray = service.crea("primo", "secondo", "quarto", "quinto", "1Ad", "terzo", "a10");
+        assertEquals(previstoArray, ottenutoArray);
+    }
+
 
     /**
      * Qui passa al termine di ogni singolo test <br>

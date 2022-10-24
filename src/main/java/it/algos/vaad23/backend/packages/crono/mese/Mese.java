@@ -1,5 +1,6 @@
 package it.algos.vaad23.backend.packages.crono.mese;
 
+import com.vaadin.flow.component.icon.*;
 import it.algos.vaad23.backend.annotation.*;
 import it.algos.vaad23.backend.entity.*;
 import it.algos.vaad23.backend.enumeration.*;
@@ -23,13 +24,22 @@ import lombok.*;
 public class Mese extends AEntity {
 
     @AIField(type = AETypeField.integer, widthEM = 6)
-    public int giorni;
+    public int ordine;
 
     @AIField(type = AETypeField.text)
     public String breve;
 
     @AIField(type = AETypeField.text)
     public String nome;
+
+    @AIField(type = AETypeField.integer, widthEM = 6)
+    public int giorni;
+
+    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_BACKWARD, caption = "Primo giorno dell'anno")
+    public int primo;
+
+    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_FORWARD, caption = "Ultimo giorno dell'anno")
+    public int ultimo;
 
     @Override
     public String toString() {
