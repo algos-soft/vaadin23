@@ -133,6 +133,8 @@ public class VaadCost {
 
     public static final String SLASH = "/";
 
+    public static final String SLASH_SPACE = SPAZIO + SLASH + SPAZIO;
+
     public static final String PIPE = "|";
 
     public static final String REGEX_PIPE = "\\|";

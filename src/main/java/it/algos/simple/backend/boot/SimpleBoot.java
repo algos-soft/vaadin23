@@ -84,7 +84,21 @@ public class SimpleBoot extends VaadBoot {
          * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
          */
         try {
-            property = "algos.simple.version.date"; VaadVar.projectDate = Objects.requireNonNull(environment.getProperty(property));
+            property = "algos.simple.version.date";
+            VaadVar.projectDate = Objects.requireNonNull(environment.getProperty(property));
+        } catch (Exception unErrore) {
+            String message = String.format("Non ho trovato la property %s nelle risorse", property);
+            logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());
+        }
+
+        /**
+         * Note di rilascio della versione <br>
+         * Usato (eventualmente) nella barra di informazioni a piè di pagina <br>
+         * Deve essere regolato in backend.boot.xxxBoot.fixVariabili() del progetto corrente <br>
+         */
+        try {
+            property = "algos.simple.version.note";
+            VaadVar.projectNote = Objects.requireNonNull(environment.getProperty(property));
         } catch (Exception unErrore) {
             String message = String.format("Non ho trovato la property %s nelle risorse", property);
             logger.warn(new WrapLog().exception(unErrore).message(message).usaDb());

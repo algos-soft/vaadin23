@@ -260,8 +260,24 @@ public class RegexServiceTest extends AlgosTest {
         previstoIntero = 2;
         ottenutoIntero = service.count(sorgente, sorgente2);
         assertEquals(previstoIntero, ottenutoIntero);
+    }
 
 
+    @Test
+    @Order(6)
+    @DisplayName("6 - estrae mese")
+    void countz() {
+        sorgente2 = "(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)$";
+
+        sorgente = "3 agosto";
+        previsto = "agosto";
+        ottenuto = service.getReal(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
+
+        sorgente = "25 settembre";
+        previsto = "settembre";
+        ottenuto = service.getReal(sorgente, sorgente2);
+        assertEquals(previsto, ottenuto);
     }
 
     /**
