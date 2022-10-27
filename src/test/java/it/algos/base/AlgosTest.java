@@ -2,14 +2,10 @@ package it.algos.base;
 
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.server.*;
-import it.algos.simple.backend.boot.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.entity.*;
-import it.algos.vaad23.backend.enumeration.*;
 import it.algos.vaad23.backend.exception.*;
 import it.algos.vaad23.backend.interfaces.*;
-import it.algos.vaad23.backend.packages.anagrafica.*;
-import it.algos.vaad23.backend.packages.geografia.continente.*;
 import it.algos.vaad23.backend.packages.utility.log.*;
 import it.algos.vaad23.backend.service.*;
 import it.algos.vaad23.backend.wrapper.*;
@@ -18,8 +14,6 @@ import org.junit.jupiter.params.provider.*;
 import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.*;
-import org.springframework.beans.factory.annotation.*;
-import org.springframework.context.*;
 
 import java.lang.reflect.*;
 import java.time.*;
@@ -64,8 +58,6 @@ public abstract class AlgosTest {
 
     public Logger slf4jLogger;
 
-    protected AEntity entityBean;
-
     protected boolean previstoBooleano;
 
     protected boolean ottenutoBooleano;
@@ -85,6 +77,8 @@ public abstract class AlgosTest {
     protected String ottenuto;
 
     protected String ottenuto2;
+
+    protected String ottenuto3;
 
     protected int sorgenteIntero;
 
@@ -144,6 +138,8 @@ public abstract class AlgosTest {
 
     protected List<String> listaStr;
 
+    protected List<Long> listaLong;
+
     protected List<AEntity> listaBean;
 
     protected Map<String, List<String>> mappa;
@@ -199,16 +195,7 @@ public abstract class AlgosTest {
     protected WebService webService;
 
     @InjectMocks
-    protected MathService mathService;
-
-    @InjectMocks
-    protected RegexService regexService;
-
-    @Autowired
-    protected ApplicationContext appContext;
-
-    @Autowired
-    protected LoggerRepository loggerRepository;
+    public RegexService regexService;
 
 
     //--tag
@@ -255,52 +242,6 @@ public abstract class AlgosTest {
         );
     }
 
-    //--clazz
-    //--esiste nel package
-    protected static Stream<Arguments> SIMPLE_CLAZZ_NAME() {
-        return Stream.of(
-                Arguments.of((Class) null, false),
-                Arguments.of(VUOTA, false),
-                Arguments.of("NomeClasseInesistente", false),
-                Arguments.of(ViaView.class.getSimpleName(), true),
-                Arguments.of(ViaView.class.getSimpleName() + JAVA_SUFFIX, true),
-                Arguments.of("via", true),
-                Arguments.of("LogicList", false),
-                Arguments.of("ViaView", true),
-                Arguments.of("AnnoView", true)
-        );
-    }
-
-
-    //--entity clazz name
-    //--esiste nel package
-    protected static Stream<Arguments> ENTITY_NAME() {
-        return Stream.of(
-                Arguments.of((Class) null, false),
-                Arguments.of(VUOTA, false),
-                Arguments.of("NomeClasseInesistente", false),
-                Arguments.of(Via.class.getSimpleName(), false),
-                Arguments.of(Via.class.getCanonicalName(), true),
-                Arguments.of(ViaView.class.getSimpleName(), false),
-                Arguments.of(ViaView.class.getCanonicalName(), false),
-                Arguments.of(AECopy.class.getCanonicalName(), false),
-                Arguments.of("LogicList", false)
-        );
-    }
-
-    //--entity clazz
-    //--esiste nel package
-    protected static Stream<Arguments> ENTITY_CLAZZ() {
-        return Stream.of(
-                Arguments.of((Class) null, false),
-                Arguments.of(Via.class, true),
-                Arguments.of(ViaView.class, false),
-                Arguments.of(AECopy.class, false),
-                Arguments.of(Continente.class, true),
-                Arguments.of(SimplePref.class, false)
-        );
-    }
-
     /**
      * Qui passa una volta sola, chiamato dalle sottoclassi <br>
      * Invocare PRIMA il metodo setUpStartUp() della superclasse <br>
@@ -337,8 +278,6 @@ public abstract class AlgosTest {
         assertNotNull(htmlService);
         assertNotNull(webService);
         assertNotNull(loggerBackend);
-        assertNotNull(mathService);
-        assertNotNull(appContext);
         assertNotNull(regexService);
     }
 
@@ -368,18 +307,8 @@ public abstract class AlgosTest {
         htmlService.textService = textService;
         loggerBackend.fileService = fileService;
         loggerBackend.textService = textService;
-        classService.textService = textService;
-        classService.logger = logService;
         resourceService.webService = webService;
         resourceService.logger = logService;
-        textService.logger = logService;
-        loggerBackend.crudRepository = loggerRepository;
-        loggerBackend.repository = loggerRepository;
-        classService.appContext = appContext;
-        classService.fileService = fileService;
-        classService.arrayService = arrayService;
-        fileService.arrayService = arrayService;
-        regexService.textService = textService;
     }
 
     /**
@@ -388,7 +317,6 @@ public abstract class AlgosTest {
      * Si possono aggiungere regolazioni specifiche <br>
      */
     protected void setUpEach() {
-        entityBean = null;
         sorgente = VUOTA;
         sorgente2 = VUOTA;
         sorgente3 = VUOTA;
@@ -397,6 +325,7 @@ public abstract class AlgosTest {
         previsto3 = VUOTA;
         ottenuto = VUOTA;
         ottenuto2 = VUOTA;
+        ottenuto3 = VUOTA;
         sorgenteIntero = 0;
         previstoIntero = 0;
         ottenutoIntero = 0;
@@ -514,7 +443,7 @@ public abstract class AlgosTest {
     protected void print(List<String> lista, String message) {
         int k = 0;
         if (lista != null && lista.size() > 0) {
-            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size() - 1, message));
+            System.out.println(String.format("Ci sono %d elementi nella lista %s", lista.size(), message));
         }
         else {
             System.out.println("La lista è vuota");
@@ -530,14 +459,25 @@ public abstract class AlgosTest {
         }
     }
 
+    protected void print(List<String> lista) {
+        int k = 1;
+        if (arrayService.isAllValid(lista)) {
+            for (String stringa : lista) {
+                System.out.print(k++);
+                System.out.print(PARENTESI_TONDA_END);
+                System.out.print(SPAZIO);
+                System.out.println(stringa);
+            }
+        }
+    }
+
 
     protected void printMappa(Map<String, List<String>> mappa, String titoloMappa) {
         List<String> lista;
         String riga;
-        String message = "esclusi i titoli";
         if (arrayService.isAllValid(mappa)) {
             System.out.println(VUOTA);
-            System.out.println(String.format("Ci sono %d elementi nella mappa %s %s", mappa.size(), titoloMappa, message));
+            System.out.println(String.format("Ci sono %d elementi nella mappa %s", mappa.size(), titoloMappa));
             System.out.println(VUOTA);
             for (String key : mappa.keySet()) {
                 lista = mappa.get(key);
@@ -612,5 +552,6 @@ public abstract class AlgosTest {
     protected void printTimeEsatto() {
         System.out.println(dateService.deltaTextEsatto(inizio));
     }
+
 
 }
