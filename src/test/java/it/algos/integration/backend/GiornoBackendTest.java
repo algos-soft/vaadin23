@@ -4,6 +4,8 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.giorno.*;
+import it.algos.vaad23.backend.packages.crono.mese.*;
+import it.algos.vaad23.backend.service.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.mockito.*;
@@ -36,8 +38,16 @@ public class GiornoBackendTest extends AlgosTest {
     @Autowired
     private GiornoRepository repository;
 
+    @Autowired
+    private MeseRepository meseRepository;
+
     protected List<Giorno> listaGiorni;
 
+    @Autowired
+    private MeseBackend meseBackend;
+
+    @Autowired
+    protected MongoService mongoService;
 
     /**
      * Qui passa una volta sola <br>
@@ -46,14 +56,15 @@ public class GiornoBackendTest extends AlgosTest {
     protected void setUpAll() {
         super.setUpAll();
 
-        MockitoAnnotations.initMocks(this);
-        MockitoAnnotations.initMocks(backend);
         Assertions.assertNotNull(backend);
 
         backend.repository = repository;
         backend.crudRepository = repository;
         backend.arrayService = arrayService;
         backend.reflectionService = reflectionService;
+        backend.meseBackend = meseBackend;
+        meseBackend.repository = meseRepository;
+        backend.mongoService = mongoService;
     }
 
 
@@ -98,9 +109,9 @@ public class GiornoBackendTest extends AlgosTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - findAll")
+    @DisplayName("2 - findAll (entity)")
     void findAll() {
-        System.out.println("2 - findAll");
+        System.out.println("2 - findAll (entity)");
         String message;
 
         listaGiorni = backend.findAll();
@@ -108,6 +119,52 @@ public class GiornoBackendTest extends AlgosTest {
         message = String.format("Ci sono in totale %s giorni", textService.format(listaGiorni.size()));
         System.out.println(message);
         printGiorni(listaGiorni);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - findNomi (nome)")
+    void findNomi() {
+        System.out.println("3 - findNomi (nome)");
+        String message;
+
+        listaStr = backend.findNomi();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s giorni", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiGiorni(listaStr);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - findAllByMese (entity)")
+    void findAllByMese() {
+        System.out.println("4 - findAllByMese (entity)");
+
+        for (Mese sorgente : meseBackend.findAll()) {
+            listaGiorni = backend.findAllByMese(sorgente);
+            assertNotNull(listaGiorni);
+            message = String.format("Nel mese di %s ci sono %s giorni", sorgente, textService.format(listaGiorni.size()));
+            System.out.println(VUOTA);
+            System.out.println(message);
+            printGiorni(listaGiorni);
+        }
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - findNomiByMese (nome)")
+    void findNomiByMese() {
+        System.out.println("5 - findNomiByMese (nome)");
+
+        for (String sorgente : meseBackend.findNomi()) {
+            listaStr = backend.findNomiByMese(sorgente);
+            assertNotNull(listaStr);
+            message = String.format("Nel mese di %s ci sono %s giorni", sorgente, textService.format(listaStr.size()));
+            System.out.println(VUOTA);
+            System.out.println(message);
+            printNomiGiorni(listaStr);
+        }
     }
 
 
@@ -127,14 +184,28 @@ public class GiornoBackendTest extends AlgosTest {
     }
 
     void printGiorni(List<Giorno> listaGiorni) {
-        System.out.println(VUOTA);
         int k = 0;
 
         for (Giorno giorno : listaGiorni) {
             System.out.print(++k);
             System.out.print(PARENTESI_TONDA_END);
             System.out.print(SPAZIO);
-            System.out.println(giorno.nome);
+            System.out.print(giorno.nome);
+            System.out.print(SPAZIO);
+            System.out.print(giorno.trascorsi);
+            System.out.print(SPAZIO);
+            System.out.println(giorno.mancanti);
+        }
+    }
+
+    void printNomiGiorni(List<String> listaGiorni) {
+        int k = 0;
+
+        for (String giorno : listaGiorni) {
+            System.out.print(++k);
+            System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+            System.out.println(giorno);
         }
     }
 

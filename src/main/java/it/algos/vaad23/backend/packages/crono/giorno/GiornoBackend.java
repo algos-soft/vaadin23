@@ -6,11 +6,11 @@ import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 /**
  * Project vaadin23
@@ -104,15 +104,24 @@ public class GiornoBackend extends CrudBackend {
         return super.findAll();
     }
 
-    public List<String> findAllNomi() {
-        List<String> listaNomi = new ArrayList<>();
-        List<Giorno> listaGiorni = repository.findAll(Sort.by("ordine"));
+    public List<String> findNomi() {
+        return findAll().stream()
+                .map(giorno -> giorno.nome)
+                .collect(Collectors.toList());
+    }
 
-        for (Giorno giorno : listaGiorni) {
-            listaNomi.add(giorno.nome);
-        }
+    public List<Giorno> findAllByMese(Mese mese) {
+        return findAll().stream()
+                .filter(giorno -> giorno.mese.nome.equals(mese.nome))
+                .collect(Collectors.toList());
+    }
 
-        return listaNomi;
+
+    public List<String> findNomiByMese(String nomeMese) {
+        return findAll().stream()
+                .filter(giorno -> giorno.mese.nome.equals(nomeMese))
+                .map(giorno -> giorno.nome)
+                .collect(Collectors.toList());
     }
 
     /**

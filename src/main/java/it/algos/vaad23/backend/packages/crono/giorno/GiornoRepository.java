@@ -36,4 +36,5 @@ public interface GiornoRepository extends MongoRepository<Giorno, String> {
     void delete(Giorno entity);
 
     Giorno findFirstByNome(String nome);
+
 }// end of crud repository class

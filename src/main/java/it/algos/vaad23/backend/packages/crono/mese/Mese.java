@@ -35,11 +35,12 @@ public class Mese extends AEntity {
     @AIField(type = AETypeField.integer, widthEM = 6)
     public int giorni;
 
-    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_BACKWARD, caption = "Primo giorno dell'anno")
+    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_BACKWARD, caption = "Primo giorno (annuo) del mese")
     public int primo;
 
-    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_FORWARD, caption = "Ultimo giorno dell'anno")
+    @AIField(type = AETypeField.integer, widthEM = 6, headerIcon = VaadinIcon.STEP_FORWARD, caption = "Ultimo giorno (annuo) del mese")
     public int ultimo;
+
 
     @Override
     public String toString() {

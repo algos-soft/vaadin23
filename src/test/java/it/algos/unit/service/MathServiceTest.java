@@ -39,9 +39,6 @@ public class MathServiceTest extends AlgosTest {
     @BeforeAll
     protected void setUpAll() {
         super.setUpAll();
-
-        //--reindirizzo l'istanza della superclasse
-        service = mathService;
     }
 
 

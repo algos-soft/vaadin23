@@ -30,7 +30,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.*;
 import org.vaadin.crudui.crud.*;
 
-import javax.annotation.*;
 import java.util.*;
 import java.util.function.*;
 
@@ -179,7 +178,7 @@ public class CrudDialogBase extends CrudDialog {
      * Se viene implementata una sottoclasse, passa di qui per ogni sottoclasse oltre che per questa istanza <br>
      * Se esistono delle sottoclassi, passa di qui per ognuna di esse (oltre a questa classe madre) <br>
      */
-    @PostConstruct
+//    @PostConstruct
     private void postConstruct() {
         //--Titolo placeholder del dialogo
         this.add(fixHeader());

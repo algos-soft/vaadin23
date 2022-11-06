@@ -113,9 +113,9 @@ public class MeseBackendTest extends AlgosTest {
 
     @Test
     @Order(2)
-    @DisplayName("2 - findAll")
+    @DisplayName("2 - findAll (entity)")
     void findAll() {
-        System.out.println("2 - findAll");
+        System.out.println("2 - findAll (entity)");
         String message;
 
         listaBeans = backend.findAll();
@@ -125,11 +125,26 @@ public class MeseBackendTest extends AlgosTest {
         printBeans(listaBeans);
     }
 
+
     @Test
     @Order(3)
-    @DisplayName("3 - resetServer")
+    @DisplayName("3 - findNomi (nome)")
+    void findNomi() {
+        System.out.println("3 - findNomi (nome)");
+        String message;
+
+        listaStr = backend.findNomi();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s mesi", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiMesi(listaStr);
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - resetServer")
     void resetServer() {
-        System.out.println("3 - resetServer");
+        System.out.println("4 - resetServer");
         String message;
         backend.deleteAll();
 
@@ -141,10 +156,10 @@ public class MeseBackendTest extends AlgosTest {
     }
 
     @Test
-    @Order(4)
-    @DisplayName("4 - resetConfig")
+    @Order(5)
+    @DisplayName("5 - resetConfig")
     void resetConfig() {
-        System.out.println("4 - resetConfig");
+        System.out.println("5 - resetConfig");
         String message;
         backend.deleteAll();
 
@@ -156,10 +171,10 @@ public class MeseBackendTest extends AlgosTest {
     }
 
     @Test
-    @Order(5)
-    @DisplayName("5 - reset")
+    @Order(6)
+    @DisplayName("6 - reset")
     void reset() {
-        System.out.println("5 - reset");
+        System.out.println("6 - reset");
         String message;
 
         ottenutoBooleano = backend.reset();
@@ -206,6 +221,17 @@ public class MeseBackendTest extends AlgosTest {
             System.out.print(bean.primo);
             System.out.print(SPAZIO);
             System.out.println(bean.ultimo);
+        }
+    }
+
+    void printNomiMesi(List<String> listaMesi) {
+        int k = 0;
+
+        for (String mese : listaMesi) {
+            System.out.print(++k);
+            System.out.print(PARENTESI_TONDA_END);
+            System.out.print(SPAZIO);
+            System.out.println(mese);
         }
     }
 
