@@ -4,6 +4,7 @@ import it.algos.*;
 import it.algos.base.*;
 import static it.algos.vaad23.backend.boot.VaadCost.*;
 import it.algos.vaad23.backend.packages.crono.anno.*;
+import it.algos.vaad23.backend.packages.crono.secolo.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.params.*;
@@ -43,6 +44,8 @@ public class AnnoBackendTest extends AlgosTest {
 
     private Anno entityBean;
 
+    @Autowired
+    private SecoloBackend secoloBackend;
 
     private List<Anno> listaBeans;
 
@@ -155,14 +158,31 @@ public class AnnoBackendTest extends AlgosTest {
     void findAllBySecolo() {
         System.out.println("4 - findAllBySecolo (entity)");
 
-        //        for (Secolo sorgente : secoloBackend.findAll()) {
-        //            listaBeans = backend.findAllBySecolo(sorgente);
-        //            assertNotNull(listaBeans);
-        //            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaBeans.size()));
-        //            System.out.println(VUOTA);
-        //            System.out.println(message);
-        //            printAnni(listaBeans);
-        //        }
+        for (Secolo sorgente : secoloBackend.findAll()) {
+            listaBeans = backend.findAllBySecolo(sorgente);
+            assertNotNull(listaBeans);
+            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaBeans.size()));
+            System.out.println(VUOTA);
+            System.out.println(message);
+            printAnni(listaBeans);
+        }
+    }
+
+
+    @Test
+    @Order(5)
+    @DisplayName("5 - findNomiBySecolo (nome)")
+    void findNomiBySecolo() {
+        System.out.println("5 - findNomiBySecolo (nome)");
+
+        for (String sorgente : secoloBackend.findNomi()) {
+            listaStr = backend.findNomiBySecolo(sorgente);
+            assertNotNull(listaStr);
+            message = String.format("Nel secolo %s ci sono %s anni", sorgente, textService.format(listaStr.size()));
+            System.out.println(VUOTA);
+            System.out.println(message);
+            printNomiAnni(listaStr);
+        }
     }
 
     @ParameterizedTest

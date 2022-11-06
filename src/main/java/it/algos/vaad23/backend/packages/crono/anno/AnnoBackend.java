@@ -105,7 +105,6 @@ public class AnnoBackend extends CrudBackend {
     }
 
     public List<String> findNomi() {
-        List<Anno> listaAnni = repository.findAll(Sort.by(Sort.Direction.DESC, "ordine"));
         return findAll().stream()
                 .map(anno -> anno.nome)
                 .collect(Collectors.toList());
@@ -113,15 +112,15 @@ public class AnnoBackend extends CrudBackend {
 
     public List<Anno> findAllBySecolo(Secolo secolo) {
         return findAll().stream()
-                //                .filter(anno -> anno.mese.nome.equals(mese.nome))
+                .filter(anno -> anno.secolo.nome.equals(secolo.nome))
                 .collect(Collectors.toList());
     }
 
 
     public List<String> findNomiBySecolo(String secolo) {
         return findAll().stream()
-                //                .filter(anno -> anno.mese.nome.equals(nomeMese))
-                .map(giorno -> giorno.nome)
+                .filter(anno -> anno.secolo.nome.equals(secolo))
+                .map(anno -> anno.nome)
                 .collect(Collectors.toList());
     }
 
