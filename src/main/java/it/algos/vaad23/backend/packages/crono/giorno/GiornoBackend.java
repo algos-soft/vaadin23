@@ -6,6 +6,7 @@ import it.algos.vaad23.backend.logic.*;
 import it.algos.vaad23.backend.packages.crono.mese.*;
 import it.algos.vaad23.backend.wrapper.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.repository.*;
 import org.springframework.stereotype.*;
 
@@ -101,7 +102,7 @@ public class GiornoBackend extends CrudBackend {
 
     @Override
     public List<Giorno> findAll() {
-        return super.findAll();
+        return repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));
     }
 
     public List<String> findNomi() {
