@@ -108,6 +108,13 @@ public class SecoloBackend extends CrudBackend {
                 .collect(Collectors.toList());
     }
 
+    public List<String> findNomiAscendenti() {
+        List<Secolo> secoli = repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));
+        return secoli.stream()
+                .map(secolo -> secolo.nome)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Seleziona un secolo dall'anno indicato <br>
      * SOLO per secoli AC <br>
@@ -133,6 +140,9 @@ public class SecoloBackend extends CrudBackend {
         return repository.findFirstByInizioLessThanEqualAndFineGreaterThanEqualAndAnteCristo(anno, anno, false);
     }
 
+    public Secolo getSecolo(int ordine) {
+        return repository.findFirstByOrdine(ordine);
+    }
 
     /**
      * Creazione di alcuni dati iniziali <br>
@@ -154,7 +164,7 @@ public class SecoloBackend extends CrudBackend {
         String anteCristoText;
 
         if (super.reset()) {
-            mappa = resourceService.leggeMappaConfig(nomeFile);
+            mappa = resourceService.leggeMappaServer(nomeFile);
             if (mappa != null) {
                 for (String key : mappa.keySet()) {
                     riga = mappa.get(key);

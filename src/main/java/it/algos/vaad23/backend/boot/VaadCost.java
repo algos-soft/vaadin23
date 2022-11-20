@@ -21,6 +21,14 @@ public class VaadCost {
 
     public static final String ENCODE = "UTF-8";
 
+    public static final String JAR_FILE_PREFIX = "jar:file:";
+
+    public static final String JAR_CLASSES_PREFIX = "BOOT-INF/classes/";
+
+    public static final String JAR_PATH_SUFFIX = "!/BOOT-INF/classes!/";
+
+    public static final String JAR_CLASSES_SUFFIX = ".class";
+
     public static final String PATH_WIKI = "https://it.wikipedia.org/wiki/";
 
     public static final String TAG_WIKI = "https://it.wikipedia.org/wiki/";
@@ -319,6 +327,7 @@ public class VaadCost {
 
     public static final String TAG_COMUNE = "comune";
 
+    public static final String TAG_DOLLARO = "$";
 
     public static final String TAG_GIORNO = "giorno";
 
@@ -447,7 +456,7 @@ public class VaadCost {
 
     public static final String KEY_MAPPA_GIORNI_MESE_MESE = "meseMese";
 
-    public static final int ANNO_INIZIALE = 2000;
+    public static final int DELTA_ANNI = 1000;
 
     public static final int ANTE_CRISTO_MAX = 1000;
 
@@ -491,5 +500,9 @@ public class VaadCost {
     public static final String DEGREE_SIGN = "°"; //-80
 
     public static final char CHAR_DEGREE_SIGN = (char) 176;
+
+    public static final String REFLECTION_FILE = "file:";
+
+    public static final String REFLECTION_JAR = "jar:";
 
 }

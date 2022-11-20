@@ -55,6 +55,8 @@ public class SecoloBackendTest extends AlgosTest {
         backend.crudRepository = repository;
         backend.arrayService = arrayService;
         backend.reflectionService = reflectionService;
+        backend.resourceService = resourceService;
+        backend.textService = textService;
     }
 
 
@@ -127,6 +129,51 @@ public class SecoloBackendTest extends AlgosTest {
         message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
         System.out.println(message);
         printNomiSecoli(listaStr);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("3 - findNomi (nome)")
+    void findNomi2() {
+        System.out.println("3 - findNomi (nome)");
+        String message;
+
+        listaStr = backend.findNomi();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiSecoli(listaStr);
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("4 - findNomiAscendenti (nome)")
+    void findNomiAscendenti() {
+        System.out.println("4 - findNomiAscendenti (nome)");
+        String message;
+
+        listaStr = backend.findNomiAscendenti();
+        assertNotNull(listaStr);
+        message = String.format("Ci sono in totale %s secoli", textService.format(listaStr.size()));
+        System.out.println(message);
+        printNomiSecoli(listaStr);
+    }
+
+    @Test
+    @Order(40)
+    @DisplayName("40 - reset")
+    void reset() {
+        System.out.println("40 - reset");
+        String message;
+
+        ottenutoBooleano = backend.reset();
+        assertTrue(ottenutoBooleano);
+        listaBeans = backend.findAll();
+        assertNotNull(listaBeans);
+        message = String.format("Ci sono in totale %s entities di %s", textService.format(listaBeans.size()), "Secolo");
+        System.out.println(message);
+        printBeans(listaBeans);
     }
 
     /**

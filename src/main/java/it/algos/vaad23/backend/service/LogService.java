@@ -105,6 +105,7 @@ public class LogService extends AbstractService {
      * Logger specifico <br>
      * Gestisce un messaggio alla partenza del programma <br>
      */
+
     public void setUpIni() {
         String message = "Inizio regolazioni di VaadBoot";
         this.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
@@ -123,7 +124,7 @@ public class LogService extends AbstractService {
         //        message += SEP;
         message += "Versione ";
         message += VaadVar.projectVersion;
-        message += " del ";
+        message += " di ";
         message += VaadVar.projectDate;
 
         this.info(new WrapLog().message(message).type(AETypeLog.setup));

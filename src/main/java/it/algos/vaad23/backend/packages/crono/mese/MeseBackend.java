@@ -97,6 +97,10 @@ public class MeseBackend extends CrudBackend {
         return repository.findFirstByNome(nome);
     }
 
+    public Mese findFirstByOrdine(final int ordine) {
+        return repository.findFirstByOrdine(ordine);
+    }
+
     @Override
     public List<Mese> findAll() {
         return repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));

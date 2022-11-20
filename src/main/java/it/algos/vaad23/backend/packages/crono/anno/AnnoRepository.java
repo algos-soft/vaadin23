@@ -37,4 +37,6 @@ public interface AnnoRepository extends MongoRepository<Anno, String> {
 
     Anno findFirstByNome(String nome);
 
+    Anno findFirstByOrdine(int ordine);
+
 }// end of crud repository class

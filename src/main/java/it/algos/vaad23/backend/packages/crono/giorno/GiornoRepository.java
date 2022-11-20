@@ -37,4 +37,6 @@ public interface GiornoRepository extends MongoRepository<Giorno, String> {
 
     Giorno findFirstByNome(String nome);
 
+    Giorno findFirstByOrdine(int ordine);
+
 }// end of crud repository class

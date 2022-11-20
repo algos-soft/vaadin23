@@ -461,7 +461,7 @@ public abstract class AlgosTest {
 
     protected void print(List<String> lista) {
         int k = 1;
-        if (arrayService.isAllValid(lista)) {
+        if (lista != null) {
             for (String stringa : lista) {
                 System.out.print(k++);
                 System.out.print(PARENTESI_TONDA_END);

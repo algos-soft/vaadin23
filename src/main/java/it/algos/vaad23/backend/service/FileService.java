@@ -11,8 +11,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 
 import java.io.*;
+import java.net.*;
 import java.nio.file.*;
+import java.security.*;
 import java.util.*;
+import java.util.jar.*;
 import java.util.stream.*;
 
 
@@ -1502,11 +1505,11 @@ public class FileService extends AbstractService {
     }
 
     /**
-     * Crea una lista di tutte le Entity esistenti nel modulo indicato <br>
+     * Crea una lista di tutte le Entity esistenti nel modul
+     * indicato <br>
      */
     public List<String> getModuleSubFilesEntity(String moduleName) throws AlgosException {
         String tagFinale = "/backend/packages";
-
         return getAllSubFilesEntity(PATH_PREFIX + moduleName + tagFinale);
     }
 
@@ -1529,6 +1532,45 @@ public class FileService extends AbstractService {
      * @return canonicalName con i PUNTI di separazione e NON lo SLASH
      */
     public List<String> getAllSubFilesJava(String path) {
+        if (reflectionService.isJarRunning()) {
+            return getAllSubFilesJavaJAR(PATH_PREFIX_ALGOS + path);
+        }
+        else {
+            return getAllSubFilesJavaIDE(PATH_PREFIX + path);
+        }
+    }
+
+    /**
+     * Crea una lista di soli files java ricorsiva nelle sub-directory <br>
+     *
+     * @return canonicalName con i PUNTI di separazione e NON lo SLASH
+     */
+    public List<String> getAllSubFilesJavaJAR(String dirPath) {
+        ProtectionDomain domain;
+        CodeSource codeSource;
+        URL url;
+        String jarPath = VUOTA;
+
+        try {
+            domain = FileService.class.getProtectionDomain();
+            codeSource = domain.getCodeSource();
+            url = codeSource.getLocation();
+            jarPath = url.toString();
+            jarPath = textService.levaCoda(jarPath, JAR_PATH_SUFFIX);
+            jarPath = textService.levaTesta(jarPath, JAR_FILE_PREFIX);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        return fileService.scanJarDir("/Users/gac/Desktop/wiki/wiki23-1.0.jar", dirPath); //@todo ASSOLUTAMENTE PROVVISORIO
+    }
+
+    /**
+     * Crea una lista di soli files java ricorsiva nelle sub-directory <br>
+     *
+     * @return canonicalName con i PUNTI di separazione e NON lo SLASH
+     */
+    public List<String> getAllSubFilesJavaIDE(String path) {
         List<String> listaCanonicalNamesOnlyFilesJava = new ArrayList<>();
         List<String> listaPathNamesOnlyFiles = getAllSubPathFiles(path);
         String canonicalName;
@@ -1545,6 +1587,7 @@ public class FileService extends AbstractService {
 
         return listaCanonicalNamesOnlyFilesJava;
     }
+
 
     /**
      * Crea una lista di soli files ricorsiva nelle sub-directory <br>
@@ -2000,6 +2043,47 @@ public class FileService extends AbstractService {
         }
 
         return lista;
+    }
+
+    public List<String> scanJar(String jarPath) {
+        JarFile jarFile;
+
+        try {
+            jarFile = new JarFile(jarPath);
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+            return null;
+        }
+
+        return jarFile
+                .stream()
+                .map(entry -> entry.getName())
+                .collect(Collectors.toList());
+    }
+
+    public List<String> scanJarClasses(String jarPath) {
+        return scanJar(jarPath)
+                .stream()
+                .filter(entry -> entry.startsWith(JAR_CLASSES_PREFIX))
+                .filter(entry -> !entry.endsWith(SLASH))
+                .filter(entry -> !entry.contains(TAG_DOLLARO))
+                .map(entry -> entry.substring(JAR_CLASSES_PREFIX.length()))
+                .map(entry -> entry.substring(0, entry.length() - JAR_CLASSES_SUFFIX.length()))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> scanJarDir(String jarPath, String dirPath) {
+        return scanJarClasses(jarPath)
+                .stream()
+                .filter(entry -> entry.startsWith(dirPath))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> scanJarDirType(String jarPath, String dirPath, String suffix) {
+        return scanJarDir(jarPath, dirPath)
+                .stream()
+                .filter(entry -> entry.endsWith(suffix))
+                .collect(Collectors.toList());
     }
 
 }

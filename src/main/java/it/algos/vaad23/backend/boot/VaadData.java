@@ -82,8 +82,15 @@ public class VaadData extends AbstractService {
      * @since java 8
      */
     protected void resetData() {
+        boolean isJar = reflectionService.isJarRunning();
+        String message = String.format("Stiamo girando da %s", isJar ? "JAR" : "IDE");
+        logger.info(new WrapLog().message(message).type(AETypeLog.setup));
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
+
         resetData(VaadVar.moduloVaadin23);
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
         resetData(VaadVar.projectCurrent);
+        logger.info(new WrapLog().message(VUOTA).type(AETypeLog.setup));
     }
 
 
@@ -107,13 +114,18 @@ public class VaadData extends AbstractService {
 
         //--spazzola tutta la directory package del modulo in esame e recupera
         //--tutte le classi contenute nella directory e nelle sue sottoclassi
-        allModulePackagesClasses = fileService.getAllSubFilesJava(PATH_PREFIX + moduleName + tagFinale);
+        allModulePackagesClasses = fileService.getAllSubFilesJava(moduleName + tagFinale);
+
+        if (allModulePackagesClasses == null) {
+            return;
+        }
 
         //--seleziono solo le classi CrudBackend
         allBackendClasses = allModulePackagesClasses
                 .stream()
                 .filter(n -> n.endsWith(SUFFIX_BACKEND))
                 .collect(Collectors.toList());
+
         if (allBackendClasses != null && allBackendClasses.size() > 0) {
             message = String.format("Nel modulo %s sono stati trovati %d packages con classi di tipo xxxBackend", moduleName, allBackendClasses.size());
         }
@@ -125,8 +137,9 @@ public class VaadData extends AbstractService {
         //--seleziono solo le classi xxxBackend che implementano il metodo reset
         allBackendClassesResetStartUp = allBackendClasses
                 .stream()
-                .filter(checkUsaReset)
+                .filter(clazzName -> reflectionService.isEsisteMetodo(clazzName.toString(), "reset"))
                 .collect(Collectors.toList());
+
         if (allBackendClassesResetStartUp != null && allBackendClassesResetStartUp.size() > 0) {
             message = String.format("Nel modulo %s sono state trovate %d classi xxxBackend che implementano il metodo 'reset'", moduleName, allBackendClassesResetStartUp.size());
             logger.info(new WrapLog().message(message).type(AETypeLog.checkData));
@@ -142,7 +155,9 @@ public class VaadData extends AbstractService {
         if (allBackendClassesResetStartUp != null) {
             allBackendClassesResetStartUp
                     .stream()
-                    .forEach(bootResetStartUp);
+                    //                    .forEach(bootResetStartUp);
+                    .forEach(clazzName -> reflectionService.esegueMetodo(clazzName.toString(), "resetStartUp"));
+
             message = String.format("Controllati i dati iniziali di tutti i packages del modulo %s", moduleName);
             logger.info(new WrapLog().message(message).type(AETypeLog.checkData));
         }

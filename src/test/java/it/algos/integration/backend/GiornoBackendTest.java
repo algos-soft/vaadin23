@@ -49,6 +49,8 @@ public class GiornoBackendTest extends AlgosTest {
     @Autowired
     protected MongoService mongoService;
 
+    private Giorno giorno;
+
     /**
      * Qui passa una volta sola <br>
      */
@@ -91,6 +93,7 @@ public class GiornoBackendTest extends AlgosTest {
     @BeforeEach
     protected void setUpEach() {
         super.setUpEach();
+        giorno = null;
     }
 
 
@@ -165,6 +168,37 @@ public class GiornoBackendTest extends AlgosTest {
             System.out.println(message);
             printNomiGiorni(listaStr);
         }
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("6 - findByOrdine")
+    void findByOrdine() {
+        System.out.println("6 - findByOrdine");
+
+        sorgenteIntero = 14;
+        giorno = backend.findByOrdine(sorgenteIntero);
+        assertNotNull(giorno);
+        message = String.format("Progressivo %d corrisponde al %s", sorgenteIntero, giorno.nome);
+        System.out.println(message);
+
+        sorgenteIntero = 131;
+        giorno = backend.findByOrdine(sorgenteIntero);
+        assertNotNull(giorno);
+        message = String.format("Progressivo %d corrisponde al %s", sorgenteIntero, giorno.nome);
+        System.out.println(message);
+
+        sorgenteIntero = 218;
+        giorno = backend.findByOrdine(sorgenteIntero);
+        assertNotNull(giorno);
+        message = String.format("Progressivo %d corrisponde al %s", sorgenteIntero, giorno.nome);
+        System.out.println(message);
+
+        sorgenteIntero = 425;
+        giorno = backend.findByOrdine(sorgenteIntero);
+        assertNull(giorno);
+        message = String.format("Progressivo %d non corrisponde a nessun giorno", sorgenteIntero);
+        System.out.println(message);
     }
 
 

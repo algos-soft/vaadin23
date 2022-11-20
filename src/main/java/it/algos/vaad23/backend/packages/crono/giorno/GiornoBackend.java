@@ -100,6 +100,10 @@ public class GiornoBackend extends CrudBackend {
         return repository.findFirstByNome(nome);
     }
 
+    public Giorno findByOrdine(final int ordine) {
+        return repository.findFirstByOrdine(ordine);
+    }
+
     @Override
     public List<Giorno> findAll() {
         return repository.findAll(Sort.by(Sort.Direction.ASC, "ordine"));
