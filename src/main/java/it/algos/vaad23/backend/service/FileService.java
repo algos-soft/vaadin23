@@ -1562,7 +1562,7 @@ public class FileService extends AbstractService {
             logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
         }
 
-        return fileService.scanJarDir("/Users/gac/Desktop/wiki/wiki23-1.0.jar", dirPath); //@todo ASSOLUTAMENTE PROVVISORIO
+        return fileService.scanJarDir(jarPath, dirPath);
     }
 
     /**
