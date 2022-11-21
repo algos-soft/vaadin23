@@ -160,7 +160,7 @@ public class SecoloBackendTest extends AlgosTest {
         printNomiSecoli(listaStr);
     }
 
-    @Test
+//    @Test
     @Order(40)
     @DisplayName("40 - reset")
     void reset() {

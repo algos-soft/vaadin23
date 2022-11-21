@@ -243,7 +243,7 @@ public class AnnoBackendTest extends AlgosTest {
         }
     }
 
-    @Test
+//    @Test
     @Order(40)
     @DisplayName("40 - reset")
     void reset() {

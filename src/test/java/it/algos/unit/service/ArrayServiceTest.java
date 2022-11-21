@@ -27,7 +27,6 @@ import java.util.*;
 @SpringBootTest(classes = {SimpleApplication.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Tag("integration")
-@Tag("backend")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ArrayServiceTest extends AlgosTest {
 

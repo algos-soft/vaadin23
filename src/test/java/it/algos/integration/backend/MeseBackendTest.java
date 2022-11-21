@@ -140,7 +140,7 @@ public class MeseBackendTest extends AlgosTest {
         printNomiMesi(listaStr);
     }
 
-    @Test
+//    @Test
     @Order(4)
     @DisplayName("4 - resetServer")
     void resetServer() {
@@ -155,7 +155,7 @@ public class MeseBackendTest extends AlgosTest {
         printBeans(listaBeans);
     }
 
-    @Test
+    //    @Test
     @Order(5)
     @DisplayName("5 - resetConfig")
     void resetConfig() {
@@ -170,7 +170,7 @@ public class MeseBackendTest extends AlgosTest {
         printBeans(listaBeans);
     }
 
-    @Test
+    //    @Test
     @Order(6)
     @DisplayName("6 - reset")
     void reset() {
