@@ -116,6 +116,31 @@ public abstract class WizElabora {
         }
     }
 
+    public void elabora(final AEWizProject wiz) {
+        switch (wiz) {
+            case test -> copyTest(wiz);
+        } ;
+    }
+
+    public void copyTest(final AEWizProject wiz) {
+        String message;
+        AResult result;
+        String srcPath = srcVaadin23 + wiz.getCopyDest() + SLASH;
+        String destPath = destNewProject + wiz.getCopyDest() + SLASH;
+        String dir = fileService.lastDirectory(destPath).toLowerCase();
+        String tag = progettoEsistente ? "Update" : "New";
+
+        result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
+        if (result.isValido()) {
+            message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
+            logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
+        }
+        else {
+            message = String.format("%s: la directory %s non ha funzionato", tag, dir);
+            logger.warn(new WrapLog().message(message).type(AETypeLog.wizard));
+        }
+    }
+
     public void eliminaSources() {
         String message;
 

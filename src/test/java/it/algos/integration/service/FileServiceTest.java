@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.*;
 import org.springframework.boot.test.context.*;
 
 import java.io.*;
+import java.util.*;
 import java.util.stream.*;
 
 /**
@@ -35,9 +36,13 @@ import java.util.stream.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FileServiceTest extends SpringTest {
 
+    static boolean FLAG_CREAZIONE_INIZIALE = true;
+
+    private static String DIRECTORY_IDEA = "/Users/gac/Documents/IdeaProjects/";
+
     private static String NOME_FILE_UNO = "Mantova.txt";
 
-    private static String PATH_DIRECTORY_TEST = "/Users/gac/Desktop/testvaadin23/";
+    private static String PATH_DIRECTORY_TEST = "/Users/gac/Desktop/test/";
 
     private static String PATH_DIRECTORY_UNO = PATH_DIRECTORY_TEST + "Pippo/";
 
@@ -45,11 +50,57 @@ public class FileServiceTest extends SpringTest {
 
     private static String PATH_DIRECTORY_TRE = PATH_DIRECTORY_TEST + "Mantova/";
 
+    private static String PATH_FILE_TRE = PATH_DIRECTORY_TRE + "/Topolino.txt";
+
+    private static String PATH_FILE_QUATTRO = PATH_DIRECTORY_TRE + "/Paperino.txt";
+
+    private static String PATH_FILE_AGGIUNTO_TRE = PATH_DIRECTORY_TRE + "FileSorgenteAggiunto.ccs";
+
     private static String PATH_DIRECTORY_NON_ESISTENTE = PATH_DIRECTORY_TEST + "Genova/";
 
     private static String PATH_DIRECTORY_DA_COPIARE = PATH_DIRECTORY_TEST + "NuovaDirectory/";
 
     private static String PATH_DIRECTORY_MANCANTE = PATH_DIRECTORY_TEST + "CartellaCopiata/";
+
+    private static String PATH_FILE_AGGIUNTO = PATH_DIRECTORY_MANCANTE + "TerzaPossibilita.htm";
+
+    private static String PATH_FILE_UNO = PATH_DIRECTORY_TEST + "Pluto.rtf";
+
+    private static String PATH_FILE_DUE = PATH_DIRECTORY_TEST + "Secondo.rtf";
+
+    private static String PATH_FILE_ESISTENTE_CON_MAIUSCOLA_SBAGLIATA = "/Users/gac/Desktop/test/pluto.rtf";
+
+    private static String PATH_FILE_NO_SUFFIX = PATH_DIRECTORY_TEST + "Topolino";
+
+    private static String PATH_FILE_NON_ESISTENTE = PATH_DIRECTORY_TEST + "Topolino.txt";
+
+    private static String PATH_FILE_NO_PATH = "Users/gac/Desktop/test/Pluto.rtf";
+
+    private static String PATH_DIRECTORY_NO_PATH = "Users/gac/Desktop/test/Mantova/";
+
+    private static String PATH_FILE_NO_GOOD = "/Users/gac/Desktop/test/Pa perino/Topolino.abc";
+
+    private static String PATH_FILE_ANOMALO = PATH_DIRECTORY_TEST + "Pluto.properties";
+
+    private static String PATH_DIRECTORY_ESISTENTE_CON_MAIUSCOLA_SBAGLIATA = "/Users/gac/desktop/test/Pippo/";
+
+    private static String PATH_FILE_DELETE = "/Users/gac/Desktop/test/NonEsiste/Minni.txt";
+
+    private static String PATH_MODULO_PROVA = "vaadtest/";
+
+    private static String VALIDO = "TROVATO";
+
+    private static String ESISTE_FILE = " isEsisteFile() ";
+
+    private static String ESISTE_DIRECTORY = " isEsisteDirectory() ";
+
+    private static String CREA_FILE = " creaFile() ";
+
+    private static String CREA_DIRECTORY = " creaDirectory() ";
+
+    private static String DELETE_FILE = " deleteFile() ";
+
+    private static String DELETE_DIRECTORY = " deleteDirectory() ";
 
     private static String SOURCE = PATH_DIRECTORY_TEST + "Sorgente";
 
@@ -63,6 +114,18 @@ public class FileServiceTest extends SpringTest {
 
     private File unFile;
 
+    private String nomeFile;
+
+    private String nomeCompletoFile;
+
+    private String nomeDirectory;
+
+    private String nomeCompletoDirectory;
+
+    private List<File> listaDirectory;
+
+    private List<File> listaFile;
+
     //--path
     //--esiste directory
     //--manca slash iniziale
@@ -70,12 +133,12 @@ public class FileServiceTest extends SpringTest {
         return Stream.of(
                 Arguments.of(null, false, false),
                 Arguments.of(VUOTA, false, false),
-                Arguments.of("/Users/gac/Desktop/test/", false, false),
-                Arguments.of("/Users/gac/Desktop/test/Mantova", false, false),
+                Arguments.of("/Users/gac/Desktop/test/", true, false),
+                Arguments.of("/Users/gac/Desktop/test/Mantova", true, false),
                 Arguments.of("/Users/gac/Desktop/test/Mantova.txt", false, false),
                 Arguments.of("Users/gac/Documents/IdeaProjects/operativi/vaadin23/src/", false, true),
                 Arguments.of("/Users/gac/Documents/IdeaProjects/operativi/vaadin23/src/", true, false),
-                Arguments.of("/Users/gac/Desktop/test/Pippo/", false, false)
+                Arguments.of("/Users/gac/Desktop/test/Pippo/", true, false)
         );
     }
 
@@ -84,8 +147,16 @@ public class FileServiceTest extends SpringTest {
     //--esiste
     protected static Stream<Arguments> FILE() {
         return Stream.of(
-                Arguments.of(null, false),
-                Arguments.of(VUOTA, false),
+                //                Arguments.of(null, false),
+                //                Arguments.of(VUOTA, false),
+                //                Arguments.of("nonEsiste", false),
+                //                Arguments.of(PATH_FILE_NO_SUFFIX, false),
+                //                Arguments.of(PATH_FILE_NON_ESISTENTE, false),
+                //                Arguments.of(PATH_FILE_NO_PATH, false),
+                //                Arguments.of(PATH_DIRECTORY_UNO, false),
+                //                Arguments.of(PATH_FILE_UNO, true),
+                Arguments.of(PATH_FILE_ESISTENTE_CON_MAIUSCOLA_SBAGLIATA, false),
+                Arguments.of(PATH_DIRECTORY_UNO, false),
                 Arguments.of("/Users/gac/Desktop/test/Mantova/", false),
                 Arguments.of("/Users/gac/Desktop/test/Mantova", false),
                 Arguments.of("/Users/gac/Desktop/test/Mantova.", false),
@@ -155,6 +226,12 @@ public class FileServiceTest extends SpringTest {
         //--reindirizzo l'istanza della superclasse
         service = fileService;
         this.creaCartelle();
+
+        if (FLAG_CREAZIONE_INIZIALE) {
+            creazioneListe();
+            creazioneDirectory();
+            creazioneFiles();
+        }
     }
 
     private void creaCartelle() {
@@ -162,6 +239,56 @@ public class FileServiceTest extends SpringTest {
         service.creaDirectory(PATH_DIRECTORY_DUE);
         service.creaDirectory(PATH_DIRECTORY_TRE);
         service.creaFile(PATH_DIRECTORY_TRE + NOME_FILE_UNO);
+    }
+
+
+    /**
+     * Creazioni di servizio per essere sicuri che ci siano tutti i files/directories richiesti <br>
+     */
+    private void creazioneListe() {
+        listaDirectory = new ArrayList<>();
+        listaDirectory.add(new File(PATH_DIRECTORY_TEST));
+        listaDirectory.add(new File(PATH_DIRECTORY_UNO));
+        listaDirectory.add(new File(PATH_DIRECTORY_DUE));
+
+        listaFile = new ArrayList<>();
+        listaFile.add(new File(PATH_FILE_UNO));
+        listaFile.add(new File(PATH_FILE_DUE));
+        listaFile.add(new File(PATH_FILE_TRE));
+        listaFile.add(new File(PATH_FILE_QUATTRO));
+        listaFile.add(new File(PATH_FILE_ESISTENTE_CON_MAIUSCOLA_SBAGLIATA));
+    }
+
+
+    /**
+     * Creazioni di servizio per essere sicuri che ci siano tutti i files/directories richiesti <br>
+     * Alla fine verranno cancellati tutti <br>
+     */
+    private void creazioneDirectory() {
+        if (arrayService.isAllValid(listaDirectory)) {
+            for (File directory : listaDirectory) {
+                directory.mkdirs();
+            }
+        }
+    }
+
+
+    /**
+     * Creazioni di servizio per essere sicuri che ci siano tutti i files/directories richiesti <br>
+     * Alla fine verranno cancellati tutti <br>
+     */
+    private void creazioneFiles() {
+        if (arrayService.isAllValid(listaFile)) {
+            for (File unFile : listaFile) {
+                try { // prova ad eseguire il codice
+                    unFile.createNewFile();
+                } catch (Exception unErrore) { // intercetta l'errore
+                    if (service.creaDirectoryParentAndFile(unFile).equals(VUOTA)) {
+                        listaDirectory.add(new File(unFile.getParent()));
+                    }
+                }
+            }
+        }
     }
 
     private void cancellaCartelle() {
@@ -178,6 +305,65 @@ public class FileServiceTest extends SpringTest {
         super.setUpEach();
 
         unFile = null;
+    }
+
+    @Test
+    @Order(21)
+    @DisplayName("21 - isEsisteFileZero")
+    public void isEsisteFileZero() {
+        nomeFile = "nonEsiste";
+        unFile = new File(nomeFile);
+        assertNotNull(unFile);
+        System.out.println(" ");
+        System.out.println("file.getName() = " + unFile.getName());
+        System.out.println("file.getPath() = " + unFile.getPath());
+        System.out.println("file.getAbsolutePath() = " + unFile.getAbsolutePath());
+        try {
+            System.out.println("file.getCanonicalPath() = " + unFile.getCanonicalPath());
+        } catch (Exception unErrore) {
+            System.out.println("Errore");
+        }
+
+        nomeFile = "Maiuscola";
+        unFile = new File(nomeFile);
+        assertNotNull(unFile);
+        System.out.println(" ");
+        System.out.println("file.getName() = " + unFile.getName());
+        System.out.println("file.getPath() = " + unFile.getPath());
+        System.out.println("file.getAbsolutePath() = " + unFile.getAbsolutePath());
+        try {
+            System.out.println("file.getCanonicalPath() = " + unFile.getCanonicalPath());
+        } catch (Exception unErrore) {
+            System.out.println("Errore");
+        }
+
+        nomeFile = "/User/pippoz";
+        unFile = new File(nomeFile);
+        assertNotNull(unFile);
+        System.out.println(" ");
+        System.out.println("file.getName() = " + unFile.getName());
+        System.out.println("file.getPath() = " + unFile.getPath());
+        System.out.println("file.getAbsolutePath() = " + unFile.getAbsolutePath());
+
+        try {
+            System.out.println("file.getCanonicalPath() = " + unFile.getCanonicalPath());
+        } catch (Exception unErrore) {
+            System.out.println("Errore");
+        }
+
+        nomeFile = "/User/pippo/Pluto.rtf";
+        unFile = new File(nomeFile);
+        assertNotNull(unFile);
+        System.out.println(" ");
+        System.out.println("file.getName() = " + unFile.getName());
+        System.out.println("file.getPath() = " + unFile.getPath());
+        System.out.println("file.getAbsolutePath() = " + unFile.getAbsolutePath());
+
+        try {
+            System.out.println("file.getCanonicalPath() = " + unFile.getCanonicalPath());
+        } catch (Exception unErrore) {
+            System.out.println("Errore");
+        }
     }
 
 

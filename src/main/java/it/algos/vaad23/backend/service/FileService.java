@@ -197,8 +197,15 @@ public class FileService extends AbstractService {
             return result;
         }
         String message;
+        boolean caseSensitiveUgualeFalse = false;
 
-        if (fileToBeChecked.exists()) {
+        try {
+            caseSensitiveUgualeFalse = fileToBeChecked.getCanonicalPath().equals(fileToBeChecked.getAbsolutePath());
+        } catch (Exception unErrore) {
+            logger.error(new WrapLog().exception(new AlgosException(unErrore)).usaDb());
+        }
+
+        if (fileToBeChecked.exists() && caseSensitiveUgualeFalse) {
             if (fileToBeChecked.isFile()) {
                 message = String.format("Trovato il file %s", fileToBeChecked.getAbsolutePath());
                 //                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
