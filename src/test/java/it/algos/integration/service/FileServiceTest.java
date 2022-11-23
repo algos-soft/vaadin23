@@ -196,18 +196,18 @@ public class FileServiceTest extends SpringTest {
     //--directory copiata
     protected static Stream<Arguments> COPY_DIRECTORY() {
         return Stream.of(
-                Arguments.of(null, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.fileOnly, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.dirOnly, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.dirOnly, VUOTA, DEST, false),
-                Arguments.of(AECopy.dirOnly, SOURCE, VUOTA, false),
-                Arguments.of(AECopy.dirOnly, PATH_DIRECTORY_MANCANTE, DEST, false),
-                Arguments.of(AECopy.dirOnly, SOURCE, DEST, true),
-                Arguments.of(AECopy.dirOnly, SOURCE, PATH_DIRECTORY_DUE, true),
-                Arguments.of(AECopy.dirDelete, SOURCE, PATH_DIRECTORY_DUE, true),
-                Arguments.of(AECopy.dirDelete, SOURCE, DEST, true),
-                Arguments.of(AECopy.dirFilesAddOnly, SOURCE, PATH_DIRECTORY_TRE, true),
-                Arguments.of(AECopy.dirFilesAddOnly, SOURCE, DEST, true),
+                //                Arguments.of(null, VUOTA, VUOTA, false),
+                //                Arguments.of(AECopy.fileOnly, VUOTA, VUOTA, false),
+                //                Arguments.of(AECopy.dirOnly, VUOTA, VUOTA, false),
+                //                Arguments.of(AECopy.dirOnly, VUOTA, DEST, false),
+                //                Arguments.of(AECopy.dirOnly, SOURCE, VUOTA, false),
+                //                Arguments.of(AECopy.dirOnly, PATH_DIRECTORY_MANCANTE, DEST, false),
+                //                Arguments.of(AECopy.dirOnly, SOURCE, DEST, true),
+                //                Arguments.of(AECopy.dirOnly, SOURCE, PATH_DIRECTORY_DUE, true),
+                //                Arguments.of(AECopy.dirDelete, SOURCE, PATH_DIRECTORY_DUE, true),
+                //                Arguments.of(AECopy.dirDelete, SOURCE, DEST, true),
+                //                Arguments.of(AECopy.dirFilesAddOnly, SOURCE, PATH_DIRECTORY_TRE, true),
+                //                Arguments.of(AECopy.dirFilesAddOnly, SOURCE, DEST, true),
                 Arguments.of(AECopy.dirFilesModifica, SOURCE, PATH_DIRECTORY_DUE, true),
                 Arguments.of(AECopy.dirFilesModifica, SOURCE, DEST, true)
         );
@@ -921,7 +921,7 @@ public class FileServiceTest extends SpringTest {
         System.out.println("16 - Copia la directory");
         System.out.println(VUOTA);
 
-        //--prepare due cartella regolate nelle condizioni iniziali
+        //--prepare due cartelle regolate nelle condizioni iniziali
         fixCartelle(true);
 
         ottenutoRisultato = service.copyDirectory(typeCopy, srcPathDir, destPathDir);
@@ -929,7 +929,10 @@ public class FileServiceTest extends SpringTest {
         printRisultato(ottenutoRisultato);
         assertEquals(copiato, ottenutoRisultato.isValido());
 
-        //--cancella le due cartella
+        //--controlla le due cartelle
+        checkCartelle(srcPathDir, destPathDir);
+
+        //--cancella le due cartelle
         fixCartelle(false);
     }
 
@@ -971,24 +974,51 @@ public class FileServiceTest extends SpringTest {
         String srcDir = PATH_DIRECTORY_TEST + "Sorgente";
         String destDir = PATH_DIRECTORY_TEST + "Destinazione";
         String srcDirSub1 = srcDir + SLASH + "Sub1";
+        String destDirSub1 = destDir + SLASH + "Sub1";
         String file1 = "Alfa.txt";
         String file2 = "Beta.txt";
         String file3 = "Gamma.txt";
+        String file4 = "Delta.txt";
+        String file5 = "Lambda.txt";
+        String file6 = "Omega.txt";
         File src = new File(srcDir);
         File dest = new File(destDir);
-        File sub1 = new File(srcDirSub1);
-        File fileUno = new File(srcDir + SLASH + file1);
-        File fileDue = new File(srcDir + SLASH + file2);
-        File fileTre = new File(sub1 + SLASH + file3);
+        File srcSub1 = new File(srcDirSub1);
+        File destSub1 = new File(destDirSub1);
+        String srcTesto = "Testo sorgente che modifica quello esistente";
+        String destTesto = "Testo iniziale che verrà modificato";
+        String destTestoFisso = "Testo iniziale che non viene modificato";
+
+        File srcA_uguale = new File(srcDir + SLASH + file1);
+        File srcB = new File(srcDir + SLASH + file2);
+        File srcC_diverso = new File(srcDir + SLASH + file3);
+        File src_sub_uguale = new File(srcSub1 + SLASH + file5);
+        File src_sub_diverso = new File(srcSub1 + SLASH + file6);
+
+        File destA_uguale = new File(destDir + SLASH + file1);
+        File destC_diverso = new File(destDir + SLASH + file3);
+        File destD = new File(destDir + SLASH + file4);
+        File dest_sub_uguale = new File(destSub1 + SLASH + file5);
+        File dest_sub_diverso = new File(destSub1 + SLASH + file6);
 
         if (inizio) {
             try {
                 src.mkdirs();
-                //                dest.mkdirs();
-                sub1.mkdirs();
-                fileUno.createNewFile();
-                fileDue.createNewFile();
-                fileTre.createNewFile();
+                dest.mkdirs();
+                srcSub1.mkdirs();
+                destSub1.mkdirs();
+
+                srcA_uguale.createNewFile();
+                srcB.createNewFile();
+                srcC_diverso.createNewFile();
+                src_sub_uguale.createNewFile();
+                src_sub_diverso.createNewFile();
+
+                destA_uguale.createNewFile();
+                destC_diverso.createNewFile();
+                destD.createNewFile();
+                dest_sub_uguale.createNewFile();
+                dest_sub_diverso.createNewFile();
             } catch (Exception unErrore) {
             }
         }
@@ -999,6 +1029,78 @@ public class FileServiceTest extends SpringTest {
             } catch (Exception unErrore) {
             }
         }
+
+        service.sovraScriveFile(srcA_uguale.getAbsolutePath(), srcTesto);
+        service.sovraScriveFile(srcB.getAbsolutePath(), srcTesto);
+        service.sovraScriveFile(srcC_diverso.getAbsolutePath(), srcTesto);
+        service.sovraScriveFile(src_sub_uguale.getAbsolutePath(), srcTesto);
+        service.sovraScriveFile(src_sub_diverso.getAbsolutePath(), srcTesto);
+
+        service.sovraScriveFile(destA_uguale.getAbsolutePath(), srcTesto);
+        service.sovraScriveFile(destC_diverso.getAbsolutePath(), destTesto);
+        service.sovraScriveFile(destD.getAbsolutePath(), destTestoFisso);
+        service.sovraScriveFile(dest_sub_uguale.getAbsolutePath(), srcTesto);
+        service.sovraScriveFile(dest_sub_diverso.getAbsolutePath(), destTesto);
+    }
+
+    void checkCartelle(String srcPath, String destPath) {
+        String srcDir = PATH_DIRECTORY_TEST + srcPath;
+        String destDir = PATH_DIRECTORY_TEST + destPath;
+        String srcDirSub1 = srcDir + SLASH + "Sub1";
+        String destDirSub1 = destDir + SLASH + "Sub1";
+        String file1 = "Alfa.txt";
+        String file2 = "Beta.txt";
+        String file3 = "Gamma.txt";
+        String file4 = "Delta.txt";
+        String file5 = "Lambda.txt";
+        String file6 = "Omega.txt";
+        File src = new File(srcDir);
+        File dest = new File(destDir);
+        File srcSub1 = new File(srcDirSub1);
+        File destSub1 = new File(destDirSub1);
+        String srcTesto = "Testo sorgente che modifica quello esistente";
+        String destTesto = "Testo iniziale che verrà modificato";
+        String destTestoFisso = "Testo iniziale che non viene modificato";
+
+        File srcA_uguale = new File(srcDir + SLASH + file1);
+        File srcB = new File(srcDir + SLASH + file2);
+        File srcC_diverso = new File(srcDir + SLASH + file3);
+        File src_sub_uguale = new File(srcSub1 + SLASH + file5);
+        File src_sub_diverso = new File(srcSub1 + SLASH + file6);
+
+        File destA_uguale = new File(destDir + SLASH + file1);
+        File destC_diverso = new File(destDir + SLASH + file3);
+        File destD = new File(destDir + SLASH + file4);
+        File dest_sub_uguale = new File(destSub1 + SLASH + file5);
+        File dest_sub_diverso = new File(destSub1 + SLASH + file6);
+
+        try {
+            srcA_uguale.createNewFile();
+            srcB.createNewFile();
+            srcC_diverso.createNewFile();
+            src_sub_uguale.createNewFile();
+            src_sub_diverso.createNewFile();
+
+            destA_uguale.createNewFile();
+            destC_diverso.createNewFile();
+            destD.createNewFile();
+            dest_sub_uguale.createNewFile();
+            dest_sub_diverso.createNewFile();
+        } catch (Exception unErrore) {
+        }
+
+        service.leggeFile(srcA_uguale.getAbsolutePath());
+        service.leggeFile(srcB.getAbsolutePath());
+        service.leggeFile(srcC_diverso.getAbsolutePath());
+        service.leggeFile(src_sub_uguale.getAbsolutePath());
+        service.leggeFile(src_sub_diverso.getAbsolutePath());
+
+        service.leggeFile(destA_uguale.getAbsolutePath());
+        service.leggeFile(destC_diverso.getAbsolutePath());
+        service.leggeFile(destD.getAbsolutePath());
+        service.leggeFile(dest_sub_uguale.getAbsolutePath());
+        service.leggeFile(dest_sub_diverso.getAbsolutePath());
+
     }
 
     private void cancellaCartelle() {
