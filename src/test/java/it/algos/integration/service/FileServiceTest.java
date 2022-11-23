@@ -147,14 +147,14 @@ public class FileServiceTest extends SpringTest {
     //--esiste
     protected static Stream<Arguments> FILE() {
         return Stream.of(
-                //                Arguments.of(null, false),
-                //                Arguments.of(VUOTA, false),
-                //                Arguments.of("nonEsiste", false),
-                //                Arguments.of(PATH_FILE_NO_SUFFIX, false),
-                //                Arguments.of(PATH_FILE_NON_ESISTENTE, false),
-                //                Arguments.of(PATH_FILE_NO_PATH, false),
-                //                Arguments.of(PATH_DIRECTORY_UNO, false),
-                //                Arguments.of(PATH_FILE_UNO, true),
+                Arguments.of(null, false),
+                Arguments.of(VUOTA, false),
+                Arguments.of("nonEsiste", false),
+                Arguments.of(PATH_FILE_NO_SUFFIX, false),
+                Arguments.of(PATH_FILE_NON_ESISTENTE, false),
+                Arguments.of(PATH_FILE_NO_PATH, false),
+                Arguments.of(PATH_DIRECTORY_UNO, false),
+                Arguments.of(PATH_FILE_UNO, true),
                 Arguments.of(PATH_FILE_ESISTENTE_CON_MAIUSCOLA_SBAGLIATA, false),
                 Arguments.of(PATH_DIRECTORY_UNO, false),
                 Arguments.of("/Users/gac/Desktop/test/Mantova/", false),
@@ -291,9 +291,6 @@ public class FileServiceTest extends SpringTest {
         }
     }
 
-    private void cancellaCartelle() {
-        service.deleteDirectory(PATH_DIRECTORY_TEST);
-    }
 
     /**
      * Qui passa prima di ogni test <br>
@@ -1002,6 +999,10 @@ public class FileServiceTest extends SpringTest {
             } catch (Exception unErrore) {
             }
         }
+    }
+
+    private void cancellaCartelle() {
+        service.deleteDirectory(PATH_DIRECTORY_TEST);
     }
 
     /**

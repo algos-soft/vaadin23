@@ -732,7 +732,7 @@ public class FileService extends AbstractService {
     public AResult copyDirectory(final AECopy typeCopy, final String srcPath, final String destPath) {
         AResult result = AResult.build().method("copyDirectory").target(destPath);
         String message;
-        String path = this.findPathBreve(destPath);
+        String path = this.findPathBreve(destPath + SLASH);
         File dirSrc = new File(srcPath);
         File dirDest = new File(destPath);
         List<String> filesSorgenti;
@@ -823,7 +823,6 @@ public class FileService extends AbstractService {
                     try {
                         FileUtils.copyDirectory(dirSrc, dirDest);
                         message = String.format("La directory '%s' non esisteva ed è stata creata.", path);
-                        logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
                         return result.setValidMessage(message);
                     } catch (Exception unErrore) {
                         return result.setErrorMessage(unErrore.getMessage());
