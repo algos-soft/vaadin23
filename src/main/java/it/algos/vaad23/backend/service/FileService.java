@@ -836,6 +836,17 @@ public class FileService extends AbstractService {
                 }
             case dirFilesModifica:
                 if (dirDest.exists()) {
+                    //--recupero i files esistenti nella destinazione
+                    //--copio TUTTI i sorgenti SOVRASCRIVENDO quelli presenti nella destinazione
+                    filesSorgenti = getFilesName(srcPath);
+                    filesDestinazione = getFilesName(destPath);
+
+                    for (String nomeFile : filesSorgenti) {
+                        if (!filesDestinazione.contains(nomeFile)) {
+                            copyFile(AECopy.fileDelete, srcPath, destPath, nomeFile);
+                        }
+                    }
+
                     message = String.format("La directory '%s' esisteva già ma sono stati aggiunti", path);
                     message += " i files mancanti e modificati quelli esistenti con lo stesso nome";
                 }
