@@ -442,15 +442,14 @@ public class FileService extends AbstractService {
         String message;
         String parentDirectoryName = VUOTA;
         File parentDirectoryFile;
-        boolean parentDirectoryCreata = false;
 
         if (fileToBeCreated != null) {
             parentDirectoryName = fileToBeCreated.getParent();
             parentDirectoryFile = new File(parentDirectoryName);
-            parentDirectoryCreata = parentDirectoryFile.mkdirs();
+            parentDirectoryFile.mkdirs();
         }
 
-        if (parentDirectoryCreata) {
+        if (isEsisteDirectory(parentDirectoryName)) {
             message = String.format("%s%s%s", DIRECTORY_MANCANTE, FORWARD, parentDirectoryName + SLASH);
             logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
             try {
@@ -693,7 +692,7 @@ public class FileService extends AbstractService {
                 return result.validMessage(message);
             case fileOnly:
                 if (new File(destPath).exists()) {
-                    message = "Il file: " + path + " esisteva già e non è stato modificato.";
+                    message = String.format("Il file: %s esisteva già e non è stato modificato.", nomeFile);
                     logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
                     return result.validMessage(message);
                 }
@@ -736,10 +735,11 @@ public class FileService extends AbstractService {
      *
      * @return wrapper di informazioni risultanti
      */
-    public AResult copyDirectory(final AECopy typeCopy, final String srcPath, final String destPath) {
+    public AResult copyDirectory(final AECopy typeCopy, final String srcPath, String destPath) {
         AResult result = AResult.build().method("copyDirectory").target(destPath);
         String message;
-        String path = this.findPathBreve(destPath + SLASH);
+        destPath = destPath.endsWith(SLASH) ? destPath : destPath + SLASH;
+        String path = this.findPathBreve(destPath);
         File dirSrc = new File(srcPath);
         File dirDest = new File(destPath);
         List<String> filesSorgenti;
@@ -776,7 +776,7 @@ public class FileService extends AbstractService {
                 if (dirDest.exists()) {
                     message = String.format("La directory '%s' esisteva già e non è stata toccata.", path);
                     logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
-                    return result.setValidMessage(message);
+                    return result.setErrorMessage(message);
                 }
                 else {
                     try {
