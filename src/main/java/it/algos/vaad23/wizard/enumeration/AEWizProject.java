@@ -15,7 +15,7 @@ import java.util.*;
  */
 public enum AEWizProject {
 
-    config("Directory CONFIG di risorse on-line esterne al JAR (vaadin23)", true, true, "config", AECopy.dirFilesAddOnly),
+    config("Directory CONFIG di risorse on-line esterne al JAR (vaadin23)", true, true, "config", AECopy.dirFilesModifica),
 
     documentation("Directory DOC di documentazione (vaadin23)", true, true, "doc", AECopy.dirFilesAddOnly),
 

@@ -214,6 +214,25 @@ public class VaadCost {
 
     public static final String KEY_MAPPA_LAST_MODIFICA = "lastModifica";
 
+    public static final String KEY_DIR_CREATA = "dirCreata";
+
+    public static final String KEY_DIR_ESISTENTE = "dirEsistente";
+
+    public static final String KEY_DIR_INTEGRATA = "dirIntegrata";
+
+    public static final String KEY_FILE_ESISTENTE = "fileEsistente";
+
+    public static final String KEY_FILE_CREATO = "fileCreato";
+
+    public static final String KEY_FILE_MODIFICATO = "fileModificato";
+
+
+    public static final String KEY_MAPPA_ESISTENTI = "esistenti";
+
+    public static final String KEY_MAPPA_MODIFICATI = "modificati";
+
+    public static final String KEY_MAPPA_AGGIUNTI = "aggiunti";
+
     /**
      * The constant ROUTE_NAME.
      */

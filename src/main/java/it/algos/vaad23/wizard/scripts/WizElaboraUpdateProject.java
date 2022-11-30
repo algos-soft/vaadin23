@@ -35,6 +35,9 @@ public class WizElaboraUpdateProject extends WizElabora {
         newUpdateProject = fileService.estraeClasseFinaleSenzaJava(destNewProject).toLowerCase();
         srcVaadin23 = textService.levaCoda(destNewProject, newUpdateProject);
         srcVaadin23 += VAADIN_PROJECT + SLASH;
+        if (srcVaadin23.contains("tutorial")) {
+            srcVaadin23 = "/Users/gac/Documents/IdeaProjects/operativi/vaadin23/";
+        }
         destNewProject += SLASH;
 
         super.esegue();

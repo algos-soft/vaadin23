@@ -9,9 +9,12 @@ inside the IDE, in the built-in Terminal.
 
 By default, IntelliJ IDEA suggests `npm`
 
-Al 22.11.22 la versione di npm è `8.19.2`, mentre la versione di pnpm è `4.14.0`
+Al 30.11.22 la versione di npm è `9.1.2`, mentre la versione di pnpm è `7.17.1`
 
-Terminale -> `npm -v`
+- Terminale -> `npm -v`
+- Terminale -> `pnpm -v`
+
+[npm-vs-yarn-vs-pnpm](https://www.atatus.com/blog/npm-vs-yarn-vs-pnpm/).
 
 # Homebrew
 

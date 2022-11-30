@@ -636,6 +636,8 @@ public class FileService extends AbstractService {
         File fileSrc = new File(srcPath);
         File fileDest = new File(destPath);
         String filePath = path + SLASH + nomeFile;
+        String srcText;
+        String destText;
 
         if (typeCopy == null) {
             message = "Manca il type AECopy";
@@ -674,33 +676,53 @@ public class FileService extends AbstractService {
         }
 
         switch (typeCopy) {
+            //esiste ed è uguale
+            //esiste ma viene modificato
+            //non esiste
             case fileDelete:
                 if (fileDest.exists()) {
-                    message = "Il file: " + path + " esisteva già ma è stato modificato.";
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
+                    srcText = leggeFile(srcPath);
+                    destText = leggeFile(destPath);
+                    if (destText.equals(srcText)) {
+                        result.setTagCode(KEY_FILE_ESISTENTE);
+                        message = "Il file: " + path + " esisteva già e non è stato modificato.";
+                        return result.validMessage(message);
+                    }
+                    else {
+                        try {
+                            FileUtils.copyFile(fileSrc, fileDest);
+                            result.setTagCode(KEY_FILE_MODIFICATO);
+                            message = "Il file: " + path + " esisteva già ma è stato modificato.";
+                            return result.validMessage(message);
+                        } catch (Exception unErrore) {
+                            logger.error(new WrapLog().exception(unErrore).usaDb());
+                            return result.errorMessage(unErrore.getMessage());
+                        }
+                    }
                 }
                 else {
-                    message = "Il file: " + path + " non esisteva ed è stato copiato.";
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message));
+                    try {
+                        FileUtils.copyFile(fileSrc, fileDest);
+                        result.setTagCode(KEY_FILE_CREATO);
+                        message = "Il file: " + path + " non esisteva ed è stato copiato.";
+                        return result.validMessage(message);
+                    } catch (Exception unErrore) {
+                        logger.error(new WrapLog().exception(unErrore).usaDb());
+                        return result.errorMessage(unErrore.getMessage());
+                    }
                 }
-                try {
-                    FileUtils.copyFile(fileSrc, fileDest);
-                } catch (Exception unErrore) {
-                    logger.error(new WrapLog().exception(unErrore).usaDb());
-                    return result.errorMessage(unErrore.getMessage());
-                }
-                return result.validMessage(message);
+
             case fileOnly:
-                if (new File(destPath).exists()) {
+                if (fileDest.exists()) {
+                    result.setTagCode(KEY_FILE_ESISTENTE);
                     message = String.format("Il file: %s esisteva già e non è stato modificato.", nomeFile);
-                    logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
                     return result.validMessage(message);
                 }
                 else {
                     try {
                         FileUtils.copyFile(fileSrc, fileDest);
+                        result.setTagCode(KEY_FILE_CREATO);
                         message = "Il file: " + filePath + " non esisteva ed è stato copiato.";
-                        logger.info(new WrapLog().type(AETypeLog.file).message(message));
                         return result.validMessage(message);
                     } catch (Exception unErrore) {
                         logger.error(new WrapLog().exception(unErrore).usaDb());
@@ -743,7 +765,10 @@ public class FileService extends AbstractService {
         File dirSrc = new File(srcPath);
         File dirDest = new File(destPath);
         List<String> filesSorgenti;
-        List<String> filesDestinazione;
+        List<String> filesEsistenti;
+        List<String> filesModificati;
+        List<String> filesAggiunti;
+        Map resultMap = new HashMap();
 
         if (typeCopy == null) {
             message = "Manca il type AECopy";
@@ -774,7 +799,7 @@ public class FileService extends AbstractService {
         switch (typeCopy) {
             case dirOnly:
                 if (dirDest.exists()) {
-                    message = String.format("La directory '%s' esisteva già e non è stata toccata.", path);
+                    message = String.format("La directory '%s' c'era già e non è stata toccata.", path);
                     logger.info(new WrapLog().type(AETypeLog.file).message(message).usaDb());
                     return result.setErrorMessage(message);
                 }
@@ -793,7 +818,7 @@ public class FileService extends AbstractService {
                 if (dirDest.exists()) {
                     try {
                         FileUtils.deleteDirectory(dirDest);
-                        message = String.format("La directory '%s' esisteva già ma è stata cancellata e sostituita.", path);
+                        message = String.format("La directory '%s' c'era già ma è stata cancellata e sostituita.", path);
                     } catch (Exception unErrore) {
                         logger.error(new WrapLog().exception(unErrore).usaDb());
                         return result.setErrorMessage(unErrore.getMessage());
@@ -811,23 +836,40 @@ public class FileService extends AbstractService {
                     return result.setErrorMessage(unErrore.getMessage());
                 }
             case dirFilesAddOnly:
+                filesSorgenti = getFilesName(srcPath);
                 if (dirDest.exists()) {
                     //--recupero i files esistenti nella destinazione
                     //--copio SOLO i sorgenti NON presenti nella destinazione
-                    filesSorgenti = getFilesName(srcPath);
-                    filesDestinazione = getFilesName(destPath);
+                    filesEsistenti = getFilesName(destPath);
+                    filesAggiunti = new ArrayList<>();
+                    resultMap.put(KEY_MAPPA_ESISTENTI, filesEsistenti);
+                    resultMap.put(KEY_MAPPA_AGGIUNTI, filesAggiunti);
 
                     for (String nomeFile : filesSorgenti) {
-                        if (!filesDestinazione.contains(nomeFile)) {
+                        if (!filesEsistenti.contains(nomeFile)) {
                             copyFile(AECopy.fileOnly, srcPath, destPath, nomeFile);
+                            filesAggiunti.add(nomeFile);
                         }
                     }
-                    message = String.format("La directory '%s' esisteva già ma è stata integrata.", path);
-                    return result.setValidMessage(message);
+                    result.setMappa(resultMap);
+
+                    if (filesAggiunti.size() > 0) {
+                        message = String.format("La directory '%s' c'era già ma è stata integrata.", path);
+                        result.setTagCode(KEY_DIR_INTEGRATA);
+                        return result.setValidMessage(message);
+                    }
+                    else {
+                        message = String.format("La directory '%s' c'era già e non è stato aggiunto nessun file.", path);
+                        result.setTagCode(KEY_DIR_ESISTENTE);
+                        return result.setValidMessage(message);
+                    }
                 }
                 else {
                     try {
                         FileUtils.copyDirectory(dirSrc, dirDest);
+                        resultMap.put(KEY_MAPPA_ESISTENTI, filesSorgenti);
+                        result.setMappa(resultMap);
+                        result.setTagCode(KEY_DIR_CREATA);
                         message = String.format("La directory '%s' non esisteva ed è stata creata.", path);
                         return result.setValidMessage(message);
                     } catch (Exception unErrore) {
@@ -839,16 +881,26 @@ public class FileService extends AbstractService {
                     //--recupero i files esistenti nella destinazione
                     //--copio TUTTI i sorgenti SOVRASCRIVENDO quelli presenti nella destinazione
                     filesSorgenti = getFilesName(srcPath);
-                    filesDestinazione = getFilesName(destPath);
+                    filesEsistenti = getFilesName(destPath);
+                    filesAggiunti = new ArrayList<>();
+                    resultMap.put(KEY_MAPPA_ESISTENTI, filesEsistenti);
+                    resultMap.put(KEY_MAPPA_AGGIUNTI, filesAggiunti);
 
                     for (String nomeFile : filesSorgenti) {
-                        if (!filesDestinazione.contains(nomeFile)) {
+                        if (!filesEsistenti.contains(nomeFile)) {
                             copyFile(AECopy.fileDelete, srcPath, destPath, nomeFile);
+                            filesAggiunti.add(nomeFile);
                         }
                     }
-
-                    message = String.format("La directory '%s' esisteva già ma sono stati aggiunti", path);
-                    message += " i files mancanti e modificati quelli esistenti con lo stesso nome";
+                    result.setMappa(resultMap);
+                    if (filesAggiunti.size() > 0) {
+                        message = String.format("La directory '%s' c'era già ma sono stati aggiunti e/o modificati i files", path);
+                        return result.setValidMessage(message);
+                    }
+                    else {
+                        message = String.format("La directory '%s' c'era già e non è stato aggiunto/modificato nessun file.", path);
+                        return result.setValidMessage(message);
+                    }
                 }
                 else {
                     message = String.format("La directory '%s' non esisteva ed è stata creata.", path);

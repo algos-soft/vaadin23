@@ -289,22 +289,41 @@ public class FileServiceTest extends SpringTest {
     }
 
 
-    //--type copy
     //--pathDir sorgente
     //--pathDir destinazione
     //--nome file
     //--flag copiato
-    protected static Stream<Arguments> COPY_FILE() {
+    protected static Stream<Arguments> COPY_FILE_ONLY() {
         return Stream.of(
-                Arguments.of(null, VUOTA, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.sourceSoloSeNonEsiste, VUOTA, VUOTA, FILE_UNO, false),
-                Arguments.of(AECopy.fileDelete, VUOTA, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.sourceSoloSeNonEsiste, DIR_TRE, DIR_DUE, FILE_UNO, false),
-                Arguments.of(AECopy.fileOnly, DIR_TRE, DIR_DUE, VUOTA, false),
-                Arguments.of(AECopy.fileDelete, DIR_TRE, DIR_DUE, VUOTA, false),
-                Arguments.of(AECopy.fileOnly, PATH_SOURCE, PATH_DIR_UNO, FILE_UNO, true),
-                Arguments.of(AECopy.fileDelete, PATH_SOURCE, PATH_DIR_UNO, FILE_UNO, true),
-                Arguments.of(AECopy.fileOnly, PATH_SOURCE, PATH_DIR_UNO, FILE_UNO, true)
+                Arguments.of(VUOTA, VUOTA, VUOTA, false),
+                Arguments.of(VUOTA, VUOTA, FILE_UNO, false),
+                Arguments.of(VUOTA, VUOTA, VUOTA, false),
+                Arguments.of(DIR_TRE, DIR_DUE, FILE_UNO, false),
+                Arguments.of(DIR_TRE, DIR_DUE, VUOTA, false),
+                Arguments.of(DIR_TRE, DIR_DUE, VUOTA, false),
+                Arguments.of(PATH_DIR_DUE, PATH_DIR_TRE, FILE_UNO, true),
+                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, FILE_UNO, true),
+                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, FILE_QUATTRO, true)
+        );
+    }
+
+
+    //--pathDir sorgente
+    //--pathDir destinazione
+    //--nome file
+    //--flag copiato
+    protected static Stream<Arguments> COPY_FILE_DELETE() {
+        return Stream.of(
+                Arguments.of(VUOTA, VUOTA, VUOTA, false),
+                Arguments.of(VUOTA, VUOTA, FILE_UNO, false),
+                Arguments.of(VUOTA, VUOTA, VUOTA, false),
+                Arguments.of(DIR_TRE, DIR_DUE, FILE_UNO, false),
+                Arguments.of(DIR_TRE, DIR_DUE, VUOTA, false),
+                Arguments.of(DIR_TRE, DIR_DUE, VUOTA, false),
+                Arguments.of(PATH_DIR_DUE, PATH_DIR_TRE, FILE_UNO, true),
+                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, FILE_UNO, true),
+                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, FILE_TRE, true),
+                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, FILE_QUATTRO, true)
         );
     }
 
@@ -379,11 +398,11 @@ public class FileServiceTest extends SpringTest {
     //--directory copiata
     protected static Stream<Arguments> COPY_DIRECTORY_MODIFICA() {
         return Stream.of(
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, DEST, false),
-                Arguments.of(SOURCE, VUOTA, false),
+                //                Arguments.of(VUOTA, VUOTA, false),
+                //                Arguments.of(VUOTA, VUOTA, false),
+                //                Arguments.of(VUOTA, VUOTA, false),
+                //                Arguments.of(VUOTA, DEST, false),
+                //                Arguments.of(SOURCE, VUOTA, false),
                 Arguments.of(DIRECTORY_MANCANTE, DIRECTORY_TEST + DEST, true),
                 Arguments.of(DIRECTORY_TEST + DIR_UNO, DIRECTORY_TEST + DIR_DUE, true),
                 Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, true)
@@ -717,22 +736,113 @@ public class FileServiceTest extends SpringTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = "COPY_FILE")
+    @MethodSource(value = "COPY_FILE_ONLY")
     @Order(9)
-    @DisplayName("9 - Copia il file")
-        //--type copy
+    @DisplayName("9 - Copia il file solo se non esiste")
         //--pathDir sorgente
         //--pathDir destinazione
         //--nome file
         //--flag copiato
-    void copyFile(final AECopy typeCopy, final String srcPathDir, final String destPathDir, final String nomeFile, final boolean copiato) {
-        System.out.println("9 - Copia il file");
+    void copyFileOnly(final String srcPathDir, final String destPathDir, final String nomeFile, final boolean copiato) {
+        System.out.println("9 - Copia il file solo se non esiste");
         System.out.println(VUOTA);
 
-        ottenutoRisultato = service.copyFile(typeCopy, srcPathDir, destPathDir, nomeFile);
+        if (textService.isValid(srcPathDir) && textService.isValid(destPathDir) && textService.isValid(nomeFile)) {
+            new File(srcPathDir).mkdirs();
+            new File(destPathDir).mkdirs();
+            try {
+                new File(srcPathDir + SLASH + FILE_UNO).createNewFile();
+                new File(srcPathDir + SLASH + FILE_QUATTRO).createNewFile();
+                new File(destPathDir + SLASH + FILE_UNO).createNewFile();
+            } catch (Exception unErrore) {
+                assertFalse(true);
+            }
+            service.sovraScriveFile(srcPathDir + SLASH + FILE_UNO, srcTesto);
+            service.sovraScriveFile(srcPathDir + SLASH + FILE_QUATTRO, srcTesto);
+            service.sovraScriveFile(destPathDir + SLASH + FILE_UNO, destTestoFisso);
+        }
+
+        ottenutoRisultato = service.copyFile(AECopy.fileOnly, srcPathDir, destPathDir, nomeFile);
         assertNotNull(ottenutoRisultato);
         assertEquals(copiato, ottenutoRisultato.isValido());
         printRisultato(ottenutoRisultato);
+
+        if (ottenutoRisultato.isValido()) {
+            if (nomeFile.equals(FILE_UNO)) {
+                service.leggeFile(destPathDir + SLASH + FILE_UNO).equals(srcTesto);
+                assertEquals(KEY_FILE_ESISTENTE, ottenutoRisultato.getTagCode());
+                assertFalse(service.isEsisteFile(destPathDir + SLASH + FILE_QUATTRO));
+            }
+
+            if (nomeFile.equals(FILE_QUATTRO)) {
+                service.leggeFile(destPathDir + SLASH + FILE_UNO).equals(srcTesto);
+                service.leggeFile(destPathDir + SLASH + FILE_QUATTRO).equals(destTestoFisso);
+                assertEquals(KEY_FILE_CREATO, ottenutoRisultato.getTagCode());
+                assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_QUATTRO));
+            }
+        }
+
+        //--cancella le due cartelle
+        cancellaCartelle(srcPathDir, destPathDir);
+    }
+
+
+    @ParameterizedTest
+    @MethodSource(value = "COPY_FILE_DELETE")
+    @Order(10)
+    @DisplayName("10 - Copia sempre il file")
+        //--pathDir sorgente
+        //--pathDir destinazione
+        //--nome file
+        //--flag copiato
+    void copyFileDelete(final String srcPathDir, final String destPathDir, final String nomeFile, final boolean copiato) {
+        System.out.println("10 - Copia sempre il file");
+        System.out.println(VUOTA);
+
+        if (textService.isValid(srcPathDir) && textService.isValid(destPathDir) && textService.isValid(nomeFile)) {
+            new File(srcPathDir).mkdirs();
+            new File(destPathDir).mkdirs();
+            try {
+                new File(srcPathDir + SLASH + FILE_UNO).createNewFile();
+                new File(srcPathDir + SLASH + FILE_TRE).createNewFile();
+                new File(srcPathDir + SLASH + FILE_QUATTRO).createNewFile();
+                new File(destPathDir + SLASH + FILE_UNO).createNewFile();
+                new File(destPathDir + SLASH + FILE_TRE).createNewFile();
+            } catch (Exception unErrore) {
+                assertFalse(true);
+            }
+            service.sovraScriveFile(srcPathDir + SLASH + FILE_UNO, srcTesto);
+            service.sovraScriveFile(srcPathDir + SLASH + FILE_TRE, srcTesto);
+            service.sovraScriveFile(srcPathDir + SLASH + FILE_QUATTRO, srcTesto);
+            service.sovraScriveFile(destPathDir + SLASH + FILE_UNO, srcTesto);
+            service.sovraScriveFile(destPathDir + SLASH + FILE_TRE, destTesto);
+        }
+
+        ottenutoRisultato = service.copyFile(AECopy.fileDelete, srcPathDir, destPathDir, nomeFile);
+        assertNotNull(ottenutoRisultato);
+        assertEquals(copiato, ottenutoRisultato.isValido());
+        printRisultato(ottenutoRisultato);
+
+        if (ottenutoRisultato.isValido()) {
+            if (nomeFile.equals(FILE_UNO)) {
+                service.leggeFile(destPathDir + SLASH + FILE_UNO).equals(srcTesto);
+                assertEquals(KEY_FILE_ESISTENTE, ottenutoRisultato.getTagCode());
+                assertFalse(service.isEsisteFile(destPathDir + SLASH + FILE_QUATTRO));
+            }
+            if (nomeFile.equals(FILE_TRE)) {
+                service.leggeFile(destPathDir + SLASH + FILE_TRE).equals(srcTesto);
+                assertEquals(KEY_FILE_MODIFICATO, ottenutoRisultato.getTagCode());
+                assertFalse(service.isEsisteFile(destPathDir + SLASH + FILE_QUATTRO));
+            }
+            if (nomeFile.equals(FILE_QUATTRO)) {
+                service.leggeFile(destPathDir + SLASH + FILE_QUATTRO).equals(srcTesto);
+                assertEquals(KEY_FILE_CREATO, ottenutoRisultato.getTagCode());
+                assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_QUATTRO));
+            }
+        }
+
+        //--cancella le due cartelle
+        cancellaCartelle(srcPathDir, destPathDir);
     }
 
     //    @Test
