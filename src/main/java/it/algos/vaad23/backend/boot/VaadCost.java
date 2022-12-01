@@ -214,7 +214,9 @@ public class VaadCost {
 
     public static final String KEY_MAPPA_LAST_MODIFICA = "lastModifica";
 
-    public static final String KEY_DIR_CREATA = "dirCreata";
+    public static final String KEY_DIR_CREATA_NON_ESISTENTE = "dirCreataNuova";
+
+    public static final String KEY_DIR_CREATA_CANCELLATA = "dirCreataCancellata";
 
     public static final String KEY_DIR_ESISTENTE = "dirEsistente";
 
@@ -227,11 +229,18 @@ public class VaadCost {
     public static final String KEY_FILE_MODIFICATO = "fileModificato";
 
 
-    public static final String KEY_MAPPA_ESISTENTI = "esistenti";
+    public static final String KEY_MAPPA_SORGENTI = "sorgenti";
+
+    public static final String KEY_MAPPA_DESTINAZIONE_ANTE = "destinazioneAnte";
+
+    public static final String KEY_MAPPA_DESTINAZIONE_POST = "destinazionePost";
+
+    public static final String KEY_MAPPA_AGGIUNTI = "aggiunti";
+
+    public static final String KEY_MAPPA_RIMOSSI = "rimossi";
 
     public static final String KEY_MAPPA_MODIFICATI = "modificati";
 
-    public static final String KEY_MAPPA_AGGIUNTI = "aggiunti";
 
     /**
      * The constant ROUTE_NAME.

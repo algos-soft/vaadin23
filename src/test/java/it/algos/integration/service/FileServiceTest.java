@@ -333,14 +333,14 @@ public class FileServiceTest extends SpringTest {
     //--directory copiata
     protected static Stream<Arguments> COPY_DIRECTORY_TYPES() {
         return Stream.of(
-                Arguments.of(null, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.fileOnly, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.dirOnly, VUOTA, VUOTA, false),
-                Arguments.of(AECopy.dirOnly, VUOTA, DEST, false),
-                Arguments.of(AECopy.dirOnly, SOURCE, VUOTA, false),
+                //                Arguments.of(null, VUOTA, VUOTA, false),
+                //                Arguments.of(AECopy.fileOnly, VUOTA, VUOTA, false),
+                //                Arguments.of(AECopy.dirOnly, VUOTA, VUOTA, false),
+                //                Arguments.of(AECopy.dirOnly, VUOTA, DEST, false),
+                //                Arguments.of(AECopy.dirOnly, SOURCE, VUOTA, false),
                 Arguments.of(AECopy.dirOnly, DIRECTORY_MANCANTE, DIRECTORY_TEST + DEST, true),
-                Arguments.of(AECopy.dirOnly, DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_DUE, false),
-                Arguments.of(AECopy.dirOnly, DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, false)
+                Arguments.of(AECopy.dirOnly, DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_DUE, true),
+                Arguments.of(AECopy.dirOnly, DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, true)
         );
     }
 
@@ -348,7 +348,7 @@ public class FileServiceTest extends SpringTest {
     //--pathDir sorgente
     //--pathDir destinazione
     //--directory copiata
-    protected static Stream<Arguments> COPY_DIRECTORY_ONLY() {
+    protected static Stream<Arguments> COPY_DIRECTORY() {
         return Stream.of(
                 Arguments.of(VUOTA, VUOTA, false),
                 Arguments.of(VUOTA, VUOTA, false),
@@ -356,58 +356,11 @@ public class FileServiceTest extends SpringTest {
                 Arguments.of(VUOTA, DEST, false),
                 Arguments.of(SOURCE, VUOTA, false),
                 Arguments.of(DIRECTORY_MANCANTE, DIRECTORY_TEST + DEST, true),
-                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_DUE, false),
-                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, false)
+                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, true),
+                Arguments.of(DIRECTORY_TEST + DIR_UNO, DIRECTORY_TEST + DIR_DUE, true)
         );
     }
 
-    //--pathDir sorgente
-    //--pathDir destinazione
-    //--directory copiata
-    protected static Stream<Arguments> COPY_DIRECTORY_SEMPRE() {
-        return Stream.of(
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, DEST, false),
-                Arguments.of(SOURCE, VUOTA, false),
-                Arguments.of(DIRECTORY_MANCANTE, DIRECTORY_TEST + DEST, true),
-                Arguments.of(DIRECTORY_TEST + DIR_UNO, DIRECTORY_TEST + DIR_DUE, true),
-                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, true)
-        );
-    }
-
-    //--pathDir sorgente
-    //--pathDir destinazione
-    //--directory copiata
-    protected static Stream<Arguments> COPY_DIRECTORY_ADD_ONLY() {
-        return Stream.of(
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, VUOTA, false),
-                Arguments.of(VUOTA, DEST, false),
-                Arguments.of(SOURCE, VUOTA, false),
-                Arguments.of(DIRECTORY_MANCANTE, DIRECTORY_TEST + DEST, true),
-                Arguments.of(DIRECTORY_TEST + DIR_UNO, DIRECTORY_TEST + DIR_DUE, true),
-                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, true)
-        );
-    }
-
-    //--pathDir sorgente
-    //--pathDir destinazione
-    //--directory copiata
-    protected static Stream<Arguments> COPY_DIRECTORY_MODIFICA() {
-        return Stream.of(
-                //                Arguments.of(VUOTA, VUOTA, false),
-                //                Arguments.of(VUOTA, VUOTA, false),
-                //                Arguments.of(VUOTA, VUOTA, false),
-                //                Arguments.of(VUOTA, DEST, false),
-                //                Arguments.of(SOURCE, VUOTA, false),
-                Arguments.of(DIRECTORY_MANCANTE, DIRECTORY_TEST + DEST, true),
-                Arguments.of(DIRECTORY_TEST + DIR_UNO, DIRECTORY_TEST + DIR_DUE, true),
-                Arguments.of(DIRECTORY_TEST + DIR_DUE, DIRECTORY_TEST + DIR_TRE, true)
-        );
-    }
 
     /**
      * Execute only once before running all tests <br>
@@ -1140,14 +1093,14 @@ public class FileServiceTest extends SpringTest {
         System.out.print(String.format("%s%s%s", sorgente, FORWARD, ottenuto));
     }
 
-    @ParameterizedTest
+    //    @ParameterizedTest
     @MethodSource(value = "COPY_DIRECTORY_TYPES")
     @Order(16)
     @DisplayName("16 - Copia dir/files")
-        //--type copy
-        //--pathDir sorgente
-        //--pathDir destinazione
-        //--directory copiata
+    //--type copy
+    //--pathDir sorgente
+    //--pathDir destinazione
+    //--directory copiata
     void copyDirectory(final AECopy typeCopy, final String srcPathDir, final String destPathDir, final boolean copiaturaPrevista) {
         System.out.println("16 - Copia dir/files");
         System.out.println(VUOTA);
@@ -1189,7 +1142,7 @@ public class FileServiceTest extends SpringTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "COPY_DIRECTORY_ONLY")
+    @MethodSource(value = "COPY_DIRECTORY")
     @Order(17)
     @DisplayName("17 - Copia la directory solo se non esiste")
         //--pathDir sorgente
@@ -1198,49 +1151,53 @@ public class FileServiceTest extends SpringTest {
     void copyDirectoryOnly(final String srcPathDir, final String destPathDir, final boolean copiaturaPrevista) {
         System.out.println("17 - Copia la directory solo se non esiste");
         System.out.println(VUOTA);
-        boolean esistePrima;
-        boolean esisteDopo;
+        List<String> filesSorgenti;
+        List<String> filesDestinazioneAnte;
+        List<String> filesDestinazionePost;
+        Map mappa;
 
         //--prepare la cartella sorgente regolata alle condizioni iniziali
         creaCartellaSorgente(srcPathDir);
         //--prepare una cartella destinazione fissa
-        new File(DIRECTORY_TEST + SLASH + DIR_TRE).mkdirs();
+        new File(DIRECTORY_TEST + DIR_TRE).mkdirs();
         try {
-            new File(DIRECTORY_TEST + SLASH + DIR_TRE + FILE_NOVE).createNewFile();
+            new File(DIRECTORY_TEST + DIR_TRE + FILE_NOVE).createNewFile();
         } catch (Exception unErrore) {
             assertFalse(true);
         }
 
-        //--controlla se esiste la cartella di destinazione prevista
-        esistePrima = service.isEsisteDirectory(destPathDir);
-
         ottenutoRisultato = service.copyDirectory(AECopy.dirOnly, srcPathDir, destPathDir);
         assertNotNull(ottenutoRisultato);
         ottenutoBooleano = ottenutoRisultato.isValido();
-        printRisultato(ottenutoRisultato);
         assertEquals(copiaturaPrevista, ottenutoBooleano);
 
-        esisteDopo = service.isEsisteDirectory(destPathDir);
-        if (esistePrima) {
-            assertFalse(ottenutoRisultato.isValido());
-            assertEquals(copiaturaPrevista, ottenutoBooleano);
-        }
-        else {
-            if (esisteDopo) {
-                assertTrue(ottenutoRisultato.isValido());
-                assertEquals(copiaturaPrevista, ottenutoBooleano);
+        if (ottenutoRisultato.isValido()) {
+            System.out.println(VUOTA);
+
+            assertTrue(service.isEsisteDirectory(destPathDir));
+            mappa = ottenutoRisultato.getMappa();
+            filesSorgenti = mappa.get(KEY_MAPPA_SORGENTI) != null ? (List) mappa.get(KEY_MAPPA_SORGENTI) : null;
+            if (destPathDir.equals(DIRECTORY_TEST + DIR_TRE)) {
+                assertEquals(KEY_DIR_ESISTENTE, ottenutoRisultato.getTagCode());
+                filesDestinazioneAnte = mappa.get(KEY_MAPPA_DESTINAZIONE_ANTE) != null ? (List) mappa.get(KEY_MAPPA_DESTINAZIONE_ANTE) : null;
+                System.out.println("DirOnly - Directory già esistente");
+                message = String.format("Files sorgenti (%s): %s", filesSorgenti.size(), filesSorgenti);
+                System.out.println(message);
+                message = String.format("Files destinazione precedenti non modificati (%s): %s", filesDestinazioneAnte.size(), filesDestinazioneAnte);
+                System.out.println(message);
             }
             else {
-                assertFalse(ottenutoRisultato.isValido());
-                assertEquals(copiaturaPrevista, ottenutoBooleano);
+                assertEquals(KEY_DIR_CREATA_NON_ESISTENTE, ottenutoRisultato.getTagCode());
+                filesDestinazionePost = mappa.get(KEY_MAPPA_DESTINAZIONE_POST) != null ? (List) mappa.get(KEY_MAPPA_DESTINAZIONE_POST) : null;
+                System.out.println("DirOnly - Directory creata ex novo");
+                message = String.format("Files sorgenti (%s): %s", filesSorgenti.size(), filesSorgenti);
+                System.out.println(message);
+                message = String.format("Files destinazione risultanti (%s): %s", filesDestinazionePost.size(), filesDestinazionePost);
+                System.out.println(message);
             }
         }
 
-        if (copiaturaPrevista) {
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_UNO));
-            assertFalse(service.isEsisteFile(destPathDir + SLASH + FILE_NOVE));
-        }
-        assertTrue(service.isEsisteFile(DIRECTORY_TEST + DIR_TRE + FILE_NOVE));
+        printRisultato(ottenutoRisultato);
 
         //--cancella le due cartelle
         cancellaCartelle(srcPathDir, destPathDir, DIRECTORY_TEST + DIR_TRE);
@@ -1248,18 +1205,20 @@ public class FileServiceTest extends SpringTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "COPY_DIRECTORY_SEMPRE")
+    @MethodSource(value = "COPY_DIRECTORY")
     @Order(18)
-    @DisplayName("18 - Copia la directory sempre")
+    @DisplayName("18 - Copia sempre la directory")
         //--pathDir sorgente
         //--pathDir destinazione
     void copyDirectoryDelete(final String srcPathDir, final String destPathDir, final boolean copiaturaPrevista) {
-        System.out.println("18 - Copia la directory sempre cancellando quella preesistente");
+        System.out.println("18 - Copia sempre la directory cancellando quella preesistente");
         System.out.println(VUOTA);
+        List<String> filesSorgenti;
+        List<String> filesDestinazioneAnte;
+        List<String> filesDestinazionePost;
 
         //--prepare la cartella sorgente regolata alle condizioni iniziali
         creaCartellaSorgente(srcPathDir);
-        creaIfNotExistCartellaDest(destPathDir);
         //--prepare una cartella destinazione fissa
         new File(DIRECTORY_TEST + SLASH + DIR_TRE).mkdirs();
         try {
@@ -1271,25 +1230,44 @@ public class FileServiceTest extends SpringTest {
         ottenutoRisultato = service.copyDirectory(AECopy.dirDelete, srcPathDir, destPathDir);
         assertNotNull(ottenutoRisultato);
         ottenutoBooleano = ottenutoRisultato.isValido();
-        printRisultato(ottenutoRisultato);
         assertEquals(copiaturaPrevista, ottenutoBooleano);
 
-        if (copiaturaPrevista) {
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_UNO));
-            assertFalse(service.isEsisteFile(destPathDir + SLASH + FILE_NOVE));
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_DUE));
-            assertFalse(service.isEsisteFile(destPathDir + SLASH + FILE_SEI));
+        if (ottenutoRisultato.isValido()) {
+            System.out.println(VUOTA);
+
+            assertTrue(service.isEsisteDirectory(destPathDir));
+            mappa = ottenutoRisultato.getMappa();
+            filesSorgenti = mappa.get(KEY_MAPPA_SORGENTI) != null ? (List) mappa.get(KEY_MAPPA_SORGENTI) : null;
+            filesDestinazionePost = mappa.get(KEY_MAPPA_DESTINAZIONE_POST) != null ? (List) mappa.get(KEY_MAPPA_DESTINAZIONE_POST) : null;
+            if (destPathDir.equals(DIRECTORY_TEST + DIR_TRE)) {
+                filesDestinazioneAnte = mappa.get(KEY_MAPPA_DESTINAZIONE_ANTE) != null ? (List) mappa.get(KEY_MAPPA_DESTINAZIONE_ANTE) : null;
+                assertEquals(KEY_DIR_CREATA_CANCELLATA, ottenutoRisultato.getTagCode());
+                System.out.println("DirDelete - Directory già esistente");
+                message = String.format("Files sorgenti (%s): %s", filesSorgenti.size(), filesSorgenti);
+                System.out.println(message);
+                message = String.format("Files destinazione precedenti cancellati (%s): %s", filesDestinazioneAnte.size(), filesDestinazioneAnte);
+                System.out.println(message);
+                message = String.format("Files destinazione nuovi risultanti (%s): %s", filesDestinazionePost.size(), filesDestinazionePost);
+                System.out.println(message);
+            }
+            else {
+                assertEquals(KEY_DIR_CREATA_NON_ESISTENTE, ottenutoRisultato.getTagCode());
+                System.out.println("DirDelete - Directory creata ex novo");
+                message = String.format("Files sorgenti (%s): %s", filesSorgenti.size(), filesSorgenti);
+                System.out.println(message);
+                message = String.format("Files destinazione risultanti (%s): %s", filesDestinazionePost.size(), filesDestinazionePost);
+                System.out.println(message);
+            }
         }
-        if (destPathDir.equals(DIRECTORY_TEST + DIR_TRE + FILE_NOVE) && ottenutoRisultato.isValido()) {
-            assertFalse(service.isEsisteFile(DIRECTORY_TEST + DIR_TRE + FILE_NOVE));
-        }
+
+        printRisultato(ottenutoRisultato);
 
         //--cancella le due cartelle
         cancellaCartelle(srcPathDir, destPathDir, DIRECTORY_TEST + DIR_TRE);
     }
 
     @ParameterizedTest
-    @MethodSource(value = "COPY_DIRECTORY_ADD_ONLY")
+    @MethodSource(value = "COPY_DIRECTORY")
     @Order(19)
     @DisplayName("19 - Integra la directory aggiungendo files")
         //--pathDir sorgente
@@ -1298,43 +1276,65 @@ public class FileServiceTest extends SpringTest {
     void copyDirectoryAddOnly(final String srcPathDir, final String destPathDir, final boolean copiaturaPrevista) {
         System.out.println("19 - Integra la directory aggiungendo files");
         System.out.println(VUOTA);
-        String testoAnteCopiaturaDirectory;
-        String testoPostCopiaturaDirectory;
+        List<String> filesSorgenti;
+        List<String> filesDestinazioneAnte;
+        List<String> filesDestinazionePost;
+        List<String> filesAggiunti;
+        List<String> filesModificati;
 
         //--prepare la cartella sorgente regolata alle condizioni iniziali
         creaCartellaSorgente(srcPathDir);
-        creaIfNotExistCartellaDest(destPathDir);
         //--prepare una cartella destinazione fissa
         new File(DIRECTORY_TEST + SLASH + DIR_TRE).mkdirs();
         try {
+            new File(DIRECTORY_TEST + SLASH + DIR_TRE + FILE_UNO).createNewFile();
             new File(DIRECTORY_TEST + SLASH + DIR_TRE + FILE_NOVE).createNewFile();
         } catch (Exception unErrore) {
             assertFalse(true);
         }
-        testoAnteCopiaturaDirectory = service.leggeFile(destPathDir + SLASH + FILE_UNO);
 
         ottenutoRisultato = service.copyDirectory(AECopy.dirFilesAddOnly, srcPathDir, destPathDir);
         assertNotNull(ottenutoRisultato);
         ottenutoBooleano = ottenutoRisultato.isValido();
-        printRisultato(ottenutoRisultato);
         assertEquals(copiaturaPrevista, ottenutoBooleano);
 
-        if (copiaturaPrevista) {
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_UNO));
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_DUE));
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_SEI));
+        if (ottenutoRisultato.isValido()) {
+            System.out.println(VUOTA);
+
+            assertTrue(service.isEsisteDirectory(destPathDir));
+            mappa = ottenutoRisultato.getMappa();
+            filesSorgenti = mappa.get(KEY_MAPPA_SORGENTI) != null ? (List) mappa.get(KEY_MAPPA_SORGENTI) : null;
+            filesAggiunti = mappa.get(KEY_MAPPA_AGGIUNTI) != null ? (List) mappa.get(KEY_MAPPA_AGGIUNTI) : null;
+            filesModificati = mappa.get(KEY_MAPPA_MODIFICATI) != null ? (List) mappa.get(KEY_MAPPA_MODIFICATI) : null;
+            filesDestinazionePost = mappa.get(KEY_MAPPA_DESTINAZIONE_POST) != null ? (List) mappa.get(KEY_MAPPA_DESTINAZIONE_POST) : null;
             if (destPathDir.equals(DIRECTORY_TEST + DIR_TRE)) {
-                assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_NOVE));
+                filesDestinazioneAnte = mappa.get(KEY_MAPPA_DESTINAZIONE_ANTE) != null ? (List) mappa.get(KEY_MAPPA_DESTINAZIONE_ANTE) : null;
+                assertEquals(KEY_DIR_INTEGRATA, ottenutoRisultato.getTagCode());
+                System.out.println("DirFilesAddOnly - Directory già esistente");
+                message = String.format("Files sorgenti (%s): %s", filesSorgenti.size(), filesSorgenti);
+                System.out.println(message);
+                message = String.format("Files destinazione preesistenti e rimasti (%s): %s", filesDestinazioneAnte.size(), filesDestinazioneAnte);
+                System.out.println(message);
+                message = String.format("Files aggiunti (%s): %s", filesAggiunti.size(), filesAggiunti);
+                System.out.println(message);
+                message = String.format("Files modificati (%s): %s", filesModificati.size(), filesModificati);
+                System.out.println(message);
+                message = String.format("Files destinazione nuovi risultanti (%s): %s", filesDestinazionePost.size(), filesDestinazionePost);
+                System.out.println(message);
             }
             else {
-                assertFalse(service.isEsisteFile(destPathDir + SLASH + FILE_NOVE));
+                assertEquals(KEY_DIR_CREATA_NON_ESISTENTE, ottenutoRisultato.getTagCode());
+                System.out.println("DirFilesAddOnly - Directory creata ex novo");
+                message = String.format("Files sorgenti (%s): %s", filesSorgenti.size(), filesSorgenti);
+                System.out.println(message);
+                message = String.format("Files aggiunti (%s): %s", filesAggiunti.size(), filesAggiunti);
+                System.out.println(message);
+                message = String.format("Files destinazione risultanti (%s): %s", filesDestinazionePost.size(), filesDestinazionePost);
+                System.out.println(message);
             }
-            testoPostCopiaturaDirectory = service.leggeFile(destPathDir + SLASH + FILE_UNO);
-            assertEquals(testoPostCopiaturaDirectory, testoAnteCopiaturaDirectory);
         }
-        if (destPathDir.equals(DIRECTORY_TEST + DIR_TRE + FILE_NOVE) && ottenutoRisultato.isValido()) {
-            assertFalse(service.isEsisteFile(DIRECTORY_TEST + DIR_TRE + FILE_NOVE));
-        }
+
+        printRisultato(ottenutoRisultato);
 
         //--cancella le due cartelle
         cancellaCartelle(srcPathDir, destPathDir, DIRECTORY_TEST + DIR_TRE);
@@ -1342,7 +1342,7 @@ public class FileServiceTest extends SpringTest {
 
 
     @ParameterizedTest
-    @MethodSource(value = "COPY_DIRECTORY_MODIFICA")
+    @MethodSource(value = "COPY_DIRECTORY")
     @Order(20)
     @DisplayName("20 - Integra la directory modificando i files")
         //--pathDir sorgente
@@ -1351,44 +1351,67 @@ public class FileServiceTest extends SpringTest {
     void copyDirectoryModifica(final String srcPathDir, final String destPathDir, final boolean copiaturaPrevista) {
         System.out.println("20 - Integra la directory modificando i files");
         System.out.println(VUOTA);
-        String testoAnteCopiaturaDirectory;
-        String testoPostCopiaturaDirectory;
+        List<String> filesSorgenti;
+        List<String> filesDestinazioneAnte;
+        List<String> filesDestinazionePost;
+        List<String> filesAggiunti;
+        List<String> filesModificati;
+        List<String> filesRimossi;
 
         //--prepare la cartella sorgente regolata alle condizioni iniziali
         creaCartellaSorgente(srcPathDir);
-        creaIfNotExistCartellaDest(destPathDir);
         //--prepare una cartella destinazione fissa
         new File(DIRECTORY_TEST + SLASH + DIR_TRE).mkdirs();
         try {
+            new File(DIRECTORY_TEST + SLASH + DIR_TRE + FILE_UNO).createNewFile();
             new File(DIRECTORY_TEST + SLASH + DIR_TRE + FILE_NOVE).createNewFile();
         } catch (Exception unErrore) {
             assertFalse(true);
         }
-        testoAnteCopiaturaDirectory = service.leggeFile(destPathDir + SLASH + FILE_UNO);
+        service.sovraScriveFile(DIRECTORY_TEST + SLASH + DIR_TRE + FILE_UNO, destTesto);
 
         ottenutoRisultato = service.copyDirectory(AECopy.dirFilesModifica, srcPathDir, destPathDir);
         assertNotNull(ottenutoRisultato);
         ottenutoBooleano = ottenutoRisultato.isValido();
-        printRisultato(ottenutoRisultato);
         assertEquals(copiaturaPrevista, ottenutoBooleano);
 
-        if (copiaturaPrevista) {
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_UNO));
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_DUE));
-            assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_SEI));
+        if (ottenutoRisultato.isValido()) {
+            System.out.println(VUOTA);
+
+            assertTrue(service.isEsisteDirectory(destPathDir));
+            mappa = ottenutoRisultato.getMappa();
+            filesSorgenti = mappa.get(KEY_MAPPA_SORGENTI) != null ? (List) mappa.get(KEY_MAPPA_SORGENTI) : null;
+            filesAggiunti = mappa.get(KEY_MAPPA_AGGIUNTI) != null ? (List) mappa.get(KEY_MAPPA_AGGIUNTI) : null;
+            filesModificati = mappa.get(KEY_MAPPA_MODIFICATI) != null ? (List) mappa.get(KEY_MAPPA_MODIFICATI) : null;
+            filesDestinazionePost = mappa.get(KEY_MAPPA_DESTINAZIONE_POST) != null ? (List) mappa.get(KEY_MAPPA_DESTINAZIONE_POST) : null;
             if (destPathDir.equals(DIRECTORY_TEST + DIR_TRE)) {
-                assertTrue(service.isEsisteFile(destPathDir + SLASH + FILE_NOVE));
+                filesDestinazioneAnte = mappa.get(KEY_MAPPA_DESTINAZIONE_ANTE) != null ? (List) mappa.get(KEY_MAPPA_DESTINAZIONE_ANTE) : null;
+                assertEquals(KEY_DIR_INTEGRATA, ottenutoRisultato.getTagCode());
+                System.out.println("DirFilesModifica - Directory già esistente");
+                message = String.format("Files sorgenti (%s): %s", filesSorgenti.size(), filesSorgenti);
+                System.out.println(message);
+                message = String.format("Files destinazione preesistenti e rimasti (%s): %s", filesDestinazioneAnte.size(), filesDestinazioneAnte);
+                System.out.println(message);
+                message = String.format("Files aggiunti (%s): %s", filesAggiunti.size(), filesAggiunti);
+                System.out.println(message);
+                message = String.format("Files modificati (%s): %s", filesModificati.size(), filesModificati);
+                System.out.println(message);
+                message = String.format("Files destinazione nuovi risultanti (%s): %s", filesDestinazionePost.size(), filesDestinazionePost);
+                System.out.println(message);
             }
             else {
-                assertFalse(service.isEsisteFile(destPathDir + SLASH + FILE_NOVE));
+                assertEquals(KEY_DIR_CREATA_NON_ESISTENTE, ottenutoRisultato.getTagCode());
+                System.out.println("DirFilesModifica - Directory creata ex novo");
+                message = String.format("Files sorgenti (%s): %s", filesSorgenti.size(), filesSorgenti);
+                System.out.println(message);
+                message = String.format("Files aggiunti (%s): %s", filesAggiunti.size(), filesAggiunti);
+                System.out.println(message);
+                message = String.format("Files destinazione risultanti (%s): %s", filesDestinazionePost.size(), filesDestinazionePost);
+                System.out.println(message);
             }
-            testoPostCopiaturaDirectory = service.leggeFile(destPathDir + SLASH + FILE_UNO);
-            assertNotEquals(testoPostCopiaturaDirectory, testoAnteCopiaturaDirectory);
-            assertEquals(srcTesto, testoPostCopiaturaDirectory);
         }
-        if (destPathDir.equals(DIRECTORY_TEST + DIR_TRE + FILE_NOVE) && ottenutoRisultato.isValido()) {
-            assertFalse(service.isEsisteFile(DIRECTORY_TEST + DIR_TRE + FILE_NOVE));
-        }
+
+        printRisultato(ottenutoRisultato);
 
         //--cancella le due cartelle
         cancellaCartelle(srcPathDir, destPathDir, DIRECTORY_TEST + DIR_TRE);
