@@ -38,6 +38,7 @@ public class WizElaboraUpdateProject extends WizElabora {
         if (srcVaadin23.contains("tutorial")) {
             srcVaadin23 = "/Users/gac/Documents/IdeaProjects/operativi/vaadin23/";
         }
+
         destNewProject += SLASH;
 
         super.esegue();
@@ -50,7 +51,6 @@ public class WizElaboraUpdateProject extends WizElabora {
                         case directory -> directory(wiz);
                         case file -> file(wiz);
                         case source -> source(wiz);
-                        case elabora -> elabora(wiz);
                     }
                 }
             }

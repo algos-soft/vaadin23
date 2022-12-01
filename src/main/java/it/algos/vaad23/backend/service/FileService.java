@@ -915,6 +915,7 @@ public class FileService extends AbstractService {
                     for (String nomeFile : filesSorgenti) {
                         if (filesDestinazioneAnte.contains(nomeFile)) {
                             if (!isUguale(srcPath, destPath, nomeFile)) {
+                                copyFile(AECopy.fileDelete, srcPath, destPath, nomeFile);
                                 filesModificati.add(nomeFile);
                             }
                         }
