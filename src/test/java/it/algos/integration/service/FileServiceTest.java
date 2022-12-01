@@ -377,7 +377,6 @@ public class FileServiceTest extends SpringTest {
 
         //reset iniziale
         cancellaAllTest();
-        //        creaCartellaSorgente(DIRECTORY_TEST + DIR_START);
         new File(DIRECTORY_TEST).mkdirs();
 
         if (FLAG_CREAZIONE_INIZIALE) {
@@ -696,11 +695,13 @@ public class FileServiceTest extends SpringTest {
         //--pathDir destinazione
         //--nome file
         //--flag copiato
-    void copyFileOnly(final String srcPathDir, final String destPathDir, final String nomeFile, final boolean copiato) {
+    void copyFileOnly(String srcPathDir, String destPathDir, final String nomeFile, final boolean copiato) {
         System.out.println("9 - Copia il file solo se non esiste");
         System.out.println(VUOTA);
 
         if (textService.isValid(srcPathDir) && textService.isValid(destPathDir) && textService.isValid(nomeFile)) {
+            srcPathDir = DIRECTORY_TEST + srcPathDir;
+            destPathDir = DIRECTORY_TEST + destPathDir;
             new File(srcPathDir).mkdirs();
             new File(destPathDir).mkdirs();
             try {
@@ -748,11 +749,13 @@ public class FileServiceTest extends SpringTest {
         //--pathDir destinazione
         //--nome file
         //--flag copiato
-    void copyFileDelete(final String srcPathDir, final String destPathDir, final String nomeFile, final boolean copiato) {
+    void copyFileDelete(String srcPathDir, String destPathDir, final String nomeFile, final boolean copiato) {
         System.out.println("10 - Copia sempre il file");
         System.out.println(VUOTA);
 
         if (textService.isValid(srcPathDir) && textService.isValid(destPathDir) && textService.isValid(nomeFile)) {
+            srcPathDir = DIRECTORY_TEST + srcPathDir;
+            destPathDir = DIRECTORY_TEST + destPathDir;
             new File(srcPathDir).mkdirs();
             new File(destPathDir).mkdirs();
             try {
