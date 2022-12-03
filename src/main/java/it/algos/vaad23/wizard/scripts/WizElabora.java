@@ -74,12 +74,51 @@ public abstract class WizElabora {
     }
 
     public void directory(final AEWizProject wiz) {
-        String message;
-        String messageType = VUOTA;
         AResult result;
         String srcPath = srcVaadin23 + wiz.getCopyDest() + SLASH;
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
         String dir = fileService.lastDirectory(destPath).toLowerCase();
+
+        result = fileService.copyDirectory(wiz.getCopy(), srcPath, destPath);
+        mostraRisultato(result, wiz.getCopy(), dir);
+    }
+
+
+    public void elabora(final AEWizProject wiz) {
+        AResult result;
+        String srcPath = srcVaadin23 + wiz.getCopyDest() + SLASH;
+        String destPath = destNewProject + wiz.getCopyDest() + SLASH;
+        String dir = fileService.lastDirectory(destPath).toLowerCase();
+        String oldToken = "SimpleApplication";
+        String newToken = fileService.estraeClasseFinaleSenzaJava(destNewProject);
+        newToken = textService.primaMaiuscola(newToken) + APP_NAME;
+
+        switch (wiz) {
+            case testService -> {
+                result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
+                mostraRisultato(result, AECopy.dirFilesModifica, dir);
+                fixToken(destPath, oldToken, newToken);
+            }
+            default -> {}
+        }
+    }
+
+    public void fixToken(String destPath, String oldToken, String newToken) {
+        String testo;
+        String path;
+        List<String> files = fileService.getFilesName(destPath);
+
+        for (String nomeFile : files) {
+            path = destPath + nomeFile;
+            testo = fileService.leggeFile(path);
+            testo = textService.sostituisce(testo, oldToken, newToken);
+            fileService.sovraScriveFile(path, testo);
+        }
+    }
+
+    public void mostraRisultato(AResult result, AECopy copy, String dir) {
+        String message;
+        String messageType = VUOTA;
         String tag = progettoEsistente ? "Update" : "New";
         Map resultMap = null;
         List<String> filesSorgenti = null;
@@ -88,7 +127,6 @@ public abstract class WizElabora {
         List<String> filesAggiunti = null;
         List<String> filesModificati = null;
 
-        result = fileService.copyDirectory(wiz.getCopy(), srcPath, destPath);
         if (result.isValido()) {
             resultMap = result.getMappa();
             if (resultMap != null) {
@@ -104,27 +142,25 @@ public abstract class WizElabora {
             filesAggiunti = filesAggiunti != null ? filesAggiunti : new ArrayList<>();
             filesModificati = filesModificati != null ? filesModificati : new ArrayList<>();
 
-            switch (wiz.getCopy()) {
+            switch (copy) {
                 case dirOnly -> {}
                 case dirDelete -> {}
                 case dirFilesAddOnly -> {
                     if (result.getTagCode().equals(KEY_DIR_CREATA_NON_ESISTENTE)) {
                         messageType = "DirFilesAddOnly - Directory creata ex novo";
-                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
+                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                         message = String.format("Files creati: %s", filesDestinazionePost);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
                     if (result.getTagCode().equals(KEY_DIR_ESISTENTE)) {
                         messageType = "DirFilesAddOnly - Directory già esistente";
-                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
+                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
                     if (result.getTagCode().equals(KEY_DIR_INTEGRATA)) {
                         messageType = "DirFilesAddOnly - Directory esistente ma integrata";
-                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
-                        logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-                        message = String.format("Files aggiunti: %s", filesAggiunti);
+                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
                     if (FLAG_DEBUG_WIZ) {
@@ -144,21 +180,19 @@ public abstract class WizElabora {
                 case dirFilesModifica -> {
                     if (result.getTagCode().equals(KEY_DIR_CREATA_NON_ESISTENTE)) {
                         messageType = "DirFilesModifica - Directory creata ex novo";
-                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
+                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                         message = String.format("Files creati: %s", filesDestinazionePost);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
                     if (result.getTagCode().equals(KEY_DIR_ESISTENTE)) {
                         messageType = "DirFilesModifica - Directory esistente";
-                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
+                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
                     if (result.getTagCode().equals(KEY_DIR_INTEGRATA)) {
                         messageType = "DirFilesModifica - Directory integrata";
-                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
-                        logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-                        message = String.format("Files aggiunti: %s", filesAggiunti);
+                        message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), copy);
                         logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
                     }
                     if (FLAG_DEBUG_WIZ) {
@@ -176,24 +210,14 @@ public abstract class WizElabora {
                     }
                 }
                 default -> {}
-            } ;
-
-            //            if (result.getLista() != null && result.getLista().size() > 0) {
-            //                message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
-            //                logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-            //                message = String.format("Sono stati aggiunti i files: %s", result.getLista().toString());
-            //                logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-            //            }
-            //            else {
-            //                message = String.format("%s: %s (%s)", tag, textService.primaMinuscola(result.getMessage()), wiz.getCopy());
-            //                logger.info(new WrapLog().message(message).type(AETypeLog.wizard));
-            //            }
+            }
         }
         else {
             message = String.format("%s: la directory %s non ha funzionato", tag, dir);
             logger.warn(new WrapLog().message(message).type(AETypeLog.wizard));
         }
     }
+
 
     public void file(final AEWizProject wiz) {
     }

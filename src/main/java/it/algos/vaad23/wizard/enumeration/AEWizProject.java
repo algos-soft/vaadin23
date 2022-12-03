@@ -15,15 +15,15 @@ import java.util.*;
  */
 public enum AEWizProject {
 
-    config("Directory CONFIG di risorse on-line esterne al JAR (vaadin23)", true, true, "config", AECopy.dirFilesModifica),
+    config("Directory CONFIG di risorse on-line esterne al JAR (vaadin23)", true, false, "config", AECopy.dirFilesModifica),
 
-    documentation("Directory DOC di documentazione (vaadin23)", true, true, "doc", AECopy.dirFilesModifica),
+    documentation("Directory DOC di documentazione (vaadin23)", true, false, "doc", AECopy.dirFilesModifica),
 
     frontend("Directory FRONTEND del Client (vaadin23) [need riavvio]", true, false, "frontend", AECopy.dirFilesAddOnly),
 
-    links("Directory LINKS a siti web utili (vaadin23)", true, true, "links", AECopy.dirFilesModifica),
+    links("Directory LINKS a siti web utili (vaadin23)", true, false, "links", AECopy.dirFilesModifica),
 
-    snippets("Directory SNIPPETS di codice suggerito (vaadin23)", true, true, "snippets", AECopy.dirFilesModifica),
+    snippets("Directory SNIPPETS di codice suggerito (vaadin23)", true, false, "snippets", AECopy.dirFilesModifica),
 
     flow("Directory BASE Vaad23 (Wizard compreso)", true, false, "src/main/java/it/algos/vaad23", AECopy.dirDelete),
 
@@ -45,7 +45,10 @@ public enum AEWizProject {
 
     read("File README con note di testo (sources)", true, false, "README.md", AECopy.sourceSoloSeNonEsiste, "readme"),
 
-    test("Directory Test (vaadin23)", false, false, VUOTA, AECopy.elabora),
+    testBase("Directory TEST /base (vaadin23)", false, true, "src/test/java/it/algos/base", AECopy.dirFilesModifica),
+    testEnum("Directory TEST /enum (vaadin23)", false, true, "src/test/java/it/algos/enumeration", AECopy.dirFilesModifica),
+    testService("Directory TEST /service (vaadin23)", false, true, "src/test/java/it/algos/service", AECopy.elabora),
+    testBackend("Directory TEST /backend (vaadin23)", false, true, "src/test/java/it/algos/backend", AECopy.elabora),
     application("Main class java", true, false, "src/main/java/it/algos/@PROJECTUPPER@Application.java",
             AECopy.sourceSovrascriveSempreAncheSeEsiste, "application"
     ),

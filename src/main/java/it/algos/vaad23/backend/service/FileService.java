@@ -397,7 +397,7 @@ public class FileService extends AbstractService {
         try {
             fileToBeCreated.createNewFile();
             message = String.format("%s%s%s", CREATO_FILE, FORWARD, fileToBeCreated.getAbsolutePath());
-            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+            //            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
             return result.validMessage(message);
         } catch (Exception unErrore) {
             return creaDirectoryParentAndFile(fileToBeCreated);
@@ -450,12 +450,10 @@ public class FileService extends AbstractService {
         }
 
         if (isEsisteDirectory(parentDirectoryName)) {
-            message = String.format("%s%s%s", DIRECTORY_MANCANTE, FORWARD, parentDirectoryName + SLASH);
-            logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
             try {
                 fileToBeCreated.createNewFile();
                 message = String.format("%s%s%s", CREATO_FILE, FORWARD, fileToBeCreated.getAbsolutePath());
-                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
+                //                logger.info(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
                 return result.validMessage(message);
             } catch (Exception unErrore) {
                 message = String.format("Errore nel path per la creazione del file %s", fileToBeCreated.getAbsolutePath());
@@ -464,6 +462,7 @@ public class FileService extends AbstractService {
             }
         }
         else {
+            //            message = String.format("%s%s%s", DIRECTORY_MANCANTE, FORWARD, parentDirectoryName + SLASH);
             message = String.format("Non sono riuscito a creare la directory necessaria per il file %s", fileToBeCreated.getAbsolutePath());
             logger.error(new WrapLog().exception(new AlgosException(message)).type(AETypeLog.file));
             return result.errorMessage(message);
@@ -930,16 +929,15 @@ public class FileService extends AbstractService {
                     resultMap.put(KEY_MAPPA_DESTINAZIONE_POST, filesDestinazionePost);
                     result.setMappa(resultMap);
 
-                    if (filesAggiunti.size() > 0) {
-                        result.setTagCode(KEY_DIR_INTEGRATA);
-                        message = String.format("La directory '%s' c'era già ma sono stati aggiunti e/o modificati i files", path);
-                        return result.setValidMessage(message);
-                    }
-                    else {
+                    if (filesAggiunti.size() == 0 && filesModificati.size() == 0) {
                         result.setTagCode(KEY_DIR_ESISTENTE);
                         message = String.format("La directory '%s' c'era già e non è stato aggiunto/modificato nessun file.", path);
-                        return result.setValidMessage(message);
                     }
+                    else {
+                        result.setTagCode(KEY_DIR_INTEGRATA);
+                        message = String.format("La directory '%s' c'era già; aggiunti: %s; modificati: %s", path, filesAggiunti, filesModificati);
+                    }
+                    return result.setValidMessage(message);
                 }
                 else {
                     try {

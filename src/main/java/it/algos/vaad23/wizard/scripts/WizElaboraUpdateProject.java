@@ -51,6 +51,7 @@ public class WizElaboraUpdateProject extends WizElabora {
                         case directory -> directory(wiz);
                         case file -> file(wiz);
                         case source -> source(wiz);
+                        case elabora -> elabora(wiz);
                     }
                 }
             }
