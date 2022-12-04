@@ -78,9 +78,10 @@ public abstract class WizElabora {
         String srcPath = srcVaadin23 + wiz.getCopyDest() + SLASH;
         String destPath = destNewProject + wiz.getCopyDest() + SLASH;
         String dir = fileService.lastDirectory(destPath).toLowerCase();
+        String tag = progettoEsistente ? "Update" : "New";
 
         result = fileService.copyDirectory(wiz.getCopy(), srcPath, destPath);
-        mostraRisultato(result, wiz.getCopy(), dir);
+        mostraRisultato(result, wiz.getCopy(), dir, tag);
     }
 
 
@@ -92,11 +93,12 @@ public abstract class WizElabora {
         String oldToken = "SimpleApplication";
         String newToken = fileService.estraeClasseFinaleSenzaJava(destNewProject);
         newToken = textService.primaMaiuscola(newToken) + APP_NAME;
+        String tag = progettoEsistente ? "Update" : "New";
 
         switch (wiz) {
-            case testService -> {
+            case testService, testBackend -> {
                 result = fileService.copyDirectory(AECopy.dirFilesModifica, srcPath, destPath);
-                mostraRisultato(result, AECopy.dirFilesModifica, dir);
+                mostraRisultato(result, AECopy.dirFilesModifica, dir, tag);
                 fixToken(destPath, oldToken, newToken);
             }
             default -> {}
@@ -116,10 +118,9 @@ public abstract class WizElabora {
         }
     }
 
-    public void mostraRisultato(AResult result, AECopy copy, String dir) {
+    public void mostraRisultato(AResult result, AECopy copy, String dir, String tag) {
         String message;
         String messageType = VUOTA;
-        String tag = progettoEsistente ? "Update" : "New";
         Map resultMap = null;
         List<String> filesSorgenti = null;
         List<String> filesDestinazioneAnte = null;
