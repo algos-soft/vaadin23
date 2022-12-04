@@ -87,8 +87,10 @@ public class AnnoView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
+        addSpanBlue("Dal X secolo a.C. al XXI secolo d.C.");
+        addSpanBlue("Specificati gli anni bisestili");
         addSpan("Usati solo in background. Costruiti hard-code");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpanRosso("Solo hard coded. Non creabili e non modificabili. Ordinati di default 'discendenti'.");
     }
 
     /**

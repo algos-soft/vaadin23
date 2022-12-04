@@ -57,8 +57,8 @@ public class ViaView extends CrudView {
         super.usaReset = true;
         super.usaBottoneNew = false;
         super.usaBottoneEdit = false;
-        super.usaBottoneSearch = false;
         super.usaBottoneDelete = false;
+        super.searchFieldName = "nome";
     }
 
     /**
@@ -69,7 +69,7 @@ public class ViaView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpan("Usati solo in background e per i popup anagrafici. File originale (CSV) sul server Algos");
+        addSpan("Usati solo in background e per i popup anagrafici. File originale (CSV) sul server Algos /www.algos.it/vaadin23/config");
         addSpanRosso("Solo hard coded. Non creabili e non modificabili. @Indexed unico per 'nome'");
         addSpanRosso("Ordinati di default per 'ordine'. Ordinabili anche per 'nome'");
     }

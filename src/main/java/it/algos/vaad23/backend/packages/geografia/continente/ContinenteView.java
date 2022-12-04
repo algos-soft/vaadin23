@@ -56,9 +56,12 @@ public class ContinenteView extends CrudView {
         super.sortOrder = Sort.by(Sort.Direction.ASC, "ordine");
         super.gridPropertyNamesList = Arrays.asList("ordine", "nome", "abitato");
         super.formPropertyNamesList = Arrays.asList("ordine", "nome", "abitato");
+
         super.usaRowIndex = false;
         super.usaBottoneDeleteReset = true;
         super.usaBottoneNew = false;
+        super.usaBottoneEdit = false;
+        super.usaBottoneDelete = false;
         super.autoCreateColumns = false;
         super.searchFieldName = "nome";
         super.dialogClazz = ContinenteDialog.class;
@@ -72,7 +75,7 @@ public class ContinenteView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpan("Usati solo come supporto. File originale (CSV) sul server Algos");
+        addSpan("Usati solo come supporto. File originale (CSV) sul server Algos /www.algos.it/vaadin23/config");
         addSpanRosso("Solo hard coded. Non creabili e non modificabili. @Indexed unici per 'ordine' e per 'nome'");
         addSpanRosso("Ordinati di default per 'ordine'. Ordinabili anche per 'nome'");
     }

@@ -70,7 +70,8 @@ public class MeseView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpan("Usati solo in background. File originale (CSV) sul server /www.algos.it/vaadin23/config");
+        addSpanBlue("Indicato il numero di giorni trascorsi dall'inizio dell'anno per il primo e per l'ultimo giorno del mese.");
+        addSpan("Usati solo in background. File originale (CSV) sul server Algos /www.algos.it/vaadin23/config");
         addSpanRosso("Solo hard coded. Non creabili e non modificabili");
     }
 

@@ -18,7 +18,7 @@ import java.util.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class LoggerDialog extends CrudDialog {
+public class LoggerDialog extends CrudDialogBase {
 
 
     /**

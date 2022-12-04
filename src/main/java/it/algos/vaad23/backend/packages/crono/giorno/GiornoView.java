@@ -83,8 +83,11 @@ public class GiornoView extends CrudView {
     public void fixAlert() {
         super.fixAlert();
 
-        addSpan("Usati solo in background. Costruiti hard-code");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpanBlue("Sono previsti 366 gg comprensivi del 29 febbraio");
+        addSpanBlue("Indicato il numero di giorni trascorsi dall'inizio dell'anno");
+        addSpanBlue("Indicato il numero di giorni mancanti alla fine dell'anno");
+        addSpan("Usati solo in background");
+        addSpanRosso("Solo hard coded. Non creabili e non modificabili.");
     }
 
     /**

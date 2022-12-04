@@ -1000,7 +1000,6 @@ public class FileService extends AbstractService {
      *
      * @param pathFileToBeWritten nome completo del file
      * @param testo               contenuto del file
-     * @param sovrascrive         anche se esiste già
      */
     public AResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo) {
         return scriveFile(typeCopy, pathFileToBeWritten, testo, VUOTA);
@@ -1012,9 +1011,6 @@ public class FileService extends AbstractService {
      *
      * @param pathFileToBeWritten nome completo del file
      * @param testo               contenuto del file
-     * @param sovrascrive         anche se esiste già
-     * @param directory           da cui iniziare il path per il messaggio di avviso
-     * @param stampaInfo          flag per usare il logger
      */
     public AResult scriveFile(AECopy typeCopy, String pathFileToBeWritten, String testo, String firstDirectory) {
         AResult result = AResult.errato();
@@ -1278,8 +1274,6 @@ public class FileService extends AbstractService {
 
     /**
      * Estrae le sub-directories da una directory <br>
-     *
-     * @param pathDirectoryToBeScanned nome completo della directory
      */
     public List<String> getSubDirectoriesName(final File fileSorgente) {
         List<String> subDirectoryName = new ArrayList<>();
@@ -1549,7 +1543,6 @@ public class FileService extends AbstractService {
      * Elimina spazi vuoti iniziali e finali
      *
      * @param pathIn    in ingresso
-     * @param directory da cui iniziare il path
      *
      * @return path parziale da una directory
      */

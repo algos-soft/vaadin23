@@ -74,8 +74,10 @@ public class SecoloView extends CrudView {
         super.fixAlert();
 
         addSpanBlue("L'anno zero non esiste");
-        addSpan("Usati solo in background. File originale (CSV) sul server Algos");
-        addSpanRosso("Solo hard coded. Non creabili e non modificabili");
+        addSpanBlue("Indicati il primo e l'ultimo anno del secolo.");
+        addSpanBlue("Dal X secolo a.C. al XXI secolo d.C.");
+        addSpan("Usati solo in background. File originale (CSV) sul server Algos /www.algos.it/vaadin23/config");
+        addSpanRosso("Solo hard coded. Non creabili e non modificabili. Ordinati di default 'ascendenti'.");
     }
 
 

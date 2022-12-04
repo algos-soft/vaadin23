@@ -20,7 +20,7 @@ import java.util.*;
  */
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ContinenteDialog extends CrudDialog {
+public class ContinenteDialog extends CrudDialogBase {
 
     //--I fields devono essere class variable e non local variable
     private TextField code;
