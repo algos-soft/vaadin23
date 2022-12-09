@@ -55,6 +55,8 @@ public class VaadCost {
 
     public static final String TAG_WIZ = "wizard";
 
+    public static final String TAG_UTILITY = "utility";
+
     public static final String VUOTA = "";
 
     public static final String CAPO = "\n";

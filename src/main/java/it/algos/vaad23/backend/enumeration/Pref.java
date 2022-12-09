@@ -21,8 +21,7 @@ public enum Pref implements AIGenPref {
 
     usaNonBreaking("usaNonBreaking", AETypePref.bool, false, "Uso dello spazio non-breaking"),
     nonBreaking("nonBreaking", AETypePref.string, "&nbsp;", "Spazio non-breaking"),
-    ;
-
+;
 
     //--codice di riferimento. Se è usaCompany=true, DEVE contenere anche il code della company come prefisso.
     private String keyCode;

@@ -27,6 +27,7 @@ import javax.persistence.*;
 @Builder()
 @EqualsAndHashCode(callSuper = false)
 @MappedSuperclass
+@AIEntity(preReset = "secolo")
 public class Anno extends AEntity {
 
     @Indexed(unique = true, direction = IndexDirection.ASCENDING)

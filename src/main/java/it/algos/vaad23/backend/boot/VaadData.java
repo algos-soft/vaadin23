@@ -107,8 +107,8 @@ public class VaadData extends AbstractService {
      */
     protected void resetData(final String moduleName) {
         List<String> allModulePackagesClasses = null;
-        List<Object> allBackendClasses = null;
-        List<Object> allBackendClassesResetStartUp = null;
+        List<String> allBackendClasses = null;
+        List<String> allBackendClassesResetStartUp = null;
         String message;
         String tagFinale = "/backend/packages";
 
@@ -151,11 +151,13 @@ public class VaadData extends AbstractService {
             logger.info(new WrapLog().message(message.trim()).type(AETypeLog.checkData));
         }
 
+        //--se ci sono delle entity cpn precedente indispensabili, le ordina
+        allBackendClassesResetStartUp = fixOrdineReset(allBackendClassesResetStartUp);
+
         //--esegue il metodo xxxBackend.resetStartUp per tutte le classi che lo implementano
         if (allBackendClassesResetStartUp != null) {
             allBackendClassesResetStartUp
                     .stream()
-                    //                    .forEach(bootResetStartUp);
                     .forEach(clazzName -> reflectionService.esegueMetodo(clazzName.toString(), "resetStartUp"));
 
             message = String.format("Controllati i dati iniziali di tutti i packages del modulo %s", moduleName);
@@ -163,6 +165,13 @@ public class VaadData extends AbstractService {
         }
     }
 
+    protected List<String> fixOrdineReset(List<String> allBackendClassesResetStartUp) {
+        List<String> allBackendClassesResetStartUpOrdinate = new ArrayList<>();
+        for (String entity : allBackendClassesResetStartUp) {
+        }
+
+        return allBackendClassesResetStartUpOrdinate;
+    }
 
     /**
      * Controlla che il service xxxBackend abbia il metodo resetStartUp() <br>

@@ -28,6 +28,7 @@ import javax.persistence.*;
 @Builder()
 @EqualsAndHashCode(callSuper = false)
 @MappedSuperclass
+@AIEntity(preReset = "mese")
 public class Giorno extends AEntity {
 
     @Indexed(unique = true, direction = IndexDirection.ASCENDING)

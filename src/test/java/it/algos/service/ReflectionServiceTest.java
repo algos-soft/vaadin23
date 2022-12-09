@@ -71,10 +71,15 @@ public class ReflectionServiceTest extends AlgosTest {
         super.setUpEach();
     }
 
-
     @Test
     @Order(1)
-    @DisplayName("1 - isEsisteMetodo")
+    @DisplayName("1 - getClasse")
+    void getClasse() {
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("2 - isEsisteMetodo")
     void isEsisteMetodo() {
         sorgente = "it/algos/vaad23/backend/packages/crono/anno/AnnoBackend";
 
@@ -114,8 +119,8 @@ public class ReflectionServiceTest extends AlgosTest {
 
 
     @Test
-    @Order(2)
-    @DisplayName("2 - esegueMetodo")
+    @Order(3)
+    @DisplayName("3 - esegueMetodo")
     void esegueMetodo() {
         sorgente = "it/algos/vaad23/backend/packages/crono/anno/AnnoBackend";
 
